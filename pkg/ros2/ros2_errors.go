@@ -26,7 +26,10 @@ type RCL_RET_GOLANG_UNKNOWN_RET_TYPE struct {
 }
 
 func (e *RCL_RET_GOLANG_UNKNOWN_RET_TYPE) Error() string {
-	return errStr(fmt.Sprintf("Unknown 'rcl_ret_t' type '%d'! RCL error definitions might have changed and the error mapping with Golang bindings needs to be updated!.", e.rcl_ret_t), e.ctx)
+	return errStr(fmt.Sprintf(
+		"Unknown 'rcl_ret_t' type '%d'! RCL error definitions might have changed and"+
+			"the error mapping with Golang bindings needs to be updated!.",
+		e.rcl_ret_t), e.ctx)
 }
 func (e *RCL_RET_GOLANG_UNKNOWN_RET_TYPE) rcl_ret() int {
 	return e.rcl_ret_t
@@ -50,6 +53,21 @@ func (e *RCL_RET_ERROR) context() string {
 	return e.ctx
 }
 
+type RCL_RET_ALREADY_INIT struct {
+	rcl_ret_t int
+	ctx       string
+}
+
+func (e *RCL_RET_ALREADY_INIT) Error() string {
+	return errStr("rcl_init() already called return code.", e.ctx)
+}
+func (e *RCL_RET_ALREADY_INIT) rcl_ret() int {
+	return e.rcl_ret_t
+}
+func (e *RCL_RET_ALREADY_INIT) context() string {
+	return e.ctx
+}
+
 type RCL_RET_INVALID_ARGUMENT struct {
 	rcl_ret_t int
 	ctx       string
@@ -65,11 +83,26 @@ func (e *RCL_RET_INVALID_ARGUMENT) context() string {
 	return e.ctx
 }
 
+type RCL_RET_TOPIC_NAME_INVALID struct {
+	rcl_ret_t int
+	ctx       string
+}
+
+func (e *RCL_RET_TOPIC_NAME_INVALID) Error() string {
+	return errStr("Topic name does not pass validation.", e.ctx)
+}
+func (e *RCL_RET_TOPIC_NAME_INVALID) rcl_ret() int {
+	return e.rcl_ret_t
+}
+func (e *RCL_RET_TOPIC_NAME_INVALID) context() string {
+	return e.ctx
+}
+
 func errStr(strs ...string) string {
 	var msg string
 	for _, v := range strs {
 		if v != "" {
-			msg = fmt.Sprint("%s: %s", msg, v)
+			msg = fmt.Sprintf("%v: %v", msg, v)
 		}
 	}
 	return msg
@@ -82,12 +115,14 @@ func ErrorsCastC(rcl_ret_t C.rcl_ret_t, context string) RCLError {
 	// https://stackoverflow.com/questions/9928221/table-of-functions-vs-switch-in-golang
 	// switch-case is faster thanks to compiler optimization than a dispatcher?
 	switch rcl_ret_t {
-	case 1:
+	case C.RCL_RET_ERROR:
 		return &RCL_RET_ERROR{(int)(rcl_ret_t), context}
-	case 11:
+	case C.RCL_RET_INVALID_ARGUMENT:
 		return &RCL_RET_INVALID_ARGUMENT{(int)(rcl_ret_t), context}
-	case 100:
-		return &RCL_RET_ERROR{(int)(rcl_ret_t), context}
+	case C.RCL_RET_ALREADY_INIT:
+		return &RCL_RET_ALREADY_INIT{(int)(rcl_ret_t), context}
+	case C.RCL_RET_TOPIC_NAME_INVALID:
+		return &RCL_RET_TOPIC_NAME_INVALID{(int)(rcl_ret_t), context}
 	default:
 		return &RCL_RET_GOLANG_UNKNOWN_RET_TYPE{(int)(rcl_ret_t), ""}
 	}

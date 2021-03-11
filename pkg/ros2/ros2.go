@@ -11,20 +11,30 @@
 package ros2
 
 /*
-#cgo LDFLAGS: -L/opt/ros/foxy/lib -Wl,-rpath=/opt/ros/foxy/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lstd_msgs__rosidl_generator_c -lstd_msgs__rosidl_typesupport_c -lrcutils -lrmw_implementation -lpx4_msgs__rosidl_typesupport_c -lnav_msgs__rosidl_typesupport_c -lnav_msgs__rosidl_generator_c
+#cgo LDFLAGS: -L/opt/ros/foxy/lib -Wl,-rpath=/opt/ros/foxy/lib -lrcl -lrmw -lrosidl_runtime_c -lrosidl_typesupport_c -lstd_msgs__rosidl_generator_c -lstd_msgs__rosidl_typesupport_c -lrcutils -lrmw_implementation -lpx4_msgs__rosidl_typesupport_c -lnav_msgs__rosidl_typesupport_c -lnav_msgs__rosidl_generator_c
 #cgo CFLAGS: -I/opt/ros/foxy/include
 
 #include <stdlib.h>
+#include <string.h>
 
 #include <rcutils/allocator.h>
+#include <rcutils/types/string_array.h>
+#include <rcl/graph.h>
 #include <rcl/init.h>
 #include <rcl/init_options.h>
 #include <rcl/subscription.h>
 #include <rcl/timer.h>
 #include <rcl/time.h>
 #include <rcl/wait.h>
+#include <rcl/validate_topic_name.h>
 #include <rcl/node_options.h>
 #include <rcl/node.h>
+#include <rmw/get_topic_names_and_types.h>
+#include <rmw/names_and_types.h>
+#include <rmw/types.h>
+#include <rmw/topic_endpoint_info.h>
+#include <rmw/topic_endpoint_info_array.h>
+
 
 ///
 /// These gowrappers are needed to access C arrays
@@ -35,6 +45,25 @@ rcl_subscription_t* gowrapper_get_subscription(rcl_subscription_t** subscription
 rcl_timer_t* gowrapper_get_timer(rcl_timer_t** timers, ulong i) {
         return timers[i];
 }
+rmw_topic_endpoint_info_t* gowrapper_get_rmw_topic_endpoint_info(rmw_topic_endpoint_info_array_t* infos, ulong i) {
+	return &(infos->info_array[i]);
+}
+
+char* gowrapper_get_rcutils_string_array_index(rcutils_string_array_t* haystack, int i) {
+	return *(haystack[i].data);
+}
+
+int gowrapper_find_rcutils_string_array_index(rcutils_string_array_t* haystack, char* needle) {
+	int i;
+	for (i = 0 ; i < haystack->size ; i++) {
+		char** data = haystack[i].data;
+		if (strcmp(*data, needle) == 0) {
+			return i;
+		}
+	}
+
+	return -1;
+}
 
 */
 import "C"
@@ -44,8 +73,14 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/std_msgs"
 )
+
+type ROS2Msg interface {
+	TypeSupport() unsafe.Pointer //*C.rosidl_message_type_support_t
+	PrepareMemory() unsafe.Pointer
+	ReleaseMemory(unsafe.Pointer)
+}
 
 type RclContext struct {
 	rcl_allocator *C.rcutils_allocator_t
@@ -54,9 +89,17 @@ type RclContext struct {
 }
 
 type Subscription struct {
-	topic              string
-	ros2MsgType        ros2types.ROS2Msg
-	rcl_subscription_t C.rcl_subscription_t
+	Topic_name         string
+	Ros2MsgType        ROS2Msg
+	Rcl_subscription_t *C.rcl_subscription_t
+	Callback           func(Subscription, ROS2Msg)
+}
+
+type WaitSet struct {
+	Timeout        time.Duration
+	Subscriptions  []Subscription
+	Timers         []C.rcl_timer_t
+	Rcl_wait_set_t *C.rcl_wait_set_t
 }
 
 func main() {
@@ -72,7 +115,7 @@ func main() {
 		panic(err)
 	}
 
-	ros2_msg_placeholder := &ros2types.StdMsgs_ColorRGBA{}
+	ros2_msg_placeholder := &std_msgs.ColorRGBA{}
 	rcl_publisher, err := PublisherCreate(rclContext, rcl_node, "topic_name", ros2_msg_placeholder)
 	if err != nil {
 		fmt.Printf("Error '%+v' publisher_create.\n", err)
@@ -85,17 +128,21 @@ func main() {
 		panic(err)
 	}
 
-	subscription, err := SubscriptionCreate(rclContext, rcl_node, "topic_name", &ros2types.StdMsgs_ColorRGBA{}, nil)
+	subscription, err := SubscriptionCreate(rclContext, rcl_node, "topic_name", &std_msgs.ColorRGBA{}, nil)
+	if err != nil {
+		fmt.Printf("Error '%+v' SubscriptionCreate.\n", err)
+		panic(err)
+	}
 
 	subscriptions := []Subscription{subscription}
 	timers := []C.rcl_timer_t{*rcl_timer}
-	rcl_wait_set, err := WaitSetCreate(rclContext, subscriptions, timers)
+	waitSet, err := WaitSetCreate(rclContext, subscriptions, timers, 1000*time.Millisecond)
 	if err != nil {
 		fmt.Printf("Error '%+v' WaitSetCreate.\n", err)
 		panic(err)
 	}
 
-	err = WaitSetRun(rcl_wait_set, subscription.rcl_subscription_t, ros2_msg_placeholder)
+	err = WaitSetRun(waitSet)
 	if err != nil {
 		fmt.Printf("Error '%+v' WaitSetRun.\n", err)
 		panic(err)
@@ -156,17 +203,22 @@ func NodeCreate(rclContext RclContext, node_name string, namespace string) (*C.r
 	return rcl_node, nil
 }
 
-func PublisherCreate(rclContext RclContext, rcl_node *C.rcl_node_t, topic_name string, ros2msg ros2types.ROS2Msg) (*C.rcl_publisher_t, RCLError) {
+func PublisherCreate(rclContext RclContext, rcl_node *C.rcl_node_t, topic_name string, ros2msg ROS2Msg) (*C.rcl_publisher_t, RCLError) {
 	rcl_publisher := (*C.rcl_publisher_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_publisher_t{}))))
 	*rcl_publisher = C.rcl_get_zero_initialized_publisher()
 
 	rcl_publisher_options := (*C.rcl_publisher_options_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_publisher_options_t{}))))
 	*rcl_publisher_options = C.rcl_publisher_get_default_options()
 
+	err := ValidateTopicName(topic_name)
+	if err != nil {
+		return rcl_publisher, err
+	}
+
 	var rc C.rcl_ret_t = C.rcl_publisher_init(
 		rcl_publisher,
 		rcl_node,
-		ros2msg.TypeSupport(),
+		(*C.rosidl_message_type_support_t)(ros2msg.TypeSupport()),
 		C.CString(topic_name),
 		rcl_publisher_options)
 	if rc != C.RCL_RET_OK {
@@ -186,7 +238,7 @@ func TimerCreate(rclContext RclContext, timeout time.Duration) (*C.rcl_timer_t, 
 
 	var rc C.rcl_ret_t = C.rcl_system_clock_init(rclContext.rcl_clock, rclContext.rcl_allocator)
 	if rc != C.RCL_RET_OK {
-		return rcl_timer, ErrorsCastC(rc, fmt.Sprint("rcl_system_clock_init() failed for timer '%+v'", rcl_timer))
+		return rcl_timer, ErrorsCastC(rc, fmt.Sprintf("rcl_system_clock_init() failed for timer '%+v'", rcl_timer))
 	}
 
 	rc = C.rcl_timer_init(
@@ -203,47 +255,125 @@ func TimerCreate(rclContext RclContext, timeout time.Duration) (*C.rcl_timer_t, 
 	return rcl_timer, nil
 }
 
-func SubscriptionCreate(rclContext RclContext, rcl_node *C.rcl_node_t, topic_name string, ros2msg ros2types.ROS2Msg, rcl_subscription_callback interface{}) (Subscription, RCLError) {
+func SubscriptionCreate(rclContext RclContext, rcl_node *C.rcl_node_t, topic_name string, ros2msg ROS2Msg, subscriptionCallback func(Subscription, ROS2Msg)) (Subscription, RCLError) {
 	var subscription Subscription
-	subscription.rcl_subscription_t = C.rcl_get_zero_initialized_subscription()
-	subscription.ros2MsgType = ros2msg
-	subscription.topic = topic_name
+	subscription.Rcl_subscription_t = (*C.rcl_subscription_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_subscription_t{}))))
+	*subscription.Rcl_subscription_t = C.rcl_get_zero_initialized_subscription()
+	subscription.Ros2MsgType = ros2msg
+	subscription.Topic_name = topic_name
+	subscription.Callback = subscriptionCallback
+
+	err := ValidateTopicName(subscription.Topic_name)
+	if err != nil {
+		return subscription, err
+	}
 
 	rcl_subscription_options_t := (*C.rcl_subscription_options_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_subscription_options_t{}))))
 	*rcl_subscription_options_t = C.rcl_subscription_get_default_options()
 
 	var rc C.rcl_ret_t = C.rcl_subscription_init(
-		&subscription.rcl_subscription_t,
+		subscription.Rcl_subscription_t,
 		rcl_node,
-		ros2msg.TypeSupport(),
+		(*C.rosidl_message_type_support_t)(ros2msg.TypeSupport()),
 		C.CString(topic_name),
 		rcl_subscription_options_t)
 	if rc != C.RCL_RET_OK {
 		return subscription, ErrorsCastC(rc, fmt.Sprintf("Topic name '%s'", topic_name))
 	}
 
-	if rcl_subscription_callback != nil {
-
-	}
-
 	return subscription, nil
 }
 
-func WaitSetCreate(rclContext RclContext, subscriptions []Subscription, timers []C.rcl_timer_t) (C.rcl_wait_set_t, RCLError) {
-	//var number_of_subscriptions C.ulong = 0
+func PublishersInfoByTopic(rclContext RclContext, rcl_node *C.rcl_node_t, topic_name string) (*C.rmw_topic_endpoint_info_array_t, RCLError) {
+	//TODO: This is actually an array of arrays and the memory allocation mechanisms inside ROS2 rcl are more complex! Need to review this on what to do here.
+	rmw_topic_endpoint_info_array := (*C.rmw_topic_endpoint_info_array_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rmw_topic_endpoint_info_array_t{}))))
+	*rmw_topic_endpoint_info_array = C.rcl_get_zero_initialized_topic_endpoint_info_array()
+	var rc C.rcl_ret_t = C.rcl_get_publishers_info_by_topic(rcl_node, rclContext.rcl_allocator, C.CString(topic_name), false, rmw_topic_endpoint_info_array)
+	if rc != C.RCL_RET_OK {
+		return rmw_topic_endpoint_info_array, ErrorsCast(rc)
+	}
+	return rmw_topic_endpoint_info_array, nil
+}
+
+func TopicGetEndpointInfo(rclContext RclContext, rcl_node *C.rcl_node_t, topic_name string) RCLError {
+	//rmw_topic_endpoint_info_array, err := PublishersInfoByTopic(rclContext, rcl_node, topic_name)
+	//if err != nil {
+	//	return err
+	//}
+
+	//var rmw_topic_endpoint_info C.rmw_topic_endpoint_info_t = C.gowrapper_get_rmw_topic_endpoint_info(rmw_topic_endpoint_info_array, 0)
+	//rmw_topic_endpoint_info.
+	return nil
+}
+
+/*func TopicGetTopicTypeSupport(rclContext RclContext, rcl_node *C.rcl_node_t, topic_name string) (C.rosidl_message_type_support_t, RCLError) {
+	typeString, err := TopicGetTopicTypeString(rclContext, rcl_node, topic_name)
+	if err == nil {
+		return nil, err
+	}
+	parts := strings.Split(typeString, "/")
+	if len(parts) == 0 {
+		return nil, ErrorsCastC(C.RCL_RET_TOPIC_NAME_INVALID, topic_name)
+	}
+
+	//cFuncName := fmt.Sprintf("rosidl_typesupport_c__get_message_type_support_handle__%s__%s__%s", parts[0], parts[1], parts[2])
+	return nil, nil
+}*/
+
+func TopicGetTopicTypeString(rclContext RclContext, rcl_node *C.rcl_node_t, topic_name string) (string, RCLError) {
+	rmw_names_and_types, err := TopicGetTopicNamesAndTypes(rclContext, rcl_node)
+	if err != nil {
+		return "", err
+	}
+
+	var i C.int = C.gowrapper_find_rcutils_string_array_index(&rmw_names_and_types.names, C.CString(topic_name))
+	if i == -1 {
+		return "", nil
+	}
+	var data *C.char = C.gowrapper_get_rcutils_string_array_index(rmw_names_and_types.types, i)
+	return C.GoString(data), nil
+}
+
+func TopicGetTopicNamesAndTypes(rclContext RclContext, rcl_node *C.rcl_node_t) (*C.rmw_names_and_types_t, RCLError) {
+	var rmw_node *C.rmw_node_t = C.rcl_node_get_rmw_handle(rcl_node)
+
+	rmw_names_and_types := (*C.rmw_names_and_types_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rmw_names_and_types_t{}))))
+	*rmw_names_and_types = C.rmw_get_zero_initialized_names_and_types() // TODO: Array mnemory handling here
+
+	var rc C.rcl_ret_t = (C.rcl_ret_t)(C.rmw_get_topic_names_and_types(rmw_node, rclContext.rcl_allocator, false, rmw_names_and_types)) // rmw_ret_t is aliased to rcl_ret_t
+	if rc != 0 {
+		return rmw_names_and_types, ErrorsCast(rc)
+	}
+
+	return rmw_names_and_types, nil
+}
+
+func WaitSetCreate(rclContext RclContext, subscriptions []Subscription, timers []C.rcl_timer_t, timeout time.Duration) (WaitSet, RCLError) {
+	waitSet := WaitSet{}
+	waitSet.Timeout = timeout
+	var number_of_subscriptions C.ulong = 0
+	if subscriptions != nil {
+		number_of_subscriptions = (C.ulong)(len(subscriptions))
+		waitSet.Subscriptions = subscriptions
+	}
 	var number_of_guard_conditions C.ulong = 0
-	//var number_of_timers C.ulong = 0
+	var number_of_timers C.ulong = 0
+	if timers != nil {
+		number_of_timers = (C.ulong)(len(timers))
+		waitSet.Timers = timers
+	}
 	var number_of_clients C.ulong = 0
 	var number_of_services C.ulong = 0
 	var number_of_events C.ulong = 0
 
 	var rcl_wait_set C.rcl_wait_set_t = C.rcl_get_zero_initialized_wait_set()
-	var rc C.rcl_ret_t = C.rcl_wait_set_init(&rcl_wait_set, (C.ulong)(len(subscriptions)), (C.ulong)(number_of_guard_conditions), (C.ulong)(len(timers)), (C.ulong)(number_of_clients), (C.ulong)(number_of_services), (C.ulong)(number_of_events), rclContext.rcl_context, *rclContext.rcl_allocator)
+	waitSet.Rcl_wait_set_t = &rcl_wait_set
+	var rc C.rcl_ret_t = C.rcl_wait_set_init(waitSet.Rcl_wait_set_t, number_of_subscriptions, number_of_guard_conditions, number_of_timers, number_of_clients, number_of_services, number_of_events, rclContext.rcl_context, *rclContext.rcl_allocator)
 	if rc != C.RCL_RET_OK {
-		return rcl_wait_set, ErrorsCast(rc)
+		return waitSet, ErrorsCast(rc)
 	}
 
-	return rcl_wait_set, nil
+	return waitSet, nil
 }
 
 /**
@@ -251,55 +381,77 @@ Using wait set manually to be able to better control the parameters to callback 
 rclc subscriptions do not pass the rcl_subscription_t to the callback,
 making it impossible to dynamically dispatch messages to the corresponding callback handlers
 */
-func WaitSetRun(rcl_wait_set C.rcl_wait_set_t, rcl_subscription C.rcl_subscription_t, ros2_msg_placeholder ros2types.ROS2Msg) RCLError {
+func WaitSetRun(waitSet WaitSet) RCLError {
 	for {
-		if !C.rcl_wait_set_is_valid(&rcl_wait_set) {
+		if !C.rcl_wait_set_is_valid(waitSet.Rcl_wait_set_t) {
 			//#define RCL_RET_WAIT_SET_INVALID 900
-			return ErrorsCastC(900, fmt.Sprintf("rcl_wait_set_is_valid() failed for wait_set='%v'", rcl_wait_set))
+			return ErrorsCastC(900, fmt.Sprintf("rcl_wait_set_is_valid() failed for wait_set='%v'", waitSet))
 		}
-		var rc C.rcl_ret_t = C.rcl_wait_set_clear(&rcl_wait_set)
+		var rc C.rcl_ret_t = C.rcl_wait_set_clear(waitSet.Rcl_wait_set_t)
 		if rc != C.RCL_RET_OK {
-			return ErrorsCastC(rc, fmt.Sprintf("rcl_wait_set_clear() failed for wait_set='%v'", rcl_wait_set))
+			return ErrorsCastC(rc, fmt.Sprintf("rcl_wait_set_clear() failed for wait_set='%v'", waitSet))
 		}
-		rc = C.rcl_wait_set_add_subscription(&rcl_wait_set, &rcl_subscription, nil)
-		if rc != C.RCL_RET_OK {
-			return ErrorsCastC(rc, fmt.Sprintf("rcl_wait_set_add_subscription() failed for wait_set='%v'", rcl_wait_set))
+		for i := 0; i < len(waitSet.Subscriptions); i++ {
+			rc = C.rcl_wait_set_add_subscription(waitSet.Rcl_wait_set_t, waitSet.Subscriptions[i].Rcl_subscription_t, nil)
+			if rc != C.RCL_RET_OK {
+				return ErrorsCastC(rc, fmt.Sprintf("rcl_wait_set_add_subscription() failed for wait_set='%v'", waitSet))
+			}
 		}
-		var wait_duration time.Duration = 1000 * time.Millisecond
-		rc = C.rcl_wait(&rcl_wait_set, (C.long)(wait_duration))
+
+		rc = C.rcl_wait(waitSet.Rcl_wait_set_t, (C.long)(waitSet.Timeout))
 		if rc == C.RCL_RET_TIMEOUT {
 			continue
 		}
 		var i C.ulong
-		for i = 0; i < rcl_wait_set.size_of_timers; i++ {
+		// Check timers. Guard against internal state representation mismatch. Due to some software bug the lists of timers could easily get out of sync. AND lead to very very difficult to detect bugs.
+		if (int)(waitSet.Rcl_wait_set_t.size_of_timers) != len(waitSet.Timers) {
+			panic(fmt.Sprintf(
+				"Wait set timers count mismatch! rcl_wait_set.size_of_timers='%d' != len(waitSet.Timers)='%d'",
+				(int)(waitSet.Rcl_wait_set_t.size_of_subscriptions),
+				len(waitSet.Subscriptions)))
+		}
+		for i = 0; i < waitSet.Rcl_wait_set_t.size_of_timers; i++ {
 			var is_timer_ready_to_call C.bool = false
-			if rcl_timer := C.gowrapper_get_timer(rcl_wait_set.timers, i); rcl_timer != nil {
+			if rcl_timer := C.gowrapper_get_timer(waitSet.Rcl_wait_set_t.timers, i); rcl_timer != nil {
 				rc = C.rcl_timer_is_ready(rcl_timer, &is_timer_ready_to_call)
 				if rc != C.RCL_RET_OK {
-					return ErrorsCastC(rc, fmt.Sprintf("rcl_timer_is_ready() failed for wait_set='%v'", rcl_wait_set))
+					return ErrorsCastC(rc, fmt.Sprintf("rcl_timer_is_ready() failed for wait_set='%v'", waitSet))
 				}
 				if is_timer_ready_to_call {
 					timer_callback(*rcl_timer)
 				}
 			}
 		}
-		for i = 0; i < rcl_wait_set.size_of_subscriptions; i++ {
-			if rcl_subscription := C.gowrapper_get_subscription(rcl_wait_set.subscriptions, i); rcl_subscription != nil {
-				ros2_msg_receive_buffer := ros2_msg_placeholder.PrepareMemory()
-				rc = C.rcl_take(rcl_subscription, ros2_msg_receive_buffer, nil, nil)
-				if rc != C.RCL_RET_OK {
-					return ErrorsCastC(rc, fmt.Sprintf("rcl_take() failed for wait_set='%v'", rcl_wait_set))
-				} else {
-					subscription_callback(*rcl_subscription, ros2_msg_receive_buffer)
-				}
-				ros2_msg_placeholder.ReleaseMemory(ros2_msg_receive_buffer)
+		// Check subscriptions. Guard against internal state representation mismatch. Due to some software bug the lists of subscriptions could easily get out of sync. AND lead to very very difficult to detect bugs.
+		if (int)(waitSet.Rcl_wait_set_t.size_of_subscriptions) != len(waitSet.Subscriptions) {
+			panic(fmt.Sprintf(
+				"Wait set subscriptions count mismatch! rcl_wait_set.size_of_subscriptions='%d' != len(waitSet.Subscriptions)='%d'",
+				(int)(waitSet.Rcl_wait_set_t.size_of_subscriptions),
+				len(waitSet.Subscriptions)))
+		}
+		for i = 0; i < waitSet.Rcl_wait_set_t.size_of_subscriptions; i++ {
+			subscription := waitSet.Subscriptions[i]
+
+			rmw_message_info := (*C.rmw_message_info_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rmw_message_info_t{}))))
+			*rmw_message_info = C.rmw_get_zero_initialized_message_info()
+			defer C.free(unsafe.Pointer(rmw_message_info))
+
+			ros2_msg_receive_buffer := subscription.Ros2MsgType.PrepareMemory()
+			defer subscription.Ros2MsgType.ReleaseMemory(ros2_msg_receive_buffer)
+
+			rc = C.rcl_take(subscription.Rcl_subscription_t, ros2_msg_receive_buffer, rmw_message_info, nil)
+			if rc != C.RCL_RET_OK {
+				return ErrorsCastC(rc, fmt.Sprintf("rcl_take() failed for wait_set='%v'", waitSet))
+			} else {
+				subscription_callback(subscription, ros2_msg_receive_buffer, rmw_message_info)
 			}
+
 		}
 	}
 }
 
-func subscription_callback(rcl_subscription C.rcl_subscription_t, ros2_msg_receive_buffer unsafe.Pointer) {
-	eee := (*ros2types.StdMsgs_ColorRGBA)(ros2_msg_receive_buffer)
+func subscription_callback(subscription Subscription, ros2_msg_receive_buffer unsafe.Pointer, rmw_message_info *C.rmw_message_info_t) {
+	eee := (*std_msgs.ColorRGBA)(ros2_msg_receive_buffer)
 	fmt.Printf("ROS2 Message receive buffer: '%+v'", ros2_msg_receive_buffer)
 	fmt.Printf("ROS2 Message receive buffer: '%+v'", eee)
 }

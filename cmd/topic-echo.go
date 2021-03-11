@@ -17,9 +17,12 @@ package cmd
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/tiiuae/rclgo/pkg/ros2"
+	"github.com/tiiuae/rclgo/pkg/ros2/std_msgs"
 )
 
 // echoCmd represents the echo command
@@ -40,13 +43,34 @@ to quickly create a Cobra application.`,
 			panic(err)
 		}
 
-		rcl_node, err := ros2.NodeCreate(rclContext, "node_name", "namespace")
+		rcl_node, err := ros2.NodeCreate(rclContext, viper.GetString("node-name"), viper.GetString("namespace"))
 		if err != nil {
 			fmt.Printf("Error '%+v' ros2.NodeCreate.\n", err)
 			panic(err)
 		}
 
-		fmt.Printf("%v%v", rclContext, rcl_node)
+		subscription, err := ros2.SubscriptionCreate(rclContext, rcl_node, viper.GetString("topic-name"), &std_msgs.ColorRGBA{}, func(sub ros2.Subscription, msg ros2.ROS2Msg) {
+			fmt.Printf("Cobra received message!\n")
+		})
+		if err != nil {
+			fmt.Printf("Error '%+v' SubscriptionCreate.\n", err)
+			panic(err)
+		}
+
+		subscriptions := []ros2.Subscription{subscription}
+		waitSet, err := ros2.WaitSetCreate(rclContext, subscriptions, nil, 1000*time.Millisecond)
+		if err != nil {
+			fmt.Printf("Error '%+v' WaitSetCreate.\n", err)
+			panic(err)
+		}
+
+		err = ros2.WaitSetRun(waitSet)
+		if err != nil {
+			fmt.Printf("Error '%+v' WaitSetRun.\n", err)
+			panic(err)
+		}
+
+		fmt.Printf("%v%v\n", rclContext, rcl_node)
 
 	},
 }

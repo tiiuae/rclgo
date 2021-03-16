@@ -19,6 +19,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // topicCmd represents the topic command
@@ -38,14 +39,8 @@ to quickly create a Cobra application.`,
 
 func init() {
 	rootCmd.AddCommand(topicCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	topicCmd.PersistentFlags().String("topic-name", "t", "Topic name")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// topicCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	topicCmd.PersistentFlags().StringP("topic-name", "t", "", "Topic name")
+	topicCmd.PersistentFlags().StringP("msg-type", "m", "", "ROS2 message type")
+	viper.BindPFlags(topicCmd.PersistentFlags())
+	viper.BindPFlags(topicCmd.LocalFlags())
 }

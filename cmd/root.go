@@ -17,15 +17,15 @@ package cmd
 
 import (
 	"fmt"
+	"math/rand"
 	"os"
-
-	"github.com/spf13/cobra"
+	"time"
 
 	homedir "github.com/mitchellh/go-homedir"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/tiiuae/rclgo/pkg/datagenerator"
 )
-
-var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -49,26 +49,22 @@ func Execute() {
 }
 
 func init() {
+	rand.Seed(time.Now().UnixNano())
 	cobra.OnInitialize(initConfig)
 
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.rclgo.yaml)")
-	rootCmd.PersistentFlags().String("node-name", "n", "Node name")
-	rootCmd.PersistentFlags().String("namespace", "ns", "Namespace name")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
+	rootCmd.PersistentFlags().StringP("config-file", "c", "", "config file (default is $HOME/.rclgo.yaml)")
+	rootCmd.PersistentFlags().StringP("node-name", "n", datagenerator.NodeName(), "Node name")
+	rootCmd.PersistentFlags().StringP("namespace", "s", "/", "Namespace name")
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	viper.BindPFlags(rootCmd.PersistentFlags())
+	viper.BindPFlags(rootCmd.LocalFlags())
 }
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
-	if cfgFile != "" {
+	if viper.GetString("config-file") != "" {
 		// Use config file from the flag.
-		viper.SetConfigFile(cfgFile)
+		viper.SetConfigFile(viper.GetString("config-file"))
 	} else {
 		// Find home directory.
 		home, err := homedir.Dir()

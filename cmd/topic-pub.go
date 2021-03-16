@@ -17,13 +17,18 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"github.com/tiiuae/rclgo/pkg/ros2"
+	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 )
 
 // pubCmd represents the pub command
 var pubCmd = &cobra.Command{
-	Use:   "pub",
+	Use:   "pub <topic-name> <msg-type> <payload>",
 	Short: "Publish messages into the topic",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -32,20 +37,91 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("pub called")
+		fmt.Printf("%v\n", viper.AllSettings())
+
+		rclContext, err := ros2.RclInit()
+		if err != nil {
+			fmt.Printf("Error '%+v' ros2.RclInit.\n", err)
+			panic(err)
+		}
+
+		rcl_node, err := ros2.NodeCreate(rclContext, viper.GetString("node-name"), viper.GetString("namespace"))
+		if err != nil {
+			fmt.Printf("Error '%+v' ros2.NodeCreate.\n", err)
+			panic(err)
+		}
+
+		rcl_clock, err := ros2.ClockCreate(rclContext, ros2.RCL_SYSTEM_TIME)
+		if err != nil {
+			fmt.Printf("Error '%+v' ClockCreate().\n", err)
+			panic(err)
+		}
+		rclContext.Rcl_clock_t = rcl_clock
+
+		ros2msg := ros2_type_dispatcher.TranslateROS2MsgTypeNameToType(viper.GetString("msg-type"))
+		ros2msg, err_yaml := ros2_type_dispatcher.TranslateMsgPayloadYAMLToROS2Msg(strings.ReplaceAll(viper.GetString("payload"), "\\n", "\n"), ros2msg)
+		if err_yaml != nil {
+			panic(fmt.Sprintf("Error '%v' unmarshalling YAML '%s' to ROS2 message type '%s'", err_yaml, viper.GetString("payload"), viper.GetString("msg-type")))
+		}
+
+		publisher, err := ros2.PublisherCreate(rclContext, rcl_node, viper.GetString("topic-name"), ros2msg)
+		if err != nil {
+			fmt.Printf("Error '%+v' SubscriptionCreate.\n", err)
+			panic(err)
+		}
+
+		timer, err := ros2.TimerCreate(rclContext, 0, func(timer *ros2.Timer) {
+			fmt.Printf("%+v\n", ros2msg)
+			ros2.PublisherPublish(rclContext, publisher, ros2msg)
+		})
+		if err != nil {
+			fmt.Printf("Error '%+v' TimerCreate.\n", err)
+			panic(err)
+		}
+
+		timers := []ros2.Timer{*timer}
+		waitSet, err := ros2.WaitSetCreate(rclContext, nil, timers, 1000*time.Millisecond)
+		if err != nil {
+			fmt.Printf("Error '%+v' WaitSetCreate.\n", err)
+			panic(err)
+		}
+
+		err = ros2.WaitSetRun(waitSet)
+		if err != nil {
+			fmt.Printf("Error '%+v' WaitSetRun.\n", err)
+			panic(err)
+		}
+	},
+	Args: func(cmd *cobra.Command, args []string) error {
+		if !viper.IsSet("topic-name") {
+			if len(args) > 0 {
+				viper.Set("topic-name", args[0])
+			} else {
+				return fmt.Errorf("expecting rcl topic name as the first argument")
+			}
+		}
+		if !viper.IsSet("msg-type") {
+			if len(args) > 1 {
+				viper.Set("msg-type", args[1])
+			} else {
+				return fmt.Errorf("expecting ROS2 message type as the second argument")
+			}
+		}
+		if !viper.IsSet("payload") {
+			if len(args) > 2 {
+				viper.Set("payload", args[2])
+			} else {
+				return fmt.Errorf("expecting ROS2 message payload as the third argument")
+			}
+		}
+
+		return nil
 	},
 }
 
 func init() {
 	topicCmd.AddCommand(pubCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// pubCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// pubCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// Defined flags
+	viper.BindPFlags(pubCmd.PersistentFlags())
+	viper.BindPFlags(pubCmd.LocalFlags())
 }

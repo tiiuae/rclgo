@@ -44,7 +44,7 @@ type RCL_RET_ERROR struct {
 }
 
 func (e *RCL_RET_ERROR) Error() string {
-	return errStr("Unspecified error return code.", e.ctx)
+	return errStr("RCL_RET_ERROR.", e.ctx)
 }
 func (e *RCL_RET_ERROR) rcl_ret() int {
 	return e.rcl_ret_t
@@ -59,7 +59,7 @@ type RCL_RET_ALREADY_INIT struct {
 }
 
 func (e *RCL_RET_ALREADY_INIT) Error() string {
-	return errStr("rcl_init() already called return code.", e.ctx)
+	return errStr("RCL_RET_ALREADY_INIT.", e.ctx)
 }
 func (e *RCL_RET_ALREADY_INIT) rcl_ret() int {
 	return e.rcl_ret_t
@@ -74,7 +74,7 @@ type RCL_RET_INVALID_ARGUMENT struct {
 }
 
 func (e *RCL_RET_INVALID_ARGUMENT) Error() string {
-	return errStr("Invalid argument return code.", e.ctx)
+	return errStr("RCL_RET_INVALID_ARGUMENT.", e.ctx)
 }
 func (e *RCL_RET_INVALID_ARGUMENT) rcl_ret() int {
 	return e.rcl_ret_t
@@ -89,12 +89,27 @@ type RCL_RET_TOPIC_NAME_INVALID struct {
 }
 
 func (e *RCL_RET_TOPIC_NAME_INVALID) Error() string {
-	return errStr("Topic name does not pass validation.", e.ctx)
+	return errStr("RCL_RET_TOPIC_NAME_INVALID.", e.ctx)
 }
 func (e *RCL_RET_TOPIC_NAME_INVALID) rcl_ret() int {
 	return e.rcl_ret_t
 }
 func (e *RCL_RET_TOPIC_NAME_INVALID) context() string {
+	return e.ctx
+}
+
+type RCL_RET_NODE_INVALID_NAME struct {
+	rcl_ret_t int
+	ctx       string
+}
+
+func (e *RCL_RET_NODE_INVALID_NAME) Error() string {
+	return errStr("RCL_RET_NODE_INVALID_NAME.", e.ctx)
+}
+func (e *RCL_RET_NODE_INVALID_NAME) rcl_ret() int {
+	return e.rcl_ret_t
+}
+func (e *RCL_RET_NODE_INVALID_NAME) context() string {
 	return e.ctx
 }
 
@@ -123,6 +138,8 @@ func ErrorsCastC(rcl_ret_t C.rcl_ret_t, context string) RCLError {
 		return &RCL_RET_ALREADY_INIT{(int)(rcl_ret_t), context}
 	case C.RCL_RET_TOPIC_NAME_INVALID:
 		return &RCL_RET_TOPIC_NAME_INVALID{(int)(rcl_ret_t), context}
+	case C.RCL_RET_NODE_INVALID_NAME:
+		return &RCL_RET_NODE_INVALID_NAME{(int)(rcl_ret_t), context}
 	default:
 		return &RCL_RET_GOLANG_UNKNOWN_RET_TYPE{(int)(rcl_ret_t), ""}
 	}

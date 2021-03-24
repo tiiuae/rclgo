@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import cmd "github.com/tiiuae/rclgo/cmd/rclgo"
+import cmd "github.com/tiiuae/rclgo/cmd/rclgo-gen/cmd"
 
 func main() {
 	cmd.Execute()

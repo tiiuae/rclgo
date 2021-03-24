@@ -5,6 +5,7 @@ package px4_msgs
 #cgo CFLAGS: -I/opt/ros/foxy/include
 
 #include <rosidl_runtime_c/message_type_support_struct.h>
+
 #include <px4_msgs/msg/sensor_combined.h>
 */
 import "C"

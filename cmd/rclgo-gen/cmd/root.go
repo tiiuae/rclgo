@@ -1,5 +1,5 @@
 /*
-Copyright © 2021 Olli-Antti Kivilahti
+Copyright © 2021 Solita Oy <olli-antti.kivilahti@solita.fi>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,13 +24,12 @@ import (
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/tiiuae/rclgo/pkg/datagenerator"
 )
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "rclgo",
-	Short: "ROS2 client library in Golang",
+	Use:   "rclgo-gen",
+	Short: "ROS2 client library in Golang - ROS2 Message generator",
 	Long: `A longer description that spans multiple lines and likely contains
 examples and usage of using your application. For example:
 
@@ -53,9 +52,6 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.PersistentFlags().StringP("config-file", "c", "", "config file (default is $HOME/.rclgo.yaml)")
-	rootCmd.PersistentFlags().StringP("node-name", "n", datagenerator.NodeName(), "Node name")
-	rootCmd.PersistentFlags().StringP("namespace", "s", "/", "Namespace name")
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	viper.BindPFlags(rootCmd.PersistentFlags())
 	viper.BindPFlags(rootCmd.LocalFlags())
 }

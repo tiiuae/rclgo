@@ -19,3 +19,6 @@
 
 # compiled binary
 rclgo
+
+#go tool cgo output
+_obj

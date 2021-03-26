@@ -25,6 +25,8 @@ github.com/alecthomas/units v0.0.0-20190924025748-f65c72e2690d h1:UQZhZ2O0vMHr2c
 github.com/alecthomas/units v0.0.0-20190924025748-f65c72e2690d/go.mod h1:rBZYJk541a8SKzHPHnH3zbiI+7dagKZ0cgpgrD7Fyho=
 github.com/aler9/goroslib v0.0.0-20210313165854-c9ce47c3b271 h1:wOgwl68y8iMbFgwtvOPEY4gEgD5ZF6cA+RygsG0P1Ko=
 github.com/aler9/goroslib v0.0.0-20210313165854-c9ce47c3b271/go.mod h1:TplrQUQeDX/Hh3QCBZKnyoy93TZR86gMsqKlXFNRYVU=
+github.com/aler9/goroslib v0.0.0-20210323205732-978eeb6e825e h1:wJn0qzVf3Kj0crRMTFqAx1LsbE2IhS0E+3pCd/eBAVc=
+github.com/aler9/goroslib v0.0.0-20210323205732-978eeb6e825e/go.mod h1:TplrQUQeDX/Hh3QCBZKnyoy93TZR86gMsqKlXFNRYVU=
 github.com/anmitsu/go-shlex v0.0.0-20161002113705-648efa622239/go.mod h1:2FmKhYUyUczH0OGQWaF5ceTx0UBShxjsH6f8oGKYe2c=
 github.com/armon/circbuf v0.0.0-20150827004946-bbbad097214e/go.mod h1:3U/XgcO3hCbHZ8TKRvWD2dDTCfh9M9ya+I9JpbB7O8o=
 github.com/armon/go-metrics v0.0.0-20180917152333-f0300d1749da/go.mod h1:Q73ZrmVTwzkszR9V5SSuryQ31EELlFMUz1kKyl939pY=

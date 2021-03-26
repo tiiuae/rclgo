@@ -8,13 +8,11 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"text/template"
 )
 
-func GenerateMsgTypeNameAliasDispatcher(mds *list.List, destPathPkgRoot string) error {
-	mdsArray := ROS2MessageListToArray(mds)
+func Generate_rosidl_runtime_c_sequence_handlers(destPathPkgRoot string) error {
 
-	destFilePath := filepath.Join(destPathPkgRoot, "..", "ros2_type_dispatcher", "ros2_msgs_static_imports.go")
+	destFilePath := filepath.Join(destPathPkgRoot, "..", "rosidl_runtime_c", "Primitives.go")
 
 	_, err := os.Stat(destFilePath)
 	if errors.Is(err, os.ErrNotExist) {
@@ -29,22 +27,13 @@ func GenerateMsgTypeNameAliasDispatcher(mds *list.List, destPathPkgRoot string) 
 		return err
 	}
 
-	deduplicatedPackagesMap := make(map[string]int)
-	for _, v := range mdsArray {
-		deduplicatedPackagesMap[v.RosPackage] += 1
-	}
-
-	ros2MsgsStaticImportsDispatcherTemplate.Funcs(template.FuncMap{
-		"lc": strings.ToLower,
-	})
-	return ros2MsgsStaticImportsDispatcherTemplate.Execute(destFile, map[string]interface{}{
-		"Mds":             mdsArray,
-		"Ros2PackagesMap": deduplicatedPackagesMap,
+	return ros2rosidl_runtime_c_handlers.Execute(destFile, map[string]interface{}{
+		"PMap": &ROSIDL_RUNTIME_C_PRIMITIVE_TYPES_MAPPING,
 	})
 }
 
 func GenerateGolangTypeFromROS2MessagePath(sourcePath string, destPathPkgRoot string) (*ROS2Message, error) {
-	md := &ROS2Message{}
+	md := ROS2MessageNew("", "")
 
 	err := ParseMessageMetadataFromPath(sourcePath, md)
 	if err != nil {
@@ -77,17 +66,20 @@ func ParseMessageMetadataFromPath(p string, md *ROS2Message) error {
 	var dirs []string
 	var ros2msgName string
 	var ros2pkgName string
+	var ros2dataStructureName string
 
 	dirs = strings.Split(p, "/")
 	ros2msgName = strings.TrimSuffix(filepath.Base(p), ".msg")
 
 	if len(dirs) >= 2 {
 		ros2pkgName = dirs[len(dirs)-3]
+		ros2dataStructureName = dirs[len(dirs)-2]
 	} else {
 		return fmt.Errorf("Path '%s' cannot be parsed for ROS2 package name!", p)
 	}
 
 	md.RosMsgName = ros2msgName
+	md.DataStructureType = ros2dataStructureName
 	md.RosPackage = ros2pkgName
 	md.Url = p
 

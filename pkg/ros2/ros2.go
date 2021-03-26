@@ -77,16 +77,9 @@ import (
 	"strings"
 	"time"
 	"unsafe"
-)
 
-type ROS2Msg interface {
-	TypeSupport() unsafe.Pointer //*C.rosidl_message_type_support_t
-	PrepareMemory() unsafe.Pointer
-	ReleaseMemory(unsafe.Pointer)
-	AsCStruct() unsafe.Pointer
-	AsGoStruct(unsafe.Pointer)
-	Clone() ROS2Msg
-}
+	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+)
 
 type RclContext struct {
 	Rcl_allocator_t *C.rcutils_allocator_t
@@ -96,7 +89,7 @@ type RclContext struct {
 
 type Subscription struct {
 	Topic_name         string
-	Ros2MsgType        ROS2Msg
+	Ros2MsgType        ros2types.ROS2Msg
 	Rcl_subscription_t *C.rcl_subscription_t
 	Callback           func(*Subscription, unsafe.Pointer, *RmwMessageInfo)
 }
@@ -178,7 +171,7 @@ func NodeCreate(rclContext RclContext, node_name string, namespace string) (*C.r
 	return rcl_node, nil
 }
 
-func PublisherCreate(rclContext RclContext, rcl_node *C.rcl_node_t, topic_name string, ros2msg ROS2Msg) (*C.rcl_publisher_t, RCLError) {
+func PublisherCreate(rclContext RclContext, rcl_node *C.rcl_node_t, topic_name string, ros2msg ros2types.ROS2Msg) (*C.rcl_publisher_t, RCLError) {
 	rcl_publisher := (*C.rcl_publisher_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_publisher_t{}))))
 	*rcl_publisher = C.rcl_get_zero_initialized_publisher()
 
@@ -203,7 +196,7 @@ func PublisherCreate(rclContext RclContext, rcl_node *C.rcl_node_t, topic_name s
 	return rcl_publisher, nil
 }
 
-func PublisherPublish(rclContext RclContext, rcl_publisher *C.rcl_publisher_t, ros2msg ROS2Msg) (*C.rcl_publisher_t, RCLError) {
+func PublisherPublish(rclContext RclContext, rcl_publisher *C.rcl_publisher_t, ros2msg ros2types.ROS2Msg) (*C.rcl_publisher_t, RCLError) {
 	var rc C.rcl_ret_t
 
 	ptr := ros2msg.AsCStruct()
@@ -282,7 +275,7 @@ func TimerReset(timer *Timer) RCLError {
 	return nil
 }
 
-func SubscriptionCreate(rclContext RclContext, rcl_node *C.rcl_node_t, topic_name string, ros2msg ROS2Msg, subscriptionCallback func(*Subscription, unsafe.Pointer, *RmwMessageInfo)) (Subscription, RCLError) {
+func SubscriptionCreate(rclContext RclContext, rcl_node *C.rcl_node_t, topic_name string, ros2msg ros2types.ROS2Msg, subscriptionCallback func(*Subscription, unsafe.Pointer, *RmwMessageInfo)) (Subscription, RCLError) {
 	var subscription Subscription
 	subscription.Rcl_subscription_t = (*C.rcl_subscription_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_subscription_t{}))))
 	*subscription.Rcl_subscription_t = C.rcl_get_zero_initialized_subscription()

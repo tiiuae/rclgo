@@ -35,5 +35,5 @@ func Generate(rootPath string, destPath string) {
 		return nil
 	})
 
-	GenerateMsgTypeNameAliasDispatcher(mds, destPath)
+	Generate_rosidl_runtime_c_sequence_handlers(destPath)
 }

@@ -1,3 +1,7 @@
+/*
+Fixtures here represent some easier data structures to compile and test.
+These are handy when you need to make bigger changes to the way the templates are generated and you can get some confirmation that things work.
+*/
 package test
 
 /*

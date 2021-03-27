@@ -66,7 +66,7 @@ var ROSIDL_RUNTIME_C_PRIMITIVE_TYPES_MAPPING = map[string]rosidl_runtime_c_type_
 	"float64":  {RosType: "float64", GoType: "float64", CStructName: "double", CType: "double"},
 	"bool":     {RosType: "bool", GoType: "bool", CStructName: "boolean", CType: "bool"},
 	"byte":     {RosType: "byte", GoType: "byte", CStructName: "octet", CType: "uint8_t"},
-	"char":     {RosType: "char", GoType: "byte", CStructName: "char", CType: "char"},
+	"char":     {RosType: "char", GoType: "byte", CStructName: "char", CType: "uchar", SkipAutogen: true}, // Autogen sequence/array handlers have C-type schar, but char everywhere else is uchar?
 	"int8":     {RosType: "int8", GoType: "int8", CStructName: "int8", CType: "int8_t"},
 	"int16":    {RosType: "int16", GoType: "int16", CStructName: "int16", CType: "int16_t"},
 	"int32":    {RosType: "int32", GoType: "int32", CStructName: "int32", CType: "int32_t"},

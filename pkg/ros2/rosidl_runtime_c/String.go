@@ -15,6 +15,8 @@ import (
 )
 
 type String string
+type CString = C.rosidl_runtime_c__String
+type CString__Sequence = C.rosidl_runtime_c__String__Sequence
 
 func (t *String) TypeSupport() unsafe.Pointer {
 	fmt.Printf("rosidl_runtime_c.TypeSupport() called. This is never meant to be directly addressed as a stand-alone data object in the ROS2 messaging bus.")
@@ -57,4 +59,36 @@ func (t *String) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
 		sb.WriteByte(byte(*cIdx))
 	}
 	*t = String(sb.String())
+}
+
+func String__Sequence_to_Go(goSlice *[]String, cSlice CString__Sequence) {
+	*goSlice = make([]String, int64(cSlice.size))
+	for i := 0; i < int(cSlice.size); i++ {
+		cIdx := (*C.rosidl_runtime_c__String)(unsafe.Pointer(
+			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rosidl_runtime_c__String * uintptr(i)),
+		))
+		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+	}
+}
+func String__Sequence_to_C(cSlice *CString__Sequence, goSlice []String) {
+	cSlice.data = (*C.rosidl_runtime_c__String)(C.malloc((C.size_t)(C.sizeof_struct_rosidl_runtime_c__String * uintptr(len(goSlice)))))
+	cSlice.capacity = C.size_t(len(goSlice))
+	cSlice.size = cSlice.capacity
+
+	for i, v := range goSlice {
+		cIdx := (*C.rosidl_runtime_c__String)(unsafe.Pointer(
+			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rosidl_runtime_c__String * uintptr(i)),
+		))
+		*cIdx = *(*C.rosidl_runtime_c__String)(v.AsCStruct())
+	}
+}
+func String__Array_to_Go(goSlice []String, cSlice []CString) {
+	for i := 0; i < len(cSlice); i++ {
+		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+	}
+}
+func String__Array_to_C(cSlice []CString, goSlice []String) {
+	for i := 0; i < len(goSlice); i++ {
+		cSlice[i] = *(*C.rosidl_runtime_c__String)(goSlice[i].AsCStruct())
+	}
 }

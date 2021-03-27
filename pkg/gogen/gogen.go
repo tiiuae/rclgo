@@ -20,7 +20,7 @@ func GetGoConvertedROS2MsgPackagesDir() string {
 func Generate(rootPath string, destPath string) {
 	mds := list.New()
 	filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
-		matched, err := regexp.MatchString(`\.msg$`, path)
+		matched, err := regexp.MatchString(`/msg/.+?\.msg$`, path)
 		if err != nil {
 			fmt.Printf("Error when matching path='%s' against regex='%s'", path, `\.msg$`)
 		}

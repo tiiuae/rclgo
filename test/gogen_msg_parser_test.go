@@ -223,10 +223,33 @@ func TestParseROS2Field(t *testing.T) {
 				RosName: "BATTERY_WARNING_CRITICAL",
 			},
 		)
+		testFunc("",
+			"byte BYTE_CONST=50",
+			gogen.ROS2MessageNew("test_msgs", "Constants"),
+			&gogen.ROS2Constant{
+				Value:   "50",
+				RosType: "byte",
+				GoType:  "byte",
+				Comment: "",
+				RosName: "BYTE_CONST",
+			},
+		)
 	})
 
+	/*
+		ROS2 snake-case-camel-case -conversions use different rules than
+		"github.com/stoewer/go-strcase"
+		or
+		"github.com/iancoleman/strcase"
+	*/
 	Convey("Case transformations", t, func() {
 		So(gogen.CamelToSnake("ColorRGBA"), ShouldEqual, "color_rgba")
+		So(gogen.CamelToSnake("MultiDOFJointTrajectoryPoint"), ShouldEqual, "multi_dof_joint_trajectory_point")
+		So(gogen.CamelToSnake("TFMessage"), ShouldEqual, "tf_message")
+		So(gogen.CamelToSnake("WStrings"), ShouldEqual, "w_strings")
+		So(gogen.CamelToSnake("Float32MultiArray"), ShouldEqual, "float32_multi_array")
+		So(gogen.CamelToSnake("PointCloud2"), ShouldEqual, "point_cloud2")
+		So(gogen.CamelToSnake("GoalID"), ShouldEqual, "goal_id")
 	})
 }
 

@@ -8,6 +8,7 @@ import (
 
 	sensor_msgs "github.com/tiiuae/rclgo/pkg/ros2/msgs/sensor_msgs/msg"
 	std_msgs "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
+	test_msgs "github.com/tiiuae/rclgo/pkg/ros2/msgs/test_msgs/msg"
 )
 
 func TestSerDesROS2Messages(t *testing.T) {
@@ -42,5 +43,16 @@ func TestSerDesROS2Messages(t *testing.T) {
 		goObj.AsGoStruct(unsafe.Pointer(Fixture_C_std_msgs__Int64MultiArray()))
 		So(goObj, ShouldResemble, Fixture_Go_std_msgs__Int64MultiArray())
 		So((*_Ctype_struct_std_msgs__msg__Int64MultiArray)(goObj.AsCStruct()), ShouldResemble, Fixture_C_std_msgs__Int64MultiArray())
+	})
+}
+
+func TestSerDesROS2Messages_test_msgs(t *testing.T) {
+	SetDefaultFailureMode(FailureContinues)
+
+	Convey("test_msgs.Arrays", t, func() {
+		goObj := &test_msgs.Arrays{}
+		goObj.AsGoStruct(unsafe.Pointer(Fixture_C_test_msgs__Arrays()))
+		So(goObj, ShouldResemble, Fixture_Go_test_msgs__Arrays())
+		So((*_Ctype_struct_test_msgs__msg__Arrays)(goObj.AsCStruct()), ShouldResemble, Fixture_C_test_msgs__Arrays())
 	})
 }

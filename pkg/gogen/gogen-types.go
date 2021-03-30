@@ -49,6 +49,13 @@ type ROS2Field struct {
 	Comment      string
 }
 
+func (t *ROS2Field) PkgReference() string {
+	if t.PkgName == "" || t.PkgIsLocal {
+		return ""
+	}
+	return t.PkgName + "."
+}
+
 type rosidl_runtime_c_type_mapping struct {
 	RosType     string
 	GoType      string

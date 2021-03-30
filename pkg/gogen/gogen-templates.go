@@ -6,11 +6,13 @@ import (
 )
 
 var templateFuncMap template.FuncMap = template.FuncMap{
-	"lc":                  strings.ToLower,
-	"camelToSnake":        CamelToSnake,
-	"cSerializationCode":  cSerializationCode,
-	"goSerializationCode": goSerializationCode,
-	"ucFirst":             ucFirst,
+	"lc":                            strings.ToLower,
+	"camelToSnake":                  CamelToSnake,
+	"cSerializationCode":            cSerializationCode,
+	"goSerializationCode":           goSerializationCode,
+	"defaultCode":                   DefaultCode,
+	"ucFirst":                       ucFirst,
+	"normalizeMsgDefaultArrayValue": normalizeMsgDefaultArrayValue,
 }
 
 var ros2MsgToGolangTypeTemplate = template.Must(template.New("ros2MsgToGolangTypeTemplate").Funcs(templateFuncMap).Parse(
@@ -40,7 +42,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("{{.RosPackage}}/{{.RosMsgName}}", &{{.RosMsgName}}{}){{"\n\t"}}
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("{{.RosPackage}}/{{.RosMsgName}}", &{{.RosMsgName}}{})
 }
 
 {{- if $Md.Constants }}
@@ -53,14 +55,25 @@ const (
 
 type {{.RosMsgName}} struct {
 	{{- range $k, $v := .Fields }}
-	{{$v.GoName }} {{$v.TypeArray}}` +
-		`{{if $v.PkgIsLocal -}}{{$v.GoType}}` +
-		`{{- else if $v.PkgName -}}{{$v.PkgName}}.{{$v.GoType}}` +
-		`{{- else -}}{{$v.GoType}}` +
-		`{{- end}}` +
+	{{$v.GoName }} {{$v.TypeArray}}{{$v.PkgReference}}{{$v.GoType}}` +
 		"{{\"\"}} `yaml:\"{{$v.RosName}}\"`" + `{{if .Comment -}} // {{.Comment}}{{- end}}
 	{{- end }}
 }
+
+func New{{.RosMsgName}}() *{{.RosMsgName}} {
+	self := {{.RosMsgName}}{}
+	self.SetDefaults(nil)
+	return &self
+}
+
+func (t *{{.RosMsgName}}) SetDefaults(d interface{}) ros2types.ROS2Msg {
+	{{""}}
+	{{- range $k, $v := .Fields -}}
+	{{defaultCode $v}}
+	{{- end -}}
+	{{""}}
+	return t
+{{"}"}}
 
 func (t *{{.RosMsgName}}) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__{{.RosPackage}}__msg__{{.RosMsgName}}())
@@ -95,6 +108,9 @@ type C{{.RosMsgName}} = C.{{.RosPackage}}__msg__{{.RosMsgName}}
 type C{{.RosMsgName}}__Sequence = C.{{.RosPackage}}__msg__{{.RosMsgName}}__Sequence
 
 func {{.RosMsgName}}__Sequence_to_Go(goSlice *[]{{.RosMsgName}}, cSlice C{{.RosMsgName}}__Sequence) {
+	if cSlice.size == 0 {
+		return
+	}
 	*goSlice = make([]{{.RosMsgName}}, int64(cSlice.size))
 	for i := 0; i < int(cSlice.size); i++ {
 		cIdx := (*C.{{.RosPackage}}__msg__{{.RosMsgName}}__Sequence)(unsafe.Pointer(
@@ -105,6 +121,9 @@ func {{.RosMsgName}}__Sequence_to_Go(goSlice *[]{{.RosMsgName}}, cSlice C{{.RosM
 	}
 }
 func {{.RosMsgName}}__Sequence_to_C(cSlice *C{{.RosMsgName}}__Sequence, goSlice []{{.RosMsgName}}) {
+	if len(goSlice) == 0 {
+		return
+	}
 	cSlice.data = (*C.{{.RosPackage}}__msg__{{.RosMsgName}})(C.malloc((C.size_t)(C.sizeof_struct_{{.RosPackage}}__msg__{{.RosMsgName}} * uintptr(len(goSlice)))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
@@ -154,6 +173,9 @@ type C{{.RosType | ucFirst}} = C.{{.CType}}
 type C{{.RosType | ucFirst}}__Sequence = C.rosidl_runtime_c__{{.CStructName}}__Sequence
 
 func {{.RosType | ucFirst}}__Sequence_to_Go(goSlice *[]{{.GoType}}, cSlice C{{.RosType | ucFirst}}__Sequence) {
+	if cSlice.size == 0 {
+		return
+	}
 	*goSlice = make([]{{.GoType}}, int64(cSlice.size))
 	for i := 0; i < int(cSlice.size); i++ {
 		cIdx := (*C.{{.CType}})(unsafe.Pointer(
@@ -163,6 +185,9 @@ func {{.RosType | ucFirst}}__Sequence_to_Go(goSlice *[]{{.GoType}}, cSlice C{{.R
 	}
 }
 func {{.RosType | ucFirst}}__Sequence_to_C(cSlice *C{{.RosType | ucFirst}}__Sequence, goSlice []{{.GoType}}) {
+	if len(goSlice) == 0 {
+		return
+	}
 	cSlice.data = (*C.{{.CType}})(C.malloc((C.size_t)(C.sizeof_{{.CType}} * uintptr(len(goSlice)))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity

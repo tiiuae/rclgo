@@ -11,4 +11,5 @@ type ROS2Msg interface {
 	AsCStruct() unsafe.Pointer
 	AsGoStruct(unsafe.Pointer)
 	Clone() ROS2Msg
+	SetDefaults(interface{}) ROS2Msg // func parameter should always be nil
 }

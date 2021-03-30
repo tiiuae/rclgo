@@ -18,6 +18,9 @@ type CChar = C.schar
 type CChar__Sequence = C.rosidl_runtime_c__char__Sequence
 
 func Char__Sequence_to_Go(goSlice *[]byte, cSlice CChar__Sequence) {
+	if cSlice.size == 0 {
+		return
+	}
 	*goSlice = make([]byte, int64(cSlice.size))
 	for i := 0; i < int(cSlice.size); i++ {
 		cIdx := (*C.schar)(unsafe.Pointer(
@@ -27,6 +30,9 @@ func Char__Sequence_to_Go(goSlice *[]byte, cSlice CChar__Sequence) {
 	}
 }
 func Char__Sequence_to_C(cSlice *CChar__Sequence, goSlice []byte) {
+	if len(goSlice) == 0 {
+		return
+	}
 	cSlice.data = (*C.schar)(C.malloc((C.size_t)(C.sizeof_schar * uintptr(len(goSlice)))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity

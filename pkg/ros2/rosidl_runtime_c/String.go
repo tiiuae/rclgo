@@ -1,3 +1,7 @@
+/*
+Due to the way the rcl string representation differs from Go representation, for serdes purposes treat the String as ros2types.ROS2Msg
+so no special string-specific exceptions need to e made to the already complex ROS2 Msg serdes templating.
+*/
 package rosidl_runtime_c
 
 /*
@@ -12,11 +16,31 @@ import (
 	"fmt"
 	"strings"
 	"unsafe"
+
+	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
 )
 
 type String string
-type CString = C.rosidl_runtime_c__String
-type CString__Sequence = C.rosidl_runtime_c__String__Sequence
+
+func NewString() *String {
+	self := String("")
+	self.SetDefaults(nil)
+	return &self
+}
+
+func (t *String) SetDefaults(d interface{}) ros2types.ROS2Msg {
+	switch d.(type) {
+	case string:
+		*t = String(d.(string))
+	case String:
+		*t = d.(String)
+	case nil:
+		// *t is already ""
+	default:
+		panic(fmt.Sprintf("interface conversion: interface {} is %#v, not rosidl_runtime_c.String\n", d))
+	}
+	return t
+}
 
 func (t *String) TypeSupport() unsafe.Pointer {
 	fmt.Printf("rosidl_runtime_c.TypeSupport() called. This is never meant to be directly addressed as a stand-alone data object in the ROS2 messaging bus.")
@@ -60,8 +84,18 @@ func (t *String) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
 	}
 	*t = String(sb.String())
 }
+func (t *String) Clone() ros2types.ROS2Msg {
+	c := *t
+	return &c
+}
+
+type CString = C.rosidl_runtime_c__String
+type CString__Sequence = C.rosidl_runtime_c__String__Sequence
 
 func String__Sequence_to_Go(goSlice *[]String, cSlice CString__Sequence) {
+	if cSlice.size == 0 {
+		return
+	}
 	*goSlice = make([]String, int64(cSlice.size))
 	for i := 0; i < int(cSlice.size); i++ {
 		cIdx := (*C.rosidl_runtime_c__String)(unsafe.Pointer(
@@ -71,6 +105,9 @@ func String__Sequence_to_Go(goSlice *[]String, cSlice CString__Sequence) {
 	}
 }
 func String__Sequence_to_C(cSlice *CString__Sequence, goSlice []String) {
+	if len(goSlice) == 0 {
+		return
+	}
 	cSlice.data = (*C.rosidl_runtime_c__String)(C.malloc((C.size_t)(C.sizeof_struct_rosidl_runtime_c__String * uintptr(len(goSlice)))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity

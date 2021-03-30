@@ -55,4 +55,52 @@ func TestSerDesROS2Messages_test_msgs(t *testing.T) {
 		So(goObj, ShouldResemble, Fixture_Go_test_msgs__Arrays())
 		So((*_Ctype_struct_test_msgs__msg__Arrays)(goObj.AsCStruct()), ShouldResemble, Fixture_C_test_msgs__Arrays())
 	})
+	Convey("test_msgs.BasicTypes", t, func() {
+		goObj := &test_msgs.BasicTypes{}
+		goObj.AsGoStruct(unsafe.Pointer(Fixture_C_test_msgs__BasicTypes()))
+		So(goObj, ShouldResemble, Fixture_Go_test_msgs__BasicTypes())
+		So((*_Ctype_struct_test_msgs__msg__BasicTypes)(goObj.AsCStruct()), ShouldResemble, Fixture_C_test_msgs__BasicTypes())
+	})
+	Convey("test_msgs.Builtins", t, func() {
+		goObj := &test_msgs.Builtins{}
+		goObj.AsGoStruct(unsafe.Pointer(Fixture_C_test_msgs__Builtins()))
+		So(goObj, ShouldResemble, Fixture_Go_test_msgs__Builtins())
+		So((*_Ctype_struct_test_msgs__msg__Builtins)(goObj.AsCStruct()), ShouldResemble, Fixture_C_test_msgs__Builtins())
+	})
+	Convey("test_msgs.Constants", t, func() {
+		goObj := &test_msgs.Constants{}
+		goObj.AsGoStruct(unsafe.Pointer(Fixture_C_test_msgs__Constants()))
+		So(goObj, ShouldResemble, Fixture_Go_test_msgs__Constants())
+		So((*_Ctype_struct_test_msgs__msg__Constants)(goObj.AsCStruct()), ShouldResemble, Fixture_C_test_msgs__Constants())
+	})
+	Convey("test_msgs.Defaults", t, func() {
+		goObj := &test_msgs.Defaults{}
+		goObj.AsGoStruct(unsafe.Pointer(Fixture_C_test_msgs__Defaults()))
+		So(goObj, ShouldResemble, Fixture_Go_test_msgs__Defaults())
+		So((*_Ctype_struct_test_msgs__msg__Defaults)(goObj.AsCStruct()), ShouldResemble, Fixture_C_test_msgs__Defaults())
+	})
+	Convey("test_msgs.Empty", t, func() {
+		goObj := &test_msgs.Empty{}
+		goObj.AsGoStruct(unsafe.Pointer(Fixture_C_test_msgs__Empty()))
+		So(goObj, ShouldResemble, Fixture_Go_test_msgs__Empty())
+		So((*_Ctype_struct_test_msgs__msg__Empty)(goObj.AsCStruct()), ShouldResemble, Fixture_C_test_msgs__Empty())
+	})
+	Convey("test_msgs.Nested", t, func() {
+		goObj := &test_msgs.Nested{}
+		goObj.AsGoStruct(unsafe.Pointer(Fixture_C_test_msgs__Nested()))
+		So(goObj, ShouldResemble, Fixture_Go_test_msgs__Nested())
+		So((*_Ctype_struct_test_msgs__msg__Nested)(goObj.AsCStruct()), ShouldResemble, Fixture_C_test_msgs__Nested())
+	})
+	Convey("test_msgs.UnboundedSequences do not allocate memory for empty slices", t, func() {
+		goObj := &test_msgs.UnboundedSequences{}
+		goObj.AsGoStruct(unsafe.Pointer(Fixture_C_test_msgs__UnboundedSequences_no_allocate_memory_on_empty_slice()))
+		So(goObj, ShouldResemble, Fixture_Go_test_msgs__UnboundedSequences_no_allocate_memory_on_empty_slice())
+		So((*_Ctype_struct_test_msgs__msg__UnboundedSequences)(goObj.AsCStruct()), ShouldResemble, Fixture_C_test_msgs__UnboundedSequences_no_allocate_memory_on_empty_slice())
+	})
+	Convey("test_msgs.UnboundedSequences", t, func() {
+		goObj := &test_msgs.UnboundedSequences{}
+		goObj.AsGoStruct(unsafe.Pointer(Fixture_C_test_msgs__UnboundedSequences()))
+		So(goObj, ShouldResemble, Fixture_Go_test_msgs__UnboundedSequences())
+		So((*_Ctype_struct_test_msgs__msg__UnboundedSequences)(goObj.AsCStruct()), ShouldResemble, Fixture_C_test_msgs__UnboundedSequences())
+	})
 }

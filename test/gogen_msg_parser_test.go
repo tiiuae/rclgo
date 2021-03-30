@@ -251,6 +251,34 @@ func TestParseROS2Field(t *testing.T) {
 		So(gogen.CamelToSnake("PointCloud2"), ShouldEqual, "point_cloud2")
 		So(gogen.CamelToSnake("GoalID"), ShouldEqual, "goal_id")
 	})
+
+	Convey("Defaults string parser", t, func() {
+		So(gogen.SplitMsgDefaultArrayValues(``), ShouldResemble, []string{})
+		So(gogen.SplitMsgDefaultArrayValues(`[]`), ShouldResemble, []string{})
+		So(gogen.SplitMsgDefaultArrayValues(`[1,2,3]`), ShouldResemble, []string{`1`, `2`, `3`})
+		So(gogen.SplitMsgDefaultArrayValues(`["", "this is a", "test msg"]`), ShouldResemble, []string{`""`, ` "this is a"`, ` "test msg"`})
+		So(gogen.SplitMsgDefaultArrayValues(`[1  ,  2 ,   "3"]`), ShouldResemble, []string{`1  `, `  2 `, `   "3"`})
+	})
+
+	Convey("defaultCode() generator", t, func() {
+		So(gogen.DefaultCode(&gogen.ROS2Field{
+			TypeArray:    "[3]",
+			ArraySize:    3,
+			DefaultValue: "",
+			PkgName:      "StringValues",
+			PkgIsLocal:   false,
+			RosType:      "string",
+			CType:        "String",
+			GoType:       "String",
+			RosName:      "string_values",
+			GoName:       "StringValues",
+			CName:        "string_values",
+			Comment:      "",
+		}), ShouldEqual, `t.StringValues[0].SetDefaults(nil)
+	t.StringValues[1].SetDefaults(nil)
+	t.StringValues[2].SetDefaults(nil)
+	`)
+	})
 }
 
 /*

@@ -95,7 +95,7 @@ func SplitMsgDefaultArrayValues(ros2type string, defaultsField string) []string 
 	switch ros2type {
 	// ROS2 string defaults CAN be quoted differently than how Golang MUST be quoted.
 	case "string", "wstring", "U16String":
-		for i, _ := range defaultValues {
+		for i := range defaultValues {
 			defaultValues[i] = defaultValueSanitizer(ros2type, defaultValues[i])
 		}
 	}

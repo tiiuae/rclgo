@@ -46,6 +46,9 @@ func TestSerDesROS2Messages(t *testing.T) {
 	})
 }
 
+/*
+ROS2 test_msgs -package has test messages for all the ways messages can be defined.
+*/
 func TestSerDesROS2Messages_test_msgs(t *testing.T) {
 	SetDefaultFailureMode(FailureContinues)
 
@@ -67,6 +70,12 @@ func TestSerDesROS2Messages_test_msgs(t *testing.T) {
 		So(goObj, ShouldResemble, Fixture_Go_test_msgs__Builtins())
 		So((*_Ctype_struct_test_msgs__msg__Builtins)(goObj.AsCStruct()), ShouldResemble, Fixture_C_test_msgs__Builtins())
 	})
+	Convey("test_msgs.BoundedSequences", t, func() {
+		goObj := &test_msgs.BoundedSequences{}
+		goObj.AsGoStruct(unsafe.Pointer(Fixture_C_test_msgs__BoundedSequences()))
+		So(goObj, ShouldResemble, Fixture_Go_test_msgs__BoundedSequences())
+		So((*_Ctype_struct_test_msgs__msg__BoundedSequences)(goObj.AsCStruct()), ShouldResemble, Fixture_C_test_msgs__BoundedSequences())
+	})
 	Convey("test_msgs.Constants", t, func() {
 		goObj := &test_msgs.Constants{}
 		goObj.AsGoStruct(unsafe.Pointer(Fixture_C_test_msgs__Constants()))
@@ -85,6 +94,12 @@ func TestSerDesROS2Messages_test_msgs(t *testing.T) {
 		So(goObj, ShouldResemble, Fixture_Go_test_msgs__Empty())
 		So((*_Ctype_struct_test_msgs__msg__Empty)(goObj.AsCStruct()), ShouldResemble, Fixture_C_test_msgs__Empty())
 	})
+	Convey("test_msgs.MultiNested", t, func() {
+		goObj := &test_msgs.MultiNested{}
+		goObj.AsGoStruct(unsafe.Pointer(Fixture_C_test_msgs__MultiNested()))
+		So(goObj, ShouldResemble, Fixture_Go_test_msgs__MultiNested())
+		So((*_Ctype_struct_test_msgs__msg__MultiNested)(goObj.AsCStruct()), ShouldResemble, Fixture_C_test_msgs__MultiNested())
+	})
 	Convey("test_msgs.Nested", t, func() {
 		goObj := &test_msgs.Nested{}
 		goObj.AsGoStruct(unsafe.Pointer(Fixture_C_test_msgs__Nested()))
@@ -102,5 +117,11 @@ func TestSerDesROS2Messages_test_msgs(t *testing.T) {
 		goObj.AsGoStruct(unsafe.Pointer(Fixture_C_test_msgs__UnboundedSequences()))
 		So(goObj, ShouldResemble, Fixture_Go_test_msgs__UnboundedSequences())
 		So((*_Ctype_struct_test_msgs__msg__UnboundedSequences)(goObj.AsCStruct()), ShouldResemble, Fixture_C_test_msgs__UnboundedSequences())
+	})
+	Convey("test_msgs.WStrings", t, func() {
+		goObj := &test_msgs.WStrings{}
+		goObj.AsGoStruct(unsafe.Pointer(Fixture_C_test_msgs__WStrings()))
+		So(goObj, ShouldResemble, Fixture_Go_test_msgs__WStrings())
+		So((*_Ctype_struct_test_msgs__msg__WStrings)(goObj.AsCStruct()), ShouldResemble, Fixture_C_test_msgs__WStrings())
 	})
 }

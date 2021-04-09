@@ -68,7 +68,7 @@ func (t *String) AsCStruct() unsafe.Pointer { // rosidl_runtime_c__String__assig
 }
 func (t *String) setDataCArrayIndex(mem *C.rosidl_runtime_c__String, i int, v byte) {
 	cIdx := (*C.uint8_t)(unsafe.Pointer(
-		uintptr(unsafe.Pointer(mem.data)) + (unsafe.Sizeof(C.uint8_t(0)) * uintptr(i)),
+		uintptr(unsafe.Pointer(mem.data)) + (C.sizeof_uint8_t * uintptr(i)),
 	))
 	*cIdx = (C.uint8_t)(v)
 }
@@ -78,7 +78,7 @@ func (t *String) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
 	sb.Grow(int(mem.size))
 	for i := 0; i < int(mem.size); i++ {
 		cIdx := (*C.uint8_t)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(mem.data)) + (unsafe.Sizeof(C.uint8_t(0)) * uintptr(i)),
+			uintptr(unsafe.Pointer(mem.data)) + (C.sizeof_uint8_t * uintptr(i)),
 		))
 		sb.WriteByte(byte(*cIdx))
 	}

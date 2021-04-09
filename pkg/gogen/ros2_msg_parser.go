@@ -2,9 +2,10 @@ package gogen
 
 import (
 	"fmt"
-	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/kivilahtio/go-re/v0"
 )
 
 func CName(rosName string) string {
@@ -55,14 +56,20 @@ func ParseROS2Message(res *ROS2Message, content string) error {
 	return nil
 }
 
-func ParseROS2MessageRow(testRow string, ros2msg *ROS2Message) (interface{}, error) {
-	// remove leading and trailing spaces
-	testRow = strings.TrimSpace(testRow)
-	// remove multiple spaces
-	testRow = regexp.MustCompile(`\s+`).ReplaceAllString(testRow, " ")
+var commentsBuffer = strings.Builder{} // Collect pre-field comments here to be included in the comments. Flushed on empty lines.
 
-	// do not process empty lines or comment lines
-	if testRow == "" || regexp.MustCompile(`^#`).MatchString(testRow) {
+func ParseROS2MessageRow(testRow string, ros2msg *ROS2Message) (interface{}, error) {
+	testRow = strings.TrimSpace(testRow)
+
+	re.R(&testRow, `m!^#\s*(.*)$!`) // Extract comments from comment-only lines to be included in the pre-field comments
+	if re.R0.Matches > 0 {
+		if re.R0.S[1] != "" {
+			commentsBuffer.WriteString(re.R0.S[1])
+		}
+		return nil, nil
+	}
+	if testRow == "" { // do not process empty lines or comment lines
+		commentsBuffer.Reset()
 		return nil, nil
 	}
 
@@ -82,20 +89,41 @@ func ParseROS2MessageRow(testRow string, ros2msg *ROS2Message) (interface{}, err
 	return nil, fmt.Errorf("Couldn't parse the input row as either ROS2 Field or Constant? input '%s'", testRow)
 }
 
-var parseROS2Const_regexp = regexp.MustCompile(
-	`^(:?(?P<package>\w+)/)?(?P<type>\w+)(?P<array>\[(?P<arraySize>\d*)\])? (?P<field>\w+)\s*=\s*(?P<default>[^#]+)?(:?\s+#\s*(?P<comment>.*))?$`)
-var parseROS2Field_regexp *regexp.Regexp = regexp.MustCompile(
-	`^(:?(?P<package>\w+)/)?(?P<type>\w+)(?P<array>\[(?P<arraySize>\d*)\])? (?P<field>\w+)\s*(?P<default>[^#]+)?(:?\s+#\s*(?P<comment>.*))?$`)
-
 func isRowConstantOrField(textRow string, ros2msg *ROS2Message) (byte, map[string]string) {
-	capture, err := parseNamedCaptureGroupsRegex(textRow, parseROS2Const_regexp)
-	if err == nil {
-		return 'c', capture
+	re.R(&textRow, `m!
+	# This regex might be overly complex for constant parsing but it works. It was originally a copy-paste of the ROS2 field-parser
+	^
+	(?:(?P<package>\w+)/)?
+	(?P<type>\w+)
+	(?P<array>\[(?P<bounded><=)?(?P<size>\d*)\])?
+	\s+
+	(?P<field>\w+)
+	\s*=\s*
+	(?P<default>[^#]+)?
+	(?:\s*\#\s*(?P<comment>.*))?
+	$
+	!x`)
+	if re.R0.Matches > 0 {
+		return 'c', re.R0.Z
 	}
-	capture, err = parseNamedCaptureGroupsRegex(textRow, parseROS2Field_regexp)
-	if err == nil {
-		return 'f', capture
+
+	re.R(&textRow, `m!
+	^(?:(?P<package>\w+)/)?
+	(?P<type>\w+)
+	(?P<array>\[(?P<bounded><=)?(?P<size>\d*)\])?
+	(?P<bounded><=)?                                    # Special case for bounded strings
+	(?P<size>\d*)?
+	\s+
+	(?P<field>\w+)
+	\s*
+	(?P<default>[^#]+)?
+	(?:\s+\#\s*(?P<comment>.*))?
+	$
+	!x`)
+	if re.R0.Matches > 0 {
+		return 'f', re.R0.Z
 	}
+
 	return 'e', nil
 }
 
@@ -103,8 +131,8 @@ func ParseROS2MessageConstant(capture map[string]string, ros2msg *ROS2Message) (
 	d := &ROS2Constant{
 		RosType: capture["type"],
 		RosName: capture["field"],
-		Value:   capture["default"],
-		Comment: capture["comment"],
+		Value:   strings.TrimSpace(capture["default"]),
+		Comment: commentSerializer(capture["comment"], &commentsBuffer),
 	}
 
 	t, ok := ROSIDL_RUNTIME_C_PRIMITIVE_TYPES_MAPPING[d.RosType]
@@ -113,22 +141,29 @@ func ParseROS2MessageConstant(capture map[string]string, ros2msg *ROS2Message) (
 		return d, fmt.Errorf("Unknown ROS2 Constant type '%s'\n", d.RosType)
 	}
 	d.GoType = t.GoType
+	d.PkgName = t.PackageName
 	return d, nil
 }
 
 func ParseROS2MessageField(capture map[string]string, ros2msg *ROS2Message) (*ROS2Field, error) {
-	arraySize, err := strconv.ParseInt(capture["arraySize"], 10, 32)
-	if err != nil && capture["arraySize"] != "" {
+	size, err := strconv.ParseInt(capture["size"], 10, 32)
+	if err != nil && capture["size"] != "" {
 		return nil, err
 	}
+	if capture["bounded"] != "" {
+		capture["array"] = strings.Replace(capture["array"], capture["bounded"]+capture["size"], "", 1)
+		capture["bounded"] = capture["bounded"] + capture["size"]
+		size = 0
+	}
 	f := &ROS2Field{
-		Comment:      capture["comment"],
+		Comment:      commentSerializer(capture["comment"], &commentsBuffer),
 		GoName:       SnakeToCamel(capture["field"]),
 		RosName:      capture["field"],
 		CName:        CName(capture["field"]),
 		RosType:      capture["type"],
 		TypeArray:    capture["array"],
-		ArraySize:    int(arraySize),
+		ArrayBounded: capture["bounded"],
+		ArraySize:    int(size),
 		DefaultValue: capture["default"],
 		PkgName:      capture["package"],
 	}
@@ -145,6 +180,12 @@ func ParseROS2MessageField(capture map[string]string, ros2msg *ROS2Message) (*RO
 }
 
 func translateROS2Type(f *ROS2Field, m *ROS2Message) (pkgName string, cType string, goType string) {
+	t, ok := ROSIDL_RUNTIME_C_PRIMITIVE_TYPES_MAPPING[f.RosType]
+	if ok {
+		f.RosType = t.RosType
+		return t.PackageName, t.CType, t.GoType
+	}
+
 	// explicit package
 	if f.PkgName != "" {
 		// type of same package
@@ -170,12 +211,8 @@ func translateROS2Type(f *ROS2Field, m *ROS2Message) (pkgName string, cType stri
 		}
 	}
 
-	t, ok := ROSIDL_RUNTIME_C_PRIMITIVE_TYPES_MAPPING[f.RosType]
-	if !ok {
-		// These are not actually primitive types, but same-package complex types.
-		return ".", f.RosType, f.RosType
-	}
-	return t.PackageName, t.CType, t.GoType
+	// These are not actually primitive types, but same-package complex types.
+	return ".", f.RosType, f.RosType
 }
 
 func cSerializationCode(f *ROS2Field, m *ROS2Message) string {
@@ -276,9 +313,8 @@ func goSerializationCode(f *ROS2Field, m *ROS2Message) string {
 }
 
 func DefaultCode(f *ROS2Field) string {
-	defaultValues := SplitMsgDefaultArrayValues(f.DefaultValue)
-
 	if f.PkgName != "" && f.TypeArray != "" {
+		defaultValues := SplitMsgDefaultArrayValues(f.RosType, f.DefaultValue)
 		// Complex value array and slice
 		sb := strings.Builder{}
 		var indexesCount int
@@ -303,7 +339,7 @@ func DefaultCode(f *ROS2Field) string {
 
 	} else if f.PkgName != "" && f.TypeArray == "" {
 		// Complex value single
-		return `t.` + f.GoName + `.SetDefaults(` + ValOrNil(f.DefaultValue) + `)` + "\n\t"
+		return `t.` + f.GoName + `.SetDefaults(` + ValOrNil(DefaultValueSanitizer(f.RosType, f.DefaultValue)) + `)` + "\n\t"
 
 	} else if f.DefaultValue != "" && f.TypeArray != "" {
 		// Primitive value array
@@ -317,4 +353,11 @@ func DefaultCode(f *ROS2Field) string {
 		return ""
 	}
 	return "//<MISSING defaultCode!!>"
+}
+
+func commentSerializer(lineComment string, preComments *strings.Builder) string {
+	if preComments.Len() > 0 {
+		return lineComment + `. ` + preComments.String()
+	}
+	return lineComment
 }

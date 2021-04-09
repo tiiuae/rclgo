@@ -42,6 +42,9 @@ to quickly create a Cobra application.`,
 			viper.Set("root-path", args[0])
 		}
 		if viper.GetString("root-path") == "" {
+			if os.Getenv("AMENT_PREFIX_PATH") == "" {
+				return fmt.Errorf("You haven't sourced your ROS2 environment! Cannot autodetect --root-path. Source your ROS2 or pass --root-path")
+			}
 			return fmt.Errorf("expecting root-path as the first argument")
 		}
 		_, err := os.Stat(viper.GetString("root-path"))
@@ -66,7 +69,7 @@ to quickly create a Cobra application.`,
 
 func init() {
 	rootCmd.AddCommand(generateCmd)
-	generateCmd.PersistentFlags().StringP("root-path", "r", os.Getenv("AMENT_PREFIX_PATH"), "Root lookup path for ROS2 .msg files")
+	generateCmd.PersistentFlags().StringP("root-path", "r", os.Getenv("AMENT_PREFIX_PATH"), "Root lookup path for ROS2 .msg files. If ROS2 environment is sourced, is autodetected.")
 	generateCmd.PersistentFlags().StringP("dest-path", "d", gogen.GetGoConvertedROS2MsgPackagesDir(), "Destination directory for the Golang typed converted ROS2 messages. ROS2 Message structure is preserved as <ros2-package>/msg/<msg-name>")
 	viper.BindPFlags(generateCmd.PersistentFlags())
 	viper.BindPFlags(generateCmd.LocalFlags())

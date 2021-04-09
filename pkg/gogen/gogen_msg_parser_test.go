@@ -1,12 +1,10 @@
-package test
+package gogen
 
 import (
 	"fmt"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
-
-	"github.com/tiiuae/rclgo/pkg/gogen"
 )
 
 var nilAry []string
@@ -14,13 +12,13 @@ var nilAry []string
 func TestParseROS2Field(t *testing.T) {
 	SetDefaultFailureMode(FailureContinues)
 
-	testFunc := func(description string, line string, ros2msg *gogen.ROS2Message, f interface{}) {
+	testFunc := func(description string, line string, ros2msg *ROS2Message, f interface{}) {
 		testName := ros2msg.RosPackage + "." + ros2msg.RosMsgName + " " + rosName(f)
 		if description != "" {
 			testName += " : " + description
 		}
 		Convey(testName, func() {
-			m, err := gogen.ParseROS2MessageRow(line, ros2msg)
+			m, err := ParseROS2MessageRow(line, ros2msg)
 			So(err, ShouldBeNil)
 			So(m, ShouldResemble, f)
 		})
@@ -29,8 +27,8 @@ func TestParseROS2Field(t *testing.T) {
 	Convey("Parse ROS2 Fields", t, func() {
 		testFunc("",
 			"unique_identifier_msgs/UUID goal_id",
-			gogen.ROS2MessageNew("action_msgs", "GoalInfo"),
-			&gogen.ROS2Field{
+			ROS2MessageNew("action_msgs", "GoalInfo"),
+			&ROS2Field{
 				RosType:      "UUID",
 				GoType:       "UUID",
 				CType:        "UUID",
@@ -48,8 +46,8 @@ func TestParseROS2Field(t *testing.T) {
 		)
 		testFunc("",
 			"string[] full_node_names",
-			gogen.ROS2MessageNew("composition_interfaces", "ListNodes_Response"),
-			&gogen.ROS2Field{
+			ROS2MessageNew("composition_interfaces", "ListNodes_Response"),
+			&ROS2Field{
 				RosType:      "string",
 				GoType:       "String",
 				CType:        "String",
@@ -67,8 +65,8 @@ func TestParseROS2Field(t *testing.T) {
 		)
 		testFunc("",
 			"float64[3] float64_values_default [3.1415, 0.0, -3.1415]",
-			gogen.ROS2MessageNew("test_msgs", "Arrays_Response"),
-			&gogen.ROS2Field{
+			ROS2MessageNew("test_msgs", "Arrays_Response"),
+			&ROS2Field{
 				RosType:      "float64",
 				GoType:       "float64",
 				CType:        "double",
@@ -86,8 +84,8 @@ func TestParseROS2Field(t *testing.T) {
 		)
 		testFunc("",
 			"BasicTypes[3] basic_types_values",
-			gogen.ROS2MessageNew("test_msgs", "Arrays_Response"),
-			&gogen.ROS2Field{
+			ROS2MessageNew("test_msgs", "Arrays_Response"),
+			&ROS2Field{
 				RosType:      "BasicTypes",
 				GoType:       "BasicTypes",
 				CType:        "BasicTypes",
@@ -105,8 +103,8 @@ func TestParseROS2Field(t *testing.T) {
 		)
 		testFunc("",
 			"bool[3] bool_values_default [false, true, false]",
-			gogen.ROS2MessageNew("test_msgs", "Arrays_Response"),
-			&gogen.ROS2Field{
+			ROS2MessageNew("test_msgs", "Arrays_Response"),
+			&ROS2Field{
 				RosType:      "bool",
 				GoType:       "bool",
 				CType:        "bool",
@@ -124,8 +122,8 @@ func TestParseROS2Field(t *testing.T) {
 		)
 		testFunc("",
 			`string[3] string_values_default ["", "max value", "min value"]`,
-			gogen.ROS2MessageNew("test_msgs", "Arrays_Response"),
-			&gogen.ROS2Field{
+			ROS2MessageNew("test_msgs", "Arrays_Response"),
+			&ROS2Field{
 				RosType:      "string",
 				GoType:       "String",
 				CType:        "String",
@@ -143,8 +141,8 @@ func TestParseROS2Field(t *testing.T) {
 		)
 		testFunc("Fields with comments containing '=' do not get identified as Constants",
 			`float32 v_ref                      # ADC channel voltage reference, use to calculate LSB voltage(lsb=scale/resolution)`,
-			gogen.ROS2MessageNew("px4_msgs", "AdcReport"),
-			&gogen.ROS2Field{
+			ROS2MessageNew("px4_msgs", "AdcReport"),
+			&ROS2Field{
 				RosType:      "float32",
 				GoType:       "float32",
 				CType:        "float",
@@ -162,8 +160,8 @@ func TestParseROS2Field(t *testing.T) {
 		)
 		testFunc("Array size int is big enough to store the C array size.",
 			`uint8[512] junk`,
-			gogen.ROS2MessageNew("px4_msgs", "OrbTestLarge"),
-			&gogen.ROS2Field{
+			ROS2MessageNew("px4_msgs", "OrbTestLarge"),
+			&ROS2Field{
 				RosType:      "uint8",
 				GoType:       "uint8",
 				CType:        "uint8_t",
@@ -181,8 +179,8 @@ func TestParseROS2Field(t *testing.T) {
 		)
 		testFunc(`C struct has reserved Go keyword .test. Accessed with ._test instead.`,
 			`uint8 type`,
-			gogen.ROS2MessageNew("sensor_msgs", "JoyFeedback"),
-			&gogen.ROS2Field{
+			ROS2MessageNew("sensor_msgs", "JoyFeedback"),
+			&ROS2Field{
 				RosType:      "uint8",
 				GoType:       "uint8",
 				CType:        "uint8_t",
@@ -200,8 +198,8 @@ func TestParseROS2Field(t *testing.T) {
 		)
 		testFunc(`Bounded sequence.`,
 			`BasicTypes[<=3] basic_types_values`,
-			gogen.ROS2MessageNew("test_msgs", "BoundedSequences"),
-			&gogen.ROS2Field{
+			ROS2MessageNew("test_msgs", "BoundedSequences"),
+			&ROS2Field{
 				RosType:      "BasicTypes",
 				GoType:       "BasicTypes",
 				CType:        "BasicTypes",
@@ -219,8 +217,8 @@ func TestParseROS2Field(t *testing.T) {
 		)
 		testFunc(`Bounded sequence with defaults.`,
 			`int8[<=3] int8_values_default [0, 127, -128]`,
-			gogen.ROS2MessageNew("test_msgs", "BoundedSequences"),
-			&gogen.ROS2Field{
+			ROS2MessageNew("test_msgs", "BoundedSequences"),
+			&ROS2Field{
 				RosType:      "int8",
 				GoType:       "int8",
 				CType:        "int8_t",
@@ -238,8 +236,8 @@ func TestParseROS2Field(t *testing.T) {
 		)
 		testFunc(`Bounded string with defaults.`,
 			`string<=22 bounded_string_value "this is yet another"`,
-			gogen.ROS2MessageNew("test_msgs", "Strings"),
-			&gogen.ROS2Field{
+			ROS2MessageNew("test_msgs", "Strings"),
+			&ROS2Field{
 				RosType:      "string",
 				GoType:       "String",
 				CType:        "String",
@@ -257,8 +255,8 @@ func TestParseROS2Field(t *testing.T) {
 		)
 		testFunc(`Bounded string.`,
 			`string<=22 bounded_string_value`,
-			gogen.ROS2MessageNew("test_msgs", "Strings"),
-			&gogen.ROS2Field{
+			ROS2MessageNew("test_msgs", "Strings"),
+			&ROS2Field{
 				RosType:      "string",
 				GoType:       "String",
 				CType:        "String",
@@ -279,8 +277,8 @@ func TestParseROS2Field(t *testing.T) {
 	Convey("Parse ROS2 Constants", t, func() {
 		testFunc("",
 			"uint8 NUM_ACTUATOR_CONTROLS = 8",
-			gogen.ROS2MessageNew("px4_msgs", "ActuatorControls0"),
-			&gogen.ROS2Constant{
+			ROS2MessageNew("px4_msgs", "ActuatorControls0"),
+			&ROS2Constant{
 				Value:   "8",
 				RosType: "uint8",
 				GoType:  "uint8",
@@ -290,8 +288,8 @@ func TestParseROS2Field(t *testing.T) {
 		)
 		testFunc("",
 			"uint8 TYPE_LED    = 0",
-			gogen.ROS2MessageNew("sensor_msgs", "JoyFeedback"),
-			&gogen.ROS2Constant{
+			ROS2MessageNew("sensor_msgs", "JoyFeedback"),
+			&ROS2Constant{
 				Value:   "0",
 				RosType: "uint8",
 				GoType:  "uint8",
@@ -301,8 +299,8 @@ func TestParseROS2Field(t *testing.T) {
 		)
 		testFunc("",
 			"uint8 BATTERY_WARNING_CRITICAL = 2        # critical voltage, return / abort immediately",
-			gogen.ROS2MessageNew("px4_msgs", "BatteryStatus"),
-			&gogen.ROS2Constant{
+			ROS2MessageNew("px4_msgs", "BatteryStatus"),
+			&ROS2Constant{
 				Value:   "2",
 				RosType: "uint8",
 				GoType:  "uint8",
@@ -312,8 +310,8 @@ func TestParseROS2Field(t *testing.T) {
 		)
 		testFunc("",
 			"byte BYTE_CONST=50",
-			gogen.ROS2MessageNew("test_msgs", "Constants"),
-			&gogen.ROS2Constant{
+			ROS2MessageNew("test_msgs", "Constants"),
+			&ROS2Constant{
 				Value:   "50",
 				RosType: "byte",
 				GoType:  "byte",
@@ -330,29 +328,29 @@ func TestParseROS2Field(t *testing.T) {
 		"github.com/iancoleman/strcase"
 	*/
 	Convey("Case transformations", t, func() {
-		So(gogen.CamelToSnake("ColorRGBA"), ShouldEqual, "color_rgba")
-		So(gogen.CamelToSnake("MultiDOFJointTrajectoryPoint"), ShouldEqual, "multi_dof_joint_trajectory_point")
-		So(gogen.CamelToSnake("TFMessage"), ShouldEqual, "tf_message")
-		So(gogen.CamelToSnake("WStrings"), ShouldEqual, "w_strings")
-		So(gogen.CamelToSnake("Float32MultiArray"), ShouldEqual, "float32_multi_array")
-		So(gogen.CamelToSnake("PointCloud2"), ShouldEqual, "point_cloud2")
-		So(gogen.CamelToSnake("GoalID"), ShouldEqual, "goal_id")
-		So(gogen.CamelToSnake("WString"), ShouldEqual, "w_string")
-		So(gogen.CamelToSnake("TF2Error"), ShouldEqual, "tf2_error")
+		So(camelToSnake("ColorRGBA"), ShouldEqual, "color_rgba")
+		So(camelToSnake("MultiDOFJointTrajectoryPoint"), ShouldEqual, "multi_dof_joint_trajectory_point")
+		So(camelToSnake("TFMessage"), ShouldEqual, "tf_message")
+		So(camelToSnake("WStrings"), ShouldEqual, "w_strings")
+		So(camelToSnake("Float32MultiArray"), ShouldEqual, "float32_multi_array")
+		So(camelToSnake("PointCloud2"), ShouldEqual, "point_cloud2")
+		So(camelToSnake("GoalID"), ShouldEqual, "goal_id")
+		So(camelToSnake("WString"), ShouldEqual, "w_string")
+		So(camelToSnake("TF2Error"), ShouldEqual, "tf2_error")
 	})
 
 	Convey("Defaults string parser", t, func() {
-		So(gogen.SplitMsgDefaultArrayValues("int", ``), ShouldResemble, nilAry)
-		So(gogen.SplitMsgDefaultArrayValues("int", `[]`), ShouldResemble, nilAry)
-		So(gogen.SplitMsgDefaultArrayValues("int", `[1,2,3]`), ShouldResemble, []string{`1`, `2`, `3`})
-		So(gogen.SplitMsgDefaultArrayValues("string", `["", "this is a", "test msg"]`), ShouldResemble, []string{`""`, `"this is a"`, `"test msg"`})
-		So(gogen.SplitMsgDefaultArrayValues("string", `[1  ,  2 ,   "3"]`), ShouldResemble, []string{`"1  "`, `"2 "`, `"3"`})
-		So(gogen.DefaultValueSanitizer("string", `"Hello world!"`), ShouldEqual, `"Hello world!"`)
-		So(gogen.DefaultValueSanitizer("string", `"Hello\"world!"`), ShouldEqual, `"Hello\"world!"`)
+		So(splitMsgDefaultArrayValues("int", ``), ShouldResemble, nilAry)
+		So(splitMsgDefaultArrayValues("int", `[]`), ShouldResemble, nilAry)
+		So(splitMsgDefaultArrayValues("int", `[1,2,3]`), ShouldResemble, []string{`1`, `2`, `3`})
+		So(splitMsgDefaultArrayValues("string", `["", "this is a", "test msg"]`), ShouldResemble, []string{`""`, `"this is a"`, `"test msg"`})
+		So(splitMsgDefaultArrayValues("string", `[1  ,  2 ,   "3"]`), ShouldResemble, []string{`"1  "`, `"2 "`, `"3"`})
+		So(defaultValueSanitizer("string", `"Hello world!"`), ShouldEqual, `"Hello world!"`)
+		So(defaultValueSanitizer("string", `"Hello\"world!"`), ShouldEqual, `"Hello\"world!"`)
 	})
 
 	Convey("defaultCode() generator", t, func() {
-		So(gogen.DefaultCode(&gogen.ROS2Field{
+		So(defaultCode(&ROS2Field{
 			TypeArray:    "[3]",
 			ArraySize:    3,
 			DefaultValue: "",
@@ -382,10 +380,10 @@ func TestSerDesSimple(t *testing.T) {
 
 func rosName(obj interface{}) string {
 	switch obj.(type) {
-	case *gogen.ROS2Constant:
-		return obj.(*gogen.ROS2Constant).RosName
-	case *gogen.ROS2Field:
-		return obj.(*gogen.ROS2Field).RosName
+	case *ROS2Constant:
+		return obj.(*ROS2Constant).RosName
+	case *ROS2Field:
+		return obj.(*ROS2Field).RosName
 	default:
 		panic(fmt.Sprintf("Unable to get the ROS2 Message row-object (Field|Constant) name!%+v\n", obj))
 	}

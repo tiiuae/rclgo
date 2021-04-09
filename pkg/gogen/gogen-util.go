@@ -25,7 +25,7 @@ func SnakeToCamel(in string) string {
 	return string(tmp)
 }
 
-func CamelToSnake(in string) string {
+func camelToSnake(in string) string {
 	tmp := []rune(in)
 	sb := strings.Builder{}
 	sb.Grow(len(tmp))
@@ -72,7 +72,7 @@ func ValOrNil(val string) string {
 	}
 }
 
-func DefaultValueSanitizer(ros2type string, defaultValue string) string {
+func defaultValueSanitizer(ros2type string, defaultValue string) string {
 	switch ros2type {
 	// CSV parser removes the double quotes only, here we invoke the defaults parsing directly, and need to deal with double quotations manually
 	case "string", "wstring", "U16String":
@@ -80,10 +80,10 @@ func DefaultValueSanitizer(ros2type string, defaultValue string) string {
 			re.S(&defaultValue, `s!(?:^")|(?:"$)!!gsm`)
 		}
 	}
-	return defaultValueSanitizer(ros2type, defaultValue)
+	return defaultValueSanitizer_(ros2type, defaultValue)
 }
 
-func SplitMsgDefaultArrayValues(ros2type string, defaultsField string) []string {
+func splitMsgDefaultArrayValues(ros2type string, defaultsField string) []string {
 	defaultsField = normalizeMsgDefaultArrayValue(defaultsField)
 	csv := csv.NewReader(strings.NewReader(defaultsField))
 	csv.LazyQuotes = true
@@ -96,14 +96,14 @@ func SplitMsgDefaultArrayValues(ros2type string, defaultsField string) []string 
 	// ROS2 string defaults CAN be quoted differently than how Golang MUST be quoted.
 	case "string", "wstring", "U16String":
 		for i := range defaultValues {
-			defaultValues[i] = defaultValueSanitizer(ros2type, defaultValues[i])
+			defaultValues[i] = defaultValueSanitizer_(ros2type, defaultValues[i])
 		}
 	}
 
 	return defaultValues
 }
 
-func defaultValueSanitizer(ros2type, defaultValue string) string {
+func defaultValueSanitizer_(ros2type, defaultValue string) string {
 	switch ros2type {
 	// ROS2 string defaults CAN be quoted differently than how Golang MUST be quoted.
 	case "string", "wstring", "U16String":
@@ -123,10 +123,10 @@ func defaultValueSanitizer(ros2type, defaultValue string) string {
 var splitMsgDefaultArrayValues_re = regexp.MustCompile(`((:?^|,)(:?\s*".*?"\s*|.*?)(:?,|$))`)
 var splitMsgDefaultArrayValues_re = regexp.MustCompile(`((?<=^|,)?.*?(?=,|$))`) // Where are lookahead/lookbehind?
 
-func SplitMsgDefaultArrayValues_re(defaults string) []string {
+func splitMsgDefaultArrayValues_re(defaults string) []string {
 	return splitMsgDefaultArrayValues_re.FindAllString(normalizeMsgDefaultArrayValue(defaults), -1)
 }
-func SplitMsgDefaultArrayValues_simple(defaults string) []string {
+func splitMsgDefaultArrayValues_simple(defaults string) []string {
 	vals := strings.Split(normalizeMsgDefaultArrayValue(defaults), ",") // This is very unoptimal since it doesn't support quoted fields containing ','
 	if len(vals) == 1 && vals[0] == "" {
 		return []string{}
@@ -141,7 +141,7 @@ The way the ROS2 message defaults are handled is just very unique and parsing it
 incoming field.
 */
 /*
-func SplitMsgDefaultArrayValues(line string) ([]string, error) {
+func splitMsgDefaultArrayValues(line string) ([]string, error) {
 
 	var state_inDBQuote bool
 	var state_inSQuote bool

@@ -7,10 +7,10 @@ import (
 
 var templateFuncMap template.FuncMap = template.FuncMap{
 	"lc":                  strings.ToLower,
-	"camelToSnake":        CamelToSnake,
+	"camelToSnake":        camelToSnake,
 	"cSerializationCode":  cSerializationCode,
 	"goSerializationCode": goSerializationCode,
-	"defaultCode":         DefaultCode,
+	"defaultCode":         defaultCode,
 	"ucFirst":             ucFirst,
 }
 

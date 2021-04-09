@@ -312,9 +312,9 @@ func goSerializationCode(f *ROS2Field, m *ROS2Message) string {
 	return "//<MISSING goSerializationCode!!>"
 }
 
-func DefaultCode(f *ROS2Field) string {
+func defaultCode(f *ROS2Field) string {
 	if f.PkgName != "" && f.TypeArray != "" {
-		defaultValues := SplitMsgDefaultArrayValues(f.RosType, f.DefaultValue)
+		defaultValues := splitMsgDefaultArrayValues(f.RosType, f.DefaultValue)
 		// Complex value array and slice
 		sb := strings.Builder{}
 		var indexesCount int
@@ -339,7 +339,7 @@ func DefaultCode(f *ROS2Field) string {
 
 	} else if f.PkgName != "" && f.TypeArray == "" {
 		// Complex value single
-		return `t.` + f.GoName + `.SetDefaults(` + ValOrNil(DefaultValueSanitizer(f.RosType, f.DefaultValue)) + `)` + "\n\t"
+		return `t.` + f.GoName + `.SetDefaults(` + ValOrNil(defaultValueSanitizer(f.RosType, f.DefaultValue)) + `)` + "\n\t"
 
 	} else if f.DefaultValue != "" && f.TypeArray != "" {
 		// Primitive value array

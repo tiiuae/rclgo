@@ -338,6 +338,7 @@ func TestParseROS2Field(t *testing.T) {
 		So(gogen.CamelToSnake("PointCloud2"), ShouldEqual, "point_cloud2")
 		So(gogen.CamelToSnake("GoalID"), ShouldEqual, "goal_id")
 		So(gogen.CamelToSnake("WString"), ShouldEqual, "w_string")
+		So(gogen.CamelToSnake("TF2Error"), ShouldEqual, "tf2_error")
 	})
 
 	Convey("Defaults string parser", t, func() {

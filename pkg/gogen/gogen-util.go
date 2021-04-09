@@ -33,7 +33,7 @@ func CamelToSnake(in string) string {
 	ucSequenceLength := 0 //Special semantics for consecutive UC characters
 
 	for i := 0; i < len(tmp); i++ {
-		if unicode.IsUpper(tmp[i]) {
+		if unicode.IsUpper(tmp[i]) || (ucSequenceLength > 0 && unicode.IsNumber(tmp[i])) {
 			ucSequenceLength++
 
 			if i == 0 {
@@ -43,7 +43,7 @@ func CamelToSnake(in string) string {
 				sb.WriteRune(unicode.ToLower(tmp[i]))
 			} else if i+1 >= len(tmp) {
 				sb.WriteRune(unicode.ToLower(tmp[i]))
-			} else if unicode.IsUpper(tmp[i+1]) {
+			} else if unicode.IsUpper(tmp[i+1]) || unicode.IsNumber(tmp[i+1]) {
 				sb.WriteRune(unicode.ToLower(tmp[i]))
 			} else if ucSequenceLength >= 2 {
 				sb.WriteRune('_')

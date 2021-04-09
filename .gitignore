@@ -20,8 +20,6 @@
 # compiled binary
 cmd/rclgo-gen/rclgo-gen
 cmd/rclgo/rclgo
-rclgo-gen
-rclgo
 
 #go tool cgo output
 _obj

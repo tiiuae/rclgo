@@ -1,6 +1,12 @@
 /*
 Due to the way the rcl string representation differs from Go representation, for serdes purposes treat the U16String as ros2types.ROS2Msg
 so no special string-specific exceptions need to e made to the already complex ROS2 Msg serdes templating.
+
+Copyright © 2021 Technology Innovation Institute, United Arab Emirates
+
+Licensed under the Apache License, Version 2.0 (the "License");
+    http://www.apache.org/licenses/LICENSE-2.0
+
 */
 package rosidl_runtime_c
 
@@ -20,6 +26,10 @@ import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
 )
 
+/*
+Due to the way the rcl string representation differs from Go representation, for serdes purposes treat the U16String as ros2types.ROS2Msg
+so no special string-specific exceptions need to be made to the already complex ROS2 Msg serdes templating.
+*/
 type U16String string
 
 func NewU16String() *U16String {

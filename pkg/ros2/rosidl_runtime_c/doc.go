@@ -7,10 +7,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
     http://www.apache.org/licenses/LICENSE-2.0
 */
 
-package main
-
-import cmd "github.com/tiiuae/rclgo/cmd/rclgo-gen/cmd"
-
-func main() {
-	cmd.Execute()
-}
+/*
+These types implement the rosidl_runtime_c primitive types handling semantics.
+*/
+package rosidl_runtime_c

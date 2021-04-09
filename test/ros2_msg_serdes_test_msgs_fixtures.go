@@ -1,6 +1,6 @@
 /*
 ROS2 has helpfully included test_msgs/msg/* which seem to cover all cases of .msg-file serdes.
-Here we define test fixtures for each message type for rather complete test coverage to the .msg parsing functionality.
+Here we define test fixtures for each message type for a rather complete test coverage to the .msg parsing functionality.
 */
 package test
 

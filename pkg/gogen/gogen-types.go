@@ -104,3 +104,12 @@ var ROSIDL_RUNTIME_C_PRIMITIVE_TYPES_MAPPING = map[string]rosidl_runtime_c_type_
 	// for wstring the RosType is actually "wstring", but the way the generator is implemented, this is a reasonable hack to make it work with this fringe-case without extensive refactoring
 	"wstring": {RosType: "U16String", GoType: "U16String", CStructName: "U16String", CType: "U16String", PackageName: "rosidl_runtime_c", SkipAutogen: true},
 }
+
+/*
+ROS2_MESSAGES_BLACKLIST is matched against the paths gogen inspects if it is a ROS2 Message file and needs to be turned into a Go type.
+If the path matches the blacklist, it is ignored and a notification is logged.
+*/
+var ROS2_MESSAGES_BLACKLIST = []string{
+	"libstatistics_collector/msg/DummyMessage",
+	"this-is-a-test-blacklist-entry-do-not-remove-used-for-internal-testing",
+}

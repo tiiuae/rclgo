@@ -397,3 +397,13 @@ func rosName(obj interface{}) string {
 		panic(fmt.Sprintf("Unable to get the ROS2 Message row-object (Field|Constant) name!%+v\n", obj))
 	}
 }
+
+func TestBlacklist(t *testing.T) {
+	SetDefaultFailureMode(FailureContinues)
+
+	Convey("Blacklist", t, func() {
+		skip, blacklistEntry := blacklisted("/opt/ros/foxy/this-is-a-test-blacklist-entry-do-not-remove-used-for-internal-testing/msgs/Lol.msg")
+		So(skip, ShouldBeTrue)
+		So(blacklistEntry, ShouldEqual, "this-is-a-test-blacklist-entry-do-not-remove-used-for-internal-testing")
+	})
+}

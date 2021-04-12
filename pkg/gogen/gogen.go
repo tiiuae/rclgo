@@ -29,6 +29,11 @@ func GetGoConvertedROS2MsgPackagesDir() string {
 func Generate(rootPath string, destPath string) {
 	ros2MessagesList := list.New()
 	filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
+		skip, blacklistEntry := blacklisted(path)
+		if skip {
+			fmt.Printf("Blacklisted: %s, matched regex '%s'\n", path, blacklistEntry)
+			return nil
+		}
 		matched, err := regexp.MatchString(`/msg/.+?\.msg$`, path)
 		if err != nil {
 			fmt.Printf("Error when matching path='%s' against regex='%s'", path, `\.msg$`)

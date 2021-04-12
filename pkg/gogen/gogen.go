@@ -27,7 +27,7 @@ func GetGoConvertedROS2MsgPackagesDir() string {
 }
 
 func Generate(rootPath string, destPath string) {
-	mds := list.New()
+	ros2MessagesList := list.New()
 	filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
 		matched, err := regexp.MatchString(`/msg/.+?\.msg$`, path)
 		if err != nil {
@@ -39,10 +39,18 @@ func Generate(rootPath string, destPath string) {
 			if err != nil {
 				fmt.Printf("Error converting ROS2 Message '%s' to '%s', error: %v\n", path, destPath, err)
 			}
-			mds.PushBack(md)
+			ros2MessagesList.PushBack(md)
 		}
 		return nil
 	})
+	ros2MessagesAry := make(map[string]*ROS2Message, ros2MessagesList.Len())
+	e := ros2MessagesList.Front()
+	for e != nil {
+		m := e.Value.(*ROS2Message)
+		ros2MessagesAry[m.RosPackage] = m
+		e = e.Next()
+	}
 
 	Generate_rosidl_runtime_c_sequence_handlers(destPath)
+	GenerateROS2AllMessagesImporter(destPath, ros2MessagesAry)
 }

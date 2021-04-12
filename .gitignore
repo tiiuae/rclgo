@@ -23,3 +23,5 @@ cmd/rclgo/rclgo
 
 #go tool cgo output
 _obj
+
+pkg/ros2/msgs/*

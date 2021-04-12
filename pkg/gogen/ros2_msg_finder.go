@@ -36,9 +36,31 @@ func Generate_rosidl_runtime_c_sequence_handlers(destPathPkgRoot string) error {
 		return err
 	}
 
+	fmt.Printf("Generating roside_runtime_c: %s\n", destFilePath)
 	return ros2rosidl_runtime_c_handlers.Execute(destFile, map[string]interface{}{
 		"PMap": &ROSIDL_RUNTIME_C_PRIMITIVE_TYPES_MAPPING,
 	})
+}
+
+func GenerateROS2AllMessagesImporter(destPathPkgRoot string, ros2Messages map[string]*ROS2Message) error {
+
+	destFilePath := filepath.Join(destPathPkgRoot, "..", "msgs", "ros2msgs.go")
+
+	_, err := os.Stat(destFilePath)
+	if errors.Is(err, os.ErrNotExist) {
+		fmt.Printf("'%s' is missing? It should exist relative the the given destination path '%s'", destFilePath, destPathPkgRoot)
+		err = os.MkdirAll(filepath.Dir(destFilePath), os.ModePerm)
+		if err != nil {
+			return err
+		}
+	}
+	destFile, err := os.Create(destFilePath)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Generating all importer: %s\n", destFilePath)
+	return ros2MsgImportAllPackage.Execute(destFile, ros2Messages)
 }
 
 func GenerateGolangTypeFromROS2MessagePath(sourcePath string, destPathPkgRoot string) (*ROS2Message, error) {

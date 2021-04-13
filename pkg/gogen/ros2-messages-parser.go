@@ -11,56 +11,42 @@ package gogen
 
 import (
 	"container/list"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/kivilahtio/go-re/v0"
 )
 
-func Generate_rosidl_runtime_c_sequence_handlers(destPathPkgRoot string) error {
-
-	destFilePath := filepath.Join(destPathPkgRoot, "..", "rosidl_runtime_c", "Primitives.go")
-
-	_, err := os.Stat(destFilePath)
-	if errors.Is(err, os.ErrNotExist) {
-		fmt.Printf("'%s' is missing? It should exist relative the the given destination path '%s'", destFilePath, destPathPkgRoot)
-		err = os.MkdirAll(filepath.Dir(destFilePath), os.ModePerm)
-		if err != nil {
-			return err
+func GenerateGolangMessageTypes(rootPath string, destPath string) map[string]*ROS2Message {
+	ros2MessagesList := list.New()
+	filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
+		skip, blacklistEntry := blacklisted(path)
+		if skip {
+			fmt.Printf("Blacklisted: %s, matched regex '%s'\n", path, blacklistEntry)
+			return nil
 		}
-	}
-	destFile, err := os.Create(destFilePath)
-	if err != nil {
-		return err
-	}
 
-	fmt.Printf("Generating roside_runtime_c: %s\n", destFilePath)
-	return ros2rosidl_runtime_c_handlers.Execute(destFile, map[string]interface{}{
-		"PMap": &ROSIDL_RUNTIME_C_PRIMITIVE_TYPES_MAPPING,
+		if re.M(path, `m!/msg/.+?\.msg$!`) {
+			fmt.Printf("Generating: %s\n", path)
+			md, err := GenerateGolangTypeFromROS2MessagePath(path, destPath)
+			if err != nil {
+				fmt.Printf("Error converting ROS2 Message '%s' to '%s', error: %v\n", path, destPath, err)
+			}
+			ros2MessagesList.PushBack(md)
+		}
+		return nil
 	})
-}
-
-func GenerateROS2AllMessagesImporter(destPathPkgRoot string, ros2Messages map[string]*ROS2Message) error {
-
-	destFilePath := filepath.Join(destPathPkgRoot, "..", "msgs", "ros2msgs.go")
-
-	_, err := os.Stat(destFilePath)
-	if errors.Is(err, os.ErrNotExist) {
-		fmt.Printf("'%s' is missing? It should exist relative the the given destination path '%s'", destFilePath, destPathPkgRoot)
-		err = os.MkdirAll(filepath.Dir(destFilePath), os.ModePerm)
-		if err != nil {
-			return err
-		}
+	ros2MessagesAry := make(map[string]*ROS2Message, ros2MessagesList.Len())
+	e := ros2MessagesList.Front()
+	for e != nil {
+		m := e.Value.(*ROS2Message)
+		ros2MessagesAry[m.RosPackage] = m
+		e = e.Next()
 	}
-	destFile, err := os.Create(destFilePath)
-	if err != nil {
-		return err
-	}
-
-	fmt.Printf("Generating all importer: %s\n", destFilePath)
-	return ros2MsgImportAllPackage.Execute(destFile, ros2Messages)
+	return ros2MessagesAry
 }
 
 func GenerateGolangTypeFromROS2MessagePath(sourcePath string, destPathPkgRoot string) (*ROS2Message, error) {
@@ -119,18 +105,9 @@ func ParseMessageMetadataFromPath(p string, md *ROS2Message) error {
 
 func CreateTargetGolangTypeFile(destPathPkgRoot string, md *ROS2Message) (*os.File, error) {
 	destFilePath := filepath.Join(destPathPkgRoot, md.RosPackage, "msg", md.RosMsgName+".go")
-	destFileDir := filepath.Join(destPathPkgRoot, md.RosPackage, "msg")
-	_, err := os.Stat(destFileDir)
-	if errors.Is(err, os.ErrNotExist) {
-		fmt.Printf("Creating directory '%s'", destFileDir)
-		err = os.MkdirAll(destFileDir, os.ModePerm)
-		if err != nil {
-			return nil, err
-		}
-	}
-	destFile, err := os.Create(destFilePath)
+	destFile, err := mkdir_p(destFilePath)
 	if err != nil {
-		return destFile, err
+		return nil, err
 	}
 	return destFile, err
 }

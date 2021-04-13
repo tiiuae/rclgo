@@ -65,7 +65,7 @@ func ParseROS2Message(res *ROS2Message, content string) error {
 	return nil
 }
 
-var commentsBuffer = strings.Builder{} // Collect pre-field comments here to be included in the comments. Flushed on empty lines.
+var ros2messagesCommentsBuffer = strings.Builder{} // Collect pre-field comments here to be included in the comments. Flushed on empty lines.
 
 func ParseROS2MessageRow(testRow string, ros2msg *ROS2Message) (interface{}, error) {
 	testRow = strings.TrimSpace(testRow)
@@ -73,12 +73,12 @@ func ParseROS2MessageRow(testRow string, ros2msg *ROS2Message) (interface{}, err
 	re.R(&testRow, `m!^#\s*(.*)$!`) // Extract comments from comment-only lines to be included in the pre-field comments
 	if re.R0.Matches > 0 {
 		if re.R0.S[1] != "" {
-			commentsBuffer.WriteString(re.R0.S[1])
+			ros2messagesCommentsBuffer.WriteString(re.R0.S[1])
 		}
 		return nil, nil
 	}
 	if testRow == "" { // do not process empty lines or comment lines
-		commentsBuffer.Reset()
+		ros2messagesCommentsBuffer.Reset()
 		return nil, nil
 	}
 
@@ -141,7 +141,7 @@ func ParseROS2MessageConstant(capture map[string]string, ros2msg *ROS2Message) (
 		RosType: capture["type"],
 		RosName: capture["field"],
 		Value:   strings.TrimSpace(capture["default"]),
-		Comment: commentSerializer(capture["comment"], &commentsBuffer),
+		Comment: commentSerializer(capture["comment"], &ros2messagesCommentsBuffer),
 	}
 
 	t, ok := ROSIDL_RUNTIME_C_PRIMITIVE_TYPES_MAPPING[d.RosType]
@@ -165,7 +165,7 @@ func ParseROS2MessageField(capture map[string]string, ros2msg *ROS2Message) (*RO
 		size = 0
 	}
 	f := &ROS2Field{
-		Comment:      commentSerializer(capture["comment"], &commentsBuffer),
+		Comment:      commentSerializer(capture["comment"], &ros2messagesCommentsBuffer),
 		GoName:       SnakeToCamel(capture["field"]),
 		RosName:      capture["field"],
 		CName:        CName(capture["field"]),
@@ -362,11 +362,4 @@ func defaultCode(f *ROS2Field) string {
 		return ""
 	}
 	return "//<MISSING defaultCode!!>"
-}
-
-func commentSerializer(lineComment string, preComments *strings.Builder) string {
-	if preComments.Len() > 0 {
-		return lineComment + `. ` + preComments.String()
-	}
-	return lineComment
 }

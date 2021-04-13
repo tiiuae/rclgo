@@ -18,6 +18,8 @@ import (
 	"github.com/spf13/viper"
 	"github.com/tiiuae/rclgo/pkg/ros2"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
+
+	_ "github.com/tiiuae/rclgo/pkg/ros2/msgs" // Load all the available ROS2 Message types. In Go one cannot dynamically import.
 )
 
 // echoCmd represents the echo command
@@ -27,39 +29,39 @@ var echoCmd = &cobra.Command{
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		rclContext, err := ros2.RclInit()
+		rclContext, err := ros2.NewRCLContext(nil, 0, nil)
 		if err != nil {
-			fmt.Printf("Error '%+v' ros2.RclInit.\n", err)
+			fmt.Printf("Error '%+v' ros2.NewRCLContext.\n", err)
 			panic(err)
 		}
 
-		rcl_node, err := ros2.NodeCreate(rclContext, viper.GetString("node-name"), viper.GetString("namespace"))
+		rclNode, err := ros2.NewNode(rclContext, viper.GetString("node-name"), viper.GetString("namespace"))
 		if err != nil {
-			fmt.Printf("Error '%+v' ros2.NodeCreate.\n", err)
+			fmt.Printf("Error '%+v' ros2.NewNode.\n", err)
 			panic(err)
 		}
 
-		ros2msg := ros2_type_dispatcher.TranslateROS2MsgTypeNameToType(viper.GetString("msg-type"))
+		ros2msg := ros2_type_dispatcher.TranslateROS2MsgTypeNameToTypeMust(viper.GetString("msg-type"))
 		ros2msgClone := ros2msg.Clone()
-		subscription, err := ros2.SubscriptionCreate(rclContext, rcl_node, viper.GetString("topic-name"), ros2msgClone,
+		subscription, err := rclNode.NewSubscription(viper.GetString("topic-name"), ros2msgClone,
 			func(subscription *ros2.Subscription, ros2_msg_receive_buffer unsafe.Pointer, rmwMessageInfo *ros2.RmwMessageInfo) {
 				ros2msgClone.AsGoStruct(ros2_msg_receive_buffer)
 				fmt.Printf("%+v ", ros2msgClone)
-				fmt.Printf("Source_timestamp='%s' Received_timestamp='%s'\n", rmwMessageInfo.Source_timestamp.Format(time.RFC3339Nano), rmwMessageInfo.Received_timestamp.Format(time.RFC3339Nano))
+				fmt.Printf("SourceTimestamp='%s' ReceivedTimestamp='%s'\n", rmwMessageInfo.SourceTimestamp.Format(time.RFC3339Nano), rmwMessageInfo.ReceivedTimestamp.Format(time.RFC3339Nano))
 			})
 		if err != nil {
 			fmt.Printf("Error '%+v' SubscriptionCreate.\n", err)
 			panic(err)
 		}
 
-		subscriptions := []ros2.Subscription{subscription}
-		waitSet, err := ros2.WaitSetCreate(rclContext, subscriptions, nil, 1000*time.Millisecond)
+		subscriptions := []*ros2.Subscription{subscription}
+		waitSet, err := ros2.NewWaitSet(rclContext, subscriptions, nil, 1000*time.Millisecond)
 		if err != nil {
 			fmt.Printf("Error '%+v' WaitSetCreate.\n", err)
 			panic(err)
 		}
 
-		err = ros2.WaitSetRun(waitSet)
+		err = waitSet.Run()
 		if err != nil {
 			fmt.Printf("Error '%+v' WaitSetRun.\n", err)
 			panic(err)

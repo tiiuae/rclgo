@@ -379,6 +379,46 @@ func TestParseROS2Field(t *testing.T) {
 	})
 }
 
+func TestCErrorTypeParser(t *testing.T) {
+	SetDefaultFailureMode(FailureContinues)
+	Convey("", t, func() {
+		et, err := ParseROS2ErrorType("/// Success return code.")
+		So(et, ShouldBeNil)
+		So(err, ShouldBeNil)
+		So(ros2errorTypesCommentsBuffer.String(), ShouldEqual, "Success return code.")
+
+		et, err = ParseROS2ErrorType("#define RCL_RET_OK RMW_RET_OK")
+		So(et, ShouldResemble, &ROS2ErrorType{
+			Name:      "RCL_RET_OK",
+			Rcl_ret_t: "",
+			Reference: "RMW_RET_OK",
+			Comment:   "Success return code.",
+		})
+		So(err, ShouldBeNil)
+		So(ros2errorTypesCommentsBuffer.Len(), ShouldEqual, 0)
+
+		et, err = ParseROS2ErrorType("/// This comment is flushed because it is not part of a continuous stream.")
+		So(et, ShouldBeNil)
+		So(err, ShouldBeNil)
+		So(ros2errorTypesCommentsBuffer.Len(), ShouldBeGreaterThan, 0)
+
+		et, err = ParseROS2ErrorType("")
+		So(et, ShouldBeNil)
+		So(err, ShouldBeNil)
+		So(ros2errorTypesCommentsBuffer.String(), ShouldEqual, "")
+
+		et, err = ParseROS2ErrorType("#define RCL_RET_NOT_INIT 101")
+		So(et, ShouldResemble, &ROS2ErrorType{
+			Name:      "RCL_RET_NOT_INIT",
+			Rcl_ret_t: "101",
+			Reference: "",
+			Comment:   "",
+		})
+		So(err, ShouldBeNil)
+		So(ros2errorTypesCommentsBuffer.Len(), ShouldEqual, 0)
+	})
+}
+
 /*
 func TestSerDesSimple(t *testing.T) {
 

@@ -20,6 +20,10 @@ var blacklistMatchingRegexp string
 func init() {
 	prepareBlacklistMatchingRegexp()
 }
+
+/*
+prepareBlacklistMatchingRegexp is a convenience function to be more easily able to define the files to blacklist without needing to fiddle with complex regexp
+*/
 func prepareBlacklistMatchingRegexp() {
 	blacklistMatchingRegexp = "(" + strings.Join(ROS2_MESSAGES_BLACKLIST, ")|(") + ")"
 	re.S(&blacklistMatchingRegexp, `s!\!!\!!`)

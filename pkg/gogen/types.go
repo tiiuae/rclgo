@@ -75,6 +75,16 @@ func (t *ROS2Field) PkgReference() string {
 	return t.PkgName + "."
 }
 
+/*
+ROS2ErrorType must have fields exported otherwise they cannot be used by the test/template -package
+*/
+type ROS2ErrorType struct {
+	Name      string
+	Rcl_ret_t string // The function call return value the error is mapped to
+	Reference string // This is a reference to another type, so we just redefine the same type with another name
+	Comment   string // Any found comments before or over the #definition
+}
+
 type rosidl_runtime_c_type_mapping struct {
 	RosType     string
 	GoType      string
@@ -112,4 +122,12 @@ If the path matches the blacklist, it is ignored and a notification is logged.
 var ROS2_MESSAGES_BLACKLIST = []string{
 	"libstatistics_collector/msg/DummyMessage",
 	"this-is-a-test-blacklist-entry-do-not-remove-used-for-internal-testing",
+}
+
+/*
+ROS2_ERROR_TYPES_C_FILES are looked for #definitions and parsed as Golang ros2 error types
+*/
+var ROS2_ERROR_TYPES_C_FILES = []string{
+	"rcl/types.h",
+	"rmw/ret_types.h",
 }

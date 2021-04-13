@@ -18,6 +18,8 @@ import (
 	"github.com/spf13/viper"
 	"github.com/tiiuae/rclgo/pkg/ros2"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
+
+	_ "github.com/tiiuae/rclgo/pkg/ros2/msgs" // Load all the available ROS2 Message types. In Go one cannot dynamically import.
 )
 
 // pubCmd represents the pub command
@@ -28,54 +30,47 @@ var pubCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Printf("%v\n", viper.AllSettings())
 
-		rclContext, err := ros2.RclInit()
+		rclContext, err := ros2.NewRCLContext(nil, ros2.RCL_SYSTEM_TIME, nil)
 		if err != nil {
-			fmt.Printf("Error '%+v' ros2.RclInit.\n", err)
+			fmt.Printf("Error '%+v' ros2.NewRCLContext.\n", err)
 			panic(err)
 		}
 
-		rcl_node, err := ros2.NodeCreate(rclContext, viper.GetString("node-name"), viper.GetString("namespace"))
+		rclNode, err := ros2.NewNode(rclContext, viper.GetString("node-name"), viper.GetString("namespace"))
 		if err != nil {
-			fmt.Printf("Error '%+v' ros2.NodeCreate.\n", err)
+			fmt.Printf("Error '%+v' ros2.NewNode.\n", err)
 			panic(err)
 		}
 
-		rcl_clock, err := ros2.ClockCreate(rclContext, ros2.RCL_SYSTEM_TIME)
-		if err != nil {
-			fmt.Printf("Error '%+v' ClockCreate().\n", err)
-			panic(err)
-		}
-		rclContext.Rcl_clock_t = rcl_clock
-
-		ros2msg := ros2_type_dispatcher.TranslateROS2MsgTypeNameToType(viper.GetString("msg-type"))
+		ros2msg := ros2_type_dispatcher.TranslateROS2MsgTypeNameToTypeMust(viper.GetString("msg-type"))
 		ros2msg, err_yaml := ros2_type_dispatcher.TranslateMsgPayloadYAMLToROS2Msg(strings.ReplaceAll(viper.GetString("payload"), "\\n", "\n"), ros2msg)
 		if err_yaml != nil {
 			panic(fmt.Sprintf("Error '%v' unmarshalling YAML '%s' to ROS2 message type '%s'", err_yaml, viper.GetString("payload"), viper.GetString("msg-type")))
 		}
 
-		publisher, err := ros2.PublisherCreate(rclContext, rcl_node, viper.GetString("topic-name"), ros2msg)
+		publisher, err := rclNode.NewPublisher(viper.GetString("topic-name"), ros2msg)
 		if err != nil {
-			fmt.Printf("Error '%+v' SubscriptionCreate.\n", err)
+			fmt.Printf("Error '%+v' rclNode.NewPublisher.\n", err)
 			panic(err)
 		}
 
-		timer, err := ros2.TimerCreate(rclContext, 0, func(timer *ros2.Timer) {
+		timer, err := ros2.NewTimer(rclContext, 0, func(timer *ros2.Timer) {
 			fmt.Printf("%+v\n", ros2msg)
-			ros2.PublisherPublish(rclContext, publisher, ros2msg)
+			publisher.Publish(ros2msg)
 		})
 		if err != nil {
 			fmt.Printf("Error '%+v' TimerCreate.\n", err)
 			panic(err)
 		}
 
-		timers := []ros2.Timer{*timer}
-		waitSet, err := ros2.WaitSetCreate(rclContext, nil, timers, 1000*time.Millisecond)
+		timers := []*ros2.Timer{timer}
+		waitSet, err := ros2.NewWaitSet(rclContext, nil, timers, 1000*time.Millisecond)
 		if err != nil {
 			fmt.Printf("Error '%+v' WaitSetCreate.\n", err)
 			panic(err)
 		}
 
-		err = ros2.WaitSetRun(waitSet)
+		err = waitSet.Run()
 		if err != nil {
 			fmt.Printf("Error '%+v' WaitSetRun.\n", err)
 			panic(err)

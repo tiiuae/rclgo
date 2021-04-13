@@ -11,8 +11,11 @@ package gogen
 
 import (
 	"encoding/csv"
+	"errors"
 	"fmt"
 	"io"
+	"os"
+	"path/filepath"
 	"strings"
 	"unicode"
 
@@ -67,6 +70,37 @@ func camelToSnake(in string) string {
 		}
 	}
 	return sb.String()
+}
+
+func commentSerializer(lineComment string, preComments *strings.Builder) string {
+	if lineComment != "" && preComments.Len() > 0 {
+		return lineComment + `. ` + preComments.String()
+	}
+	if lineComment != "" {
+		return lineComment
+	}
+	if preComments.Len() > 0 {
+		return preComments.String()
+	}
+	return ""
+}
+
+/*
+The simple linux mkdir -p without all the Go-fuzz
+*/
+func mkdir_p(destFilePath string) (*os.File, error) {
+	_, err := os.Stat(destFilePath)
+	if errors.Is(err, os.ErrNotExist) {
+		err = os.MkdirAll(filepath.Dir(destFilePath), os.ModePerm)
+		if err != nil {
+			return nil, err
+		}
+	}
+	destFile, err := os.Create(destFilePath)
+	if err != nil {
+		return nil, err
+	}
+	return destFile, nil
 }
 
 func normalizeMsgDefaultArrayValue(defaultsField string) string {

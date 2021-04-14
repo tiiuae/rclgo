@@ -14,12 +14,10 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
-# VSCode config
-.vscode
-
 # compiled binary
 cmd/rclgo-gen/rclgo-gen
 cmd/rclgo/rclgo
+cmd/ros2ctest/roslogging
 
 #go tool cgo output
 _obj

@@ -1,0 +1,34 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "type": "shell",
+        "label": "gcc build active file",
+        "command": "/usr/bin/gcc",
+        "args": ["-g",
+            "-L/opt/ros/foxy/lib",
+            "-I/opt/ros/foxy/include",
+            "-Wl,-rpath=/opt/ros/foxy/lib",
+            "${file}",
+            "-o", "${fileDirname}/${fileBasenameNoExtension}",
+            "-lrcl", "-lrcutils", "-lrmw", "-lrosidl_runtime_c", "-lrosidl_typesupport_c", "-lstd_msgs__rosidl_generator_c", "-lstd_msgs__rosidl_typesupport_c", "-lrcutils", "-lrmw_implementation", "-lpx4_msgs__rosidl_typesupport_c", "-lnav_msgs__rosidl_typesupport_c", "-lnav_msgs__rosidl_generator_c",],
+        "options": {
+//          "cwd": "/usr/bin",
+          "env": {
+            "AMENT_CURRENT_PREFIX": "/opt/ros/foxy",
+            "AMENT_SHELL": "bash",
+            "LD_LIBRARY_PATH": "/opt/ros/foxy/opt/yaml_cpp_vendor/lib:/opt/ros/foxy/lib/x86_64-linux-gnu:/opt/ros/foxy/lib",
+            "ROS_DISTRO": "foxy",
+            "ROS_PYTHON_VERSION": "3",
+            "ROS_VERSION": "2",
+            "GODEBUG": "cgocheck=0"
+          },
+        },
+        "problemMatcher": ["$gcc"],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        }
+      }
+    ]
+  }

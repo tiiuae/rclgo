@@ -1,0 +1,15 @@
+{
+    "C_Cpp.default.includePath": [
+        "/opt/ros/foxy/include"
+    ],
+    "files.associations": {
+        "string.h": "c",
+        "subscription.h": "c",
+        "message_type_support_struct.h": "c"
+    },
+    "go.testEnvVars": {
+        "LD_LIBRARY_PATH": "/opt/ros/foxy/opt/yaml_cpp_vendor/lib:/opt/ros/foxy/lib/x86_64-linux-gnu:/opt/ros/foxy/lib",
+    },
+    "go.lintTool": "golint",
+    "go.lintOnSave": "off"
+}

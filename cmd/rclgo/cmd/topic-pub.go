@@ -30,7 +30,7 @@ var pubCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Printf("%v\n", viper.AllSettings())
 
-		rclContext, err := ros2.NewRCLContext(nil, ros2.RCL_SYSTEM_TIME, nil)
+		rclContext, err := ros2.NewRCLContext(nil, 0, ros2.NewRCLArgsMust(viper.GetString("ros-args")))
 		if err != nil {
 			fmt.Printf("Error '%+v' ros2.NewRCLContext.\n", err)
 			panic(err)

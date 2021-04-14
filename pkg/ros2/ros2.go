@@ -17,10 +17,13 @@ package ros2
 #include <string.h>
 
 #include <rcutils/allocator.h>
+#include <rcutils/error_handling.h>
 #include <rcutils/types/string_array.h>
+#include <rcl/arguments.h>
 #include <rcl/graph.h>
 #include <rcl/init.h>
 #include <rcl/init_options.h>
+#include <rcl/logging.h>
 #include <rcl/subscription.h>
 #include <rcl/timer.h>
 #include <rcl/time.h>
@@ -33,7 +36,6 @@ package ros2
 #include <rmw/types.h>
 #include <rmw/topic_endpoint_info.h>
 #include <rmw/topic_endpoint_info_array.h>
-
 
 ///
 /// These gowrappers are needed to access C arrays
@@ -80,10 +82,13 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"runtime"
 	"strings"
 	"time"
 	"unsafe"
 
+	"github.com/google/shlex"
+	"github.com/kivilahtio/go-re/v0"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
 )
 
@@ -185,15 +190,91 @@ var RCL_ROS_TIME Rcl_clock_type_t = 1
 var RCL_SYSTEM_TIME Rcl_clock_type_t = 2
 var RCL_STEADY_TIME Rcl_clock_type_t = 3
 
+// ROS2 RCL is configured via CLI arguments, so merge them from different sources. See. http://design.ros2.org/articles/ros_command_line_arguments.html
+type RCLArgs struct {
+	goArgs []string
+	cArgv  **C.char
+	cArgc  C.int
+}
+
+/*
+NewRCLArgs parses ROS2 RCL commandline arguments from the given rclArgs or from os.Args if rclArgs is nil
+returns a string containing the prepared parameters in the form the RCL can understand them
+
+C memory is freed when the RCLArgs-object is GC'd
+*/
+func NewRCLArgs(rclArgs string) (*RCLArgs, RCLError) {
+	var goArgs []string
+	var err error
+	rclArgs = strings.Trim(rclArgs, `'"`)
+	if r := re.Mr(rclArgs, `m!--ros-args\s+(.+?)\s*(?:--|$)!`); r.Matches > 0 {
+		goArgs, err = shlex.Split(r.S[0])
+		if err != nil {
+			return nil, &RCL_RET_INVALID_ARGUMENT{RCL_RET_struct{1003, fmt.Sprintf("%s", err), ""}}
+		}
+	} else if rclArgs != "" {
+		goArgs, err = shlex.Split("--ros-args " + rclArgs)
+		if err != nil {
+			return nil, &RCL_RET_INVALID_ARGUMENT{RCL_RET_struct{1003, fmt.Sprintf("%s", err), ""}}
+		}
+	} else if r := re.Mr(strings.Join(os.Args, " "), `m!--ros-args\s+(.+?)\s*(?:--|$)!`); r.Matches > 0 {
+		goArgs = os.Args
+	}
+
+	ra := &RCLArgs{goArgs: goArgs, cArgc: C.int(len(goArgs))}
+	if len(goArgs) > 0 {
+		// Turn the Golang []string into stone, erm. **C.char
+		argc := C.int(len(goArgs))
+		argv := (**C.char)(C.malloc((C.size_t)((C.int)(unsafe.Sizeof(uintptr(1))) * argc)))
+		for i, arg := range goArgs {
+			str := C.CString(arg)
+			C.setString(argv, C.int(i), str)
+		}
+		ra.cArgv = argv
+	} else {
+		ra.cArgv = nil
+	}
+
+	runtime.SetFinalizer(ra, func(obj *RCLArgs) {
+		ra.Fini()
+	})
+	return ra, nil
+}
+
+/*
+Fini frees the allocated memory
+*/
+func (self *RCLArgs) Fini() {
+	for i := 0; i < (int)(self.cArgc); i++ {
+		cIdx := unsafe.Pointer(
+			uintptr(unsafe.Pointer(self.cArgv)) + (unsafe.Sizeof(uintptr(1)) * uintptr(i)),
+		)
+		C.free(cIdx)
+	}
+	C.free(unsafe.Pointer(self.cArgv))
+	C.free(unsafe.Pointer(&self.cArgc))
+}
+
+/*
+NewRCLArgsMust behaves the same as NewRCLArgs except on error it panic()s!
+*/
+func NewRCLArgsMust(rclArgs string) *RCLArgs {
+	args, err := NewRCLArgs(rclArgs)
+	if err != nil {
+		panic(err)
+	}
+	return args
+}
+
 /*
 NewRCLContext initializes a new RCL context.
 
 parent can be nil, a new context.Background is created
 clockType can be nil, then no clock is initialized, you can later initialize it with NewClock()
-osArgs can be nil
+rclArgs can be nil
 */
-func NewRCLContext(parent context.Context, clockType Rcl_clock_type_t, osArgs []string) (RCLContext, RCLError) {
-	rclEntities, rclError := rclInit(osArgs)
+func NewRCLContext(parent context.Context, clockType Rcl_clock_type_t, rclArgs *RCLArgs) (RCLContext, RCLError) {
+	rclEntities, rclError := rclInit(rclArgs)
 	if rclError != nil {
 		return nil, rclError
 	}
@@ -227,13 +308,10 @@ func NewRCLContextChild(parent context.Context) (*RCLContext, RCLError) {
 	return nil, nil
 }
 
-func rclInit(osArgs []string) (*rclEntityWrapper, RCLError) {
+func rclInit(rclArgs *RCLArgs) (*rclEntityWrapper, RCLError) {
 	var rc C.rcl_ret_t
 
-	rclEntityWrapper := rclEntityWrapper{}
-	rclEntityWrapper.rcl_context_t = (*C.rcl_context_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_context_t{}))))
-	*rclEntityWrapper.rcl_context_t = C.rcl_get_zero_initialized_context()
-
+	rclEntityWrapper := &rclEntityWrapper{}
 	/* Instead of receiving the rcl_allocator_t as a golang struct,
 	   prepare C memory from heap to receive a copy of the rcl allocator.
 	   This way Golang wont mess with the rcl_allocator_t memory location
@@ -242,6 +320,11 @@ func rclInit(osArgs []string) (*rclEntityWrapper, RCLError) {
 	*rclEntityWrapper.rcl_allocator_t = C.rcl_get_default_allocator()
 	// TODO: Free C.free(rclEntityWrapper.rcl_allocator)
 
+	rclInitLogging(rclArgs)
+
+	rclEntityWrapper.rcl_context_t = (*C.rcl_context_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_context_t{}))))
+	*rclEntityWrapper.rcl_context_t = C.rcl_get_zero_initialized_context()
+
 	rclEntityWrapper.rcl_init_options_t = (*C.rcl_init_options_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_init_options_t{}))))
 	*rclEntityWrapper.rcl_init_options_t = C.rcl_get_zero_initialized_init_options()
 	rc = C.rcl_init_options_init(rclEntityWrapper.rcl_init_options_t, *rclEntityWrapper.rcl_allocator_t)
@@ -249,30 +332,38 @@ func rclInit(osArgs []string) (*rclEntityWrapper, RCLError) {
 		rclEntityWrapper.Fini()
 		return nil, ErrorsCast(rc)
 	}
-	rc = rclInitWithGoARGV(osArgs, rclEntityWrapper)
+	rc = rclInitWithGoARGV(rclArgs, rclEntityWrapper)
 	if rc != C.RCL_RET_OK {
 		rclEntityWrapper.Fini()
 		return nil, ErrorsCast(rc)
 	}
 
-	return &rclEntityWrapper, nil
+	return rclEntityWrapper, nil
 }
 
-func rclInitWithGoARGV(osArgs []string, rclEntityWrapper rclEntityWrapper) C.int {
-	if osArgs == nil {
-		osArgs = os.Args
-	}
-	argc := C.int(len(osArgs))
-	argv := (**C.char)(C.malloc((C.size_t)((C.int)(unsafe.Sizeof(uintptr(1))) * argc)))
-	for i, arg := range osArgs {
-		str := C.CString(arg)
-		C.setString(argv, C.int(i), str)
-		defer C.free(unsafe.Pointer(str))
+func rclInitWithGoARGV(rclArgs *RCLArgs, rclEntityWrapper *rclEntityWrapper) C.int {
+	if rclArgs == nil {
+		rclArgs, _ = NewRCLArgs("")
 	}
 
-	defer C.free(unsafe.Pointer(argv))
+	return C.rcl_init(rclArgs.cArgc, rclArgs.cArgv, rclEntityWrapper.rcl_init_options_t, rclEntityWrapper.rcl_context_t)
+}
 
-	return C.rcl_init(argc, argv, rclEntityWrapper.rcl_init_options_t, rclEntityWrapper.rcl_context_t)
+func rclInitLogging(rclArgs *RCLArgs) RCLError {
+	var rc C.rcl_ret_t
+	var allocator C.rcl_allocator_t = C.rcl_get_default_allocator()
+
+	var rcl_arguments C.rcl_arguments_t = C.rcl_get_zero_initialized_arguments()
+	rc = C.rcl_parse_arguments(rclArgs.cArgc, rclArgs.cArgv, allocator, &rcl_arguments)
+	if rc != C.RCL_RET_OK {
+		return ErrorsCastC(rc, "rclInitLogging -> rcl_parse_arguments()")
+	}
+
+	rc = C.rcl_logging_configure(&rcl_arguments, &allocator)
+	if rc != C.RCL_RET_OK {
+		return ErrorsCastC(rc, "rclInitLogging -> rcl_logging_configure()")
+	}
+	return nil
 }
 
 func NewNode(rclContext RCLContext, node_name string, namespace string) (*Node, RCLError) {
@@ -368,7 +459,7 @@ func NewTimer(rclContext RCLContext, timeout time.Duration, timer_callback func(
 	timer.rcl_timer_t = (*C.rcl_timer_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_timer_t{}))))
 	*timer.rcl_timer_t = C.rcl_get_zero_initialized_timer()
 
-	if re.clock.rcl_clock_t == nil {
+	if re.clock == nil {
 		var err RCLError
 		_, err = NewClock(rclContext, C.RCL_SYSTEM_TIME)
 		if err != nil {
@@ -561,6 +652,10 @@ func (self *WaitSet) Run() RCLError {
 				return ErrorsCastC(rc, fmt.Sprintf("rcl_wait_set_add_timer() failed for wait_set='%v'", self))
 			}
 		}
+		rc = C.rcl_wait(self.rcl_wait_set_t, (C.long)(self.Timeout))
+		if rc == C.RCL_RET_TIMEOUT {
+			continue
+		}
 		/*
 			rcc := make(chan C.int)
 			go func () {
@@ -616,7 +711,8 @@ func (self *WaitSet) Run() RCLError {
 
 			rc = C.rcl_take(subscription.rcl_subscription_t, ros2_msg_receive_buffer, rmw_message_info, nil)
 			if rc != C.RCL_RET_OK {
-				return ErrorsCastC(rc, fmt.Sprintf("rcl_take() failed for waitSet='%+v', subscription='%+v'", self, subscription))
+				fmt.Printf("rcl_take() failed for waitSet='%+v', subscription='%+v'\n", self, subscription)
+				//return ErrorsCastC(rc, fmt.Sprintf("rcl_take() failed for waitSet='%+v', subscription='%+v'", self, subscription))
 			}
 			rmwMessageInfo := &RmwMessageInfo{
 				SourceTimestamp:   time.Unix(0, int64(rmw_message_info.source_timestamp)),
@@ -626,4 +722,38 @@ func (self *WaitSet) Run() RCLError {
 			subscription.Callback(subscription, ros2_msg_receive_buffer, rmwMessageInfo)
 		}
 	}
+}
+
+/// Return the error message followed by `, at <file>:<line>` if set, else "error not set".
+/**
+ * This function is "safe" because it returns a copy of the current error
+ * string or one containing the string "error not set" if no error was set.
+ * This ensures that the copy is owned by the calling thread and is therefore
+ * never invalidated by other error handling calls, and that the C string
+ * inside is always valid and null terminated.
+ *
+ * \return The current error string, with file and line number, or "error not set" if not set.
+ */
+func ErrorString() string {
+	var rcutils_error_string_str = C.rcutils_get_error_string().str // TODO: Do I need to free this or not?
+
+	// Because the C string is null-terminated, we need to find the NULL-character to know where the string ends.
+	// Otherwise we create a Go string of length 1024 of NULLs and gibberish
+	bytes := make([]byte, len(rcutils_error_string_str))
+	for i := 0; i < len(rcutils_error_string_str); i++ {
+		if byte(rcutils_error_string_str[i]) == 0x00 {
+			return string(bytes[:i]) // ending slice offset is exclusive
+		}
+		bytes[i] = byte(rcutils_error_string_str[i])
+	}
+	return string(bytes)
+
+	// This would be much faster I guess.
+	//upt := (*[1024]byte)(unsafe.Pointer(uintptr(unsafe.Pointer(&rcutils_error_string_str))))
+	//return string((*upt)[:])
+}
+
+/// Reset the error state by clearing any previously set error state.
+func ErrorReset() {
+	C.rcutils_reset_error()
 }

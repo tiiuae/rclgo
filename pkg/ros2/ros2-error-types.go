@@ -27,6 +27,7 @@ import "C"
 import (
 	"container/list"
 	"fmt"
+	"runtime"
 )
 
 /*
@@ -86,96 +87,105 @@ type RCL_RET_struct struct {
 }
 
 func (e *RCL_RET_struct) Error() string {
-	return errStr("RCL_RET_ERROR.", e.ctx)
+	return e.ctx
 }
-func (e *RCL_RET_struct) rcl_ret() int {
-	return e.rcl_ret_t
+func (e *RCL_RET_struct) Trace() string {
+	return e.trace
 }
 func (e *RCL_RET_struct) context() string {
 	return e.ctx
 }
+func (e *RCL_RET_struct) rcl_ret() int {
+	return e.rcl_ret_t
+}
 
+func ErrorsBuildContext(e RCLError, ctx string, stackTrace string) string {
+	return fmt.Sprintf("[%T]", e) + " " + ctx + " " + ErrorString() + "\n" + stackTrace + "\n"
+}
 func ErrorsCast(rcl_ret_t C.rcl_ret_t) RCLError {
 	return ErrorsCastC(rcl_ret_t, "")
 }
 func ErrorsCastC(rcl_ret_t C.rcl_ret_t, context string) RCLError {
+	stackTraceBuffer := make([]byte, 2048)
+	runtime.Stack(stackTraceBuffer, false) // Get stack trace of the current running thread only
+
 	// https://stackoverflow.com/questions/9928221/table-of-functions-vs-switch-in-golang
 	// switch-case is faster thanks to compiler optimization than a dispatcher?
 	switch rcl_ret_t {
 	case C.RCL_RET_ALREADY_INIT:
-		return &RCL_RET_ALREADY_INIT{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 100, ctx: context}}
+		return &RCL_RET_ALREADY_INIT{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 100, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_ALREADY_INIT{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_NOT_INIT:
-		return &RCL_RET_NOT_INIT{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 101, ctx: context}}
+		return &RCL_RET_NOT_INIT{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 101, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_NOT_INIT{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_MISMATCHED_RMW_ID:
-		return &RCL_RET_MISMATCHED_RMW_ID{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 102, ctx: context}}
+		return &RCL_RET_MISMATCHED_RMW_ID{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 102, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_MISMATCHED_RMW_ID{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_TOPIC_NAME_INVALID:
-		return &RCL_RET_TOPIC_NAME_INVALID{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 103, ctx: context}}
+		return &RCL_RET_TOPIC_NAME_INVALID{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 103, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_TOPIC_NAME_INVALID{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_SERVICE_NAME_INVALID:
-		return &RCL_RET_SERVICE_NAME_INVALID{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 104, ctx: context}}
+		return &RCL_RET_SERVICE_NAME_INVALID{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 104, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_SERVICE_NAME_INVALID{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_UNKNOWN_SUBSTITUTION:
-		return &RCL_RET_UNKNOWN_SUBSTITUTION{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 105, ctx: context}}
+		return &RCL_RET_UNKNOWN_SUBSTITUTION{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 105, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_UNKNOWN_SUBSTITUTION{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_ALREADY_SHUTDOWN:
-		return &RCL_RET_ALREADY_SHUTDOWN{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 106, ctx: context}}
+		return &RCL_RET_ALREADY_SHUTDOWN{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 106, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_ALREADY_SHUTDOWN{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_NODE_INVALID:
-		return &RCL_RET_NODE_INVALID{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 200, ctx: context}}
+		return &RCL_RET_NODE_INVALID{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 200, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_NODE_INVALID{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_NODE_INVALID_NAME:
-		return &RCL_RET_NODE_INVALID_NAME{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 201, ctx: context}}
+		return &RCL_RET_NODE_INVALID_NAME{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 201, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_NODE_INVALID_NAME{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_NODE_INVALID_NAMESPACE:
-		return &RCL_RET_NODE_INVALID_NAMESPACE{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 202, ctx: context}}
+		return &RCL_RET_NODE_INVALID_NAMESPACE{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 202, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_NODE_INVALID_NAMESPACE{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_NODE_NAME_NON_EXISTENT:
-		return &RCL_RET_NODE_NAME_NON_EXISTENT{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 203, ctx: context}}
+		return &RCL_RET_NODE_NAME_NON_EXISTENT{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 203, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_NODE_NAME_NON_EXISTENT{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_PUBLISHER_INVALID:
-		return &RCL_RET_PUBLISHER_INVALID{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 300, ctx: context}}
+		return &RCL_RET_PUBLISHER_INVALID{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 300, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_PUBLISHER_INVALID{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_SUBSCRIPTION_INVALID:
-		return &RCL_RET_SUBSCRIPTION_INVALID{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 400, ctx: context}}
+		return &RCL_RET_SUBSCRIPTION_INVALID{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 400, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_SUBSCRIPTION_INVALID{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_SUBSCRIPTION_TAKE_FAILED:
-		return &RCL_RET_SUBSCRIPTION_TAKE_FAILED{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 401, ctx: context}}
+		return &RCL_RET_SUBSCRIPTION_TAKE_FAILED{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 401, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_SUBSCRIPTION_TAKE_FAILED{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_CLIENT_INVALID:
-		return &RCL_RET_CLIENT_INVALID{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 500, ctx: context}}
+		return &RCL_RET_CLIENT_INVALID{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 500, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_CLIENT_INVALID{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_CLIENT_TAKE_FAILED:
-		return &RCL_RET_CLIENT_TAKE_FAILED{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 501, ctx: context}}
+		return &RCL_RET_CLIENT_TAKE_FAILED{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 501, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_CLIENT_TAKE_FAILED{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_SERVICE_INVALID:
-		return &RCL_RET_SERVICE_INVALID{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 600, ctx: context}}
+		return &RCL_RET_SERVICE_INVALID{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 600, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_SERVICE_INVALID{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_SERVICE_TAKE_FAILED:
-		return &RCL_RET_SERVICE_TAKE_FAILED{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 601, ctx: context}}
+		return &RCL_RET_SERVICE_TAKE_FAILED{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 601, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_SERVICE_TAKE_FAILED{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_TIMER_INVALID:
-		return &RCL_RET_TIMER_INVALID{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 800, ctx: context}}
+		return &RCL_RET_TIMER_INVALID{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 800, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_TIMER_INVALID{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_TIMER_CANCELED:
-		return &RCL_RET_TIMER_CANCELED{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 801, ctx: context}}
+		return &RCL_RET_TIMER_CANCELED{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 801, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_TIMER_CANCELED{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_WAIT_SET_INVALID:
-		return &RCL_RET_WAIT_SET_INVALID{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 900, ctx: context}}
+		return &RCL_RET_WAIT_SET_INVALID{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 900, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_WAIT_SET_INVALID{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_WAIT_SET_EMPTY:
-		return &RCL_RET_WAIT_SET_EMPTY{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 901, ctx: context}}
+		return &RCL_RET_WAIT_SET_EMPTY{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 901, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_WAIT_SET_EMPTY{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_WAIT_SET_FULL:
-		return &RCL_RET_WAIT_SET_FULL{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 902, ctx: context}}
+		return &RCL_RET_WAIT_SET_FULL{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 902, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_WAIT_SET_FULL{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_INVALID_REMAP_RULE:
-		return &RCL_RET_INVALID_REMAP_RULE{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 1001, ctx: context}}
+		return &RCL_RET_INVALID_REMAP_RULE{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 1001, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_INVALID_REMAP_RULE{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_WRONG_LEXEME:
-		return &RCL_RET_WRONG_LEXEME{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 1002, ctx: context}}
+		return &RCL_RET_WRONG_LEXEME{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 1002, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_WRONG_LEXEME{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_INVALID_ROS_ARGS:
-		return &RCL_RET_INVALID_ROS_ARGS{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 1003, ctx: context}}
+		return &RCL_RET_INVALID_ROS_ARGS{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 1003, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_INVALID_ROS_ARGS{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_INVALID_PARAM_RULE:
-		return &RCL_RET_INVALID_PARAM_RULE{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 1010, ctx: context}}
+		return &RCL_RET_INVALID_PARAM_RULE{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 1010, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_INVALID_PARAM_RULE{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_INVALID_LOG_LEVEL_RULE:
-		return &RCL_RET_INVALID_LOG_LEVEL_RULE{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 1020, ctx: context}}
+		return &RCL_RET_INVALID_LOG_LEVEL_RULE{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 1020, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_INVALID_LOG_LEVEL_RULE{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_EVENT_INVALID:
-		return &RCL_RET_EVENT_INVALID{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 2000, ctx: context}}
+		return &RCL_RET_EVENT_INVALID{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 2000, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_EVENT_INVALID{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_EVENT_TAKE_FAILED:
-		return &RCL_RET_EVENT_TAKE_FAILED{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 2001, ctx: context}}
+		return &RCL_RET_EVENT_TAKE_FAILED{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 2001, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RCL_RET_EVENT_TAKE_FAILED{}, context, string(stackTraceBuffer))}}
 	case C.RMW_RET_OK:
-		return &RMW_RET_OK{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 0, ctx: context}}
+		return &RMW_RET_OK{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 0, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RMW_RET_OK{}, context, string(stackTraceBuffer))}}
 	case C.RMW_RET_ERROR:
-		return &RMW_RET_ERROR{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 1, ctx: context}}
+		return &RMW_RET_ERROR{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 1, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RMW_RET_ERROR{}, context, string(stackTraceBuffer))}}
 	case C.RMW_RET_TIMEOUT:
-		return &RMW_RET_TIMEOUT{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 2, ctx: context}}
+		return &RMW_RET_TIMEOUT{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 2, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RMW_RET_TIMEOUT{}, context, string(stackTraceBuffer))}}
 	case C.RMW_RET_UNSUPPORTED:
-		return &RMW_RET_UNSUPPORTED{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 3, ctx: context}}
+		return &RMW_RET_UNSUPPORTED{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 3, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RMW_RET_UNSUPPORTED{}, context, string(stackTraceBuffer))}}
 	case C.RMW_RET_BAD_ALLOC:
-		return &RMW_RET_BAD_ALLOC{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 10, ctx: context}}
+		return &RMW_RET_BAD_ALLOC{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 10, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RMW_RET_BAD_ALLOC{}, context, string(stackTraceBuffer))}}
 	case C.RMW_RET_INVALID_ARGUMENT:
-		return &RMW_RET_INVALID_ARGUMENT{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 11, ctx: context}}
+		return &RMW_RET_INVALID_ARGUMENT{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 11, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RMW_RET_INVALID_ARGUMENT{}, context, string(stackTraceBuffer))}}
 	case C.RMW_RET_INCORRECT_RMW_IMPLEMENTATION:
-		return &RMW_RET_INCORRECT_RMW_IMPLEMENTATION{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 12, ctx: context}}
+		return &RMW_RET_INCORRECT_RMW_IMPLEMENTATION{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: 12, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&RMW_RET_INCORRECT_RMW_IMPLEMENTATION{}, context, string(stackTraceBuffer))}}
 
 	default:
 		return &RCL_RET_GOLANG_UNKNOWN_RET_TYPE{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: (int)(rcl_ret_t), ctx: context}}

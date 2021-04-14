@@ -41,7 +41,7 @@ func init() {
 	rootCmd.PersistentFlags().StringP("config-file", "c", "", "config file (default is $HOME/.rclgo.yaml)")
 	rootCmd.PersistentFlags().StringP("node-name", "n", datagenerator.NodeName(), "Node name")
 	rootCmd.PersistentFlags().StringP("namespace", "s", "/", "Namespace name")
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.PersistentFlags().StringP("ros-args", "", "", "See. http://design.ros2.org/articles/ros_command_line_arguments.html . Anything which is between quotation marks (\"\") is forwarded to the ROS2 rcl init. Example --ros-args \"--log-level DEBUG --enclave=\"/foo/bar\"\"")
 	viper.BindPFlags(rootCmd.PersistentFlags())
 	viper.BindPFlags(rootCmd.LocalFlags())
 }

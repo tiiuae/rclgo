@@ -28,17 +28,14 @@ var echoCmd = &cobra.Command{
 	Short: "Output messages from a topic",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-
-		rclContext, err := ros2.NewRCLContext(nil, 0, nil)
+		rclContext, err := ros2.NewRCLContext(nil, 0, ros2.NewRCLArgsMust(viper.GetString("ros-args")))
 		if err != nil {
-			fmt.Printf("Error '%+v' ros2.NewRCLContext.\n", err)
-			panic(err)
+			panic(fmt.Sprintf("Error '%+v' ros2.NewRCLContext.\n", err))
 		}
 
 		rclNode, err := ros2.NewNode(rclContext, viper.GetString("node-name"), viper.GetString("namespace"))
 		if err != nil {
-			fmt.Printf("Error '%+v' ros2.NewNode.\n", err)
-			panic(err)
+			panic(fmt.Sprintf("Error '%+v' ros2.NewNode.\n", err))
 		}
 
 		ros2msg := ros2_type_dispatcher.TranslateROS2MsgTypeNameToTypeMust(viper.GetString("msg-type"))
@@ -50,21 +47,18 @@ var echoCmd = &cobra.Command{
 				fmt.Printf("SourceTimestamp='%s' ReceivedTimestamp='%s'\n", rmwMessageInfo.SourceTimestamp.Format(time.RFC3339Nano), rmwMessageInfo.ReceivedTimestamp.Format(time.RFC3339Nano))
 			})
 		if err != nil {
-			fmt.Printf("Error '%+v' SubscriptionCreate.\n", err)
-			panic(err)
+			panic(fmt.Sprintf("Error '%+v' SubscriptionCreate.\n", err))
 		}
 
 		subscriptions := []*ros2.Subscription{subscription}
 		waitSet, err := ros2.NewWaitSet(rclContext, subscriptions, nil, 1000*time.Millisecond)
 		if err != nil {
-			fmt.Printf("Error '%+v' WaitSetCreate.\n", err)
-			panic(err)
+			panic(fmt.Sprintf("Error '%+v' WaitSetCreate.\n", err))
 		}
 
 		err = waitSet.Run()
 		if err != nil {
-			fmt.Printf("Error '%+v' WaitSetRun.\n", err)
-			panic(err)
+			panic(fmt.Sprintf("Error '%+v' WaitSetRun.\n", err))
 		}
 	},
 	Args: func(cmd *cobra.Command, args []string) error {

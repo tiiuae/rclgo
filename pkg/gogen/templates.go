@@ -296,6 +296,7 @@ import "C"
 import (
 	"container/list"
 	"fmt"
+	"runtime"
 )
 
 /*
@@ -353,26 +354,36 @@ type RCL_RET_struct struct {
 	ctx       string
 	trace     string
 }
+
 func (e *RCL_RET_struct) Error() string {
-	return errStr("RCL_RET_ERROR.", e.ctx)
+	return e.ctx
 }
-func (e *RCL_RET_struct) rcl_ret() int {
-	return e.rcl_ret_t
+func (e *RCL_RET_struct) Trace() string {
+	return e.trace
 }
 func (e *RCL_RET_struct) context() string {
 	return e.ctx
 }
+func (e *RCL_RET_struct) rcl_ret() int {
+	return e.rcl_ret_t
+}
 
+func ErrorsBuildContext(e RCLError, ctx string, stackTrace string) string {
+	return fmt.Sprintf("%T", e) + ctx + ErrorString() + "\n" + stackTrace + "\n"
+}
 func ErrorsCast(rcl_ret_t C.rcl_ret_t) RCLError {
 	return ErrorsCastC(rcl_ret_t, "")
 }
 func ErrorsCastC(rcl_ret_t C.rcl_ret_t, context string) RCLError {
+	stackTraceBuffer := make([]byte, 2048)
+	runtime.Stack(stackTraceBuffer, false) // Get stack trace of the current running thread only
+
 	// https://stackoverflow.com/questions/9928221/table-of-functions-vs-switch-in-golang
 	// switch-case is faster thanks to compiler optimization than a dispatcher?
 	switch rcl_ret_t {
 	{{range $e := .ERRORS -}}{{if $e.Rcl_ret_t -}}{{if not (index $P.DEDUP_FILTER $e.Name) -}}
 	case C.{{$e.Name}}:
-		return &{{$e.Name}}{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: {{$e.Rcl_ret_t}}, ctx: context}}
+		return &{{$e.Name}}{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: {{$e.Rcl_ret_t}}, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&{{$e.Name}}{}, context, string(stackTraceBuffer))}}
 	{{""}}
 	{{- end}}{{- end}}{{- end}}
 	default:

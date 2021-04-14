@@ -287,93 +287,15 @@ package ros2
 #cgo LDFLAGS: /home/kivilahtio/install/rclc/lib/librclc.so
 #cgo CFLAGS: -I/opt/ros/foxy/include -I/home/kivilahtio/install/rclc/include/
 
-{{range $i := .ROS2_ERROR_TYPES_C_FILES}}
-#include <{{$i}}>
-{{- end}}
+#include <rcl/types.h>
+#include <rmw/ret_types.h>
 
 */
 import "C"
 import (
-	"container/list"
-	"fmt"
 	"runtime"
 )
 
-/*
-RCLErrors is a list of errors for functions which could return multiple different errors, wrapped in a tight package, easy-to-code.
-*/
-type RCLErrors struct {
-	list.List
-	i *list.Element
-}
-
-func (self *RCLErrors) Next() RCLError {
-	if self.i == nil {
-		self.i = self.Front()
-	}
-	n := self.i.Next()
-	if n != nil {
-		e := n.Value.(RCLError)
-		return e
-	}
-	return nil
-}
-func (self *RCLErrors) Put(e RCLError) *RCLErrors {
-	self.PushBack(e)
-	return self
-}
-
-/*
-RCLErrorsPut has initialization, incrementation, the jizz, jazz and brass all in one! Incredible! Amazing!
-*/
-func RCLErrorsPut(rclErrors *RCLErrors, e RCLError) *RCLErrors {
-	if rclErrors == nil {
-		rclErrors = &RCLErrors{}
-	}
-	return rclErrors.Put(e)
-}
-
-func errStr(strs ...string) string {
-	var msg string
-	for _, v := range strs {
-		if v != "" {
-			msg = fmt.Sprintf("%v: %v", msg, v)
-		}
-	}
-	return msg
-}
-
-type RCLError interface {
-	Error() string // Error implements the Golang Error-interface
-	rcl_ret() int
-	context() string
-}
-
-type RCL_RET_struct struct {
-	rcl_ret_t int
-	ctx       string
-	trace     string
-}
-
-func (e *RCL_RET_struct) Error() string {
-	return e.ctx
-}
-func (e *RCL_RET_struct) Trace() string {
-	return e.trace
-}
-func (e *RCL_RET_struct) context() string {
-	return e.ctx
-}
-func (e *RCL_RET_struct) rcl_ret() int {
-	return e.rcl_ret_t
-}
-
-func ErrorsBuildContext(e RCLError, ctx string, stackTrace string) string {
-	return fmt.Sprintf("%T", e) + ctx + ErrorString() + "\n" + stackTrace + "\n"
-}
-func ErrorsCast(rcl_ret_t C.rcl_ret_t) RCLError {
-	return ErrorsCastC(rcl_ret_t, "")
-}
 func ErrorsCastC(rcl_ret_t C.rcl_ret_t, context string) RCLError {
 	stackTraceBuffer := make([]byte, 2048)
 	runtime.Stack(stackTraceBuffer, false) // Get stack trace of the current running thread only
@@ -383,7 +305,7 @@ func ErrorsCastC(rcl_ret_t C.rcl_ret_t, context string) RCLError {
 	switch rcl_ret_t {
 	{{range $e := .ERRORS -}}{{if $e.Rcl_ret_t -}}{{if not (index $P.DEDUP_FILTER $e.Name) -}}
 	case C.{{$e.Name}}:
-		return &{{$e.Name}}{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: {{$e.Rcl_ret_t}}, trace: string(stackTraceBuffer), ctx: ErrorsBuildContext(&{{$e.Name}}{}, context, string(stackTraceBuffer))}}
+		return &{{$e.Name}}{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: {{$e.Rcl_ret_t}}, trace: string(stackTraceBuffer), ctx: errorsBuildContext(&{{$e.Name}}{}, context, string(stackTraceBuffer))}}
 	{{""}}
 	{{- end}}{{- end}}{{- end}}
 	default:

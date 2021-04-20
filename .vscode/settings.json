@@ -5,7 +5,11 @@
     "files.associations": {
         "string.h": "c",
         "subscription.h": "c",
-        "message_type_support_struct.h": "c"
+        "message_type_support_struct.h": "c",
+        "node.h": "c",
+        "time.h": "c",
+        "error_handling.h": "c",
+        "wait.h": "c"
     },
     "go.testEnvVars": {
         "LD_LIBRARY_PATH": "/opt/ros/foxy/opt/yaml_cpp_vendor/lib:/opt/ros/foxy/lib/x86_64-linux-gnu:/opt/ros/foxy/lib",

@@ -22,6 +22,7 @@ import "C"
 import (
 	"container/list"
 	"fmt"
+	"strings"
 )
 
 /*
@@ -46,6 +47,15 @@ func (self *RCLErrors) Next() RCLError {
 func (self *RCLErrors) Put(e RCLError) *RCLErrors {
 	self.PushBack(e)
 	return self
+}
+func (self *RCLErrors) String() string {
+	sb := strings.Builder{}
+	sb.WriteString("RCLErrors happened:\n")
+	for e := self.List.Front(); e != nil; e.Next() {
+		err := e.Value.(RCLError)
+		sb.WriteString(err.context() + "\n")
+	}
+	return sb.String()
 }
 
 /*

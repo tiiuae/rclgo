@@ -11,13 +11,15 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 	"unsafe"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/tiiuae/rclgo/pkg/ros2"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 
 	_ "github.com/tiiuae/rclgo/pkg/ros2/msgs" // Load all the available ROS2 Message types. In Go one cannot dynamically import.
 )
@@ -28,37 +30,28 @@ var echoCmd = &cobra.Command{
 	Short: "Output messages from a topic",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		rclContext, err := ros2.NewRCLContext(nil, 0, ros2.NewRCLArgsMust(viper.GetString("ros-args")))
-		if err != nil {
-			panic(fmt.Sprintf("Error '%+v' ros2.NewRCLContext.\n", err))
-		}
+		fmt.Printf("%+v\n", viper.AllSettings())
+		// attach sigint & sigterm listeners
+		terminationSignals := make(chan os.Signal, 1)
+		signal.Notify(terminationSignals, syscall.SIGINT, syscall.SIGTERM)
 
-		rclNode, err := ros2.NewNode(rclContext, viper.GetString("node-name"), viper.GetString("namespace"))
-		if err != nil {
-			panic(fmt.Sprintf("Error '%+v' ros2.NewNode.\n", err))
-		}
-
-		ros2msg := ros2_type_dispatcher.TranslateROS2MsgTypeNameToTypeMust(viper.GetString("msg-type"))
-		ros2msgClone := ros2msg.Clone()
-		subscription, err := rclNode.NewSubscription(viper.GetString("topic-name"), ros2msgClone,
-			func(subscription *ros2.Subscription, ros2_msg_receive_buffer unsafe.Pointer, rmwMessageInfo *ros2.RmwMessageInfo) {
-				ros2msgClone.AsGoStruct(ros2_msg_receive_buffer)
-				fmt.Printf("%+v ", ros2msgClone)
-				fmt.Printf("SourceTimestamp='%s' ReceivedTimestamp='%s'\n", rmwMessageInfo.SourceTimestamp.Format(time.RFC3339Nano), rmwMessageInfo.ReceivedTimestamp.Format(time.RFC3339Nano))
+		rclContext, errs := ros2.SubscriberBundle(nil, nil, viper.GetString("namespace"), viper.GetString("node-name"), viper.GetString("topic-name"), viper.GetString("msg-type"), ros2.NewRCLArgsMust(viper.GetString("ros-args")),
+			func(s *ros2.Subscription, p unsafe.Pointer, rmi *ros2.RmwMessageInfo) {
+				msgClone := s.Ros2MsgType.Clone()
+				msgClone.AsGoStruct(p)
+				fmt.Printf("%+v ", msgClone)
+				fmt.Printf("SourceTimestamp='%s' ReceivedTimestamp='%s'\n", rmi.SourceTimestamp.Format(time.RFC3339Nano), rmi.ReceivedTimestamp.Format(time.RFC3339Nano))
 			})
-		if err != nil {
-			panic(fmt.Sprintf("Error '%+v' SubscriptionCreate.\n", err))
+		if errs != nil {
+			fmt.Println(errs)
+			syscall.Kill(syscall.Getpid(), syscall.SIGINT)
 		}
 
-		subscriptions := []*ros2.Subscription{subscription}
-		waitSet, err := ros2.NewWaitSet(rclContext, subscriptions, nil, 1000*time.Millisecond)
-		if err != nil {
-			panic(fmt.Sprintf("Error '%+v' WaitSetCreate.\n", err))
-		}
-
-		err = waitSet.Run()
-		if err != nil {
-			panic(fmt.Sprintf("Error '%+v' WaitSetRun.\n", err))
+		<-terminationSignals
+		fmt.Printf("Closing topic echo\n")
+		errs = ros2.RCLContextFini(rclContext)
+		if errs != nil {
+			fmt.Println(errs)
 		}
 	},
 	Args: func(cmd *cobra.Command, args []string) error {

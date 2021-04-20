@@ -69,6 +69,7 @@ The ROS2 official cli-client uses YAML to define the data payload, so do we.
 func TranslateMsgPayloadYAMLToROS2Msg(yamlString string, ros2msg ros2types.ROS2Msg) (ros2types.ROS2Msg, error) {
 	yamlBytes := []byte(yamlString)
 	ros2msgClone := ros2msg.Clone()
+	ros2msgClone.SetDefaults(nil)
 	err := yaml.Unmarshal(yamlBytes, ros2msgClone)
 	return ros2msgClone, err
 }

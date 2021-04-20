@@ -11,13 +11,15 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/tiiuae/rclgo/pkg/ros2"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
+	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
 
 	_ "github.com/tiiuae/rclgo/pkg/ros2/msgs" // Load all the available ROS2 Message types. In Go one cannot dynamically import.
 )
@@ -28,52 +30,26 @@ var pubCmd = &cobra.Command{
 	Short: "Publish a message to a topic",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("%v\n", viper.AllSettings())
+		fmt.Printf("%+v\n", viper.AllSettings())
+		// attach sigint & sigterm listeners
+		terminationSignals := make(chan os.Signal, 1)
+		signal.Notify(terminationSignals, syscall.SIGINT, syscall.SIGTERM)
 
-		rclContext, err := ros2.NewRCLContext(nil, 0, ros2.NewRCLArgsMust(viper.GetString("ros-args")))
-		if err != nil {
-			fmt.Printf("Error '%+v' ros2.NewRCLContext.\n", err)
-			panic(err)
+		rclContext, errs := ros2.PublisherBundleTimer(nil, nil, viper.GetString("namespace"), viper.GetString("node-name"), viper.GetString("topic-name"), viper.GetString("msg-type"), ros2.NewRCLArgsMust(viper.GetString("ros-args")), 1000*time.Millisecond, viper.GetString("payload"),
+			func(p *ros2.Publisher, m ros2types.ROS2Msg) bool {
+				fmt.Printf("%+v\n", m)
+				return true
+			})
+		if errs != nil {
+			fmt.Println(errs)
+			syscall.Kill(syscall.Getpid(), syscall.SIGINT)
 		}
 
-		rclNode, err := ros2.NewNode(rclContext, viper.GetString("node-name"), viper.GetString("namespace"))
-		if err != nil {
-			fmt.Printf("Error '%+v' ros2.NewNode.\n", err)
-			panic(err)
-		}
-
-		ros2msg := ros2_type_dispatcher.TranslateROS2MsgTypeNameToTypeMust(viper.GetString("msg-type"))
-		ros2msg, err_yaml := ros2_type_dispatcher.TranslateMsgPayloadYAMLToROS2Msg(strings.ReplaceAll(viper.GetString("payload"), "\\n", "\n"), ros2msg)
-		if err_yaml != nil {
-			panic(fmt.Sprintf("Error '%v' unmarshalling YAML '%s' to ROS2 message type '%s'", err_yaml, viper.GetString("payload"), viper.GetString("msg-type")))
-		}
-
-		publisher, err := rclNode.NewPublisher(viper.GetString("topic-name"), ros2msg)
-		if err != nil {
-			fmt.Printf("Error '%+v' rclNode.NewPublisher.\n", err)
-			panic(err)
-		}
-
-		timer, err := ros2.NewTimer(rclContext, 0, func(timer *ros2.Timer) {
-			fmt.Printf("%+v\n", ros2msg)
-			publisher.Publish(ros2msg)
-		})
-		if err != nil {
-			fmt.Printf("Error '%+v' TimerCreate.\n", err)
-			panic(err)
-		}
-
-		timers := []*ros2.Timer{timer}
-		waitSet, err := ros2.NewWaitSet(rclContext, nil, timers, 1000*time.Millisecond)
-		if err != nil {
-			fmt.Printf("Error '%+v' WaitSetCreate.\n", err)
-			panic(err)
-		}
-
-		err = waitSet.Run()
-		if err != nil {
-			fmt.Printf("Error '%+v' WaitSetRun.\n", err)
-			panic(err)
+		<-terminationSignals
+		fmt.Printf("Closing topic pub\n")
+		errs = ros2.RCLContextFini(rclContext)
+		if errs != nil {
+			fmt.Println(errs)
 		}
 	},
 	Args: func(cmd *cobra.Command, args []string) error {

@@ -1,12 +1,18 @@
+/*
+Test script to test ROS2 logging facilities and commandline parameter inputs.
+*/
+
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
 #include <rcl/arguments.h>
+#include <rcl/time.h>
 #include <rcl/init.h>
 #include <rcl/logging.h>
 #include <rcl/node.h>
 #include <rcl/subscription.h>
+#include <rcl/wait.h>
 #include <rcutils/error_handling.h>
 
 #include <rosidl_runtime_c/message_type_support_struct.h>
@@ -69,8 +75,8 @@ int main(int argc, const char** argv) {
         rcutils_reset_error();
     }
 
-	rmw_message_info_t rmw_message_info = rmw_get_zero_initialized_message_info();
-	std_msgs__msg__ColorRGBA* ros2_msg_receive_buffer = std_msgs__msg__ColorRGBA__create();
+    rmw_message_info_t rmw_message_info = rmw_get_zero_initialized_message_info();
+    std_msgs__msg__ColorRGBA* ros2_msg_receive_buffer = std_msgs__msg__ColorRGBA__create();
 
     sleep(2);
 

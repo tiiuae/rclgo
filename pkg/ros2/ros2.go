@@ -289,6 +289,9 @@ func NewRCLArgsMust(rclArgs string) *RCLArgs {
 
 func rclInit(rclArgs *RCLArgs) (*rclEntityWrapper, RCLError) {
 	var rc C.rcl_ret_t
+	if rclArgs == nil {
+		rclArgs, _ = NewRCLArgs("")
+	}
 
 	rclEntityWrapper := &rclEntityWrapper{}
 	/* Instead of receiving the rcl_allocator_t as a golang struct,
@@ -311,21 +314,14 @@ func rclInit(rclArgs *RCLArgs) (*rclEntityWrapper, RCLError) {
 		rclEntityWrapper.Fini()
 		return nil, ErrorsCast(rc)
 	}
-	rc = rclInitWithGoARGV(rclArgs, rclEntityWrapper)
+
+	rc = C.rcl_init(rclArgs.CArgc, rclArgs.CArgv, rclEntityWrapper.rcl_init_options_t, rclEntityWrapper.rcl_context_t)
 	if rc != C.RCL_RET_OK {
 		rclEntityWrapper.Fini()
 		return nil, ErrorsCast(rc)
 	}
 
 	return rclEntityWrapper, nil
-}
-
-func rclInitWithGoARGV(rclArgs *RCLArgs, rclEntityWrapper *rclEntityWrapper) C.int {
-	if rclArgs == nil {
-		rclArgs, _ = NewRCLArgs("")
-	}
-
-	return C.rcl_init(rclArgs.CArgc, rclArgs.CArgv, rclEntityWrapper.rcl_init_options_t, rclEntityWrapper.rcl_context_t)
 }
 
 func rclInitLogging(rclArgs *RCLArgs) RCLError {

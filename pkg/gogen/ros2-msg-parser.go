@@ -17,15 +17,19 @@ import (
 	"github.com/kivilahtio/go-re/v0"
 )
 
+var goKeywords = map[string]struct{}{
+	"break": {}, "default": {}, "func": {}, "interface": {}, "select": {},
+	"case": {}, "defer": {}, "go": {}, "map": {}, "struct": {},
+	"chan": {}, "else": {}, "goto": {}, "package": {}, "switch": {},
+	"const": {}, "fallthrough": {}, "if": {}, "range": {}, "type": {},
+	"continue": {}, "for": {}, "import": {}, "return": {}, "var": {},
+}
+
 func CName(rosName string) string {
-	switch rosName {
-	case "type":
-		return "_type"
-	case "range":
-		return "_range"
-	default:
-		return rosName
+	if _, ok := goKeywords[rosName]; ok {
+		return "_" + rosName
 	}
+	return rosName
 }
 
 // ParseROS2Message parses a message definition.

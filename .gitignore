@@ -22,4 +22,5 @@ cmd/ros2ctest/roslogging
 #go tool cgo output
 _obj
 
-pkg/ros2/msgs/*
+# generated Go files
+*.gen.go

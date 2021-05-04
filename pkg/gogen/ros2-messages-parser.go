@@ -104,7 +104,7 @@ func ParseMessageMetadataFromPath(p string, md *ROS2Message) error {
 }
 
 func CreateTargetGolangTypeFile(destPathPkgRoot string, md *ROS2Message) (*os.File, error) {
-	destFilePath := filepath.Join(destPathPkgRoot, md.RosPackage, "msg", md.RosMsgName+".go")
+	destFilePath := filepath.Join(destPathPkgRoot, md.RosPackage, "msg", md.RosMsgName+".gen.go")
 	destFile, err := mkdir_p(destFilePath)
 	if err != nil {
 		return nil, err

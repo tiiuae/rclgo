@@ -16,7 +16,7 @@ import (
 
 func GenerateROS2AllMessagesImporter(destPathPkgRoot string, ros2Messages map[string]*ROS2Message) error {
 
-	destFilePath := filepath.Join(destPathPkgRoot, "..", "msgs", "ros2msgs.go")
+	destFilePath := filepath.Join(destPathPkgRoot, "..", "msgs", "ros2msgs.gen.go")
 
 	destFile, err := mkdir_p(destFilePath)
 	if err != nil {

@@ -27,7 +27,7 @@ func prepareErrorTypesCFileMatchingRegexp() {
 }
 
 func GenerateROS2ErrorTypes(rootPath, destPathPkgRoot, rclcPath string) error {
-	destFilePath := filepath.Join(destPathPkgRoot, "..", "ros2-error-types.go")
+	destFilePath := filepath.Join(destPathPkgRoot, "..", "ros2-error-types.gen.go")
 
 	ros2ErrorsList := list.New()
 

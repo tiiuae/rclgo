@@ -16,7 +16,7 @@ import (
 
 func Generate_rosidl_runtime_c_sequence_handlers(destPathPkgRoot string) error {
 
-	destFilePath := filepath.Join(destPathPkgRoot, "..", "rosidl_runtime_c", "Primitives.go")
+	destFilePath := filepath.Join(destPathPkgRoot, "..", "rosidl_runtime_c", "Primitives.gen.go")
 
 	destFile, err := mkdir_p(destFilePath)
 	if err != nil {

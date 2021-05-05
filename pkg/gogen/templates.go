@@ -284,8 +284,6 @@ package ros2
 
 /*
 #cgo LDFLAGS: -L/opt/ros/foxy/lib -Wl,-rpath=/opt/ros/foxy/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lstd_msgs__rosidl_generator_c -lstd_msgs__rosidl_typesupport_c -lrcutils -lrmw_implementation -lpx4_msgs__rosidl_typesupport_c -lnav_msgs__rosidl_typesupport_c -lnav_msgs__rosidl_generator_c
-#cgo LDFLAGS: {{.rclcPath}}/lib/librclc.so
-#cgo CFLAGS: -I/opt/ros/foxy/include -I{{.rclcPath}}/include/
 
 #include <rcl/types.h>
 #include <rmw/ret_types.h>

@@ -24,11 +24,7 @@ var generateCmd = &cobra.Command{
 	Short: "Generate Golang code from available ROS2 message definitions",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		gogen.Generate(
-			viper.GetString("root-path"),
-			viper.GetString("dest-path"),
-			viper.GetString("rclc-path"),
-		)
+		gogen.Generate(viper.GetString("root-path"), viper.GetString("dest-path"))
 	},
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) > 0 {
@@ -64,7 +60,6 @@ func init() {
 	rootCmd.AddCommand(generateCmd)
 	generateCmd.PersistentFlags().StringP("root-path", "r", os.Getenv("AMENT_PREFIX_PATH"), "Root lookup path for ROS2 .msg files. If ROS2 environment is sourced, is autodetected.")
 	generateCmd.PersistentFlags().StringP("dest-path", "d", gogen.GetGoConvertedROS2MsgPackagesDir(), "Destination directory for the Golang typed converted ROS2 messages. ROS2 Message structure is preserved as <ros2-package>/msg/<msg-name>")
-	generateCmd.PersistentFlags().String("rclc-path", os.Getenv("HOME")+"/rclc", "Path to rclc installation.")
 	viper.BindPFlags(generateCmd.PersistentFlags())
 	viper.BindPFlags(generateCmd.LocalFlags())
 }

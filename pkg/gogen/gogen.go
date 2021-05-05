@@ -23,12 +23,12 @@ func GetGoConvertedROS2MsgPackagesDir() string {
 	return filepath.Join(file, "../..", "ros2/msgs")
 }
 
-func Generate(rootPath, destPath, rclcPath string) {
+func Generate(rootPath, destPath string) {
 	err := Generate_rosidl_runtime_c_sequence_handlers(destPath)
 	if err != nil {
 		fmt.Printf("Error: '%+v'\n", err)
 	}
-	err = GenerateROS2ErrorTypes(rootPath, destPath, rclcPath)
+	err = GenerateROS2ErrorTypes(rootPath, destPath)
 	if err != nil {
 		fmt.Printf("Error: '%+v'\n", err)
 	}

@@ -73,6 +73,8 @@ const (
 )
 {{- end }}
 
+// Do not create instances of this type directly. Always use New{{.RosMsgName}}
+// function instead.
 type {{.RosMsgName}} struct {
 	{{- range $k, $v := .Fields }}
 	{{$v.GoName }} {{$v.TypeArray}}{{$v.PkgReference}}{{$v.GoType}}` +
@@ -80,6 +82,7 @@ type {{.RosMsgName}} struct {
 	{{- end }}
 }
 
+// New{{.RosMsgName}} creates a new {{.RosMsgName}} with default values.
 func New{{.RosMsgName}}() *{{.RosMsgName}} {
 	self := {{.RosMsgName}}{}
 	self.SetDefaults(nil)

@@ -1,4 +1,4 @@
-package test
+package ros2
 
 import (
 	"context"
@@ -12,15 +12,14 @@ import (
 	"unsafe"
 
 	. "github.com/smartystreets/goconvey/convey"
-	"github.com/tiiuae/rclgo/pkg/ros2"
 	std_msgs "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	test_msgs "github.com/tiiuae/rclgo/pkg/ros2/msgs/test_msgs/msg"
 )
 
 func TestPubSub(t *testing.T) {
-	var rclContextPub *ros2.Context
-	var rclContextSub *ros2.Context
-	var errsSub, errsPub *ros2.RCLErrors
+	var rclContextPub *Context
+	var rclContextSub *Context
+	var errsSub, errsPub *RCLErrors
 	subChan := make(chan *std_msgs.ColorRGBA, 1)
 	subCtx, cancelSubCtx := context.WithCancel(context.Background())
 	defer cancelSubCtx()
@@ -28,8 +27,8 @@ func TestPubSub(t *testing.T) {
 	Convey("Scenario: Publisher publishes, Subscriber subscribes, garbage is collected", t, func() {
 
 		Convey("Given a Subscriber", func() {
-			rclContextSub, errsSub = ros2.SubscriberBundle(subCtx, rclContextSub, nil, "/test", "", "/topic", "std_msgs/ColorRGBA", ros2.NewRCLArgsMust("--ros-args --log-level DEBUG"),
-				func(s *ros2.Subscription, p unsafe.Pointer, rmi *ros2.RmwMessageInfo) {
+			rclContextSub, errsSub = SubscriberBundle(subCtx, rclContextSub, nil, "/test", "", "/topic", "std_msgs/ColorRGBA", NewRCLArgsMust("--ros-args --log-level DEBUG"),
+				func(s *Subscription, p unsafe.Pointer, rmi *RmwMessageInfo) {
 					m := s.Ros2MsgType.Clone()
 					m.AsGoStruct(p)
 					c := m.(*std_msgs.ColorRGBA)
@@ -38,11 +37,11 @@ func TestPubSub(t *testing.T) {
 			So(errsSub, ShouldBeNil)
 		})
 		Convey("And a Publisher", func() {
-			rclContextPub, _, errsPub = ros2.PublisherBundle(rclContextPub, nil, "/test", "", "/topic", "std_msgs/ColorRGBA", ros2.NewRCLArgsMust("--ros-args --log-level DEBUG"))
+			rclContextPub, _, errsPub = PublisherBundle(rclContextPub, nil, "/test", "", "/topic", "std_msgs/ColorRGBA", NewRCLArgsMust("--ros-args --log-level DEBUG"))
 			So(errsPub, ShouldBeNil)
 		})
 		Convey("And the Subscriber is ready to work", func() {
-			w := rclContextSub.Entities.WaitSets.Front().Value.(*ros2.WaitSet)
+			w := rclContextSub.entities.WaitSets.Front().Value.(*WaitSet)
 			err := w.WaitForReady(5000, 10)
 			So(err, ShouldBeNil)
 		})
@@ -86,8 +85,8 @@ func BenchsittingmarkMemoryLeak(t *testing.B) {
 	var messagesReceived int = 0
 	fmt.Printf("Mem from pmap(1) '%skB' messages '%d'\n", getMemReading(), messagesReceived)
 	for {
-		rclContextSub, errs := ros2.SubscriberBundle(context.Background(), nil, nil, "/test", "", "/topic", "test_msgs/UnboundedSequences", nil,
-			func(s *ros2.Subscription, p unsafe.Pointer, rmi *ros2.RmwMessageInfo) {
+		rclContextSub, errs := SubscriberBundle(context.Background(), nil, nil, "/test", "", "/topic", "test_msgs/UnboundedSequences", nil,
+			func(s *Subscription, p unsafe.Pointer, rmi *RmwMessageInfo) {
 				m := s.Ros2MsgType.Clone()
 				m.AsGoStruct(p)
 				_ = m.(*test_msgs.UnboundedSequences)
@@ -98,12 +97,12 @@ func BenchsittingmarkMemoryLeak(t *testing.B) {
 			panic(errs)
 		}
 
-		err := rclContextSub.Entities.WaitSets.Front().Value.(*ros2.WaitSet).WaitForReady(1000, 10)
+		err := rclContextSub.entities.WaitSets.Front().Value.(*WaitSet).WaitForReady(1000, 10)
 		if err != nil {
 			panic(err)
 		}
 
-		rclContextPub, errs := ros2.PublisherBundleTimer(context.Background(), nil, nil, "/test", "", "/topic", "test_msgs/UnboundedSequences", nil, 1*time.Millisecond, "", nil)
+		rclContextPub, errs := PublisherBundleTimer(context.Background(), nil, nil, "/test", "", "/topic", "test_msgs/UnboundedSequences", nil, 1*time.Millisecond, "", nil)
 		if errs != nil {
 			panic(errs)
 		}
@@ -126,8 +125,8 @@ func BenchsittingmarkMemoryLeak(t *testing.B) {
 func BenchmarkMemoryLeak(t *testing.B) {
 	var messagesReceived int = 0
 	fmt.Printf("Mem from pmap(1) '%skB' messages '%d'\n", getMemReading(), messagesReceived)
-	rclContext, errs := ros2.SubscriberBundle(context.Background(), nil, nil, "/test", "", "/topic", "test_msgs/UnboundedSequences", nil,
-		func(s *ros2.Subscription, p unsafe.Pointer, rmi *ros2.RmwMessageInfo) {
+	rclContext, errs := SubscriberBundle(context.Background(), nil, nil, "/test", "", "/topic", "test_msgs/UnboundedSequences", nil,
+		func(s *Subscription, p unsafe.Pointer, rmi *RmwMessageInfo) {
 			m := s.Ros2MsgType.Clone()
 			m.AsGoStruct(p)
 			_ = m.(*test_msgs.UnboundedSequences)
@@ -138,12 +137,12 @@ func BenchmarkMemoryLeak(t *testing.B) {
 		panic(errs)
 	}
 
-	err := rclContext.Entities.WaitSets.Front().Value.(*ros2.WaitSet).WaitForReady(1000, 10)
+	err := rclContext.entities.WaitSets.Front().Value.(*WaitSet).WaitForReady(1000, 10)
 	if err != nil {
 		panic(err)
 	}
 
-	rclContext, errs = ros2.PublisherBundleTimer(context.Background(), rclContext, nil, "/test", "", "/topic", "test_msgs/UnboundedSequences", nil, 1*time.Millisecond, "", nil)
+	rclContext, errs = PublisherBundleTimer(context.Background(), rclContext, nil, "/test", "", "/topic", "test_msgs/UnboundedSequences", nil, 1*time.Millisecond, "", nil)
 	if errs != nil {
 		panic(errs)
 	}
@@ -165,8 +164,8 @@ func getMemReading() string {
 	return strings.TrimSpace(string(output))
 }
 
-func publishColorRGBA(c *ros2.Context, r, g, b, a float32) ros2.RCLError {
-	p := c.Entities.Publishers.Front().Value.(*ros2.Publisher)
+func publishColorRGBA(c *Context, r, g, b, a float32) RCLError {
+	p := c.entities.Publishers.Front().Value.(*Publisher)
 	m := p.Ros2MsgType.Clone().(*std_msgs.ColorRGBA)
 	m.R = r
 	m.G = g
@@ -175,7 +174,7 @@ func publishColorRGBA(c *ros2.Context, r, g, b, a float32) ros2.RCLError {
 	return p.Publish(m)
 }
 
-func receiveColorRGBA(c *ros2.Context, subChan chan *std_msgs.ColorRGBA, r, g, b, a float32) {
+func receiveColorRGBA(c *Context, subChan chan *std_msgs.ColorRGBA, r, g, b, a float32) {
 	var m *std_msgs.ColorRGBA
 	timeOut(1000, func() {
 		m = <-subChan

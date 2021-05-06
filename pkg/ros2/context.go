@@ -16,7 +16,7 @@ import (
 // Context manages resources for a set of RCL entities.
 type Context struct {
 	WG       *sync.WaitGroup
-	Entities *rclEntityWrapper
+	entities *rclEntityWrapper
 }
 
 /*
@@ -34,7 +34,7 @@ func NewContext(wg *sync.WaitGroup, clockType Rcl_clock_type_t, rclArgs *RCLArgs
 
 	ctx := &Context{
 		WG:       wg,
-		Entities: rclEntities,
+		entities: rclEntities,
 	}
 	if wg == nil {
 		ctx.WG = &sync.WaitGroup{}
@@ -54,36 +54,36 @@ func (c *Context) Close() *RCLErrors {
 	var errs *RCLErrors
 	c.WG.Wait() // Wait for gothreads to quit, before GC:ing. Otherwise a ton of null-pointers await.
 
-	for o := c.Entities.WaitSets.Front(); o != nil; o = o.Next() {
+	for o := c.entities.WaitSets.Front(); o != nil; o = o.Next() {
 		err := o.Value.(*WaitSet).Fini()
 		if err != nil {
 			errs = RCLErrorsPut(errs, err)
 		} else {
-			c.Entities.WaitSets.Remove(o)
+			c.entities.WaitSets.Remove(o)
 		}
 	}
-	for o := c.Entities.Publishers.Front(); o != nil; o = o.Next() {
+	for o := c.entities.Publishers.Front(); o != nil; o = o.Next() {
 		err := o.Value.(*Publisher).Fini()
 		if err != nil {
 			errs = RCLErrorsPut(errs, err)
 		} else {
-			c.Entities.Publishers.Remove(o)
+			c.entities.Publishers.Remove(o)
 		}
 	}
-	for o := c.Entities.Subscriptions.Front(); o != nil; o = o.Next() {
+	for o := c.entities.Subscriptions.Front(); o != nil; o = o.Next() {
 		err := o.Value.(*Subscription).Fini()
 		if err != nil {
 			errs = RCLErrorsPut(errs, err)
 		} else {
-			c.Entities.Subscriptions.Remove(o)
+			c.entities.Subscriptions.Remove(o)
 		}
 	}
-	if c.Entities.Clock != nil {
-		err := c.Entities.Clock.Fini()
+	if c.entities.Clock != nil {
+		err := c.entities.Clock.Fini()
 		if err != nil {
 			errs = RCLErrorsPut(errs, err)
 		} else {
-			c.Entities.Clock = nil
+			c.entities.Clock = nil
 		}
 	}
 

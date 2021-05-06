@@ -198,10 +198,40 @@ type RCLArgs struct {
 }
 
 /*
-NewRCLArgs parses ROS2 RCL commandline arguments from the given rclArgs or from os.Args if rclArgs is nil
-returns a string containing the prepared parameters in the form the RCL can understand them
+NewRCLArgs parses ROS2 RCL commandline arguments from the given rclArgs or from
+os.Args. If rclArgs is nil returns a string containing the prepared parameters
+in the form the RCL can understand them.
 
-C memory is freed when the RCLArgs-object is GC'd
+C memory is freed when the RCLArgs-object is GC'd.
+
+Example
+
+    oldOSArgs := os.Args
+    defer func() { os.Args = oldOSArgs }()
+
+    os.Args = []string{"--extra0", "args0", "--ros-args", "--log-level", "DEBUG", "--", "--extra1", "args1"}
+    rosArgs, err := NewRCLArgs("")
+    if err != nil {
+        panic(err)
+    }
+    fmt.Printf("rosArgs: %+v\n", rosArgs.GoArgs) // -> [--extra0 args0 --ros-args --log-level DEBUG -- --extra1 args1]
+
+    rosArgs, err = NewRCLArgs("--log-level INFO")
+    if err != nil {
+        panic(err)
+    }
+    fmt.Printf("rosArgs: %+v\n", rosArgs.GoArgs) // -> [--ros-args --log-level INFO]
+
+    os.Args = []string{"--extra0", "args0", "--extra1", "args1"}
+    rosArgs, err = NewRCLArgs("")
+    if err != nil {
+        panic(err)
+    }
+    fmt.Printf("rosArgs: %+v\n", rosArgs.GoArgs) // -> []
+
+    // Output: rosArgs: [--extra0 args0 --ros-args --log-level DEBUG -- --extra1 args1]
+    // rosArgs: [--ros-args --log-level INFO]
+    // rosArgs: []
 */
 func NewRCLArgs(rclArgs string) (*RCLArgs, RCLError) {
 	var goArgs []string
@@ -334,14 +364,14 @@ func (c *Context) NewNode(node_name, namespace string) (*Node, RCLError) {
 	rcl_node := (*C.rcl_node_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_node_t{}))))
 	*rcl_node = C.rcl_get_zero_initialized_node()
 
-	var rc C.rcl_ret_t = C.rcl_node_init(rcl_node, C.CString(node_name), C.CString(ns), c.Entities.rcl_context_t, rcl_node_options)
+	var rc C.rcl_ret_t = C.rcl_node_init(rcl_node, C.CString(node_name), C.CString(ns), c.entities.rcl_context_t, rcl_node_options)
 	if rc != C.RCL_RET_OK {
 		fmt.Printf("Error '%d' in rcl_node_init\n", (int)(rc))
 		return nil, ErrorsCast(rc)
 	}
 
 	node := &Node{rcl_node_t: rcl_node, context: c}
-	c.Entities.Nodes.PushFront(node)
+	c.entities.Nodes.PushFront(node)
 	return node, nil
 }
 
@@ -386,7 +416,7 @@ func (self *Node) NewPublisher(topicName string, ros2msg ros2types.ROS2Msg) (*Pu
 		rcl_publisher_t:         rcl_publisher,
 	}
 
-	self.context.Entities.Publishers.PushFront(publisher)
+	self.context.entities.Publishers.PushFront(publisher)
 	return publisher, nil
 }
 
@@ -419,12 +449,12 @@ func (c *Context) NewClock(clockType Rcl_clock_type_t) (*Clock, RCLError) {
 		clockType = RCL_ROS_TIME
 	}
 	rcl_clock := (*C.rcl_clock_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_clock_t{})))) //rcl_clock_init() doc says "This will allocate all necessary internal structures, and initialize variables.". The parameter is invalid if no memory allocated beforehand.
-	var rc C.rcl_ret_t = C.rcl_clock_init(uint32(clockType), rcl_clock, c.Entities.rcl_allocator_t)
+	var rc C.rcl_ret_t = C.rcl_clock_init(uint32(clockType), rcl_clock, c.entities.rcl_allocator_t)
 	if rc != C.RCL_RET_OK {
 		return nil, ErrorsCast(rc)
 	}
-	c.Entities.Clock = &Clock{rcl_clock_t: rcl_clock}
-	return c.Entities.Clock, nil
+	c.entities.Clock = &Clock{rcl_clock_t: rcl_clock}
+	return c.entities.Clock, nil
 }
 
 /*
@@ -450,7 +480,7 @@ func (c *Context) NewTimer(timeout time.Duration, timer_callback func(*Timer)) (
 	timer.rcl_timer_t = (*C.rcl_timer_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_timer_t{}))))
 	*timer.rcl_timer_t = C.rcl_get_zero_initialized_timer()
 
-	if c.Entities.Clock == nil {
+	if c.entities.Clock == nil {
 		var err RCLError
 		_, err = c.NewClock(RCL_ROS_TIME) // http://design.ros2.org/articles/clock_and_time.html // It is expected that the default choice of time will be to use the ROSTime source
 		if err != nil {
@@ -460,16 +490,16 @@ func (c *Context) NewTimer(timeout time.Duration, timer_callback func(*Timer)) (
 
 	rc = C.rcl_timer_init(
 		timer.rcl_timer_t,
-		c.Entities.Clock.rcl_clock_t,
-		c.Entities.rcl_context_t,
+		c.entities.Clock.rcl_clock_t,
+		c.entities.rcl_context_t,
 		(C.long)(timeout),
 		nil,
-		*c.Entities.rcl_allocator_t)
+		*c.entities.rcl_allocator_t)
 	if rc != C.RCL_RET_OK {
 		return timer, ErrorsCast(rc)
 	}
 
-	c.Entities.Timers.PushFront(timer)
+	c.entities.Timers.PushFront(timer)
 	return timer, nil
 }
 func (self *Timer) GetTimeUntilNextCall() (int64, RCLError) {
@@ -531,7 +561,7 @@ func (self *Node) NewSubscription(topic_name string, ros2msg ros2types.ROS2Msg, 
 		return subscription, ErrorsCastC(rc, fmt.Sprintf("Topic name '%s'", topic_name))
 	}
 
-	self.context.Entities.Subscriptions.PushFront(subscription)
+	self.context.entities.Subscriptions.PushFront(subscription)
 	return subscription, nil
 }
 
@@ -642,14 +672,14 @@ func (c *Context) NewWaitSet(subscriptions []*Subscription, timers []*Timer, tim
 		number_of_clients,
 		number_of_services,
 		number_of_events,
-		c.Entities.rcl_context_t,
-		*c.Entities.rcl_allocator_t,
+		c.entities.rcl_context_t,
+		*c.entities.rcl_allocator_t,
 	)
 	if rc != C.RCL_RET_OK {
 		return waitSet, ErrorsCast(rc)
 	}
 
-	c.Entities.WaitSets.PushFront(waitSet)
+	c.entities.WaitSets.PushFront(waitSet)
 	return waitSet, nil
 }
 

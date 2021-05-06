@@ -1,35 +1,16 @@
 package ros2
 
 import (
-	"fmt"
-	"os"
+	"testing"
+
+	. "github.com/smartystreets/goconvey/convey"
 )
 
-func ExampleNewRCLArgs() {
-	oldOSArgs := os.Args
-	defer func() { os.Args = oldOSArgs }()
-
-	os.Args = []string{"--extra0", "args0", "--ros-args", "--log-level", "DEBUG", "--", "--extra1", "args1"}
-	rosArgs, err := NewRCLArgs("")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("rosArgs: %+v\n", rosArgs.GoArgs) // -> [--extra0 args0 --ros-args --log-level DEBUG -- --extra1 args1]
-
-	rosArgs, err = NewRCLArgs("--log-level INFO")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("rosArgs: %+v\n", rosArgs.GoArgs) // -> [--ros-args --log-level INFO]
-
-	os.Args = []string{"--extra0", "args0", "--extra1", "args1"}
-	rosArgs, err = NewRCLArgs("")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("rosArgs: %+v\n", rosArgs.GoArgs) // -> []
-
-	// Output: rosArgs: [--extra0 args0 --ros-args --log-level DEBUG -- --extra1 args1]
-	// rosArgs: [--ros-args --log-level INFO]
-	// rosArgs: []
+func TestRCLArgs(t *testing.T) {
+	SetDefaultFailureMode(FailureContinues)
+	Convey("RCLArgs parsing", t, func() {
+		args, err := NewRCLArgs("--ros-args --log-level DEBUG --enclave /enclave")
+		So(err, ShouldBeNil)
+		So(args.GoArgs, ShouldResemble, []string{"--ros-args", "--log-level", "DEBUG", "--enclave", "/enclave"})
+	})
 }

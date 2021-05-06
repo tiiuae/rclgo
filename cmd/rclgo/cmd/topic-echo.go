@@ -10,6 +10,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"os/signal"
@@ -35,7 +36,7 @@ var echoCmd = &cobra.Command{
 		terminationSignals := make(chan os.Signal, 1)
 		signal.Notify(terminationSignals, syscall.SIGINT, syscall.SIGTERM)
 
-		rclContext, errs := ros2.SubscriberBundle(nil, nil, viper.GetString("namespace"), viper.GetString("node-name"), viper.GetString("topic-name"), viper.GetString("msg-type"), ros2.NewRCLArgsMust(viper.GetString("ros-args")),
+		rclContext, errs := ros2.SubscriberBundle(context.Background(), nil, nil, viper.GetString("namespace"), viper.GetString("node-name"), viper.GetString("topic-name"), viper.GetString("msg-type"), ros2.NewRCLArgsMust(viper.GetString("ros-args")),
 			func(s *ros2.Subscription, p unsafe.Pointer, rmi *ros2.RmwMessageInfo) {
 				msgClone := s.Ros2MsgType.Clone()
 				msgClone.AsGoStruct(p)
@@ -49,7 +50,7 @@ var echoCmd = &cobra.Command{
 
 		<-terminationSignals
 		fmt.Printf("Closing topic echo\n")
-		errs = ros2.RCLContextFini(rclContext)
+		errs = rclContext.Close()
 		if errs != nil {
 			fmt.Println(errs)
 		}

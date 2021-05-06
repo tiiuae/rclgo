@@ -78,6 +78,7 @@ void print_gid(rmw_gid_t gid) {
 import "C"
 import (
 	"container/list"
+	"context"
 	"fmt"
 	"os"
 	"runtime"
@@ -142,7 +143,7 @@ type Clock struct {
 
 type Node struct {
 	rcl_node_t *C.rcl_node_t
-	rclContext RCLContext
+	context    *Context
 }
 
 type Publisher struct {
@@ -173,6 +174,7 @@ type WaitSet struct {
 	Timers         []*Timer
 	Ready          bool // flag to notify the outside gothreads that this WaitSet is ready to receive messages. Use waitSet.WaitForReady() to synchronize
 	rcl_wait_set_t *C.rcl_wait_set_t
+	context        *Context
 }
 
 type RmwMessageInfo struct {
@@ -322,7 +324,7 @@ func rclInitLogging(rclArgs *RCLArgs) RCLError {
 	return nil
 }
 
-func NewNode(rclContext RCLContext, node_name string, namespace string) (*Node, RCLError) {
+func (c *Context) NewNode(node_name, namespace string) (*Node, RCLError) {
 	ns := strings.ReplaceAll(namespace, "/", "")
 	ns = strings.ReplaceAll(ns, "-", "")
 
@@ -332,14 +334,14 @@ func NewNode(rclContext RCLContext, node_name string, namespace string) (*Node, 
 	rcl_node := (*C.rcl_node_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_node_t{}))))
 	*rcl_node = C.rcl_get_zero_initialized_node()
 
-	var rc C.rcl_ret_t = C.rcl_node_init(rcl_node, C.CString(node_name), C.CString(ns), GetRCLEntities(rclContext).rcl_context_t, rcl_node_options)
+	var rc C.rcl_ret_t = C.rcl_node_init(rcl_node, C.CString(node_name), C.CString(ns), c.Entities.rcl_context_t, rcl_node_options)
 	if rc != C.RCL_RET_OK {
 		fmt.Printf("Error '%d' in rcl_node_init\n", (int)(rc))
 		return nil, ErrorsCast(rc)
 	}
 
-	node := &Node{rcl_node_t: rcl_node, rclContext: rclContext}
-	GetRCLEntities(rclContext).Nodes.PushFront(node)
+	node := &Node{rcl_node_t: rcl_node, context: c}
+	c.Entities.Nodes.PushFront(node)
 	return node, nil
 }
 
@@ -354,14 +356,14 @@ func (self *Node) Fini() RCLError {
 	return nil
 }
 
-func (self *Node) NewPublisher(topic_name string, ros2msg ros2types.ROS2Msg) (*Publisher, RCLError) {
+func (self *Node) NewPublisher(topicName string, ros2msg ros2types.ROS2Msg) (*Publisher, RCLError) {
 	rcl_publisher := (*C.rcl_publisher_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_publisher_t{}))))
 	*rcl_publisher = C.rcl_get_zero_initialized_publisher()
 
 	rcl_publisher_options := (*C.rcl_publisher_options_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_publisher_options_t{}))))
 	*rcl_publisher_options = C.rcl_publisher_get_default_options()
 
-	err := ValidateTopicName(topic_name)
+	err := ValidateTopicName(topicName)
 	if err != nil {
 		return nil, err
 	}
@@ -370,21 +372,21 @@ func (self *Node) NewPublisher(topic_name string, ros2msg ros2types.ROS2Msg) (*P
 		rcl_publisher,
 		self.rcl_node_t,
 		(*C.rosidl_message_type_support_t)(ros2msg.TypeSupport()),
-		C.CString(topic_name),
+		C.CString(topicName),
 		rcl_publisher_options)
 	if rc != C.RCL_RET_OK {
 		return nil, ErrorsCast(rc)
 	}
 
 	publisher := &Publisher{
-		TopicName:               topic_name,
+		TopicName:               topicName,
 		Ros2MsgType:             ros2msg,
 		node:                    self,
 		rcl_publisher_options_t: rcl_publisher_options,
 		rcl_publisher_t:         rcl_publisher,
 	}
 
-	GetRCLEntities(self.rclContext).Publishers.PushFront(publisher)
+	self.context.Entities.Publishers.PushFront(publisher)
 	return publisher, nil
 }
 
@@ -412,19 +414,17 @@ func (self *Publisher) Fini() RCLError {
 	return nil
 }
 
-func NewClock(rclContext RCLContext, clockType Rcl_clock_type_t) (*Clock, RCLError) {
+func (c *Context) NewClock(clockType Rcl_clock_type_t) (*Clock, RCLError) {
 	if clockType == 0 {
 		clockType = RCL_ROS_TIME
 	}
 	rcl_clock := (*C.rcl_clock_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_clock_t{})))) //rcl_clock_init() doc says "This will allocate all necessary internal structures, and initialize variables.". The parameter is invalid if no memory allocated beforehand.
-	var rc C.rcl_ret_t = C.rcl_clock_init(uint32(clockType), rcl_clock, GetRCLEntities(rclContext).rcl_allocator_t)
+	var rc C.rcl_ret_t = C.rcl_clock_init(uint32(clockType), rcl_clock, c.Entities.rcl_allocator_t)
 	if rc != C.RCL_RET_OK {
 		return nil, ErrorsCast(rc)
 	}
-	c := &Clock{rcl_clock_t: rcl_clock}
-	re := GetRCLEntities(rclContext)
-	re.Clock = c
-	return c, nil
+	c.Entities.Clock = &Clock{rcl_clock_t: rcl_clock}
+	return c.Entities.Clock, nil
 }
 
 /*
@@ -438,9 +438,8 @@ func (self *Clock) Fini() RCLError {
 	return nil
 }
 
-func NewTimer(rclContext RCLContext, timeout time.Duration, timer_callback func(*Timer)) (*Timer, RCLError) {
+func (c *Context) NewTimer(timeout time.Duration, timer_callback func(*Timer)) (*Timer, RCLError) {
 	var rc C.rcl_ret_t
-	re := GetRCLEntities(rclContext)
 
 	if timeout == 0 {
 		timeout = 1000 * time.Millisecond
@@ -451,9 +450,9 @@ func NewTimer(rclContext RCLContext, timeout time.Duration, timer_callback func(
 	timer.rcl_timer_t = (*C.rcl_timer_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_timer_t{}))))
 	*timer.rcl_timer_t = C.rcl_get_zero_initialized_timer()
 
-	if re.Clock == nil {
+	if c.Entities.Clock == nil {
 		var err RCLError
-		_, err = NewClock(rclContext, RCL_ROS_TIME) // http://design.ros2.org/articles/clock_and_time.html // It is expected that the default choice of time will be to use the ROSTime source
+		_, err = c.NewClock(RCL_ROS_TIME) // http://design.ros2.org/articles/clock_and_time.html // It is expected that the default choice of time will be to use the ROSTime source
 		if err != nil {
 			return timer, ErrorsCastC(C.int(err.rcl_ret()), fmt.Sprintf("Forwarding error from '%s'", err.Error()))
 		}
@@ -461,16 +460,16 @@ func NewTimer(rclContext RCLContext, timeout time.Duration, timer_callback func(
 
 	rc = C.rcl_timer_init(
 		timer.rcl_timer_t,
-		re.Clock.rcl_clock_t,
-		re.rcl_context_t,
+		c.Entities.Clock.rcl_clock_t,
+		c.Entities.rcl_context_t,
 		(C.long)(timeout),
 		nil,
-		*re.rcl_allocator_t)
+		*c.Entities.rcl_allocator_t)
 	if rc != C.RCL_RET_OK {
 		return timer, ErrorsCast(rc)
 	}
 
-	GetRCLEntities(rclContext).Timers.PushFront(timer)
+	c.Entities.Timers.PushFront(timer)
 	return timer, nil
 }
 func (self *Timer) GetTimeUntilNextCall() (int64, RCLError) {
@@ -532,7 +531,7 @@ func (self *Node) NewSubscription(topic_name string, ros2msg ros2types.ROS2Msg, 
 		return subscription, ErrorsCastC(rc, fmt.Sprintf("Topic name '%s'", topic_name))
 	}
 
-	GetRCLEntities(self.rclContext).Subscriptions.PushFront(subscription)
+	self.context.Entities.Subscriptions.PushFront(subscription)
 	return subscription, nil
 }
 
@@ -614,9 +613,9 @@ func TopicGetTopicNamesAndTypes(rclContext RCLContext, rcl_node *C.rcl_node_t) (
 	return rmw_names_and_types, nil
 }
 */
-func NewWaitSet(rclContext RCLContext, subscriptions []*Subscription, timers []*Timer, timeout time.Duration) (*WaitSet, RCLError) {
-	re := GetRCLEntities(rclContext)
-	waitSet := &WaitSet{}
+
+func (c *Context) NewWaitSet(subscriptions []*Subscription, timers []*Timer, timeout time.Duration) (*WaitSet, RCLError) {
+	waitSet := &WaitSet{context: c}
 	waitSet.Timeout = timeout
 	var number_of_subscriptions C.ulong = 0
 	if subscriptions != nil {
@@ -635,12 +634,22 @@ func NewWaitSet(rclContext RCLContext, subscriptions []*Subscription, timers []*
 
 	var rcl_wait_set C.rcl_wait_set_t = C.rcl_get_zero_initialized_wait_set()
 	waitSet.rcl_wait_set_t = &rcl_wait_set
-	var rc C.rcl_ret_t = C.rcl_wait_set_init(waitSet.rcl_wait_set_t, number_of_subscriptions, number_of_guard_conditions, number_of_timers, number_of_clients, number_of_services, number_of_events, re.rcl_context_t, *re.rcl_allocator_t)
+	var rc C.rcl_ret_t = C.rcl_wait_set_init(
+		waitSet.rcl_wait_set_t,
+		number_of_subscriptions,
+		number_of_guard_conditions,
+		number_of_timers,
+		number_of_clients,
+		number_of_services,
+		number_of_events,
+		c.Entities.rcl_context_t,
+		*c.Entities.rcl_allocator_t,
+	)
 	if rc != C.RCL_RET_OK {
 		return waitSet, ErrorsCast(rc)
 	}
 
-	GetRCLEntities(rclContext).WaitSets.PushFront(waitSet)
+	c.Entities.WaitSets.PushFront(waitSet)
 	return waitSet, nil
 }
 
@@ -660,12 +669,11 @@ func (self *WaitSet) WaitForReady(timeoutMs int64, intervalMs int64) RCLError {
 	return nil
 }
 
-func (self *WaitSet) RunGoroutine(rclContext RCLContext) {
+func (self *WaitSet) RunGoroutine(ctx context.Context) {
+	self.context.WG.Add(1)
 	go func() {
-		GetRCLContextImpl(rclContext).WG.Add(1)
-		defer GetRCLContextImpl(rclContext).WG.Done()
-		err := self.Run(rclContext)
-		if err != nil {
+		defer self.context.WG.Done()
+		if err := self.Run(ctx); err != nil {
 			fmt.Printf("RunGoroutine error: '%+v'\n", err)
 		}
 	}()
@@ -675,10 +683,10 @@ func (self *WaitSet) RunGoroutine(rclContext RCLContext) {
 Run causes the current goroutine to block on this given WaitSet.
 WaitSet executes the given timers and subscriptions and calls their callbacks on new events.
 */
-func (self *WaitSet) Run(rclContext RCLContext) RCLError {
+func (self *WaitSet) Run(ctx context.Context) RCLError {
 	for {
 		select {
-		case <-rclContext.Done():
+		case <-ctx.Done():
 			return nil
 		default:
 			err := self.initEntities()

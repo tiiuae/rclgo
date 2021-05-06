@@ -10,33 +10,13 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package ros2
 
 import (
-	"context"
 	"sync"
 )
 
-/*
-RCLContext has a key rclContextImpl which points to the RCLContextImpl
-*/
-type RCLContext context.Context
-
-type rclContextKey string // context.WithValue best practice?
-var rclContextImplKey rclContextKey = "rclContextImpl"
-
-func GetRCLEntities(ctx RCLContext) *rclEntityWrapper {
-	return ctx.Value(rclContextImplKey).(*RCLContextImpl).rclEntityWrapper
-}
-func GetRCLContextImpl(ctx RCLContext) *RCLContextImpl {
-	return ctx.Value(rclContextImplKey).(*RCLContextImpl)
-}
-
-/*
-RCLContextImpl Contains the lifecycle handling for a given portion of RCL entities.
-It is wrapped inside the RCLContext (context.Context) because there is no way to fill a single context with parallel values.
-*/
-type RCLContextImpl struct {
-	Quit             func() // call this to make the context stop.
-	WG               *sync.WaitGroup
-	rclEntityWrapper *rclEntityWrapper
+// Context manages resources for a set of RCL entities.
+type Context struct {
+	WG       *sync.WaitGroup
+	Entities *rclEntityWrapper
 }
 
 /*
@@ -46,84 +26,64 @@ parent can be nil, a new context.Background is created
 clockType can be nil, then no clock is initialized, you can later initialize it with NewClock()
 rclArgs can be nil
 */
-func NewRCLContext(parent context.Context, wg *sync.WaitGroup, clockType Rcl_clock_type_t, rclArgs *RCLArgs) (RCLContext, RCLError) {
+func NewContext(wg *sync.WaitGroup, clockType Rcl_clock_type_t, rclArgs *RCLArgs) (*Context, RCLError) {
 	rclEntities, rclError := rclInit(rclArgs)
 	if rclError != nil {
 		return nil, rclError
 	}
 
-	if parent == nil {
-		parent = context.Background()
-	}
-
-	var quitFunc context.CancelFunc
-	parent, quitFunc = context.WithCancel(parent)
-	rclContextImpl := RCLContextImpl{
-		Quit:             quitFunc,
-		WG:               wg,
-		rclEntityWrapper: rclEntities,
+	ctx := &Context{
+		WG:       wg,
+		Entities: rclEntities,
 	}
 	if wg == nil {
-		rclContextImpl.WG = &sync.WaitGroup{}
+		ctx.WG = &sync.WaitGroup{}
 	}
 
-	newCtx := (RCLContext)(context.WithValue(parent, rclContextImplKey, &rclContextImpl))
-
 	if clockType != 0 {
-		_, err := NewClock(newCtx, clockType)
+		_, err := ctx.NewClock(clockType)
 		if err != nil {
-			return newCtx, err
+			return ctx, err
 		}
 	}
 
-	return newCtx, nil
+	return ctx, nil
 }
 
-/*
-NewRCLContextChild TODO:
-- Example usage of nested contexts to init ROS2 and then create nodes etc for a nested context.
-- Cleanup partially one context at a time.
-*/
-func NewRCLContextChild(parent context.Context) (*RCLContext, RCLError) {
-	return nil, nil
-}
-
-func RCLContextFini(rclContext RCLContext) *RCLErrors {
+func (c *Context) Close() *RCLErrors {
 	var errs *RCLErrors
-	GetRCLContextImpl(rclContext).Quit()
-	GetRCLContextImpl(rclContext).WG.Wait() // Wait for gothreads to quit, before GC:ing. Otherwise a ton of null-pointers await.
-	ent := GetRCLEntities(rclContext)
+	c.WG.Wait() // Wait for gothreads to quit, before GC:ing. Otherwise a ton of null-pointers await.
 
-	for o := ent.WaitSets.Front(); o != nil; o = o.Next() {
+	for o := c.Entities.WaitSets.Front(); o != nil; o = o.Next() {
 		err := o.Value.(*WaitSet).Fini()
 		if err != nil {
 			errs = RCLErrorsPut(errs, err)
 		} else {
-			ent.WaitSets.Remove(o)
+			c.Entities.WaitSets.Remove(o)
 		}
 	}
-	for o := ent.Publishers.Front(); o != nil; o = o.Next() {
+	for o := c.Entities.Publishers.Front(); o != nil; o = o.Next() {
 		err := o.Value.(*Publisher).Fini()
 		if err != nil {
 			errs = RCLErrorsPut(errs, err)
 		} else {
-			ent.Publishers.Remove(o)
+			c.Entities.Publishers.Remove(o)
 		}
 	}
-	for o := ent.Subscriptions.Front(); o != nil; o = o.Next() {
+	for o := c.Entities.Subscriptions.Front(); o != nil; o = o.Next() {
 		err := o.Value.(*Subscription).Fini()
 		if err != nil {
 			errs = RCLErrorsPut(errs, err)
 		} else {
-			ent.Subscriptions.Remove(o)
+			c.Entities.Subscriptions.Remove(o)
 		}
 	}
-	if ent.Clock != nil {
-		err := ent.Clock.Fini()
+	if c.Entities.Clock != nil {
+		err := c.Entities.Clock.Fini()
 		if err != nil {
 			errs = RCLErrorsPut(errs, err)
 		} else {
-			ent.Clock = nil
+			c.Entities.Clock = nil
 		}
 	}
 

@@ -10,6 +10,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"os/signal"
@@ -35,7 +36,7 @@ var pubCmd = &cobra.Command{
 		terminationSignals := make(chan os.Signal, 1)
 		signal.Notify(terminationSignals, syscall.SIGINT, syscall.SIGTERM)
 
-		rclContext, errs := ros2.PublisherBundleTimer(nil, nil, viper.GetString("namespace"), viper.GetString("node-name"), viper.GetString("topic-name"), viper.GetString("msg-type"), ros2.NewRCLArgsMust(viper.GetString("ros-args")), 1000*time.Millisecond, viper.GetString("payload"),
+		rclContext, errs := ros2.PublisherBundleTimer(context.Background(), nil, nil, viper.GetString("namespace"), viper.GetString("node-name"), viper.GetString("topic-name"), viper.GetString("msg-type"), ros2.NewRCLArgsMust(viper.GetString("ros-args")), 1000*time.Millisecond, viper.GetString("payload"),
 			func(p *ros2.Publisher, m ros2types.ROS2Msg) bool {
 				fmt.Printf("%+v\n", m)
 				return true
@@ -47,7 +48,7 @@ var pubCmd = &cobra.Command{
 
 		<-terminationSignals
 		fmt.Printf("Closing topic pub\n")
-		errs = ros2.RCLContextFini(rclContext)
+		errs = rclContext.Close()
 		if errs != nil {
 			fmt.Println(errs)
 		}

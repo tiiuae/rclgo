@@ -10,6 +10,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package ros2
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -28,9 +29,9 @@ Define action bundles which generate typical use-cases with minimal effort
 
 /*
 Creates a ROS2 RCL context with a single subscriber subscribing to the given topic and waiting for termination via the given/returned context.
-All parameters optional.
+All parameters except the first one are optional.
 */
-func SubscriberBundle(rclContext RCLContext, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *RCLArgs, subscriberCallback func(*Subscription, unsafe.Pointer, *RmwMessageInfo)) (RCLContext, *RCLErrors) {
+func SubscriberBundle(ctx context.Context, rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *RCLArgs, subscriberCallback func(*Subscription, unsafe.Pointer, *RmwMessageInfo)) (*Context, *RCLErrors) {
 	var err RCLError
 	var errs *RCLErrors
 	var msgType ros2types.ROS2Msg
@@ -39,7 +40,7 @@ func SubscriberBundle(rclContext RCLContext, wg *sync.WaitGroup, namespace, node
 		return rclContext, errs
 	}
 
-	rclNode, err := NewNode(rclContext, nodeName, namespace)
+	rclNode, err := rclContext.NewNode(nodeName, namespace)
 	if err != nil {
 		return rclContext, RCLErrorsPut(errs, err)
 	}
@@ -51,17 +52,17 @@ func SubscriberBundle(rclContext RCLContext, wg *sync.WaitGroup, namespace, node
 	}
 
 	subscriptions := []*Subscription{subscription}
-	waitSet, err := NewWaitSet(rclContext, subscriptions, nil, 1000*time.Millisecond)
+	waitSet, err := rclContext.NewWaitSet(subscriptions, nil, 1000*time.Millisecond)
 	if err != nil {
 		return rclContext, RCLErrorsPut(errs, err)
 	}
 
-	waitSet.RunGoroutine(rclContext)
+	waitSet.RunGoroutine(ctx)
 
 	return rclContext, errs
 }
 
-func PublisherBundle(rclContext RCLContext, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *RCLArgs) (RCLContext, *Publisher, *RCLErrors) {
+func PublisherBundle(rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *RCLArgs) (*Context, *Publisher, *RCLErrors) {
 	var err RCLError
 	var errs *RCLErrors
 	var msgType ros2types.ROS2Msg
@@ -70,7 +71,7 @@ func PublisherBundle(rclContext RCLContext, wg *sync.WaitGroup, namespace, nodeN
 		return rclContext, nil, errs
 	}
 
-	rclNode, err := NewNode(rclContext, nodeName, namespace)
+	rclNode, err := rclContext.NewNode(nodeName, namespace)
 	if err != nil {
 		return rclContext, nil, RCLErrorsPut(errs, err)
 	}
@@ -83,7 +84,7 @@ func PublisherBundle(rclContext RCLContext, wg *sync.WaitGroup, namespace, nodeN
 	return rclContext, publisher, errs
 }
 
-func PublisherBundleTimer(rclContext RCLContext, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *RCLArgs, interval time.Duration, payload string, publisherCallback func(*Publisher, ros2types.ROS2Msg) bool) (RCLContext, *RCLErrors) {
+func PublisherBundleTimer(ctx context.Context, rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *RCLArgs, interval time.Duration, payload string, publisherCallback func(*Publisher, ros2types.ROS2Msg) bool) (*Context, *RCLErrors) {
 	var errs *RCLErrors
 	var publisher *Publisher
 	rclContext, publisher, errs = PublisherBundle(rclContext, wg, namespace, nodeName, topicName, msgTypeName, rosArgs)
@@ -91,7 +92,7 @@ func PublisherBundleTimer(rclContext RCLContext, wg *sync.WaitGroup, namespace, 
 		return rclContext, errs
 	}
 
-	timer, err := NewTimer(rclContext, interval, func(timer *Timer) {
+	timer, err := rclContext.NewTimer(interval, func(timer *Timer) {
 		// It would be smarter to allocate memory for the ros2msg outside the timer callback, but this way the tests can test for memory leaks too using this same codebase.
 		ros2msg, err_yaml := ros2_type_dispatcher.TranslateMsgPayloadYAMLToROS2Msg(strings.ReplaceAll(payload, "\\n", "\n"), publisher.Ros2MsgType)
 		if err_yaml != nil {
@@ -110,12 +111,12 @@ func PublisherBundleTimer(rclContext RCLContext, wg *sync.WaitGroup, namespace, 
 	}
 
 	timers := []*Timer{timer}
-	waitSet, err := NewWaitSet(rclContext, nil, timers, 1000*time.Millisecond)
+	waitSet, err := rclContext.NewWaitSet(nil, timers, 1000*time.Millisecond)
 	if err != nil {
 		return rclContext, RCLErrorsPut(errs, err)
 	}
 
-	waitSet.RunGoroutine(rclContext)
+	waitSet.RunGoroutine(ctx)
 
 	return rclContext, errs
 }
@@ -123,7 +124,7 @@ func PublisherBundleTimer(rclContext RCLContext, wg *sync.WaitGroup, namespace, 
 /*
 bundleDefaults creates a default context from the given parameters.
 */
-func bundleDefaults(rclContext RCLContext, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName *string, rosArgs *RCLArgs) (RCLContext, *sync.WaitGroup, ros2types.ROS2Msg, *RCLErrors) {
+func bundleDefaults(rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName *string, rosArgs *RCLArgs) (*Context, *sync.WaitGroup, ros2types.ROS2Msg, *RCLErrors) {
 	var errs *RCLErrors
 	var err RCLError
 
@@ -143,17 +144,17 @@ func bundleDefaults(rclContext RCLContext, wg *sync.WaitGroup, namespace, nodeNa
 	}
 
 	if rclContext == nil {
-		rclContext, err = NewRCLContext(nil, wg, 0, rosArgs)
+		rclContext, err = NewContext(wg, 0, rosArgs)
 		if err != nil {
 			return rclContext, wg, nil, RCLErrorsPut(errs, err)
 		}
 	} else {
-		if wg == nil && GetRCLContextImpl(rclContext).WG != nil {
+		if wg == nil && rclContext.WG != nil {
 			// wg already exists in the RCL context
 		} else if wg != nil {
-			GetRCLContextImpl(rclContext).WG = wg
+			rclContext.WG = wg
 		} else {
-			GetRCLContextImpl(rclContext).WG = &sync.WaitGroup{}
+			rclContext.WG = &sync.WaitGroup{}
 		}
 	}
 

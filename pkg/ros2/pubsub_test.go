@@ -9,7 +9,6 @@ import (
 	"strings"
 	"testing"
 	"time"
-	"unsafe"
 
 	. "github.com/smartystreets/goconvey/convey"
 	std_msgs "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
@@ -28,11 +27,13 @@ func TestPubSub(t *testing.T) {
 
 		Convey("Given a Subscriber", func() {
 			rclContextSub, errsSub = SubscriberBundle(subCtx, rclContextSub, nil, "/test", "", "/topic", "std_msgs/ColorRGBA", NewRCLArgsMust("--ros-args --log-level DEBUG"),
-				func(s *Subscription, p unsafe.Pointer, rmi *RmwMessageInfo) {
-					m := s.Ros2MsgType.Clone()
-					m.AsGoStruct(p)
-					c := m.(*std_msgs.ColorRGBA)
-					subChan <- c
+				func(s *Subscription) {
+					var m std_msgs.ColorRGBA
+					_, err := s.TakeMessage(&m)
+					if err != nil {
+						fmt.Println("failed to take message:", err)
+					}
+					subChan <- &m
 				})
 			So(errsSub, ShouldBeNil)
 		})
@@ -86,10 +87,12 @@ func BenchsittingmarkMemoryLeak(t *testing.B) {
 	fmt.Printf("Mem from pmap(1) '%skB' messages '%d'\n", getMemReading(), messagesReceived)
 	for {
 		rclContextSub, errs := SubscriberBundle(context.Background(), nil, nil, "/test", "", "/topic", "test_msgs/UnboundedSequences", nil,
-			func(s *Subscription, p unsafe.Pointer, rmi *RmwMessageInfo) {
-				m := s.Ros2MsgType.Clone()
-				m.AsGoStruct(p)
-				_ = m.(*test_msgs.UnboundedSequences)
+			func(s *Subscription) {
+				var m test_msgs.UnboundedSequences
+				_, err := s.TakeMessage(&m)
+				if err != nil {
+					fmt.Println("failed to take message:", err)
+				}
 				//fmt.Printf("%+v\n", c)
 				messagesReceived++
 			})
@@ -126,10 +129,12 @@ func BenchmarkMemoryLeak(t *testing.B) {
 	var messagesReceived int = 0
 	fmt.Printf("Mem from pmap(1) '%skB' messages '%d'\n", getMemReading(), messagesReceived)
 	rclContext, errs := SubscriberBundle(context.Background(), nil, nil, "/test", "", "/topic", "test_msgs/UnboundedSequences", nil,
-		func(s *Subscription, p unsafe.Pointer, rmi *RmwMessageInfo) {
-			m := s.Ros2MsgType.Clone()
-			m.AsGoStruct(p)
-			_ = m.(*test_msgs.UnboundedSequences)
+		func(s *Subscription) {
+			var m test_msgs.UnboundedSequences
+			_, err := s.TakeMessage(&m)
+			if err != nil {
+				fmt.Println("failed to take message:", err)
+			}
 			//fmt.Printf("%+v\n", c)
 			messagesReceived++
 		})

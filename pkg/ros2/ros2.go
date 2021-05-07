@@ -154,15 +154,6 @@ type Publisher struct {
 	rcl_publisher_t         *C.rcl_publisher_t
 }
 
-type Subscription struct {
-	TopicName                  string
-	Ros2MsgType                ros2types.ROS2Msg
-	node                       *Node
-	rcl_subscription_t         *C.rcl_subscription_t
-	rcl_subscription_options_t *C.rcl_subscription_options_t
-	Callback                   func(*Subscription, unsafe.Pointer, *RmwMessageInfo)
-}
-
 type Timer struct {
 	rcl_timer_t *C.rcl_timer_t
 	Callback    func(*Timer)
@@ -534,7 +525,18 @@ func (self *Timer) Fini() RCLError {
 	return nil
 }
 
-func (self *Node) NewSubscription(topic_name string, ros2msg ros2types.ROS2Msg, subscriptionCallback func(*Subscription, unsafe.Pointer, *RmwMessageInfo)) (*Subscription, RCLError) {
+type SubscriptionCallback func(*Subscription)
+
+type Subscription struct {
+	TopicName                  string
+	Ros2MsgType                ros2types.ROS2Msg
+	node                       *Node
+	rcl_subscription_t         *C.rcl_subscription_t
+	rcl_subscription_options_t *C.rcl_subscription_options_t
+	Callback                   SubscriptionCallback
+}
+
+func (self *Node) NewSubscription(topic_name string, ros2msg ros2types.ROS2Msg, subscriptionCallback SubscriptionCallback) (*Subscription, RCLError) {
 	subscription := &Subscription{}
 	subscription.rcl_subscription_t = (*C.rcl_subscription_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_subscription_t{}))))
 	*subscription.rcl_subscription_t = C.rcl_get_zero_initialized_subscription()
@@ -563,6 +565,26 @@ func (self *Node) NewSubscription(topic_name string, ros2msg ros2types.ROS2Msg, 
 
 	self.context.entities.Subscriptions.PushFront(subscription)
 	return subscription, nil
+}
+
+func (s *Subscription) TakeMessage(out ros2types.ROS2Msg) (*RmwMessageInfo, RCLError) {
+	rmw_message_info := (*C.rmw_message_info_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rmw_message_info_t{}))))
+	*rmw_message_info = C.rmw_get_zero_initialized_message_info()
+	defer C.free(unsafe.Pointer(rmw_message_info))
+
+	ros2_msg_receive_buffer := s.Ros2MsgType.PrepareMemory()
+	defer s.Ros2MsgType.ReleaseMemory(ros2_msg_receive_buffer)
+
+	rc := C.rcl_take(s.rcl_subscription_t, ros2_msg_receive_buffer, rmw_message_info, nil)
+	if rc != C.RCL_RET_OK {
+		return nil, ErrorsCastC(rc, fmt.Sprintf("rcl_take() failed for subscription='%+v'", s))
+	}
+	out.AsGoStruct(ros2_msg_receive_buffer)
+	return &RmwMessageInfo{
+		SourceTimestamp:   time.Unix(0, int64(rmw_message_info.source_timestamp)),
+		ReceivedTimestamp: time.Unix(0, int64(rmw_message_info.received_timestamp)),
+		FromIntraProcess:  bool(rmw_message_info.from_intra_process),
+	}, nil
 }
 
 func spinErr(thing string, err error) error {
@@ -778,26 +800,8 @@ func (self *WaitSet) Run(ctx context.Context) RCLError {
 					len(self.Subscriptions)))
 			}
 			for i = 0; i < self.rcl_wait_set_t.size_of_subscriptions; i++ {
-				subscription := self.Subscriptions[i]
-
-				rmw_message_info := (*C.rmw_message_info_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rmw_message_info_t{}))))
-				*rmw_message_info = C.rmw_get_zero_initialized_message_info()
-				defer C.free(unsafe.Pointer(rmw_message_info))
-
-				ros2_msg_receive_buffer := subscription.Ros2MsgType.PrepareMemory()
-				defer subscription.Ros2MsgType.ReleaseMemory(ros2_msg_receive_buffer)
-
-				rc = C.rcl_take(subscription.rcl_subscription_t, ros2_msg_receive_buffer, rmw_message_info, nil)
-				if rc != C.RCL_RET_OK {
-					fmt.Printf("rcl_take() failed for waitSet='%+v', subscription='%+v'\n", self, subscription)
-					//return ErrorsCastC(rc, fmt.Sprintf("rcl_take() failed for waitSet='%+v', subscription='%+v'", self, subscription))
-				}
-				rmwMessageInfo := &RmwMessageInfo{
-					SourceTimestamp:   time.Unix(0, int64(rmw_message_info.source_timestamp)),
-					ReceivedTimestamp: time.Unix(0, int64(rmw_message_info.received_timestamp)),
-					FromIntraProcess:  bool(rmw_message_info.from_intra_process),
-				}
-				subscription.Callback(subscription, ros2_msg_receive_buffer, rmwMessageInfo)
+				s := self.Subscriptions[i]
+				s.Callback(s)
 			}
 		}
 	}

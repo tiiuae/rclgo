@@ -16,7 +16,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-	"unsafe"
 
 	"github.com/tiiuae/rclgo/pkg/datagenerator"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
@@ -31,7 +30,7 @@ Define action bundles which generate typical use-cases with minimal effort
 Creates a ROS2 RCL context with a single subscriber subscribing to the given topic and waiting for termination via the given/returned context.
 All parameters except the first one are optional.
 */
-func SubscriberBundle(ctx context.Context, rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *RCLArgs, subscriberCallback func(*Subscription, unsafe.Pointer, *RmwMessageInfo)) (*Context, *RCLErrors) {
+func SubscriberBundle(ctx context.Context, rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *RCLArgs, subscriberCallback SubscriptionCallback) (*Context, *RCLErrors) {
 	var err RCLError
 	var errs *RCLErrors
 	var msgType ros2types.ROS2Msg

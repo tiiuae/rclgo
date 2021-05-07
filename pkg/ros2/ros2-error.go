@@ -28,29 +28,18 @@ import (
 RCLErrors is a list of errors for functions which could return multiple different errors, wrapped in a tight package, easy-to-code.
 */
 type RCLErrors struct {
-	list.List
-	i *list.Element
+	errs list.List
 }
 
-func (self *RCLErrors) Next() RCLError {
-	if self.i == nil {
-		self.i = self.Front()
-	}
-	n := self.i.Next()
-	if n != nil {
-		e := n.Value.(RCLError)
-		return e
-	}
-	return nil
-}
 func (self *RCLErrors) Put(e RCLError) *RCLErrors {
-	self.PushBack(e)
+	self.errs.PushBack(e)
 	return self
 }
+
 func (self *RCLErrors) String() string {
 	sb := strings.Builder{}
 	sb.WriteString("RCLErrors happened:\n")
-	for e := self.List.Front(); e != nil; e.Next() {
+	for e := self.errs.Front(); e != nil; e = e.Next() {
 		err := e.Value.(RCLError)
 		sb.WriteString(err.context() + "\n")
 	}

@@ -21,6 +21,3 @@ cmd/ros2ctest/roslogging
 
 #go tool cgo output
 _obj
-
-# generated Go files
-*.gen.go

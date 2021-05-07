@@ -5,6 +5,8 @@ Installation
 ------------
 
     $ go get github.com/tiiuae/rclgo
+    $ go install github.com/tiiuae/rclgo/cmd/rclgo
+    $ go install github.com/tiiuae/rclgo/cmd/rclgo-gen
     $ rclgo-gen generate
 
 Commandline client

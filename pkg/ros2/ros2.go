@@ -565,6 +565,26 @@ func (self *Node) NewSubscription(topic_name string, ros2msg ros2types.ROS2Msg, 
 	return subscription, nil
 }
 
+func spinErr(thing string, err error) error {
+	return fmt.Errorf("failed to spin %s: %w", thing, err)
+}
+
+func (s *Subscription) Spin(ctx context.Context) error {
+	ws, err := s.node.context.NewWaitSet(
+		[]*Subscription{s},
+		[]*Timer{},
+		1*time.Second,
+	)
+	if err != nil {
+		return spinErr("subscription", err)
+	}
+	defer ws.Fini()
+	if err = ws.Run(ctx); err != nil {
+		return spinErr("subscription", err)
+	}
+	return nil
+}
+
 /*
 Fini frees the allocated memory
 */

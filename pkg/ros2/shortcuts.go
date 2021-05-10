@@ -31,7 +31,7 @@ Creates a ROS2 RCL context with a single subscriber subscribing to the given top
 All parameters except the first one are optional.
 */
 func SubscriberBundle(ctx context.Context, rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *RCLArgs, subscriberCallback SubscriptionCallback) (*Context, *RCLErrors) {
-	var err RCLError
+	var err error
 	var errs *RCLErrors
 	var msgType ros2types.ROS2Msg
 	rclContext, wg, msgType, errs = bundleDefaults(rclContext, wg, &namespace, &nodeName, &topicName, &msgTypeName, rosArgs)
@@ -62,7 +62,7 @@ func SubscriberBundle(ctx context.Context, rclContext *Context, wg *sync.WaitGro
 }
 
 func PublisherBundle(rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *RCLArgs) (*Context, *Publisher, *RCLErrors) {
-	var err RCLError
+	var err error
 	var errs *RCLErrors
 	var msgType ros2types.ROS2Msg
 	rclContext, _, msgType, errs = bundleDefaults(rclContext, wg, &namespace, &nodeName, &topicName, &msgTypeName, rosArgs)
@@ -125,7 +125,7 @@ bundleDefaults creates a default context from the given parameters.
 */
 func bundleDefaults(rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName *string, rosArgs *RCLArgs) (*Context, *sync.WaitGroup, ros2types.ROS2Msg, *RCLErrors) {
 	var errs *RCLErrors
-	var err RCLError
+	var err error
 
 	if rosArgs == nil {
 		rosArgs, err = NewRCLArgs("")

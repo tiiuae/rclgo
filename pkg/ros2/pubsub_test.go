@@ -313,7 +313,7 @@ func getMemReading() string {
 	return strings.TrimSpace(string(output))
 }
 
-func publishColorRGBA(c *Context, r, g, b, a float32) RCLError {
+func publishColorRGBA(c *Context, r, g, b, a float32) error {
 	p := c.entities.Publishers.Front().Value.(*Publisher)
 	m := p.Ros2MsgType.Clone().(*std_msgs.ColorRGBA)
 	m.R = r
@@ -377,7 +377,7 @@ func receiveNothing(subs interface{}) {
 	So(i, ShouldEqual, 0)
 }
 
-func newDefaultRCLContext() (*Context, RCLError) {
+func newDefaultRCLContext() (*Context, error) {
 	return NewContext(&sync.WaitGroup{}, 0, defaultRCLArgs())
 }
 
@@ -399,5 +399,5 @@ func sendToChan(c chan<- receiveResult) func(s *Subscription) {
 type receiveResult struct {
 	msg std_msgs.String
 	rmi *RmwMessageInfo
-	err RCLError
+	err error
 }

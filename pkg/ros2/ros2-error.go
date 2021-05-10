@@ -31,7 +31,7 @@ type RCLErrors struct {
 	errs list.List
 }
 
-func (self *RCLErrors) Put(e RCLError) *RCLErrors {
+func (self *RCLErrors) Put(e error) *RCLErrors {
 	self.errs.PushBack(e)
 	return self
 }
@@ -40,8 +40,8 @@ func (self *RCLErrors) String() string {
 	sb := strings.Builder{}
 	sb.WriteString("RCLErrors happened:\n")
 	for e := self.errs.Front(); e != nil; e = e.Next() {
-		err := e.Value.(RCLError)
-		sb.WriteString(err.context() + "\n")
+		err := e.Value.(*RCL_RET_ERROR)
+		sb.WriteString(err.context + "\n")
 	}
 	return sb.String()
 }
@@ -49,7 +49,7 @@ func (self *RCLErrors) String() string {
 /*
 RCLErrorsPut has initialization, incrementation, the jizz, jazz and brass all in one! Incredible! Amazing!
 */
-func RCLErrorsPut(rclErrors *RCLErrors, e RCLError) *RCLErrors {
+func RCLErrorsPut(rclErrors *RCLErrors, e error) *RCLErrors {
 	if rclErrors == nil {
 		rclErrors = &RCLErrors{}
 	}
@@ -66,29 +66,14 @@ func errStr(strs ...string) string {
 	return msg
 }
 
-type RCLError interface {
-	Error() string // Error implements the Golang Error-interface
-	rcl_ret() int
-	context() string
+type rclRetStruct struct {
+	rclRetCode int
+	context    string
+	trace      string
 }
 
-type RCL_RET_struct struct {
-	rcl_ret_t int
-	ctx       string
-	trace     string
-}
-
-func (e *RCL_RET_struct) Error() string {
-	return e.ctx
-}
-func (e *RCL_RET_struct) Trace() string {
-	return e.trace
-}
-func (e *RCL_RET_struct) context() string {
-	return e.ctx
-}
-func (e *RCL_RET_struct) rcl_ret() int {
-	return e.rcl_ret_t
+func (e *rclRetStruct) Error() string {
+	return e.context
 }
 
 /// Return the error message followed by `, at <file>:<line>` if set, else "error not set".
@@ -125,9 +110,9 @@ func ErrorReset() {
 	C.rcutils_reset_error()
 }
 
-func errorsBuildContext(e RCLError, ctx string, stackTrace string) string {
+func errorsBuildContext(e error, ctx string, stackTrace string) string {
 	return fmt.Sprintf("[%T]", e) + " " + ctx + " " + ErrorString() + "\n" + stackTrace + "\n"
 }
-func ErrorsCast(rcl_ret_t C.rcl_ret_t) RCLError {
+func ErrorsCast(rcl_ret_t C.rcl_ret_t) error {
 	return ErrorsCastC(rcl_ret_t, "")
 }

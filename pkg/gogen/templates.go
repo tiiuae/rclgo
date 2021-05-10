@@ -297,7 +297,7 @@ import (
 	"runtime"
 )
 
-func ErrorsCastC(rcl_ret_t C.rcl_ret_t, context string) RCLError {
+func ErrorsCastC(rcl_ret_t C.rcl_ret_t, context string) error {
 	stackTraceBuffer := make([]byte, 2048)
 	runtime.Stack(stackTraceBuffer, false) // Get stack trace of the current running thread only
 
@@ -306,22 +306,22 @@ func ErrorsCastC(rcl_ret_t C.rcl_ret_t, context string) RCLError {
 	switch rcl_ret_t {
 	{{range $e := .ERRORS -}}{{if $e.Rcl_ret_t -}}{{if not (index $P.DEDUP_FILTER $e.Name) -}}
 	case C.{{$e.Name}}:
-		return &{{$e.Name}}{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: {{$e.Rcl_ret_t}}, trace: string(stackTraceBuffer), ctx: errorsBuildContext(&{{$e.Name}}{}, context, string(stackTraceBuffer))}}
+		return &{{$e.Name}}{rclRetStruct: rclRetStruct{rclRetCode: {{$e.Rcl_ret_t}}, trace: string(stackTraceBuffer), context: errorsBuildContext(&{{$e.Name}}{}, context, string(stackTraceBuffer))}}
 	{{""}}
 	{{- end}}{{- end}}{{- end}}
 	default:
-		return &RCL_RET_GOLANG_UNKNOWN_RET_TYPE{RCL_RET_struct: RCL_RET_struct{rcl_ret_t: (int)(rcl_ret_t), ctx: context}}
+		return &RCL_RET_GOLANG_UNKNOWN_RET_TYPE{rclRetStruct: rclRetStruct{rclRetCode: (int)(rcl_ret_t), context: context}}
 	}
 }
 
 type RCL_RET_GOLANG_UNKNOWN_RET_TYPE struct {
-	RCL_RET_struct
+	rclRetStruct
 }
 
 {{range $e := .ERRORS -}}{{if $e.Rcl_ret_t}}
 // {{$e.Name}} {{$e.Comment}}
 type {{$e.Name}} struct {
-	RCL_RET_struct
+	rclRetStruct
 }
 {{""}}
 {{- end}}{{- end}}

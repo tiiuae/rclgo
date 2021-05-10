@@ -21,7 +21,7 @@ import (
 	"unsafe"
 )
 
-func ValidateTopicName(topic_name string) RCLError {
+func ValidateTopicName(topic_name string) error {
 	var validation_result C.int
 	var invalid_index C.size_t
 	C.rcl_validate_topic_name_with_size(C.CString(topic_name), (C.ulong)(len(topic_name)), &validation_result, &invalid_index)

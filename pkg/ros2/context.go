@@ -26,7 +26,7 @@ parent can be nil, a new context.Background is created
 clockType can be nil, then no clock is initialized, you can later initialize it with NewClock()
 rclArgs can be nil
 */
-func NewContext(wg *sync.WaitGroup, clockType Rcl_clock_type_t, rclArgs *RCLArgs) (*Context, RCLError) {
+func NewContext(wg *sync.WaitGroup, clockType Rcl_clock_type_t, rclArgs *RCLArgs) (*Context, error) {
 	rclEntities, rclError := rclInit(rclArgs)
 	if rclError != nil {
 		return nil, rclError

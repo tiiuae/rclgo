@@ -768,38 +768,37 @@ func (self *WaitSet) Run(ctx context.Context) RCLError {
 				continue
 			}
 
-			var i C.ulong
-			// Check timers. Guard against internal state representation mismatch. Due to some software bug the lists of timers could easily get out of sync. AND lead to very very difficult to detect bugs.
-			if (int)(self.rcl_wait_set_t.size_of_timers) != len(self.Timers) {
-				panic(fmt.Sprintf(
-					"Wait set timers count mismatch! rcl_wait_set.size_of_timers='%d' != len(self.Timers)='%d'",
-					(int)(self.rcl_wait_set_t.size_of_subscriptions),
-					len(self.Subscriptions)))
-			}
-			for i = 0; i < self.rcl_wait_set_t.size_of_timers; i++ {
-				var is_timer_ready_to_call C.bool = false
-				timer := self.Timers[i]
-				rc = C.rcl_timer_is_ready(timer.rcl_timer_t, &is_timer_ready_to_call)
-				if rc != C.RCL_RET_OK {
-					return ErrorsCastC(rc, fmt.Sprintf("rcl_timer_is_ready() failed for waitSet='%v', timer='%+v'", self, timer))
-				}
-				if is_timer_ready_to_call {
-					timer.Reset()
-					timer.Callback(timer)
+			// Check if counts in rcl layer and Go layer differ. Guards against
+			// internal state representation mismatch. Due to some software bug
+			// the lists of waited resources could easily get out of sync. AND
+			// lead to very very difficult to detect bugs.
+			panicIfCountMismatch("timers", self.rcl_wait_set_t.size_of_timers, len(self.Timers))
+			panicIfCountMismatch("subscriptions", self.rcl_wait_set_t.size_of_subscriptions, len(self.Subscriptions))
+
+			timers := (*[1 << 30]*C.struct_rcl_timer_t)(unsafe.Pointer(self.rcl_wait_set_t.timers))
+			for i, t := range self.Timers {
+				if timers[i] != nil {
+					t.Reset()
+					t.Callback(t)
 				}
 			}
-			// Check subscriptions. Guard against internal state representation mismatch. Due to some software bug the lists of subscriptions could easily get out of sync. AND lead to very very difficult to detect bugs.
-			if (int)(self.rcl_wait_set_t.size_of_subscriptions) != len(self.Subscriptions) {
-				panic(fmt.Sprintf(
-					"Wait set subscriptions count mismatch! rcl_wait_set.size_of_subscriptions='%d' != len(self.Subscriptions)='%d'",
-					(int)(self.rcl_wait_set_t.size_of_subscriptions),
-					len(self.Subscriptions)))
-			}
-			for i = 0; i < self.rcl_wait_set_t.size_of_subscriptions; i++ {
-				s := self.Subscriptions[i]
-				s.Callback(s)
+			subs := (*[1 << 30]*C.struct_rcl_subscription_t)(unsafe.Pointer(self.rcl_wait_set_t.subscriptions))
+			for i, s := range self.Subscriptions {
+				if subs[i] != nil {
+					s.Callback(s)
+				}
 			}
 		}
+	}
+}
+
+func panicIfCountMismatch(typ string, expected C.ulong, actual int) {
+	if int(expected) != actual {
+		panic(fmt.Sprintf(
+			"Wait set %s count mismatch! expected='%d' != actual='%d'",
+			typ,
+			expected,
+			actual))
 	}
 }
 

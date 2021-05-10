@@ -5,14 +5,17 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"reflect"
 	"runtime"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
 	. "github.com/smartystreets/goconvey/convey"
 	std_msgs "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	test_msgs "github.com/tiiuae/rclgo/pkg/ros2/msgs/test_msgs/msg"
+	"github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 )
 
 func TestPubSub(t *testing.T) {
@@ -77,6 +80,148 @@ func TestPubSub(t *testing.T) {
 		Convey("And the Publisher context is GC'd", func() {
 			errs := rclContextPub.Close()
 			So(errs, ShouldBeNil)
+		})
+	})
+}
+
+func TestMultipleSubscribersInSingleWaitSet(t *testing.T) {
+	var (
+		rclCtxPub, rclCtxSub *Context
+		pub1, pub2           *Publisher
+		sub1, sub2           *Subscription
+		topic1Chan           = make(chan receiveResult, 1)
+		topic2Chan           = make(chan receiveResult, 1)
+	)
+	defer func() {
+		if rclCtxPub != nil {
+			rclCtxPub.Close()
+		}
+		if rclCtxSub != nil {
+			rclCtxSub.Close()
+		}
+	}()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	SetDefaultFailureMode(FailureContinues)
+	Convey("Scenario: Publishers publishe, multiple Subscribers listen", t, func() {
+		Convey("Given RCL contexts and waitset", func() {
+			var err error
+			rclCtxSub, err = newDefaultRCLContext()
+			So(err, ShouldBeNil)
+			rclCtxPub, err = newDefaultRCLContext()
+			So(err, ShouldBeNil)
+		})
+		Convey("And a subscriber on the first topic", func() {
+			node, err := rclCtxPub.NewNode("sub1", "/test")
+			So(err, ShouldBeNil)
+			sub1, err = node.NewSubscription("/topic1", &std_msgs.String{}, sendToChan(topic1Chan))
+			So(err, ShouldBeNil)
+		})
+		Convey("And a subscriber on the second topic", func() {
+			node, err := rclCtxPub.NewNode("sub2", "/test")
+			So(err, ShouldBeNil)
+			sub2, err = node.NewSubscription("/topic2", &std_msgs.String{}, sendToChan(topic2Chan))
+			So(err, ShouldBeNil)
+		})
+		Convey("And a publisher on the first topic", func() {
+			node, err := rclCtxPub.NewNode("pub1", "/test")
+			So(err, ShouldBeNil)
+			pub1, err = node.NewPublisher("/topic1", &std_msgs.String{})
+			So(err, ShouldBeNil)
+		})
+		Convey("And a publisher on the second topic", func() {
+			node, err := rclCtxPub.NewNode("pub2", "/test")
+			So(err, ShouldBeNil)
+			pub2, err = node.NewPublisher("/topic1", &std_msgs.String{})
+			So(err, ShouldBeNil)
+		})
+		Convey("And the waitset is started", func() {
+			subWaitSet, err := rclCtxSub.NewWaitSet(time.Second)
+			So(err, ShouldBeNil)
+			subWaitSet.AddSubscriptions(sub1, sub2)
+			subWaitSet.RunGoroutine(ctx)
+			So(subWaitSet.WaitForReady(5*time.Second, 10*time.Millisecond), ShouldBeNil)
+		})
+		Convey("When the first pub312lisher publishes", func() {
+			publishString(pub1, "message on topic 1")
+		})
+		Convey("Then the first subscriber receives", func() {
+			receiveString(topic1Chan, "message on topic 1")
+		})
+		Convey("But the second subscriber doesn't receive", func() {
+			receiveNothing(topic2Chan)
+		})
+		Convey("When the second publisher publishes", func() {
+			publishString(pub2, "message on topic 2")
+		})
+		Convey("Then the first subscriber doesn't receive", func() {
+			receiveNothing(topic2Chan)
+		})
+		Convey("But the second subscriber receives", func() {
+			receiveString(topic1Chan, "message on topic 2")
+		})
+		Convey("When the context is canceled", func() {
+			cancel()
+		})
+		Convey("Then all subscribers stop", func() {
+			timeOut(2000, func() { rclCtxSub.WG.Wait() }, "Subscriber waitGroup waiting to finish")
+		})
+		Convey("And RCL contexts are freed", func() {
+			So(rclCtxSub.Close(), ShouldBeNil)
+			So(rclCtxPub.Close(), ShouldBeNil)
+		})
+	})
+}
+
+func TestMultipleTimersInSingleWaitSet(t *testing.T) {
+	var (
+		rclCtx         *Context
+		timer1, timer2 *Timer
+		timer1Chan     = make(chan struct{}, 1)
+		timer2Chan     = make(chan struct{}, 1)
+	)
+	defer func() {
+		if rclCtx != nil {
+			rclCtx.Close()
+		}
+	}()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	Convey("Scenario: Multiple timers on single wait set", t, func() {
+		Convey("Given and RCL context and two timers", func() {
+			var err error
+			rclCtx, err = newDefaultRCLContext()
+			So(err, ShouldBeNil)
+			timer1, err = rclCtx.NewTimer(time.Second, func(t *Timer) {
+				timer1Chan <- struct{}{}
+			})
+			So(err, ShouldBeNil)
+			timer2, err = rclCtx.NewTimer(time.Hour, func(t *Timer) {
+				timer2Chan <- struct{}{}
+			})
+			So(err, ShouldBeNil)
+		})
+		Convey("When WaitSet is started", func() {
+			waitSet, err := rclCtx.NewWaitSet(500 * time.Millisecond)
+			So(err, ShouldBeNil)
+			waitSet.AddTimers(timer1, timer2)
+			waitSet.RunGoroutine(ctx)
+			So(waitSet.WaitForReady(5*time.Second, 10*time.Millisecond), ShouldBeNil)
+		})
+		Convey("Then callback of timer 1 is called", func() {
+			timeOut(1050, func() { <-timer1Chan }, "Waiting for timer 1 callback")
+		})
+		Convey("But callback of timer 2 is not called", func() {
+			receiveNothing(timer2Chan)
+		})
+		Convey("When the context is canceled", func() {
+			cancel()
+		})
+		Convey("Then all subscribers stop", func() {
+			timeOut(2000, func() { rclCtx.WG.Wait() }, "Subscriber waitGroup waiting to finish")
+		})
+		Convey("And RCL contexts are freed", func() {
+			So(rclCtx.Close(), ShouldBeNil)
 		})
 	})
 }
@@ -201,4 +346,58 @@ func timeOut(timeoutMs int, f func(), testDescription string) bool {
 		So(testDescription, ShouldEqual, testDescription)
 		return true
 	}
+}
+
+func publishString(pub *Publisher, s string) {
+	msg := std_msgs.NewString()
+	msg.Data = rosidl_runtime_c.String(s)
+	So(pub.Publish(msg), ShouldBeNil)
+}
+
+func receiveString(subs <-chan receiveResult, expected string) {
+	var m receiveResult
+	timeOut(1000, func() { m = <-subs }, "Subscriber waiting for messages")
+	So(m.msg, ShouldNotBeNil)
+	So(m.rmi, ShouldNotBeNil)
+	So(m.err, ShouldBeNil)
+	So(string(m.msg.Data), ShouldEqual, expected)
+}
+
+func receiveNothing(subs interface{}) {
+	i, _, _ := reflect.Select([]reflect.SelectCase{
+		{
+			Dir:  reflect.SelectRecv,
+			Chan: reflect.ValueOf(time.After(time.Second)),
+		},
+		{
+			Dir:  reflect.SelectRecv,
+			Chan: reflect.ValueOf(subs),
+		},
+	})
+	So(i, ShouldEqual, 0)
+}
+
+func newDefaultRCLContext() (*Context, RCLError) {
+	return NewContext(&sync.WaitGroup{}, 0, defaultRCLArgs())
+}
+
+func defaultRCLArgs() *RCLArgs {
+	osArgs := os.Args
+	defer func() { os.Args = osArgs }()
+	os.Args = []string{}
+	return NewRCLArgsMust("")
+}
+
+func sendToChan(c chan<- receiveResult) func(s *Subscription) {
+	return func(s *Subscription) {
+		var res receiveResult
+		res.rmi, res.err = s.TakeMessage(&res.msg)
+		c <- res
+	}
+}
+
+type receiveResult struct {
+	msg std_msgs.String
+	rmi *RmwMessageInfo
+	err RCLError
 }

@@ -108,9 +108,9 @@ type rclEntityWrapper struct {
 }
 
 /*
-Fini frees the allocated memory
+Close frees the allocated memory
 */
-func (self *rclEntityWrapper) Fini() error {
+func (self *rclEntityWrapper) Close() error {
 	var errs error
 	var rc C.rcl_ret_t
 	rc = C.rcl_init_options_fini(self.rcl_init_options_t)
@@ -249,15 +249,15 @@ func NewRCLArgs(rclArgs string) (*RCLArgs, error) {
 	}
 
 	runtime.SetFinalizer(ra, func(obj *RCLArgs) {
-		ra.Fini()
+		ra.Close()
 	})
 	return ra, nil
 }
 
 /*
-Fini frees the allocated memory
+Close frees the allocated memory
 */
-func (self *RCLArgs) Fini() {
+func (self *RCLArgs) Close() {
 	for i := 0; i < (int)(self.CArgc); i++ {
 		cIdx := unsafe.Pointer(
 			uintptr(unsafe.Pointer(self.CArgv)) + (unsafe.Sizeof(uintptr(1)) * uintptr(i)),
@@ -303,13 +303,13 @@ func rclInit(rclArgs *RCLArgs) (*rclEntityWrapper, error) {
 	*rclEntityWrapper.rcl_init_options_t = C.rcl_get_zero_initialized_init_options()
 	rc = C.rcl_init_options_init(rclEntityWrapper.rcl_init_options_t, *rclEntityWrapper.rcl_allocator_t)
 	if rc != C.RCL_RET_OK {
-		rclEntityWrapper.Fini()
+		rclEntityWrapper.Close()
 		return nil, ErrorsCast(rc)
 	}
 
 	rc = C.rcl_init(rclArgs.CArgc, rclArgs.CArgv, rclEntityWrapper.rcl_init_options_t, rclEntityWrapper.rcl_context_t)
 	if rc != C.RCL_RET_OK {
-		rclEntityWrapper.Fini()
+		rclEntityWrapper.Close()
 		return nil, ErrorsCast(rc)
 	}
 
@@ -355,9 +355,9 @@ func (c *Context) NewNode(node_name, namespace string) (*Node, error) {
 }
 
 /*
-Fini frees the allocated memory
+Close frees the allocated memory
 */
-func (self *Node) Fini() error {
+func (self *Node) Close() error {
 	rc := C.rcl_node_fini(self.rcl_node_t)
 	if rc != C.RCL_RET_OK {
 		return ErrorsCast(rc)
@@ -413,9 +413,9 @@ func (self *Publisher) Publish(ros2msg ros2types.ROS2Msg) error {
 }
 
 /*
-Fini frees the allocated memory
+Close frees the allocated memory
 */
-func (self *Publisher) Fini() error {
+func (self *Publisher) Close() error {
 	rc := C.rcl_publisher_fini(self.rcl_publisher_t, self.node.rcl_node_t)
 	if rc != C.RCL_RET_OK {
 		return ErrorsCast(rc)
@@ -437,9 +437,9 @@ func (c *Context) NewClock(clockType Rcl_clock_type_t) (*Clock, error) {
 }
 
 /*
-Fini frees the allocated memory
+Close frees the allocated memory
 */
-func (self *Clock) Fini() error {
+func (self *Clock) Close() error {
 	rc := C.rcl_clock_fini(self.rcl_clock_t)
 	if rc != C.RCL_RET_OK {
 		return ErrorsCast(rc)
@@ -503,9 +503,9 @@ func (self *Timer) Reset() error {
 }
 
 /*
-Fini frees the allocated memory
+Close frees the allocated memory
 */
-func (self *Timer) Fini() error {
+func (self *Timer) Close() error {
 	rc := C.rcl_timer_fini(self.rcl_timer_t)
 	if rc != C.RCL_RET_OK {
 		return ErrorsCast(rc)
@@ -584,7 +584,7 @@ func (s *Subscription) Spin(ctx context.Context, timeout time.Duration) error {
 	if err != nil {
 		return spinErr("subscription", err)
 	}
-	defer ws.Fini()
+	defer ws.Close()
 	ws.AddSubscriptions(s)
 	if err = ws.Run(ctx); err != nil {
 		return spinErr("subscription", err)
@@ -593,9 +593,9 @@ func (s *Subscription) Spin(ctx context.Context, timeout time.Duration) error {
 }
 
 /*
-Fini frees the allocated memory
+Close frees the allocated memory
 */
-func (self *Subscription) Fini() error {
+func (self *Subscription) Close() error {
 	rc := C.rcl_subscription_fini(self.rcl_subscription_t, self.node.rcl_node_t)
 	if rc != C.RCL_RET_OK {
 		return ErrorsCast(rc)
@@ -840,9 +840,9 @@ func (self *WaitSet) initEntities() error {
 }
 
 /*
-Fini frees the allocated memory
+Close frees the allocated memory
 */
-func (self *WaitSet) Fini() error {
+func (self *WaitSet) Close() error {
 	rc := C.rcl_wait_set_fini(&self.rcl_wait_set_t)
 	if rc != C.RCL_RET_OK {
 		return ErrorsCast(rc)

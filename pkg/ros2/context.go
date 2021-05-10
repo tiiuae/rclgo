@@ -57,7 +57,7 @@ func (c *Context) Close() error {
 	c.WG.Wait() // Wait for gothreads to quit, before GC:ing. Otherwise a ton of null-pointers await.
 
 	for o := c.entities.WaitSets.Front(); o != nil; o = o.Next() {
-		err := o.Value.(*WaitSet).Fini()
+		err := o.Value.(*WaitSet).Close()
 		if err != nil {
 			errs = multierror.Append(errs, err)
 		} else {
@@ -65,7 +65,7 @@ func (c *Context) Close() error {
 		}
 	}
 	for o := c.entities.Publishers.Front(); o != nil; o = o.Next() {
-		err := o.Value.(*Publisher).Fini()
+		err := o.Value.(*Publisher).Close()
 		if err != nil {
 			errs = multierror.Append(errs, err)
 		} else {
@@ -73,7 +73,7 @@ func (c *Context) Close() error {
 		}
 	}
 	for o := c.entities.Subscriptions.Front(); o != nil; o = o.Next() {
-		err := o.Value.(*Subscription).Fini()
+		err := o.Value.(*Subscription).Close()
 		if err != nil {
 			errs = multierror.Append(errs, err)
 		} else {
@@ -81,7 +81,7 @@ func (c *Context) Close() error {
 		}
 	}
 	if c.entities.Clock != nil {
-		err := c.entities.Clock.Fini()
+		err := c.entities.Clock.Close()
 		if err != nil {
 			errs = multierror.Append(errs, err)
 		} else {

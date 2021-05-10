@@ -21,7 +21,7 @@ import (
 func TestPubSub(t *testing.T) {
 	var rclContextPub *Context
 	var rclContextSub *Context
-	var errsSub, errsPub *RCLErrors
+	var errsSub, errsPub error
 	subChan := make(chan *std_msgs.ColorRGBA, 1)
 	subCtx, cancelSubCtx := context.WithCancel(context.Background())
 	defer cancelSubCtx()

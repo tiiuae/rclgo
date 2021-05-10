@@ -19,42 +19,8 @@ package ros2
 */
 import "C"
 import (
-	"container/list"
 	"fmt"
-	"strings"
 )
-
-/*
-RCLErrors is a list of errors for functions which could return multiple different errors, wrapped in a tight package, easy-to-code.
-*/
-type RCLErrors struct {
-	errs list.List
-}
-
-func (self *RCLErrors) Put(e error) *RCLErrors {
-	self.errs.PushBack(e)
-	return self
-}
-
-func (self *RCLErrors) String() string {
-	sb := strings.Builder{}
-	sb.WriteString("RCLErrors happened:\n")
-	for e := self.errs.Front(); e != nil; e = e.Next() {
-		err := e.Value.(*RCL_RET_ERROR)
-		sb.WriteString(err.context + "\n")
-	}
-	return sb.String()
-}
-
-/*
-RCLErrorsPut has initialization, incrementation, the jizz, jazz and brass all in one! Incredible! Amazing!
-*/
-func RCLErrorsPut(rclErrors *RCLErrors, e error) *RCLErrors {
-	if rclErrors == nil {
-		rclErrors = &RCLErrors{}
-	}
-	return rclErrors.Put(e)
-}
 
 func errStr(strs ...string) string {
 	var msg string

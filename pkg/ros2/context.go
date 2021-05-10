@@ -11,6 +11,8 @@ package ros2
 
 import (
 	"sync"
+
+	"github.com/hashicorp/go-multierror"
 )
 
 // Context manages resources for a set of RCL entities.
@@ -27,9 +29,9 @@ clockType can be nil, then no clock is initialized, you can later initialize it 
 rclArgs can be nil
 */
 func NewContext(wg *sync.WaitGroup, clockType Rcl_clock_type_t, rclArgs *RCLArgs) (*Context, error) {
-	rclEntities, rclError := rclInit(rclArgs)
-	if rclError != nil {
-		return nil, rclError
+	rclEntities, err := rclInit(rclArgs)
+	if err != nil {
+		return nil, err
 	}
 
 	ctx := &Context{
@@ -50,14 +52,14 @@ func NewContext(wg *sync.WaitGroup, clockType Rcl_clock_type_t, rclArgs *RCLArgs
 	return ctx, nil
 }
 
-func (c *Context) Close() *RCLErrors {
-	var errs *RCLErrors
+func (c *Context) Close() error {
+	var errs error
 	c.WG.Wait() // Wait for gothreads to quit, before GC:ing. Otherwise a ton of null-pointers await.
 
 	for o := c.entities.WaitSets.Front(); o != nil; o = o.Next() {
 		err := o.Value.(*WaitSet).Fini()
 		if err != nil {
-			errs = RCLErrorsPut(errs, err)
+			errs = multierror.Append(errs, err)
 		} else {
 			c.entities.WaitSets.Remove(o)
 		}
@@ -65,7 +67,7 @@ func (c *Context) Close() *RCLErrors {
 	for o := c.entities.Publishers.Front(); o != nil; o = o.Next() {
 		err := o.Value.(*Publisher).Fini()
 		if err != nil {
-			errs = RCLErrorsPut(errs, err)
+			errs = multierror.Append(errs, err)
 		} else {
 			c.entities.Publishers.Remove(o)
 		}
@@ -73,7 +75,7 @@ func (c *Context) Close() *RCLErrors {
 	for o := c.entities.Subscriptions.Front(); o != nil; o = o.Next() {
 		err := o.Value.(*Subscription).Fini()
 		if err != nil {
-			errs = RCLErrorsPut(errs, err)
+			errs = multierror.Append(errs, err)
 		} else {
 			c.entities.Subscriptions.Remove(o)
 		}
@@ -81,7 +83,7 @@ func (c *Context) Close() *RCLErrors {
 	if c.entities.Clock != nil {
 		err := c.entities.Clock.Fini()
 		if err != nil {
-			errs = RCLErrorsPut(errs, err)
+			errs = multierror.Append(errs, err)
 		} else {
 			c.entities.Clock = nil
 		}

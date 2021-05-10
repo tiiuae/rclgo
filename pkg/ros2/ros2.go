@@ -87,6 +87,7 @@ import (
 	"unsafe"
 
 	"github.com/google/shlex"
+	"github.com/hashicorp/go-multierror"
 	"github.com/kivilahtio/go-re/v0"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
 )
@@ -109,18 +110,18 @@ type rclEntityWrapper struct {
 /*
 Fini frees the allocated memory
 */
-func (self *rclEntityWrapper) Fini() *RCLErrors {
-	var rclErrors *RCLErrors
+func (self *rclEntityWrapper) Fini() error {
+	var errs error
 	var rc C.rcl_ret_t
 	rc = C.rcl_init_options_fini(self.rcl_init_options_t)
 	if rc != C.RCL_RET_OK {
-		rclErrors = RCLErrorsPut(rclErrors, ErrorsCastC(rc, fmt.Sprintf("C.rcl_init_options_fini(%+v)", self.rcl_init_options_t)))
+		errs = multierror.Append(errs, ErrorsCastC(rc, fmt.Sprintf("C.rcl_init_options_fini(%+v)", self.rcl_init_options_t)))
 	} else {
 		self.rcl_init_options_t = nil
 	}
 	rc = C.rcl_shutdown(self.rcl_context_t)
 	if rc != C.RCL_RET_OK {
-		rclErrors = RCLErrorsPut(rclErrors, ErrorsCastC(rc, fmt.Sprintf("C.rcl_shutdown(%+v)", self.rcl_context_t)))
+		errs = multierror.Append(errs, ErrorsCastC(rc, fmt.Sprintf("C.rcl_shutdown(%+v)", self.rcl_context_t)))
 	} else {
 		C.free(unsafe.Pointer(self.rcl_context_t))
 		self.rcl_context_t = nil
@@ -130,11 +131,11 @@ func (self *rclEntityWrapper) Fini() *RCLErrors {
 
 	rc = C.rcl_clock_fini(self.Clock.rcl_clock_t)
 	if rc != C.RCL_RET_OK {
-		rclErrors = RCLErrorsPut(rclErrors, ErrorsCastC(rc, fmt.Sprintf("C.rcl_clock_fini(%+v)", self.Clock.rcl_clock_t)))
+		errs = multierror.Append(errs, ErrorsCastC(rc, fmt.Sprintf("C.rcl_clock_fini(%+v)", self.Clock.rcl_clock_t)))
 	} else {
 		self.Clock = nil
 	}
-	return rclErrors
+	return errs
 }
 
 type Clock struct {

@@ -50,11 +50,11 @@ func SubscriberBundle(ctx context.Context, rclContext *Context, wg *sync.WaitGro
 		return rclContext, RCLErrorsPut(errs, err)
 	}
 
-	subscriptions := []*Subscription{subscription}
-	waitSet, err := rclContext.NewWaitSet(subscriptions, nil, 1000*time.Millisecond)
+	waitSet, err := rclContext.NewWaitSet(1000 * time.Millisecond)
 	if err != nil {
 		return rclContext, RCLErrorsPut(errs, err)
 	}
+	waitSet.AddSubscriptions(subscription)
 
 	waitSet.RunGoroutine(ctx)
 
@@ -109,11 +109,11 @@ func PublisherBundleTimer(ctx context.Context, rclContext *Context, wg *sync.Wai
 		return rclContext, RCLErrorsPut(errs, err)
 	}
 
-	timers := []*Timer{timer}
-	waitSet, err := rclContext.NewWaitSet(nil, timers, 1000*time.Millisecond)
+	waitSet, err := rclContext.NewWaitSet(1000 * time.Millisecond)
 	if err != nil {
 		return rclContext, RCLErrorsPut(errs, err)
 	}
+	waitSet.AddTimers(timer)
 
 	waitSet.RunGoroutine(ctx)
 

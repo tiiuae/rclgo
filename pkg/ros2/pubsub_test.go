@@ -29,8 +29,7 @@ func TestPubSub(t *testing.T) {
 			rclContextSub, errsSub = SubscriberBundle(subCtx, rclContextSub, nil, "/test", "", "/topic", "std_msgs/ColorRGBA", NewRCLArgsMust("--ros-args --log-level DEBUG"),
 				func(s *Subscription) {
 					var m std_msgs.ColorRGBA
-					_, err := s.TakeMessage(&m)
-					if err != nil {
+					if _, err := s.TakeMessage(&m); err != nil {
 						fmt.Println("failed to take message:", err)
 					}
 					subChan <- &m
@@ -43,7 +42,7 @@ func TestPubSub(t *testing.T) {
 		})
 		Convey("And the Subscriber is ready to work", func() {
 			w := rclContextSub.entities.WaitSets.Front().Value.(*WaitSet)
-			err := w.WaitForReady(5000, 10)
+			err := w.WaitForReady(5*time.Second, 10*time.Millisecond)
 			So(err, ShouldBeNil)
 		})
 		Convey("When the Publisher publishes", func() {
@@ -62,7 +61,7 @@ func TestPubSub(t *testing.T) {
 		})
 		Convey("When the Subscriber context is canceled", func() {
 			cancelSubCtx()
-			timeOut(1000, func() { rclContextSub.WG.Wait() }, "Subscriber waitGroup waiting to finish")
+			timeOut(2000, func() { rclContextSub.WG.Wait() }, "Subscriber waitGroup waiting to finish")
 		})
 		Convey("And the Subscriber context is GC'd", func() {
 			errs := rclContextSub.Close()
@@ -100,7 +99,7 @@ func BenchsittingmarkMemoryLeak(t *testing.B) {
 			panic(errs)
 		}
 
-		err := rclContextSub.entities.WaitSets.Front().Value.(*WaitSet).WaitForReady(1000, 10)
+		err := rclContextSub.entities.WaitSets.Front().Value.(*WaitSet).WaitForReady(time.Second, 10*time.Millisecond)
 		if err != nil {
 			panic(err)
 		}
@@ -142,7 +141,7 @@ func BenchmarkMemoryLeak(t *testing.B) {
 		panic(errs)
 	}
 
-	err := rclContext.entities.WaitSets.Front().Value.(*WaitSet).WaitForReady(1000, 10)
+	err := rclContext.entities.WaitSets.Front().Value.(*WaitSet).WaitForReady(time.Second, 10*time.Millisecond)
 	if err != nil {
 		panic(err)
 	}

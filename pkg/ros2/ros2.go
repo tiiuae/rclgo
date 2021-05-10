@@ -159,15 +159,6 @@ type Timer struct {
 	Callback    func(*Timer)
 }
 
-type WaitSet struct {
-	Timeout        time.Duration
-	Subscriptions  []*Subscription
-	Timers         []*Timer
-	Ready          bool // flag to notify the outside gothreads that this WaitSet is ready to receive messages. Use waitSet.WaitForReady() to synchronize
-	rcl_wait_set_t *C.rcl_wait_set_t
-	context        *Context
-}
-
 type RmwMessageInfo struct {
 	SourceTimestamp   time.Time
 	ReceivedTimestamp time.Time
@@ -587,16 +578,13 @@ func spinErr(thing string, err error) error {
 	return fmt.Errorf("failed to spin %s: %w", thing, err)
 }
 
-func (s *Subscription) Spin(ctx context.Context) error {
-	ws, err := s.node.context.NewWaitSet(
-		[]*Subscription{s},
-		[]*Timer{},
-		1*time.Second,
-	)
+func (s *Subscription) Spin(ctx context.Context, timeout time.Duration) error {
+	ws, err := s.node.context.NewWaitSet(timeout)
 	if err != nil {
 		return spinErr("subscription", err)
 	}
 	defer ws.Fini()
+	ws.AddSubscriptions(s)
 	if err = ws.Run(ctx); err != nil {
 		return spinErr("subscription", err)
 	}
@@ -682,56 +670,68 @@ func TopicGetTopicNamesAndTypes(rclContext RCLContext, rcl_node *C.rcl_node_t) (
 }
 */
 
-func (c *Context) NewWaitSet(subscriptions []*Subscription, timers []*Timer, timeout time.Duration) (*WaitSet, RCLError) {
-	waitSet := &WaitSet{context: c}
-	waitSet.Timeout = timeout
-	var number_of_subscriptions C.ulong = 0
-	if subscriptions != nil {
-		number_of_subscriptions = (C.ulong)(len(subscriptions))
-		waitSet.Subscriptions = subscriptions
-	}
-	var number_of_guard_conditions C.ulong = 0
-	var number_of_timers C.ulong = 0
-	if timers != nil {
-		number_of_timers = (C.ulong)(len(timers))
-		waitSet.Timers = timers
-	}
-	var number_of_clients C.ulong = 0
-	var number_of_services C.ulong = 0
-	var number_of_events C.ulong = 0
+type WaitSet struct {
+	Timeout        time.Duration
+	Subscriptions  []*Subscription
+	Timers         []*Timer
+	Ready          bool // flag to notify the outside gothreads that this WaitSet is ready to receive messages. Use waitSet.WaitForReady() to synchronize
+	rcl_wait_set_t C.rcl_wait_set_t
+	context        *Context
+}
 
-	var rcl_wait_set C.rcl_wait_set_t = C.rcl_get_zero_initialized_wait_set()
-	waitSet.rcl_wait_set_t = &rcl_wait_set
+func (c *Context) NewWaitSet(timeout time.Duration) (*WaitSet, RCLError) {
+	const (
+		subscriptionsCount   = 0
+		guardConditionsCount = 0
+		timersCount          = 0
+		clientsCount         = 0
+		servicesCount        = 0
+		eventsCount          = 0
+	)
+	waitSet := &WaitSet{
+		context:        c,
+		Timeout:        timeout,
+		Subscriptions:  []*Subscription{},
+		Timers:         []*Timer{},
+		rcl_wait_set_t: C.rcl_get_zero_initialized_wait_set(),
+	}
 	var rc C.rcl_ret_t = C.rcl_wait_set_init(
-		waitSet.rcl_wait_set_t,
-		number_of_subscriptions,
-		number_of_guard_conditions,
-		number_of_timers,
-		number_of_clients,
-		number_of_services,
-		number_of_events,
+		&waitSet.rcl_wait_set_t,
+		subscriptionsCount,
+		guardConditionsCount,
+		timersCount,
+		clientsCount,
+		servicesCount,
+		eventsCount,
 		c.entities.rcl_context_t,
 		*c.entities.rcl_allocator_t,
 	)
 	if rc != C.RCL_RET_OK {
-		return waitSet, ErrorsCast(rc)
+		return nil, ErrorsCast(rc)
 	}
-
 	c.entities.WaitSets.PushFront(waitSet)
 	return waitSet, nil
 }
 
-func (self *WaitSet) WaitForReady(timeoutMs int64, intervalMs int64) RCLError {
+func (w *WaitSet) AddSubscriptions(subs ...*Subscription) {
+	w.Subscriptions = append(w.Subscriptions, subs...)
+}
+
+func (w *WaitSet) AddTimers(timers ...*Timer) {
+	w.Timers = append(w.Timers, timers...)
+}
+
+func (self *WaitSet) WaitForReady(timeout, interval time.Duration) RCLError {
 	for !self.Ready {
 		select {
-		case <-time.After(time.Duration(timeoutMs) * time.Millisecond):
+		case <-time.After(timeout):
 			if self.Ready {
 				return nil
 			} else {
 				return ErrorsCast(2)
 			}
 		default:
-			time.Sleep(time.Duration(intervalMs) * time.Millisecond)
+			time.Sleep(interval)
 		}
 	}
 	return nil
@@ -762,7 +762,7 @@ func (self *WaitSet) Run(ctx context.Context) RCLError {
 				return err
 			}
 
-			var rc C.rcl_ret_t = C.rcl_wait(self.rcl_wait_set_t, (C.long)(self.Timeout))
+			var rc C.rcl_ret_t = C.rcl_wait(&self.rcl_wait_set_t, (C.long)(self.Timeout))
 			self.Ready = true
 			if rc == C.RCL_RET_TIMEOUT {
 				continue
@@ -804,22 +804,34 @@ func (self *WaitSet) Run(ctx context.Context) RCLError {
 }
 
 func (self *WaitSet) initEntities() RCLError {
-	if !C.rcl_wait_set_is_valid(self.rcl_wait_set_t) {
+	if !C.rcl_wait_set_is_valid(&self.rcl_wait_set_t) {
 		//#define RCL_RET_WAIT_SET_INVALID 900
 		return ErrorsCastC(900, fmt.Sprintf("rcl_wait_set_is_valid() failed for wait_set='%v'", self))
 	}
-	var rc C.rcl_ret_t = C.rcl_wait_set_clear(self.rcl_wait_set_t)
+	var rc C.rcl_ret_t = C.rcl_wait_set_clear(&self.rcl_wait_set_t)
 	if rc != C.RCL_RET_OK {
 		return ErrorsCastC(rc, fmt.Sprintf("rcl_wait_set_clear() failed for wait_set='%v'", self))
 	}
-	for i := 0; i < len(self.Subscriptions); i++ {
-		rc = C.rcl_wait_set_add_subscription(self.rcl_wait_set_t, self.Subscriptions[i].rcl_subscription_t, nil)
+	rc = C.rcl_wait_set_resize(
+		&self.rcl_wait_set_t,
+		C.size_t(len(self.Subscriptions)),
+		self.rcl_wait_set_t.size_of_guard_conditions,
+		C.size_t(len(self.Timers)),
+		self.rcl_wait_set_t.size_of_clients,
+		self.rcl_wait_set_t.size_of_services,
+		self.rcl_wait_set_t.size_of_events,
+	)
+	if rc != C.RCL_RET_OK {
+		return ErrorsCastC(rc, fmt.Sprintf("rcl_wait_set_resize() failed for wait_set='%v'", self))
+	}
+	for _, sub := range self.Subscriptions {
+		rc = C.rcl_wait_set_add_subscription(&self.rcl_wait_set_t, sub.rcl_subscription_t, nil)
 		if rc != C.RCL_RET_OK {
 			return ErrorsCastC(rc, fmt.Sprintf("rcl_wait_set_add_subscription() failed for wait_set='%v'", self))
 		}
 	}
-	for i := 0; i < len(self.Timers); i++ {
-		rc = C.rcl_wait_set_add_timer(self.rcl_wait_set_t, self.Timers[i].rcl_timer_t, nil)
+	for _, timer := range self.Timers {
+		rc = C.rcl_wait_set_add_timer(&self.rcl_wait_set_t, timer.rcl_timer_t, nil)
 		if rc != C.RCL_RET_OK {
 			return ErrorsCastC(rc, fmt.Sprintf("rcl_wait_set_add_timer() failed for wait_set='%v'", self))
 		}
@@ -831,7 +843,7 @@ func (self *WaitSet) initEntities() RCLError {
 Fini frees the allocated memory
 */
 func (self *WaitSet) Fini() RCLError {
-	rc := C.rcl_wait_set_fini(self.rcl_wait_set_t)
+	rc := C.rcl_wait_set_fini(&self.rcl_wait_set_t)
 	if rc != C.RCL_RET_OK {
 		return ErrorsCast(rc)
 	}

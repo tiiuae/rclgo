@@ -16,12 +16,11 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-	"unsafe"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/tiiuae/rclgo/pkg/ros2"
 
+	"github.com/tiiuae/rclgo/pkg/ros2"
 	_ "github.com/tiiuae/rclgo/pkg/ros2/msgs" // Load all the available ROS2 Message types. In Go one cannot dynamically import.
 )
 
@@ -33,27 +32,41 @@ var echoCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Printf("%+v\n", viper.AllSettings())
 		// attach sigint & sigterm listeners
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
 		terminationSignals := make(chan os.Signal, 1)
 		signal.Notify(terminationSignals, syscall.SIGINT, syscall.SIGTERM)
+		go func() {
+			defer cancel()
+			<-terminationSignals
+		}()
 
-		rclContext, errs := ros2.SubscriberBundle(context.Background(), nil, nil, viper.GetString("namespace"), viper.GetString("node-name"), viper.GetString("topic-name"), viper.GetString("msg-type"), ros2.NewRCLArgsMust(viper.GetString("ros-args")),
-			func(s *ros2.Subscription, p unsafe.Pointer, rmi *ros2.RmwMessageInfo) {
-				msgClone := s.Ros2MsgType.Clone()
-				msgClone.AsGoStruct(p)
-				fmt.Printf("%+v ", msgClone)
+		rclContext, errs := ros2.SubscriberBundle(
+			ctx, nil, nil,
+			viper.GetString("namespace"),
+			viper.GetString("node-name"),
+			viper.GetString("topic-name"),
+			viper.GetString("msg-type"),
+			ros2.NewRCLArgsMust(viper.GetString("ros-args")),
+			func(s *ros2.Subscription) {
+				msg := s.Ros2MsgType.Clone()
+				rmi, err := s.TakeMessage(msg)
+				if err != nil {
+					fmt.Println("failed to take message:", err)
+					return
+				}
+				fmt.Printf("%+v ", msg)
 				fmt.Printf("SourceTimestamp='%s' ReceivedTimestamp='%s'\n", rmi.SourceTimestamp.Format(time.RFC3339Nano), rmi.ReceivedTimestamp.Format(time.RFC3339Nano))
 			})
+		if rclContext != nil {
+			defer rclContext.Close()
+		}
 		if errs != nil {
 			fmt.Println(errs)
-			syscall.Kill(syscall.Getpid(), syscall.SIGINT)
+			return
 		}
-
-		<-terminationSignals
+		<-ctx.Done()
 		fmt.Printf("Closing topic echo\n")
-		errs = rclContext.Close()
-		if errs != nil {
-			fmt.Println(errs)
-		}
 	},
 	Args: func(cmd *cobra.Command, args []string) error {
 		if !viper.IsSet("topic-name") {

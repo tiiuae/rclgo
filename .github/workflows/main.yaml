@@ -1,0 +1,28 @@
+name: main
+
+on:
+  push:
+    branches: main
+  workflow_dispatch:
+
+jobs:
+  rclgo:
+    runs-on: ubuntu-latest
+    container: osrf/ros:foxy-desktop
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Go environment
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16
+
+      - name: Install additional tools and libraries
+        run: |
+          apt update
+          apt install -y make gcc curl ros-foxy-test-msgs
+          curl -fsSL https://github.com/tiiuae/fog_sw/releases/download/ver_ssrc_rel_3/ros-foxy-px4-msgs_2.0.1-5_git20210419.b4c4a12_amd64.deb -o ros-foxy-px4-msgs.deb
+          dpkg -i ros-foxy-px4-msgs.deb
+
+      - name: Run tests
+        run: go test ./...

@@ -19,9 +19,6 @@ jobs:
 
       - name: Install additional tools and libraries
         run: |
-          ls
-          ls /opt
-          ls /home
           apt-get update
           apt-get install -y make gcc curl ros-foxy-test-msgs
           curl -fsSL https://github.com/tiiuae/fog_sw/releases/download/ver_ssrc_rel_3/ros-foxy-px4-msgs_2.0.1-5_git20210419.b4c4a12_amd64.deb -o ros-foxy-px4-msgs.deb
@@ -29,8 +26,5 @@ jobs:
 
       - name: Run tests
         run: |
-          ls
-          ls /opt
-          ls /home
-          source /opt/ros/foxy/setup.sh
+          . /opt/ros/foxy/setup.sh
           make test

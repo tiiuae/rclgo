@@ -371,6 +371,7 @@ func (self *Node) NewPublisher(topicName string, ros2msg ros2types.ROS2Msg) (*Pu
 
 	rcl_publisher_options := (*C.rcl_publisher_options_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_publisher_options_t{}))))
 	*rcl_publisher_options = C.rcl_publisher_get_default_options()
+	rcl_publisher_options.qos.reliability = C.RMW_QOS_POLICY_RELIABILITY_SYSTEM_DEFAULT
 
 	err := ValidateTopicName(topicName)
 	if err != nil {
@@ -539,6 +540,7 @@ func (self *Node) NewSubscription(topic_name string, ros2msg ros2types.ROS2Msg, 
 	}
 
 	sops := C.rcl_subscription_get_default_options()
+	sops.qos.reliability = C.RMW_QOS_POLICY_RELIABILITY_SYSTEM_DEFAULT
 	subscription.rcl_subscription_options_t = &sops
 
 	var rc C.rcl_ret_t = C.rcl_subscription_init(

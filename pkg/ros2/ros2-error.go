@@ -82,3 +82,9 @@ func errorsBuildContext(e error, ctx string, stackTrace string) string {
 func ErrorsCast(rcl_ret_t C.rcl_ret_t) error {
 	return ErrorsCastC(rcl_ret_t, "")
 }
+
+func onErr(err *error, f func()) {
+	if *err != nil {
+		f()
+	}
+}

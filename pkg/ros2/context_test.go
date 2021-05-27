@@ -48,8 +48,8 @@ func TestContextClose(t *testing.T) {
 		Convey("When the context is closed the first time, no errors occur", func() {
 			So(context.Close(), ShouldBeNil)
 		})
-		Convey("When the context is closed the second time, no errors occur", func() {
-			So(context.Close(), ShouldBeNil)
+		Convey("When the context is closed the second time, an error occurs", func() {
+			So(context.Close(), ShouldNotBeNil)
 		})
 	})
 }

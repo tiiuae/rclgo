@@ -32,33 +32,38 @@ Creates a ROS2 RCL context with a single subscriber subscribing to the given top
 All parameters except the first one are optional.
 */
 func SubscriberBundle(ctx context.Context, rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *RCLArgs, subscriberCallback SubscriptionCallback) (*Context, error) {
+	c, _, err := SubscriberBundleReturnWaitSet(ctx, rclContext, wg, namespace, nodeName, topicName, msgTypeName, rosArgs, subscriberCallback)
+	return c, err
+}
+
+func SubscriberBundleReturnWaitSet(ctx context.Context, rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *RCLArgs, subscriberCallback SubscriptionCallback) (*Context, *WaitSet, error) {
 	var errs error
 	var msgType ros2types.ROS2Msg
 	rclContext, wg, msgType, errs = bundleDefaults(rclContext, wg, &namespace, &nodeName, &topicName, &msgTypeName, rosArgs)
 	if errs != nil {
-		return rclContext, errs
+		return rclContext, nil, errs
 	}
 
 	rclNode, err := rclContext.NewNode(nodeName, namespace)
 	if err != nil {
-		return rclContext, multierror.Append(errs, err)
+		return rclContext, nil, multierror.Append(errs, err)
 	}
 
 	ros2msgClone := msgType.Clone()
 	subscription, err := rclNode.NewSubscription(topicName, ros2msgClone, subscriberCallback)
 	if err != nil {
-		return rclContext, multierror.Append(errs, err)
+		return rclContext, nil, multierror.Append(errs, err)
 	}
 
 	waitSet, err := rclContext.NewWaitSet(1000 * time.Millisecond)
 	if err != nil {
-		return rclContext, multierror.Append(errs, err)
+		return rclContext, nil, multierror.Append(errs, err)
 	}
 	waitSet.AddSubscriptions(subscription)
 
 	waitSet.RunGoroutine(ctx)
 
-	return rclContext, errs
+	return rclContext, waitSet, errs
 }
 
 func PublisherBundle(rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *RCLArgs) (*Context, *Publisher, error) {

@@ -77,7 +77,6 @@ void print_gid(rmw_gid_t gid) {
 */
 import "C"
 import (
-	"container/list"
 	"context"
 	"fmt"
 	"os"
@@ -92,62 +91,21 @@ import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
 )
 
-/*
-Keeps track of all the C entities initialized, so we can later free them
-*/
-type rclEntityWrapper struct {
-	rcl_allocator_t    *C.rcutils_allocator_t
-	rcl_context_t      *C.rcl_context_t
-	Clock              *Clock
-	rcl_init_options_t *C.rcl_init_options_t
-	Nodes              list.List // []*Node
-	Publishers         list.List // []*Publisher
-	Subscriptions      list.List // []*Subscription
-	Timers             list.List // []*Timer
-	WaitSets           list.List // []*WaitSet
-}
-
-/*
-Close frees the allocated memory
-*/
-func (self *rclEntityWrapper) Close() error {
-	var errs error
-	var rc C.rcl_ret_t
-	rc = C.rcl_init_options_fini(self.rcl_init_options_t)
-	if rc != C.RCL_RET_OK {
-		errs = multierror.Append(errs, ErrorsCastC(rc, fmt.Sprintf("C.rcl_init_options_fini(%+v)", self.rcl_init_options_t)))
-	} else {
-		self.rcl_init_options_t = nil
-	}
-	rc = C.rcl_shutdown(self.rcl_context_t)
-	if rc != C.RCL_RET_OK {
-		errs = multierror.Append(errs, ErrorsCastC(rc, fmt.Sprintf("C.rcl_shutdown(%+v)", self.rcl_context_t)))
-	} else {
-		C.free(unsafe.Pointer(self.rcl_context_t))
-		self.rcl_context_t = nil
-	}
-	C.free(unsafe.Pointer(self.rcl_allocator_t))
-	self.rcl_allocator_t = nil
-
-	rc = C.rcl_clock_fini(self.Clock.rcl_clock_t)
-	if rc != C.RCL_RET_OK {
-		errs = multierror.Append(errs, ErrorsCastC(rc, fmt.Sprintf("C.rcl_clock_fini(%+v)", self.Clock.rcl_clock_t)))
-	} else {
-		self.Clock = nil
-	}
-	return errs
-}
-
 type Clock struct {
+	rosID
 	rcl_clock_t *C.rcl_clock_t
+	context     *Context
 }
 
 type Node struct {
+	rosID
+	rosResourceStore
 	rcl_node_t *C.rcl_node_t
 	context    *Context
 }
 
 type Publisher struct {
+	rosID
 	TopicName               string
 	Ros2MsgType             ros2types.ROS2Msg
 	node                    *Node
@@ -156,8 +114,10 @@ type Publisher struct {
 }
 
 type Timer struct {
+	rosID
 	rcl_timer_t *C.rcl_timer_t
 	Callback    func(*Timer)
+	context     *Context
 }
 
 type RmwMessageInfo struct {
@@ -279,41 +239,37 @@ func NewRCLArgsMust(rclArgs string) *RCLArgs {
 	return args
 }
 
-func rclInit(rclArgs *RCLArgs) (*rclEntityWrapper, error) {
+func rclInit(rclArgs *RCLArgs, ctx *Context) error {
 	var rc C.rcl_ret_t
 	if rclArgs == nil {
 		rclArgs, _ = NewRCLArgs("")
 	}
 
-	rclEntityWrapper := &rclEntityWrapper{}
 	/* Instead of receiving the rcl_allocator_t as a golang struct,
 	   prepare C memory from heap to receive a copy of the rcl allocator.
 	   This way Golang wont mess with the rcl_allocator_t memory location
 	   and complaing about nested Golang pointer passed over cgo */
-	rclEntityWrapper.rcl_allocator_t = (*C.rcl_allocator_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_allocator_t{}))))
-	*rclEntityWrapper.rcl_allocator_t = C.rcl_get_default_allocator()
-	// TODO: Free C.free(rclEntityWrapper.rcl_allocator)
+	ctx.rcl_allocator_t = (*C.rcl_allocator_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_allocator_t{}))))
+	*ctx.rcl_allocator_t = C.rcl_get_default_allocator()
+	// TODO: Free C.free(ctx.rcl_allocator)
 
 	rclInitLogging(rclArgs)
 
-	rclEntityWrapper.rcl_context_t = (*C.rcl_context_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_context_t{}))))
-	*rclEntityWrapper.rcl_context_t = C.rcl_get_zero_initialized_context()
+	ctx.rcl_context_t = (*C.rcl_context_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_context_t{}))))
+	*ctx.rcl_context_t = C.rcl_get_zero_initialized_context()
 
-	rclEntityWrapper.rcl_init_options_t = (*C.rcl_init_options_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_init_options_t{}))))
-	*rclEntityWrapper.rcl_init_options_t = C.rcl_get_zero_initialized_init_options()
-	rc = C.rcl_init_options_init(rclEntityWrapper.rcl_init_options_t, *rclEntityWrapper.rcl_allocator_t)
+	ctx.rcl_init_options_t = (*C.rcl_init_options_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_init_options_t{}))))
+	*ctx.rcl_init_options_t = C.rcl_get_zero_initialized_init_options()
+	rc = C.rcl_init_options_init(ctx.rcl_init_options_t, *ctx.rcl_allocator_t)
 	if rc != C.RCL_RET_OK {
-		rclEntityWrapper.Close()
-		return nil, ErrorsCast(rc)
+		return ErrorsCast(rc)
 	}
 
-	rc = C.rcl_init(rclArgs.CArgc, rclArgs.CArgv, rclEntityWrapper.rcl_init_options_t, rclEntityWrapper.rcl_context_t)
+	rc = C.rcl_init(rclArgs.CArgc, rclArgs.CArgv, ctx.rcl_init_options_t, ctx.rcl_context_t)
 	if rc != C.RCL_RET_OK {
-		rclEntityWrapper.Close()
-		return nil, ErrorsCast(rc)
+		return ErrorsCast(rc)
 	}
-
-	return rclEntityWrapper, nil
+	return nil
 }
 
 func rclInitLogging(rclArgs *RCLArgs) error {
@@ -343,14 +299,14 @@ func (c *Context) NewNode(node_name, namespace string) (*Node, error) {
 	rcl_node := (*C.rcl_node_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_node_t{}))))
 	*rcl_node = C.rcl_get_zero_initialized_node()
 
-	var rc C.rcl_ret_t = C.rcl_node_init(rcl_node, C.CString(node_name), C.CString(ns), c.entities.rcl_context_t, rcl_node_options)
+	var rc C.rcl_ret_t = C.rcl_node_init(rcl_node, C.CString(node_name), C.CString(ns), c.rcl_context_t, rcl_node_options)
 	if rc != C.RCL_RET_OK {
 		fmt.Printf("Error '%d' in rcl_node_init\n", (int)(rc))
 		return nil, ErrorsCast(rc)
 	}
 
 	node := &Node{rcl_node_t: rcl_node, context: c}
-	c.entities.Nodes.PushFront(node)
+	c.addResource(node)
 	return node, nil
 }
 
@@ -358,11 +314,15 @@ func (c *Context) NewNode(node_name, namespace string) (*Node, error) {
 Close frees the allocated memory
 */
 func (self *Node) Close() error {
+	var err *multierror.Error
+	err = multierror.Append(err, self.rosResourceStore.Close())
+	self.context.removeResource(self)
 	rc := C.rcl_node_fini(self.rcl_node_t)
 	if rc != C.RCL_RET_OK {
-		return ErrorsCast(rc)
+		err = multierror.Append(err, ErrorsCast(rc))
 	}
-	return nil
+	C.free(unsafe.Pointer(self.rcl_node_t))
+	return err.ErrorOrNil()
 }
 
 func (self *Node) NewPublisher(topicName string, ros2msg ros2types.ROS2Msg) (*Publisher, error) {
@@ -396,7 +356,7 @@ func (self *Node) NewPublisher(topicName string, ros2msg ros2types.ROS2Msg) (*Pu
 		rcl_publisher_t:         rcl_publisher,
 	}
 
-	self.context.entities.Publishers.PushFront(publisher)
+	self.addResource(publisher)
 	return publisher, nil
 }
 
@@ -417,6 +377,7 @@ func (self *Publisher) Publish(ros2msg ros2types.ROS2Msg) error {
 Close frees the allocated memory
 */
 func (self *Publisher) Close() error {
+	self.node.removeResource(self)
 	rc := C.rcl_publisher_fini(self.rcl_publisher_t, self.node.rcl_node_t)
 	if rc != C.RCL_RET_OK {
 		return ErrorsCast(rc)
@@ -429,18 +390,23 @@ func (c *Context) NewClock(clockType Rcl_clock_type_t) (*Clock, error) {
 		clockType = RCL_ROS_TIME
 	}
 	rcl_clock := (*C.rcl_clock_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_clock_t{})))) //rcl_clock_init() doc says "This will allocate all necessary internal structures, and initialize variables.". The parameter is invalid if no memory allocated beforehand.
-	var rc C.rcl_ret_t = C.rcl_clock_init(uint32(clockType), rcl_clock, c.entities.rcl_allocator_t)
+	var rc C.rcl_ret_t = C.rcl_clock_init(uint32(clockType), rcl_clock, c.rcl_allocator_t)
 	if rc != C.RCL_RET_OK {
 		return nil, ErrorsCast(rc)
 	}
-	c.entities.Clock = &Clock{rcl_clock_t: rcl_clock}
-	return c.entities.Clock, nil
+	clock := &Clock{
+		context:     c,
+		rcl_clock_t: rcl_clock,
+	}
+	c.addResource(clock)
+	return clock, nil
 }
 
 /*
 Close frees the allocated memory
 */
 func (self *Clock) Close() error {
+	self.context.removeResource(self)
 	rc := C.rcl_clock_fini(self.rcl_clock_t)
 	if rc != C.RCL_RET_OK {
 		return ErrorsCast(rc)
@@ -454,34 +420,35 @@ func (c *Context) NewTimer(timeout time.Duration, timer_callback func(*Timer)) (
 	if timeout == 0 {
 		timeout = 1000 * time.Millisecond
 	}
-	timer := &Timer{}
+	timer := &Timer{context: c}
 	timer.Callback = timer_callback
 
 	timer.rcl_timer_t = (*C.rcl_timer_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_timer_t{}))))
 	*timer.rcl_timer_t = C.rcl_get_zero_initialized_timer()
 
-	if c.entities.Clock == nil {
+	if c.Clock == nil {
 		var err error
-		_, err = c.NewClock(RCL_ROS_TIME) // http://design.ros2.org/articles/clock_and_time.html // It is expected that the default choice of time will be to use the ROSTime source
+		c.Clock, err = c.NewClock(RCL_ROS_TIME) // http://design.ros2.org/articles/clock_and_time.html // It is expected that the default choice of time will be to use the ROSTime source
 		if err != nil {
-			return timer, ErrorsCastC(C.int(err.(*rclRetStruct).rclRetCode), fmt.Sprintf("Forwarding error from '%s'", err.Error()))
+			return nil, err
 		}
 	}
 
 	rc = C.rcl_timer_init(
 		timer.rcl_timer_t,
-		c.entities.Clock.rcl_clock_t,
-		c.entities.rcl_context_t,
+		c.Clock.rcl_clock_t,
+		c.rcl_context_t,
 		(C.long)(timeout),
 		nil,
-		*c.entities.rcl_allocator_t)
+		*c.rcl_allocator_t)
 	if rc != C.RCL_RET_OK {
-		return timer, ErrorsCast(rc)
+		return nil, ErrorsCast(rc)
 	}
 
-	c.entities.Timers.PushFront(timer)
+	c.addResource(timer)
 	return timer, nil
 }
+
 func (self *Timer) GetTimeUntilNextCall() (int64, error) {
 	var rc C.rcl_ret_t
 	time_until_next_call := (*C.int64_t)(C.malloc((C.size_t)(8)))
@@ -507,16 +474,19 @@ func (self *Timer) Reset() error {
 Close frees the allocated memory
 */
 func (self *Timer) Close() error {
+	self.context.removeResource(self)
 	rc := C.rcl_timer_fini(self.rcl_timer_t)
 	if rc != C.RCL_RET_OK {
 		return ErrorsCast(rc)
 	}
+	C.free(unsafe.Pointer(self.rcl_timer_t))
 	return nil
 }
 
 type SubscriptionCallback func(*Subscription)
 
 type Subscription struct {
+	rosID
 	TopicName                  string
 	Ros2MsgType                ros2types.ROS2Msg
 	node                       *Node
@@ -553,7 +523,7 @@ func (self *Node) NewSubscription(topic_name string, ros2msg ros2types.ROS2Msg, 
 		return subscription, ErrorsCastC(rc, fmt.Sprintf("Topic name '%s'", topic_name))
 	}
 
-	self.context.entities.Subscriptions.PushFront(subscription)
+	self.addResource(subscription)
 	return subscription, nil
 }
 
@@ -598,6 +568,7 @@ func (s *Subscription) Spin(ctx context.Context, timeout time.Duration) error {
 Close frees the allocated memory
 */
 func (self *Subscription) Close() error {
+	self.node.removeResource(self)
 	rc := C.rcl_subscription_fini(self.rcl_subscription_t, self.node.rcl_node_t)
 	if rc != C.RCL_RET_OK {
 		return ErrorsCast(rc)
@@ -674,6 +645,7 @@ func TopicGetTopicNamesAndTypes(rclContext RCLContext, rcl_node *C.rcl_node_t) (
 */
 
 type WaitSet struct {
+	rosID
 	Timeout        time.Duration
 	Subscriptions  []*Subscription
 	Timers         []*Timer
@@ -706,13 +678,14 @@ func (c *Context) NewWaitSet(timeout time.Duration) (*WaitSet, error) {
 		clientsCount,
 		servicesCount,
 		eventsCount,
-		c.entities.rcl_context_t,
-		*c.entities.rcl_allocator_t,
+		c.rcl_context_t,
+		*c.rcl_allocator_t,
 	)
 	if rc != C.RCL_RET_OK {
 		return nil, ErrorsCast(rc)
 	}
-	c.entities.WaitSets.PushFront(waitSet)
+
+	c.addResource(waitSet)
 	return waitSet, nil
 }
 
@@ -845,6 +818,7 @@ func (self *WaitSet) initEntities() error {
 Close frees the allocated memory
 */
 func (self *WaitSet) Close() error {
+	self.context.removeResource(self)
 	rc := C.rcl_wait_set_fini(&self.rcl_wait_set_t)
 	if rc != C.RCL_RET_OK {
 		return ErrorsCast(rc)

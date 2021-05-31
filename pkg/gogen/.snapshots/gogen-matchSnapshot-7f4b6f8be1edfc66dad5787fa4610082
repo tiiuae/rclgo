@@ -1,0 +1,9 @@
+(*gogen.ROS2Constant)({
+  RosType: (string) (len=5) "uint8",
+  GoType: (string) (len=5) "uint8",
+  RosName: (string) (len=8) "TYPE_LED",
+  Value: (string) (len=1) "0",
+  Comment: (string) "",
+  PkgName: (string) "",
+  PkgIsLocal: (bool) false
+})

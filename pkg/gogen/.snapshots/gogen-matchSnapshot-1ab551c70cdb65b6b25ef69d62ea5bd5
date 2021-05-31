@@ -1,0 +1,15 @@
+(*gogen.ROS2Field)({
+  TypeArray: (string) "",
+  ArrayBounded: (string) "",
+  ArraySize: (int) 0,
+  DefaultValue: (string) "",
+  PkgName: (string) "",
+  PkgIsLocal: (bool) false,
+  RosType: (string) (len=7) "float32",
+  CType: (string) (len=5) "float",
+  GoType: (string) (len=7) "float32",
+  RosName: (string) (len=5) "v_ref",
+  CName: (string) (len=5) "v_ref",
+  GoName: (string) (len=4) "VRef",
+  Comment: (string) (len=81) "ADC channel voltage reference, use to calculate LSB voltage(lsb=scale/resolution)"
+})

@@ -10,26 +10,33 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package gogen
 
 import (
-	"fmt"
+	"crypto/md5"
+	"encoding/hex"
 	"testing"
 
+	"github.com/bradleyjkemp/cupaloy/v2"
 	. "github.com/smartystreets/goconvey/convey"
 )
+
+func matchSnapshot(name string, x interface{}) {
+	sum := md5.Sum([]byte(name))
+	So(cupaloy.SnapshotMulti(hex.EncodeToString(sum[:]), x), ShouldBeNil)
+}
 
 var nilAry []string
 
 func TestParseROS2Field(t *testing.T) {
 	SetDefaultFailureMode(FailureContinues)
 
-	testFunc := func(description string, line string, ros2msg *ROS2Message, f interface{}) {
-		testName := ros2msg.RosPackage + "." + ros2msg.RosMsgName + " " + rosName(f)
+	testFunc := func(description string, line string, ros2msg *ROS2Message) {
+		testName := ros2msg.RosPackage + "." + ros2msg.RosMsgName + " " + line
 		if description != "" {
 			testName += " : " + description
 		}
 		Convey(testName, func() {
 			m, err := ParseROS2MessageRow(line, ros2msg)
 			So(err, ShouldBeNil)
-			So(m, ShouldResemble, f)
+			matchSnapshot(line, m)
 		})
 	}
 
@@ -37,249 +44,54 @@ func TestParseROS2Field(t *testing.T) {
 		testFunc("",
 			"unique_identifier_msgs/UUID goal_id",
 			ROS2MessageNew("action_msgs", "GoalInfo"),
-			&ROS2Field{
-				RosType:      "UUID",
-				GoType:       "UUID",
-				CType:        "UUID",
-				TypeArray:    "",
-				ArrayBounded: "",
-				ArraySize:    0,
-				DefaultValue: "",
-				PkgName:      "unique_identifier_msgs",
-				PkgIsLocal:   false,
-				Comment:      "",
-				RosName:      "goal_id",
-				GoName:       "GoalId",
-				CName:        "goal_id",
-			},
 		)
 		testFunc("",
 			"string[] full_node_names",
 			ROS2MessageNew("composition_interfaces", "ListNodes_Response"),
-			&ROS2Field{
-				RosType:      "string",
-				GoType:       "String",
-				CType:        "String",
-				TypeArray:    "[]",
-				ArrayBounded: "",
-				ArraySize:    0,
-				DefaultValue: "",
-				PkgName:      "rosidl_runtime_c",
-				PkgIsLocal:   false,
-				Comment:      "",
-				RosName:      "full_node_names",
-				GoName:       "FullNodeNames",
-				CName:        "full_node_names",
-			},
 		)
 		testFunc("",
 			"float64[3] float64_values_default [3.1415, 0.0, -3.1415]",
 			ROS2MessageNew("test_msgs", "Arrays_Response"),
-			&ROS2Field{
-				RosType:      "float64",
-				GoType:       "float64",
-				CType:        "double",
-				TypeArray:    "[3]",
-				ArrayBounded: "",
-				ArraySize:    3,
-				DefaultValue: "[3.1415, 0.0, -3.1415]",
-				PkgName:      "",
-				PkgIsLocal:   false,
-				Comment:      "",
-				RosName:      "float64_values_default",
-				GoName:       "Float64ValuesDefault",
-				CName:        "float64_values_default",
-			},
 		)
 		testFunc("",
 			"BasicTypes[3] basic_types_values",
 			ROS2MessageNew("test_msgs", "Arrays_Response"),
-			&ROS2Field{
-				RosType:      "BasicTypes",
-				GoType:       "BasicTypes",
-				CType:        "BasicTypes",
-				TypeArray:    "[3]",
-				ArrayBounded: "",
-				ArraySize:    3,
-				DefaultValue: "",
-				PkgName:      ".",
-				PkgIsLocal:   true,
-				Comment:      "",
-				RosName:      "basic_types_values",
-				GoName:       "BasicTypesValues",
-				CName:        "basic_types_values",
-			},
 		)
 		testFunc("",
 			"bool[3] bool_values_default [false, true, false]",
 			ROS2MessageNew("test_msgs", "Arrays_Response"),
-			&ROS2Field{
-				RosType:      "bool",
-				GoType:       "bool",
-				CType:        "bool",
-				TypeArray:    "[3]",
-				ArrayBounded: "",
-				ArraySize:    3,
-				DefaultValue: "[false, true, false]",
-				PkgName:      "",
-				PkgIsLocal:   false,
-				Comment:      "",
-				RosName:      "bool_values_default",
-				GoName:       "BoolValuesDefault",
-				CName:        "bool_values_default",
-			},
 		)
 		testFunc("",
 			`string[3] string_values_default ["", "max value", "min value"]`,
 			ROS2MessageNew("test_msgs", "Arrays_Response"),
-			&ROS2Field{
-				RosType:      "string",
-				GoType:       "String",
-				CType:        "String",
-				TypeArray:    "[3]",
-				ArrayBounded: "",
-				ArraySize:    3,
-				DefaultValue: `["", "max value", "min value"]`,
-				PkgName:      "rosidl_runtime_c",
-				PkgIsLocal:   false,
-				Comment:      "",
-				RosName:      "string_values_default",
-				GoName:       "StringValuesDefault",
-				CName:        "string_values_default",
-			},
 		)
 		testFunc("Fields with comments containing '=' do not get identified as Constants",
 			`float32 v_ref                      # ADC channel voltage reference, use to calculate LSB voltage(lsb=scale/resolution)`,
 			ROS2MessageNew("px4_msgs", "AdcReport"),
-			&ROS2Field{
-				RosType:      "float32",
-				GoType:       "float32",
-				CType:        "float",
-				TypeArray:    "",
-				ArrayBounded: "",
-				ArraySize:    0,
-				DefaultValue: ``,
-				PkgName:      "",
-				PkgIsLocal:   false,
-				Comment:      "ADC channel voltage reference, use to calculate LSB voltage(lsb=scale/resolution)",
-				RosName:      "v_ref",
-				GoName:       "VRef",
-				CName:        "v_ref",
-			},
 		)
 		testFunc("Array size int is big enough to store the C array size.",
 			`uint8[512] junk`,
 			ROS2MessageNew("px4_msgs", "OrbTestLarge"),
-			&ROS2Field{
-				RosType:      "uint8",
-				GoType:       "uint8",
-				CType:        "uint8_t",
-				TypeArray:    "[512]",
-				ArrayBounded: "",
-				ArraySize:    512,
-				DefaultValue: ``,
-				PkgName:      "",
-				PkgIsLocal:   false,
-				Comment:      "",
-				RosName:      "junk",
-				GoName:       "Junk",
-				CName:        "junk",
-			},
 		)
 		testFunc(`C struct has reserved Go keyword .test. Accessed with ._test instead.`,
 			`uint8 type`,
 			ROS2MessageNew("sensor_msgs", "JoyFeedback"),
-			&ROS2Field{
-				RosType:      "uint8",
-				GoType:       "uint8",
-				CType:        "uint8_t",
-				TypeArray:    "",
-				ArrayBounded: "",
-				ArraySize:    0,
-				DefaultValue: ``,
-				PkgName:      "",
-				PkgIsLocal:   false,
-				Comment:      "",
-				RosName:      "type",
-				GoName:       "Type",
-				CName:        "_type",
-			},
 		)
 		testFunc(`Bounded sequence.`,
 			`BasicTypes[<=3] basic_types_values`,
 			ROS2MessageNew("test_msgs", "BoundedSequences"),
-			&ROS2Field{
-				RosType:      "BasicTypes",
-				GoType:       "BasicTypes",
-				CType:        "BasicTypes",
-				TypeArray:    "[]",
-				ArrayBounded: "<=3",
-				ArraySize:    0,
-				DefaultValue: ``,
-				PkgName:      ".",
-				PkgIsLocal:   true,
-				Comment:      "",
-				RosName:      "basic_types_values",
-				GoName:       "BasicTypesValues",
-				CName:        "basic_types_values",
-			},
 		)
 		testFunc(`Bounded sequence with defaults.`,
 			`int8[<=3] int8_values_default [0, 127, -128]`,
 			ROS2MessageNew("test_msgs", "BoundedSequences"),
-			&ROS2Field{
-				RosType:      "int8",
-				GoType:       "int8",
-				CType:        "int8_t",
-				TypeArray:    "[]",
-				ArrayBounded: "<=3",
-				ArraySize:    0,
-				DefaultValue: `[0, 127, -128]`,
-				PkgName:      "",
-				PkgIsLocal:   false,
-				Comment:      "",
-				RosName:      "int8_values_default",
-				GoName:       "Int8ValuesDefault",
-				CName:        "int8_values_default",
-			},
 		)
 		testFunc(`Bounded string with defaults.`,
 			`string<=22 bounded_string_value "this is yet another"`,
 			ROS2MessageNew("test_msgs", "Strings"),
-			&ROS2Field{
-				RosType:      "string",
-				GoType:       "String",
-				CType:        "String",
-				TypeArray:    "",
-				ArrayBounded: "<=22",
-				ArraySize:    0,
-				DefaultValue: `"this is yet another"`,
-				PkgName:      "rosidl_runtime_c",
-				PkgIsLocal:   false,
-				Comment:      "",
-				RosName:      "bounded_string_value",
-				GoName:       "BoundedStringValue",
-				CName:        "bounded_string_value",
-			},
 		)
 		testFunc(`Bounded string.`,
 			`string<=22 bounded_string_value`,
 			ROS2MessageNew("test_msgs", "Strings"),
-			&ROS2Field{
-				RosType:      "string",
-				GoType:       "String",
-				CType:        "String",
-				TypeArray:    "",
-				ArrayBounded: "<=22",
-				ArraySize:    0,
-				DefaultValue: ``,
-				PkgName:      "rosidl_runtime_c",
-				PkgIsLocal:   false,
-				Comment:      "",
-				RosName:      "bounded_string_value",
-				GoName:       "BoundedStringValue",
-				CName:        "bounded_string_value",
-			},
 		)
 	})
 
@@ -287,46 +99,18 @@ func TestParseROS2Field(t *testing.T) {
 		testFunc("",
 			"uint8 NUM_ACTUATOR_CONTROLS = 8",
 			ROS2MessageNew("px4_msgs", "ActuatorControls0"),
-			&ROS2Constant{
-				Value:   "8",
-				RosType: "uint8",
-				GoType:  "uint8",
-				Comment: "",
-				RosName: "NUM_ACTUATOR_CONTROLS",
-			},
 		)
 		testFunc("",
 			"uint8 TYPE_LED    = 0",
 			ROS2MessageNew("sensor_msgs", "JoyFeedback"),
-			&ROS2Constant{
-				Value:   "0",
-				RosType: "uint8",
-				GoType:  "uint8",
-				Comment: "",
-				RosName: "TYPE_LED",
-			},
 		)
 		testFunc("",
 			"uint8 BATTERY_WARNING_CRITICAL = 2        # critical voltage, return / abort immediately",
 			ROS2MessageNew("px4_msgs", "BatteryStatus"),
-			&ROS2Constant{
-				Value:   "2",
-				RosType: "uint8",
-				GoType:  "uint8",
-				Comment: "critical voltage, return / abort immediately",
-				RosName: "BATTERY_WARNING_CRITICAL",
-			},
 		)
 		testFunc("",
 			"byte BYTE_CONST=50",
 			ROS2MessageNew("test_msgs", "Constants"),
-			&ROS2Constant{
-				Value:   "50",
-				RosType: "byte",
-				GoType:  "byte",
-				Comment: "",
-				RosName: "BYTE_CONST",
-			},
 		)
 	})
 
@@ -426,17 +210,6 @@ func TestSerDesSimple(t *testing.T) {
 		ob := test_msgs.Arrays{}
 	})
 }*/
-
-func rosName(obj interface{}) string {
-	switch obj.(type) {
-	case *ROS2Constant:
-		return obj.(*ROS2Constant).RosName
-	case *ROS2Field:
-		return obj.(*ROS2Field).RosName
-	default:
-		panic(fmt.Sprintf("Unable to get the ROS2 Message row-object (Field|Constant) name!%+v\n", obj))
-	}
-}
 
 func TestBlacklist(t *testing.T) {
 	SetDefaultFailureMode(FailureContinues)

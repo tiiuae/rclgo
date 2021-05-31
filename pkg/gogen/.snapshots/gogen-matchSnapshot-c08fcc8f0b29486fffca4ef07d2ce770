@@ -1,0 +1,15 @@
+(*gogen.ROS2Field)({
+  TypeArray: (string) "",
+  ArrayBounded: (string) "",
+  ArraySize: (int) 0,
+  DefaultValue: (string) "",
+  PkgName: (string) (len=22) "unique_identifier_msgs",
+  PkgIsLocal: (bool) false,
+  RosType: (string) (len=4) "UUID",
+  CType: (string) (len=4) "UUID",
+  GoType: (string) (len=4) "UUID",
+  RosName: (string) (len=7) "goal_id",
+  CName: (string) (len=7) "goal_id",
+  GoName: (string) (len=6) "GoalId",
+  Comment: (string) ""
+})

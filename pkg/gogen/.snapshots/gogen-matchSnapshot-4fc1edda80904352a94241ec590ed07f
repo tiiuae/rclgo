@@ -1,0 +1,15 @@
+(*gogen.ROS2Field)({
+  TypeArray: (string) (len=3) "[3]",
+  ArrayBounded: (string) "",
+  ArraySize: (int) 3,
+  DefaultValue: (string) "",
+  PkgName: (string) (len=1) ".",
+  PkgIsLocal: (bool) true,
+  RosType: (string) (len=10) "BasicTypes",
+  CType: (string) (len=10) "BasicTypes",
+  GoType: (string) (len=10) "BasicTypes",
+  RosName: (string) (len=18) "basic_types_values",
+  CName: (string) (len=18) "basic_types_values",
+  GoName: (string) (len=16) "BasicTypesValues",
+  Comment: (string) ""
+})

@@ -1,0 +1,15 @@
+(*gogen.ROS2Field)({
+  TypeArray: (string) "",
+  ArrayBounded: (string) (len=4) "<=22",
+  ArraySize: (int) 0,
+  DefaultValue: (string) "",
+  PkgName: (string) (len=16) "rosidl_runtime_c",
+  PkgIsLocal: (bool) false,
+  RosType: (string) (len=6) "string",
+  CType: (string) (len=6) "String",
+  GoType: (string) (len=6) "String",
+  RosName: (string) (len=20) "bounded_string_value",
+  CName: (string) (len=20) "bounded_string_value",
+  GoName: (string) (len=18) "BoundedStringValue",
+  Comment: (string) ""
+})

@@ -3,6 +3,7 @@ module github.com/tiiuae/rclgo
 go 1.15
 
 require (
+	github.com/bradleyjkemp/cupaloy/v2 v2.6.0
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510
 	github.com/gopherjs/gopherjs v0.0.0-20210202160940-bed99a852dfe // indirect

@@ -1,0 +1,9 @@
+(*gogen.ROS2Constant)({
+  RosType: (string) (len=5) "uint8",
+  GoType: (string) (len=5) "uint8",
+  RosName: (string) (len=24) "BATTERY_WARNING_CRITICAL",
+  Value: (string) (len=1) "2",
+  Comment: (string) (len=44) "critical voltage, return / abort immediately",
+  PkgName: (string) "",
+  PkgIsLocal: (bool) false
+})

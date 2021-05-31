@@ -1,0 +1,9 @@
+(*gogen.ROS2Constant)({
+  RosType: (string) (len=4) "byte",
+  GoType: (string) (len=4) "byte",
+  RosName: (string) (len=10) "BYTE_CONST",
+  Value: (string) (len=2) "50",
+  Comment: (string) "",
+  PkgName: (string) "",
+  PkgIsLocal: (bool) false
+})

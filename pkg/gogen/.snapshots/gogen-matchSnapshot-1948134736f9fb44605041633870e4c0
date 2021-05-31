@@ -1,0 +1,15 @@
+(*gogen.ROS2Field)({
+  TypeArray: (string) (len=2) "[]",
+  ArrayBounded: (string) "",
+  ArraySize: (int) 0,
+  DefaultValue: (string) "",
+  PkgName: (string) (len=16) "rosidl_runtime_c",
+  PkgIsLocal: (bool) false,
+  RosType: (string) (len=6) "string",
+  CType: (string) (len=6) "String",
+  GoType: (string) (len=6) "String",
+  RosName: (string) (len=15) "full_node_names",
+  CName: (string) (len=15) "full_node_names",
+  GoName: (string) (len=13) "FullNodeNames",
+  Comment: (string) ""
+})

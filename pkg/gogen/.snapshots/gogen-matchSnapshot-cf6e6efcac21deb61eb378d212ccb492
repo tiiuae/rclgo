@@ -1,0 +1,15 @@
+(*gogen.ROS2Field)({
+  TypeArray: (string) (len=3) "[3]",
+  ArrayBounded: (string) "",
+  ArraySize: (int) 3,
+  DefaultValue: (string) (len=30) "[\"\", \"max value\", \"min value\"]",
+  PkgName: (string) (len=16) "rosidl_runtime_c",
+  PkgIsLocal: (bool) false,
+  RosType: (string) (len=6) "string",
+  CType: (string) (len=6) "String",
+  GoType: (string) (len=6) "String",
+  RosName: (string) (len=21) "string_values_default",
+  CName: (string) (len=21) "string_values_default",
+  GoName: (string) (len=19) "StringValuesDefault",
+  Comment: (string) ""
+})

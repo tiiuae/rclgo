@@ -22,3 +22,9 @@ type ROS2Msg interface {
 	Clone() ROS2Msg
 	SetDefaults(interface{}) ROS2Msg // func parameter should always be nil
 }
+
+type Service interface {
+	Request() ROS2Msg
+	Response() ROS2Msg
+	TypeSupport() unsafe.Pointer
+}

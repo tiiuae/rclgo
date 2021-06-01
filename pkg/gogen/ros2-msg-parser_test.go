@@ -18,25 +18,21 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-func matchSnapshot(name string, x interface{}) {
-	sum := md5.Sum([]byte(name))
-	So(cupaloy.SnapshotMulti(hex.EncodeToString(sum[:]), x), ShouldBeNil)
-}
-
 var nilAry []string
 
 func TestParseROS2Field(t *testing.T) {
 	SetDefaultFailureMode(FailureContinues)
 
 	testFunc := func(description string, line string, ros2msg *ROS2Message) {
-		testName := ros2msg.RosPackage + "." + ros2msg.RosMsgName + " " + line
+		testName := ros2msg.Package + "." + ros2msg.Name + " " + line
 		if description != "" {
 			testName += " : " + description
 		}
 		Convey(testName, func() {
-			m, err := ParseROS2MessageRow(line, ros2msg)
+			m, err := parseMessageLine(line, ros2msg)
 			So(err, ShouldBeNil)
-			matchSnapshot(line, m)
+			sum := md5.Sum([]byte(line))
+			So(cupaloy.SnapshotMulti(hex.EncodeToString(sum[:]), m), ShouldBeNil)
 		})
 	}
 
@@ -93,6 +89,71 @@ func TestParseROS2Field(t *testing.T) {
 			`string<=22 bounded_string_value`,
 			ROS2MessageNew("test_msgs", "Strings"),
 		)
+	})
+
+	testParseService := func(pkg, name, source string) {
+		s := NewROS2Service(pkg, name)
+		So(parseService(s, source), ShouldBeNil)
+		So(cupaloy.SnapshotMulti("service-"+name, s), ShouldBeNil)
+	}
+
+	Convey("Parse ROS2 services", t, func() {
+		testParseService("action_msgs", "CancelGoal", `
+# Cancel one or more goals with the following policy:
+#
+# - If the goal ID is zero and timestamp is zero, cancel all goals.
+# - If the goal ID is zero and timestamp is not zero, cancel all goals accepted
+#   at or before the timestamp.
+# - If the goal ID is not zero and timestamp is zero, cancel the goal with the
+#   given ID regardless of the time it was accepted.
+# - If the goal ID is not zero and timestamp is not zero, cancel the goal with
+#   the given ID and all goals accepted at or before the timestamp.
+
+# Goal info describing the goals to cancel, see above.
+GoalInfo goal_info
+---
+##
+## Return codes.
+##
+
+# Indicates the request was accepted without any errors.
+#
+# One or more goals have transitioned to the CANCELING state. The
+# goals_canceling list is not empty.
+int8 ERROR_NONE=0
+
+# Indicates the request was rejected.
+#
+# No goals have transitioned to the CANCELING state. The goals_canceling list is
+# empty.
+int8 ERROR_REJECTED=1
+
+# Indicates the requested goal ID does not exist.
+#
+# No goals have transitioned to the CANCELING state. The goals_canceling list is
+# empty.
+int8 ERROR_UNKNOWN_GOAL_ID=2
+
+# Indicates the goal is not cancelable because it is already in a terminal state.
+#
+# No goals have transitioned to the CANCELING state. The goals_canceling list is
+# empty.
+int8 ERROR_GOAL_TERMINATED=3
+
+# Return code, see above definitions.
+int8 return_code
+
+# Goals that accepted the cancel request.
+GoalInfo[] goals_canceling		
+`)
+		testParseService("tf2_msgs", "FrameGraph", `
+---
+string frame_yaml
+`)
+		testParseService("", "NoResponse", `
+string input
+---
+`)
 	})
 
 	Convey("Parse ROS2 Constants", t, func() {

@@ -10,7 +10,6 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package gogen
 
 import (
-	"container/list"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -20,8 +19,8 @@ import (
 	"github.com/kivilahtio/go-re/v0"
 )
 
-func GenerateGolangMessageTypes(rootPath string, destPath string) map[string]*ROS2Message {
-	ros2MessagesList := list.New()
+func GenerateGolangMessageTypes(rootPath string, destPath string) map[string]struct{} {
+	generatedMessages := map[string]struct{}{}
 	filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
 		skip, blacklistEntry := blacklisted(path)
 		if skip {
@@ -31,80 +30,78 @@ func GenerateGolangMessageTypes(rootPath string, destPath string) map[string]*RO
 
 		if re.M(path, `m!/msg/.+?\.msg$!`) {
 			fmt.Printf("Generating: %s\n", path)
-			md, err := GenerateGolangTypeFromROS2MessagePath(path, destPath)
+			md, err := generateMessage(path, destPath)
 			if err != nil {
 				fmt.Printf("Error converting ROS2 Message '%s' to '%s', error: %v\n", path, destPath, err)
 			}
-			ros2MessagesList.PushBack(md)
+			generatedMessages[md.Package+"/"+md.Type] = struct{}{}
+		} else if re.M(path, `m!/srv/.+?\.srv$!`) {
+			fmt.Printf("Generating: %s\n", path)
+			srv, err := generateService(path, destPath)
+			if err != nil {
+				fmt.Printf("Error converting ROS2 Service '%s' to '%s', error: %v\n", path, destPath, err)
+				return nil
+			}
+			generatedMessages[srv.Request.Package+"/"+srv.Request.Type] = struct{}{}
+			generatedMessages[srv.Request.Package+"/"+srv.Request.Type] = struct{}{}
 		}
 		return nil
 	})
-	ros2MessagesAry := make(map[string]*ROS2Message, ros2MessagesList.Len())
-	e := ros2MessagesList.Front()
-	for e != nil {
-		m := e.Value.(*ROS2Message)
-		ros2MessagesAry[m.RosPackage] = m
-		e = e.Next()
-	}
-	return ros2MessagesAry
+	return generatedMessages
 }
 
-func GenerateGolangTypeFromROS2MessagePath(sourcePath string, destPathPkgRoot string) (*ROS2Message, error) {
+func generateMessage(sourcePath string, destPathPkgRoot string) (*ROS2Message, error) {
 	md := ROS2MessageNew("", "")
+	var err error
 
-	err := ParseMessageMetadataFromPath(sourcePath, md)
+	md.Metadata, err = parseMetadataFromPath(sourcePath)
 	if err != nil {
-		return md, err
+		return nil, err
 	}
 
 	content, err := ioutil.ReadFile(sourcePath)
 	if err != nil {
-		return md, err
+		return nil, err
 	}
 
 	err = ParseROS2Message(md, string(content))
 	if err != nil {
-		return md, err
+		return nil, err
 	}
 
-	destFile, err := CreateTargetGolangTypeFile(destPathPkgRoot, md)
+	destFile, err := CreateTargetGolangTypeFile(destPathPkgRoot, md.Metadata)
 	if err != nil {
-		return md, err
+		return nil, err
 	}
+	defer destFile.Close()
 
 	err = ros2MsgToGolangTypeTemplate.Execute(destFile, md)
 	if err != nil {
-		return md, err
+		return nil, err
 	}
 	return md, nil
 }
 
-func ParseMessageMetadataFromPath(p string, md *ROS2Message) error {
-	var dirs []string
-	var ros2msgName string
-	var ros2pkgName string
-	var ros2dataStructureName string
-
-	dirs = strings.Split(p, "/")
-	ros2msgName = strings.TrimSuffix(filepath.Base(p), ".msg")
+func parseMetadataFromPath(p string) (*Metadata, error) {
+	base := filepath.Base(p)
+	ext := filepath.Ext(base)
+	m := &Metadata{
+		Name: strings.TrimSuffix(base, ext),
+		Type: ext[1:],
+	}
+	dirs := strings.Split(p, "/")
 
 	if len(dirs) >= 2 {
-		ros2pkgName = dirs[len(dirs)-3]
-		ros2dataStructureName = dirs[len(dirs)-2]
+		m.Package = dirs[len(dirs)-3]
 	} else {
-		return fmt.Errorf("Path '%s' cannot be parsed for ROS2 package name!", p)
+		return nil, fmt.Errorf("Path '%s' cannot be parsed for ROS2 package name!", p)
 	}
 
-	md.RosMsgName = ros2msgName
-	md.DataStructureType = ros2dataStructureName
-	md.RosPackage = ros2pkgName
-	md.Url = p
-
-	return nil
+	return m, nil
 }
 
-func CreateTargetGolangTypeFile(destPathPkgRoot string, md *ROS2Message) (*os.File, error) {
-	destFilePath := filepath.Join(destPathPkgRoot, md.RosPackage, "msg", md.RosMsgName+".gen.go")
+func CreateTargetGolangTypeFile(destPathPkgRoot string, m *Metadata) (*os.File, error) {
+	destFilePath := filepath.Join(destPathPkgRoot, m.ImportPath(), m.Name+".gen.go")
 	destFile, err := mkdir_p(destFilePath)
 	if err != nil {
 		return nil, err
@@ -112,16 +109,49 @@ func CreateTargetGolangTypeFile(destPathPkgRoot string, md *ROS2Message) (*os.Fi
 	return destFile, err
 }
 
-func ROS2MessageListToArray(l *list.List) []*ROS2Message {
-	mdsArray := make([]*ROS2Message, l.Len())
-	i := 0
-	for e := l.Front(); e != nil; e = e.Next() {
-		md, ok := e.Value.(*ROS2Message)
-		if !ok {
-			panic(fmt.Sprintf("ROS2MessageListToArray():> One of the ROS2Messages at index '%d' value '%+v' is not a ROS2Message!", i, e.Value))
-		}
-		mdsArray[i] = md
-		i++
+func generateService(srcPath, dstPathPkgRoot string) (*ROS2Service, error) {
+	m, err := parseMetadataFromPath(srcPath)
+	if err != nil {
+		return nil, err
 	}
-	return mdsArray
+	service := NewROS2Service(m.Package, m.Name)
+	srcFile, err := os.ReadFile(srcPath)
+	if err != nil {
+		return nil, err
+	}
+	if err = parseService(service, string(srcFile)); err != nil {
+		return nil, err
+	}
+
+	srvFile, err := CreateTargetGolangTypeFile(dstPathPkgRoot, service.Metadata)
+	if err != nil {
+		return nil, err
+	}
+	defer srvFile.Close()
+	err = ros2ServiceToGolangTypeTemplate.Execute(srvFile, service)
+	if err != nil {
+		return nil, err
+	}
+
+	reqFile, err := CreateTargetGolangTypeFile(dstPathPkgRoot, service.Request.Metadata)
+	if err != nil {
+		return nil, err
+	}
+	defer reqFile.Close()
+	err = ros2MsgToGolangTypeTemplate.Execute(reqFile, service.Request)
+	if err != nil {
+		return nil, err
+	}
+
+	respFile, err := CreateTargetGolangTypeFile(dstPathPkgRoot, service.Response.Metadata)
+	if err != nil {
+		return nil, err
+	}
+	defer respFile.Close()
+	err = ros2MsgToGolangTypeTemplate.Execute(respFile, service.Response)
+	if err != nil {
+		return nil, err
+	}
+
+	return service, nil
 }

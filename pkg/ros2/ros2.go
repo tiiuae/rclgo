@@ -30,6 +30,8 @@ package ros2
 #include <rcl/validate_topic_name.h>
 #include <rcl/node_options.h>
 #include <rcl/node.h>
+#include <rcl/service.h>
+#include <rcl/client.h>
 #include <rmw/get_topic_names_and_types.h>
 #include <rmw/names_and_types.h>
 #include <rmw/types.h>
@@ -78,10 +80,13 @@ void print_gid(rmw_gid_t gid) {
 import "C"
 import (
 	"context"
+	"errors"
 	"fmt"
+	"log"
 	"os"
 	"runtime"
 	"strings"
+	"sync"
 	"time"
 	"unsafe"
 
@@ -314,6 +319,9 @@ func (c *Context) NewNode(node_name, namespace string) (*Node, error) {
 Close frees the allocated memory
 */
 func (self *Node) Close() error {
+	if self.rcl_node_t == nil {
+		return closeErr("node")
+	}
 	var err *multierror.Error
 	err = multierror.Append(err, self.rosResourceStore.Close())
 	self.context.removeResource(self)
@@ -322,6 +330,7 @@ func (self *Node) Close() error {
 		err = multierror.Append(err, ErrorsCast(rc))
 	}
 	C.free(unsafe.Pointer(self.rcl_node_t))
+	self.rcl_node_t = nil
 	return err.ErrorOrNil()
 }
 
@@ -649,6 +658,8 @@ type WaitSet struct {
 	Timeout        time.Duration
 	Subscriptions  []*Subscription
 	Timers         []*Timer
+	services       []*Service
+	clients        []*Client
 	Ready          bool // flag to notify the outside gothreads that this WaitSet is ready to receive messages. Use waitSet.WaitForReady() to synchronize
 	rcl_wait_set_t C.rcl_wait_set_t
 	context        *Context
@@ -668,6 +679,8 @@ func (c *Context) NewWaitSet(timeout time.Duration) (*WaitSet, error) {
 		Timeout:        timeout,
 		Subscriptions:  []*Subscription{},
 		Timers:         []*Timer{},
+		services:       []*Service{},
+		clients:        []*Client{},
 		rcl_wait_set_t: C.rcl_get_zero_initialized_wait_set(),
 	}
 	var rc C.rcl_ret_t = C.rcl_wait_set_init(
@@ -695,6 +708,14 @@ func (w *WaitSet) AddSubscriptions(subs ...*Subscription) {
 
 func (w *WaitSet) AddTimers(timers ...*Timer) {
 	w.Timers = append(w.Timers, timers...)
+}
+
+func (w *WaitSet) AddServices(services ...*Service) {
+	w.services = append(w.services, services...)
+}
+
+func (w *WaitSet) AddClients(clients ...*Client) {
+	w.clients = append(w.clients, clients...)
 }
 
 func (self *WaitSet) WaitForReady(timeout, interval time.Duration) error {
@@ -750,6 +771,8 @@ func (self *WaitSet) Run(ctx context.Context) error {
 			// lead to very very difficult to detect bugs.
 			panicIfCountMismatch("timers", self.rcl_wait_set_t.size_of_timers, len(self.Timers))
 			panicIfCountMismatch("subscriptions", self.rcl_wait_set_t.size_of_subscriptions, len(self.Subscriptions))
+			panicIfCountMismatch("services", self.rcl_wait_set_t.size_of_services, len(self.services))
+			panicIfCountMismatch("clients", self.rcl_wait_set_t.size_of_clients, len(self.clients))
 
 			timers := (*[1 << 30]*C.struct_rcl_timer_t)(unsafe.Pointer(self.rcl_wait_set_t.timers))
 			for i, t := range self.Timers {
@@ -762,6 +785,18 @@ func (self *WaitSet) Run(ctx context.Context) error {
 			for i, s := range self.Subscriptions {
 				if subs[i] != nil {
 					s.Callback(s)
+				}
+			}
+			svcs := (*[1 << 30]*C.struct_rcl_service_t)(unsafe.Pointer(self.rcl_wait_set_t.services))
+			for i, s := range self.services {
+				if svcs[i] != nil {
+					s.handleRequest()
+				}
+			}
+			clients := (*[1 << 30]*C.struct_rcl_client_t)(unsafe.Pointer(self.rcl_wait_set_t.clients))
+			for i, c := range self.clients {
+				if clients[i] != nil {
+					c.handleResponse()
 				}
 			}
 		}
@@ -792,8 +827,8 @@ func (self *WaitSet) initEntities() error {
 		C.size_t(len(self.Subscriptions)),
 		self.rcl_wait_set_t.size_of_guard_conditions,
 		C.size_t(len(self.Timers)),
-		self.rcl_wait_set_t.size_of_clients,
-		self.rcl_wait_set_t.size_of_services,
+		C.size_t(len(self.clients)),
+		C.size_t(len(self.services)),
 		self.rcl_wait_set_t.size_of_events,
 	)
 	if rc != C.RCL_RET_OK {
@@ -811,6 +846,18 @@ func (self *WaitSet) initEntities() error {
 			return ErrorsCastC(rc, fmt.Sprintf("rcl_wait_set_add_timer() failed for wait_set='%v'", self))
 		}
 	}
+	for _, service := range self.services {
+		rc = C.rcl_wait_set_add_service(&self.rcl_wait_set_t, service.rclService, nil)
+		if rc != C.RCL_RET_OK {
+			return ErrorsCastC(rc, fmt.Sprintf("rcl_wait_set_add_service() failed for wait_set='%v'", self))
+		}
+	}
+	for _, client := range self.clients {
+		rc = C.rcl_wait_set_add_client(&self.rcl_wait_set_t, client.rclClient, nil)
+		if rc != C.RCL_RET_OK {
+			return ErrorsCastC(rc, fmt.Sprintf("rcl_wait_set_add_client() failed for wait_set='%v'", self))
+		}
+	}
 	return nil
 }
 
@@ -818,10 +865,293 @@ func (self *WaitSet) initEntities() error {
 Close frees the allocated memory
 */
 func (self *WaitSet) Close() error {
+	if self.context == nil {
+		return closeErr("wait set")
+	}
 	self.context.removeResource(self)
+	self.context = nil
 	rc := C.rcl_wait_set_fini(&self.rcl_wait_set_t)
 	if rc != C.RCL_RET_OK {
 		return ErrorsCast(rc)
 	}
 	return nil
+}
+
+type RmwRequestID struct {
+	WriterGUID     [16]int8
+	SequenceNumber int64
+}
+
+type RmwServiceInfo struct {
+	SourceTimestamp   time.Time
+	ReceivedTimestamp time.Time
+	RequestID         RmwRequestID
+}
+
+type ServiceOptions struct {
+	Qos RmwQosProfile
+}
+
+func NewDefaultServiceOptions() *ServiceOptions {
+	return &ServiceOptions{Qos: NewRmwQosProfileServicesDefault()}
+}
+
+type ServiceResponseSender interface {
+	SendResponse(resp ros2types.ROS2Msg) error
+}
+
+type serviceResponseSender func(resp ros2types.ROS2Msg) error
+
+func (s serviceResponseSender) SendResponse(resp ros2types.ROS2Msg) error {
+	return s(resp)
+}
+
+type ServiceRequestHandler func(*RmwServiceInfo, ros2types.ROS2Msg, ServiceResponseSender)
+
+type Service struct {
+	rosID
+	node        *Node
+	rclService  *C.rcl_service_t
+	name        *C.char
+	handler     ServiceRequestHandler
+	typeSupport ros2types.Service
+}
+
+// NewService creates a new service.
+//
+// options must not be modified after passing it to this function. If options is
+// nil, default options are used.
+func (n *Node) NewService(
+	name string,
+	typeSupport ros2types.Service,
+	options *ServiceOptions,
+	handler ServiceRequestHandler,
+) (s *Service, err error) {
+	if options == nil {
+		options = NewDefaultServiceOptions()
+	}
+	s = &Service{
+		node:        n,
+		rclService:  (*C.rcl_service_t)(C.malloc(C.sizeof_struct_rcl_service_t)),
+		name:        C.CString(name),
+		handler:     handler,
+		typeSupport: typeSupport,
+	}
+	defer onErr(&err, s.Close)
+	*s.rclService = C.rcl_get_zero_initialized_service()
+	opts := C.rcl_service_options_t{allocator: *n.context.rcl_allocator_t}
+	options.Qos.asCStruct(&opts.qos)
+	retCode := C.rcl_service_init(
+		s.rclService,
+		n.rcl_node_t,
+		(*C.struct_rosidl_service_type_support_t)(typeSupport.TypeSupport()),
+		s.name,
+		&opts,
+	)
+	if retCode != C.RCL_RET_OK {
+		return nil, ErrorsCastC(retCode, "failed to create service")
+	}
+	n.addResource(s)
+	return s, nil
+}
+
+func (s *Service) Close() (err error) {
+	if s.name == nil {
+		return closeErr("service")
+	}
+	s.node.removeResource(s)
+	rc := C.rcl_service_fini(s.rclService, s.node.rcl_node_t)
+	if rc != C.RCL_RET_OK {
+		err = ErrorsCastC(rc, "failed to finalize service")
+	}
+	C.free(unsafe.Pointer(s.name))
+	s.name = nil
+	return err
+}
+
+func (s *Service) handleRequest() {
+	var reqHeader C.struct_rmw_service_info_t
+	reqBuffer := s.typeSupport.Request().PrepareMemory()
+	defer s.typeSupport.Request().ReleaseMemory(reqBuffer)
+	rc := C.rcl_take_request_with_info(s.rclService, &reqHeader, reqBuffer)
+	if rc != C.RCL_RET_OK {
+		log.Println(ErrorsCastC(rc, "failed to take request"))
+		return
+	}
+	info := RmwServiceInfo{
+		SourceTimestamp:   time.Unix(0, int64(reqHeader.source_timestamp)),
+		ReceivedTimestamp: time.Unix(0, int64(reqHeader.received_timestamp)),
+		RequestID: RmwRequestID{
+			WriterGUID:     *(*[16]int8)(unsafe.Pointer(&reqHeader.request_id.writer_guid)),
+			SequenceNumber: int64(reqHeader.request_id.sequence_number),
+		},
+	}
+	req := s.typeSupport.Request().Clone()
+	req.AsGoStruct(reqBuffer)
+	s.handler(
+		&info,
+		req,
+		serviceResponseSender(func(resp ros2types.ROS2Msg) error {
+			respBuffer := resp.AsCStruct()
+			defer resp.ReleaseMemory(respBuffer)
+			rc := C.rcl_send_response(s.rclService, &reqHeader.request_id, respBuffer)
+			if rc != C.RCL_RET_OK {
+				return ErrorsCastC(rc, "failed to send response")
+			}
+			return nil
+		}),
+	)
+}
+
+type ClientOptions struct {
+	Qos RmwQosProfile
+}
+
+func NewDefaultClientOptions() *ClientOptions {
+	return &ClientOptions{Qos: NewRmwQosProfileServicesDefault()}
+}
+
+// Client is used to send requests to and receive responses from a service.
+//
+// Calling Send is thread-safe. Creating and closing clients is not thread-safe.
+type Client struct {
+	rosID
+	node                 *Node
+	rclClient            *C.struct_rcl_client_t
+	serviceName          *C.char
+	pendingRequests      map[C.long]chan *clientSendResult
+	pendingRequestsMutex sync.Mutex
+	typeSupport          ros2types.Service
+}
+
+// NewClient creates a new client.
+//
+// options must not be modified after passing it to this function. If options is
+// nil, default options are used.
+func (n *Node) NewClient(
+	serviceName string,
+	typeSupport ros2types.Service,
+	options *ClientOptions,
+) (c *Client, err error) {
+	if options == nil {
+		options = NewDefaultClientOptions()
+	}
+	c = &Client{
+		node:            n,
+		rclClient:       (*C.struct_rcl_client_t)(C.malloc(C.sizeof_struct_rcl_client_t)),
+		serviceName:     C.CString(serviceName),
+		pendingRequests: make(map[C.long]chan *clientSendResult),
+		typeSupport:     typeSupport,
+	}
+	defer onErr(&err, c.Close)
+	*c.rclClient = C.rcl_get_zero_initialized_client()
+	opts := C.struct_rcl_client_options_t{allocator: *n.context.rcl_allocator_t}
+	options.Qos.asCStruct(&opts.qos)
+	rc := C.rcl_client_init(
+		c.rclClient,
+		n.rcl_node_t,
+		(*C.struct_rosidl_service_type_support_t)(typeSupport.TypeSupport()),
+		c.serviceName,
+		&opts,
+	)
+	if rc != C.RCL_RET_OK {
+		return nil, ErrorsCastC(rc, "failed to create client")
+	}
+	n.addResource(c)
+	return c, nil
+}
+
+func (c *Client) Close() error {
+	if c.rclClient == nil {
+		return closeErr("client")
+	}
+	var err *multierror.Error
+	c.node.removeResource(c)
+	func() {
+		c.pendingRequestsMutex.Lock()
+		defer c.pendingRequestsMutex.Unlock()
+		for _, resultChan := range c.pendingRequests {
+			close(resultChan)
+		}
+	}()
+
+	rc := C.rcl_client_fini(c.rclClient, c.node.rcl_node_t)
+	if rc != C.RCL_RET_OK {
+		err = multierror.Append(err, ErrorsCastC(rc, "failed to finalize client"))
+	}
+	c.rclClient = nil
+
+	C.free(unsafe.Pointer(c.serviceName))
+
+	return err.ErrorOrNil()
+}
+
+func (c *Client) Send(ctx context.Context, req ros2types.ROS2Msg) (ros2types.ROS2Msg, *RmwServiceInfo, error) {
+	resultChan, err := c.sendRequest(req)
+	if err != nil {
+		return nil, nil, err
+	}
+	select {
+	case <-ctx.Done():
+		return nil, nil, ctx.Err()
+	case result := <-resultChan:
+		if result == nil {
+			return nil, nil, errors.New("client was closed before a response was received")
+		}
+		return result.resp, result.info, nil
+	}
+}
+
+func (c *Client) sendRequest(req ros2types.ROS2Msg) (chan *clientSendResult, error) {
+	c.pendingRequestsMutex.Lock()
+	defer c.pendingRequestsMutex.Unlock()
+
+	reqBuf := req.AsCStruct()
+	defer req.ReleaseMemory(reqBuf)
+
+	var sequenceNumber C.long
+	rc := C.rcl_send_request(c.rclClient, reqBuf, &sequenceNumber)
+	if rc != C.RCL_RET_OK {
+		return nil, ErrorsCastC(rc, "failed to send request")
+	}
+	resultChan := make(chan *clientSendResult, 1)
+	c.pendingRequests[sequenceNumber] = resultChan
+
+	return resultChan, nil
+}
+
+func (c *Client) handleResponse() {
+	c.pendingRequestsMutex.Lock()
+	defer c.pendingRequestsMutex.Unlock()
+
+	var respHeader C.struct_rmw_service_info_t
+	respBuf := c.typeSupport.Response().PrepareMemory()
+	defer c.typeSupport.Response().ReleaseMemory(respBuf)
+	rc := C.rcl_take_response_with_info(c.rclClient, &respHeader, respBuf)
+	if rc != C.RCL_RET_OK {
+		log.Println(ErrorsCastC(rc, "failed to take response"))
+		return
+	}
+	defer delete(c.pendingRequests, respHeader.request_id.sequence_number)
+	defer close(c.pendingRequests[respHeader.request_id.sequence_number])
+
+	result := &clientSendResult{
+		resp: c.typeSupport.Response().Clone(),
+		info: &RmwServiceInfo{
+			SourceTimestamp:   time.Unix(0, int64(respHeader.source_timestamp)),
+			ReceivedTimestamp: time.Unix(0, int64(respHeader.received_timestamp)),
+			RequestID: RmwRequestID{
+				WriterGUID:     *(*[16]int8)(unsafe.Pointer(&respHeader.request_id.writer_guid)),
+				SequenceNumber: int64(respHeader.request_id.sequence_number),
+			},
+		},
+	}
+	result.resp.AsGoStruct(respBuf)
+
+	c.pendingRequests[respHeader.request_id.sequence_number] <- result
+}
+
+type clientSendResult struct {
+	resp ros2types.ROS2Msg
+	info *RmwServiceInfo
 }

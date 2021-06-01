@@ -19,7 +19,6 @@ package ros2
 import "C"
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"sync"
@@ -96,7 +95,7 @@ rclArgs can be nil
 */
 func NewContext(wg *sync.WaitGroup, clockType Rcl_clock_type_t, rclArgs *RCLArgs) (ctx *Context, err error) {
 	ctx = &Context{WG: wg}
-	defer onErr(&err, func() { ctx.Close() })
+	defer onErr(&err, ctx.Close)
 
 	if err = rclInit(rclArgs, ctx); err != nil {
 		return nil, err
@@ -118,7 +117,7 @@ func NewContext(wg *sync.WaitGroup, clockType Rcl_clock_type_t, rclArgs *RCLArgs
 
 func (c *Context) Close() error {
 	if c.WG == nil {
-		return errors.New("tried to close a closed Context")
+		return closeErr("context")
 	}
 	c.WG.Wait() // Wait for gothreads to quit, before GC:ing. Otherwise a ton of null-pointers await.
 

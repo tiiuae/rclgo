@@ -73,3 +73,30 @@ func TranslateMsgPayloadYAMLToROS2Msg(yamlString string, ros2msg ros2types.ROS2M
 	err := yaml.Unmarshal(yamlBytes, ros2msgClone)
 	return ros2msgClone, err
 }
+
+// serviceTypeToGoServiceDefinition is the ROS2MsgTypeNameToGoROS2Msg equivalent
+// for services.
+var serviceTypeToGoServiceDefinition = make(map[string]ros2types.Service)
+
+// RegisterROS2ServiceTypeNameAlias is the RegisterROS2MsgTypeNameAlias
+// equivalent for services.
+func RegisterROS2ServiceTypeNameAlias(alias string, srvType ros2types.Service) {
+	serviceTypeToGoServiceDefinition[alias] = srvType
+}
+
+// TranslateROS2ServiceTypeNameToType is the TranslateROS2MsgTypeNameToType
+// equivalent for services.
+func TranslateROS2ServiceTypeNameToType(srvType string) (ros2types.Service, bool) {
+	srv, ok := serviceTypeToGoServiceDefinition[srvType]
+	return srv, ok
+}
+
+// TranslateROS2ServiceTypeNameToTypeMust is the
+// TranslateROS2MsgTypeNameToTypeMust equivalent for services.
+func TranslateROS2ServiceTypeNameToTypeMust(srvType string) ros2types.Service {
+	srv, ok := serviceTypeToGoServiceDefinition[srvType]
+	if !ok {
+		panic(fmt.Sprintf("No registered implementation for ROS2 message type '%s'!\n", srvType))
+	}
+	return srv
+}

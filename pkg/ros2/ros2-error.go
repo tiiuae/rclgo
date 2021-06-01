@@ -19,6 +19,7 @@ package ros2
 */
 import "C"
 import (
+	"errors"
 	"fmt"
 )
 
@@ -83,8 +84,12 @@ func ErrorsCast(rcl_ret_t C.rcl_ret_t) error {
 	return ErrorsCastC(rcl_ret_t, "")
 }
 
-func onErr(err *error, f func()) {
+func onErr(err *error, f func() error) {
 	if *err != nil {
 		f()
 	}
+}
+
+func closeErr(s string) error {
+	return errors.New("tried to close a closed " + s)
 }

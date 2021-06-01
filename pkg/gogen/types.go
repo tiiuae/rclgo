@@ -9,27 +9,47 @@ Licensed under the Apache License, Version 2.0 (the "License");
 
 package gogen
 
+import (
+	"path/filepath"
+)
+
+type Metadata struct {
+	Name, Package, Type string
+}
+
+func (m *Metadata) ImportPath() string {
+	return filepath.Join(m.Package, m.Type)
+}
+
+func (m *Metadata) GoPackage() string {
+	return m.Package + "_" + m.Type
+}
+
 /*
 ROS2Message is a message definition. https://design.ros2.org/articles/legacy_interface_definition.html
 Use ROS2MessageNew() to initialize the struct
 */
 type ROS2Message struct {
-	RosMsgName        string
-	RosPackage        string
-	DataStructureType string // The type, either msg, srv, ...
-	Url               string
-	Fields            []*ROS2Field
-	Constants         []*ROS2Constant
-	GoImports         map[string]string
-	CImports          map[string]bool
+	*Metadata
+	Fields    []*ROS2Field
+	Constants []*ROS2Constant
+	GoImports map[string]string
+	CImports  map[string]bool
 }
 
-func ROS2MessageNew(RosPackage string, RosMsgName string) *ROS2Message {
+func ROS2MessageNew(pkg, name string) *ROS2Message {
+	return newMessageWithType(pkg, name, "msg")
+}
+
+func newMessageWithType(pkg, name, typ string) *ROS2Message {
 	return &ROS2Message{
-		RosPackage: RosPackage,
-		RosMsgName: RosMsgName,
-		GoImports:  map[string]string{},
-		CImports:   map[string]bool{},
+		Metadata: &Metadata{
+			Name:    name,
+			Package: pkg,
+			Type:    typ,
+		},
+		GoImports: map[string]string{},
+		CImports:  map[string]bool{},
 	}
 }
 
@@ -44,7 +64,7 @@ type ROS2Constant struct {
 	PkgIsLocal bool
 }
 
-func (t *ROS2Constant) PkgReference() string {
+func (t *ROS2Constant) GoPkgReference() string {
 	if t.PkgName == "" || t.PkgIsLocal {
 		return ""
 	}
@@ -58,6 +78,7 @@ type ROS2Field struct {
 	ArraySize    int
 	DefaultValue string
 	PkgName      string
+	GoPkgName    string
 	PkgIsLocal   bool
 	RosType      string
 	CType        string
@@ -68,11 +89,30 @@ type ROS2Field struct {
 	Comment      string
 }
 
-func (t *ROS2Field) PkgReference() string {
+func (t *ROS2Field) GoPkgReference() string {
 	if t.PkgName == "" || t.PkgIsLocal {
 		return ""
 	}
-	return t.PkgName + "."
+	return t.GoPkgName + "."
+}
+
+type ROS2Service struct {
+	*Metadata
+	Request  *ROS2Message
+	Response *ROS2Message
+}
+
+func NewROS2Service(pkg, name string) *ROS2Service {
+	s := &ROS2Service{
+		Metadata: &Metadata{
+			Name:    name,
+			Package: pkg,
+			Type:    "srv",
+		},
+		Request:  newMessageWithType(pkg, name+"_Request", "srv"),
+		Response: newMessageWithType(pkg, name+"_Response", "srv"),
+	}
+	return s
 }
 
 /*

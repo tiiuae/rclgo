@@ -1,0 +1,124 @@
+(*gogen.ROS2Service)({
+  Metadata: (*gogen.Metadata)({
+    Name: (string) (len=10) "CancelGoal",
+    Package: (string) (len=11) "action_msgs",
+    Type: (string) (len=3) "srv"
+  }),
+  Request: (*gogen.ROS2Message)({
+    Metadata: (*gogen.Metadata)({
+      Name: (string) (len=18) "CancelGoal_Request",
+      Package: (string) (len=11) "action_msgs",
+      Type: (string) (len=3) "srv"
+    }),
+    Fields: ([]*gogen.ROS2Field) (len=1) {
+      (*gogen.ROS2Field)({
+        TypeArray: (string) "",
+        ArrayBounded: (string) "",
+        ArraySize: (int) 0,
+        DefaultValue: (string) "",
+        PkgName: (string) (len=11) "action_msgs",
+        GoPkgName: (string) (len=15) "action_msgs_msg",
+        PkgIsLocal: (bool) false,
+        RosType: (string) (len=8) "GoalInfo",
+        CType: (string) (len=8) "GoalInfo",
+        GoType: (string) (len=8) "GoalInfo",
+        RosName: (string) (len=9) "goal_info",
+        CName: (string) (len=9) "goal_info",
+        GoName: (string) (len=8) "GoalInfo",
+        Comment: (string) (len=52) "Goal info describing the goals to cancel, see above."
+      })
+    },
+    Constants: ([]*gogen.ROS2Constant) <nil>,
+    GoImports: (map[string]string) (len=1) {
+      (string) (len=53) "github.com/tiiuae/rclgo/pkg/ros2/msgs/action_msgs/msg": (string) (len=15) "action_msgs_msg"
+    },
+    CImports: (map[string]bool) (len=1) {
+      (string) (len=11) "action_msgs": (bool) true
+    }
+  }),
+  Response: (*gogen.ROS2Message)({
+    Metadata: (*gogen.Metadata)({
+      Name: (string) (len=19) "CancelGoal_Response",
+      Package: (string) (len=11) "action_msgs",
+      Type: (string) (len=3) "srv"
+    }),
+    Fields: ([]*gogen.ROS2Field) (len=2) {
+      (*gogen.ROS2Field)({
+        TypeArray: (string) "",
+        ArrayBounded: (string) "",
+        ArraySize: (int) 0,
+        DefaultValue: (string) "",
+        PkgName: (string) "",
+        GoPkgName: (string) "",
+        PkgIsLocal: (bool) false,
+        RosType: (string) (len=4) "int8",
+        CType: (string) (len=6) "int8_t",
+        GoType: (string) (len=4) "int8",
+        RosName: (string) (len=11) "return_code",
+        CName: (string) (len=11) "return_code",
+        GoName: (string) (len=10) "ReturnCode",
+        Comment: (string) (len=35) "Return code, see above definitions."
+      }),
+      (*gogen.ROS2Field)({
+        TypeArray: (string) (len=2) "[]",
+        ArrayBounded: (string) "",
+        ArraySize: (int) 0,
+        DefaultValue: (string) "",
+        PkgName: (string) (len=11) "action_msgs",
+        GoPkgName: (string) (len=15) "action_msgs_msg",
+        PkgIsLocal: (bool) false,
+        RosType: (string) (len=8) "GoalInfo",
+        CType: (string) (len=8) "GoalInfo",
+        GoType: (string) (len=8) "GoalInfo",
+        RosName: (string) (len=15) "goals_canceling",
+        CName: (string) (len=15) "goals_canceling",
+        GoName: (string) (len=14) "GoalsCanceling",
+        Comment: (string) (len=39) "Goals that accepted the cancel request."
+      })
+    },
+    Constants: ([]*gogen.ROS2Constant) (len=4) {
+      (*gogen.ROS2Constant)({
+        RosType: (string) (len=4) "int8",
+        GoType: (string) (len=4) "int8",
+        RosName: (string) (len=10) "ERROR_NONE",
+        Value: (string) (len=1) "0",
+        Comment: (string) (len=151) "Indicates the request was accepted without any errors.One or more goals have transitioned to the CANCELING state. Thegoals_canceling list is not empty.",
+        PkgName: (string) "",
+        PkgIsLocal: (bool) false
+      }),
+      (*gogen.ROS2Constant)({
+        RosType: (string) (len=4) "int8",
+        GoType: (string) (len=4) "int8",
+        RosName: (string) (len=14) "ERROR_REJECTED",
+        Value: (string) (len=1) "1",
+        Comment: (string) (len=119) "Indicates the request was rejected.No goals have transitioned to the CANCELING state. The goals_canceling list isempty.",
+        PkgName: (string) "",
+        PkgIsLocal: (bool) false
+      }),
+      (*gogen.ROS2Constant)({
+        RosType: (string) (len=4) "int8",
+        GoType: (string) (len=4) "int8",
+        RosName: (string) (len=21) "ERROR_UNKNOWN_GOAL_ID",
+        Value: (string) (len=1) "2",
+        Comment: (string) (len=131) "Indicates the requested goal ID does not exist.No goals have transitioned to the CANCELING state. The goals_canceling list isempty.",
+        PkgName: (string) "",
+        PkgIsLocal: (bool) false
+      }),
+      (*gogen.ROS2Constant)({
+        RosType: (string) (len=4) "int8",
+        GoType: (string) (len=4) "int8",
+        RosName: (string) (len=21) "ERROR_GOAL_TERMINATED",
+        Value: (string) (len=1) "3",
+        Comment: (string) (len=163) "Indicates the goal is not cancelable because it is already in a terminal state.No goals have transitioned to the CANCELING state. The goals_canceling list isempty.",
+        PkgName: (string) "",
+        PkgIsLocal: (bool) false
+      })
+    },
+    GoImports: (map[string]string) (len=1) {
+      (string) (len=53) "github.com/tiiuae/rclgo/pkg/ros2/msgs/action_msgs/msg": (string) (len=15) "action_msgs_msg"
+    },
+    CImports: (map[string]bool) (len=1) {
+      (string) (len=11) "action_msgs": (bool) true
+    }
+  })
+})

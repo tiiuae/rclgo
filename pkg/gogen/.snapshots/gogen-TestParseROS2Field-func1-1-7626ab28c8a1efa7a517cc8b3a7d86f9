@@ -1,0 +1,16 @@
+(*gogen.ROS2Field)({
+  TypeArray: (string) (len=3) "[3]",
+  ArrayBounded: (string) "",
+  ArraySize: (int) 3,
+  DefaultValue: (string) (len=20) "[false, true, false]",
+  PkgName: (string) "",
+  GoPkgName: (string) "",
+  PkgIsLocal: (bool) false,
+  RosType: (string) (len=4) "bool",
+  CType: (string) (len=4) "bool",
+  GoType: (string) (len=4) "bool",
+  RosName: (string) (len=19) "bool_values_default",
+  CName: (string) (len=19) "bool_values_default",
+  GoName: (string) (len=17) "BoolValuesDefault",
+  Comment: (string) ""
+})

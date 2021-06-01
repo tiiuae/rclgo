@@ -14,7 +14,7 @@ import (
 	"path/filepath"
 )
 
-func GenerateROS2AllMessagesImporter(destPathPkgRoot string, ros2Messages map[string]*ROS2Message) error {
+func GenerateROS2AllMessagesImporter(destPathPkgRoot string, ros2Messages map[string]struct{}) error {
 
 	destFilePath := filepath.Join(destPathPkgRoot, "..", "msgs", "ros2msgs.gen.go")
 

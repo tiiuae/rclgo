@@ -10,6 +10,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package gogen
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -32,46 +33,69 @@ func CName(rosName string) string {
 	return rosName
 }
 
-// ParseROS2Message parses a message definition.
-func ParseROS2Message(res *ROS2Message, content string) error {
-	for _, line := range strings.Split(content, "\n") {
-		obj, err := ParseROS2MessageRow(line, res)
-		if err != nil {
-			return err
-		}
-
-		switch obj.(type) {
-		case *ROS2Constant:
-			res.Constants = append(res.Constants, obj.(*ROS2Constant))
-		case *ROS2Field:
-			res.Fields = append(res.Fields, obj.(*ROS2Field))
-		case nil:
+func parseService(service *ROS2Service, source string) error {
+	currentMsg := service.Request
+	for i, line := range strings.Split(source, "\n") {
+		if line == "---" {
+			if currentMsg == service.Response {
+				return errors.New("too many '---' delimeters")
+			}
+			currentMsg = service.Response
 			continue
-		default:
-			return fmt.Errorf("Couldn't parse the input row '%s'", line)
+		}
+		if err := parseLine(currentMsg, line); err != nil {
+			return lineErr(i+1, err)
 		}
 	}
+	return nil
+}
 
-	for _, f := range res.Fields {
-		switch f.PkgName {
+func parseLine(msg *ROS2Message, line string) error {
+	obj, err := parseMessageLine(line, msg)
+	if err != nil {
+		return err
+	}
+
+	switch obj := obj.(type) {
+	case *ROS2Constant:
+		msg.Constants = append(msg.Constants, obj)
+	case *ROS2Field:
+		msg.Fields = append(msg.Fields, obj)
+		switch obj.PkgName {
 		case "":
 		case ".":
 		case "time":
-			res.GoImports["time"] = ""
+			msg.GoImports["time"] = ""
 		case "rosidl_runtime_c":
-			res.GoImports["github.com/tiiuae/rclgo/pkg/ros2/"+f.PkgName] = f.PkgName
+			msg.GoImports["github.com/tiiuae/rclgo/pkg/ros2/"+obj.PkgName] = obj.GoPkgName
 		default:
-			res.GoImports["github.com/tiiuae/rclgo/pkg/ros2/msgs/"+f.PkgName+"/msg"] = f.PkgName
-			res.CImports[f.PkgName] = true
+			msg.GoImports["github.com/tiiuae/rclgo/pkg/ros2/msgs/"+obj.PkgName+"/msg"] = obj.GoPkgName
+			msg.CImports[obj.PkgName] = true
+		}
+	case nil:
+	default:
+		return fmt.Errorf("Couldn't parse the input row '%s'", line)
+	}
+	return nil
+}
+
+func lineErr(line int, err error) error {
+	return fmt.Errorf("error on line %d: %w", line, err)
+}
+
+// ParseROS2Message parses a message definition.
+func ParseROS2Message(res *ROS2Message, content string) error {
+	for i, line := range strings.Split(content, "\n") {
+		if err := parseLine(res, line); err != nil {
+			return lineErr(i+1, err)
 		}
 	}
-
 	return nil
 }
 
 var ros2messagesCommentsBuffer = strings.Builder{} // Collect pre-field comments here to be included in the comments. Flushed on empty lines.
 
-func ParseROS2MessageRow(testRow string, ros2msg *ROS2Message) (interface{}, error) {
+func parseMessageLine(testRow string, ros2msg *ROS2Message) (interface{}, error) {
 	testRow = strings.TrimSpace(testRow)
 
 	re.R(&testRow, `m!^#\s*(.*)$!`) // Extract comments from comment-only lines to be included in the pre-field comments
@@ -182,8 +206,18 @@ func ParseROS2MessageField(capture map[string]string, ros2msg *ROS2Message) (*RO
 	}
 
 	f.PkgName, f.CType, f.GoType = translateROS2Type(f, ros2msg)
-	if f.PkgName == "." {
-		f.PkgIsLocal = true
+	f.GoPkgName = f.PkgName
+	switch f.PkgName {
+	case "", "time", "rosidl_runtime_c":
+	case ".":
+		if ros2msg.Type == "msg" {
+			f.PkgIsLocal = true
+		} else {
+			f.PkgName = ros2msg.Package
+			f.GoPkgName = ros2msg.Package + "_msg"
+		}
+	default:
+		f.GoPkgName = f.PkgName + "_msg"
 	}
 	// Prepopulate extra Go imports
 	cSerializationCode(f, ros2msg)
@@ -199,10 +233,14 @@ func translateROS2Type(f *ROS2Field, m *ROS2Message) (pkgName string, cType stri
 		return t.PackageName, t.CType, t.GoType
 	}
 
+	if f.PkgName == "" && m.Type != "msg" {
+		return m.Package, f.RosType, f.RosType
+	}
+
 	// explicit package
 	if f.PkgName != "" {
 		// type of same package
-		if f.PkgName == m.RosPackage {
+		if f.PkgName == m.Package {
 			return ".", f.RosType, f.RosType
 		}
 
@@ -211,7 +249,7 @@ func translateROS2Type(f *ROS2Field, m *ROS2Message) (pkgName string, cType stri
 	}
 
 	// implicit package, type of std_msgs
-	if m.RosPackage != "std_msgs" {
+	if m.Package != "std_msgs" {
 		switch f.RosType {
 		case "Bool", "ColorRGBA",
 			"Duration", "Empty", "Float32MultiArray", "Float32",
@@ -237,15 +275,14 @@ func cSerializationCode(f *ROS2Field, m *ROS2Message) string {
 	} else if f.TypeArray != "" && f.ArraySize > 0 && f.PkgName != "" && !f.PkgIsLocal {
 		// Complex value Array remote package reference
 		return `cSlice_` + f.RosName + ` := mem.` + f.CName + `[:]
-	` + f.PkgName + `.` + ucFirst(f.RosType) + `__Array_to_C(*(*[]` + f.PkgName + `.C` + ucFirst(f.RosType) + `)(unsafe.Pointer(&cSlice_` + f.RosName + `)), t.` + f.GoName + `[:])`
-
+	` + f.GoPkgReference() + ucFirst(f.RosType) + `__Array_to_C(*(*[]` + f.GoPkgReference() + `C` + ucFirst(f.RosType) + `)(unsafe.Pointer(&cSlice_` + f.RosName + `)), t.` + f.GoName + `[:])`
 	} else if f.TypeArray != "" && f.ArraySize == 0 && f.PkgName != "" && f.PkgIsLocal {
 		// Complex value Slice local package reference
 		return ucFirst(f.RosType) + `__Sequence_to_C(&mem.` + f.CName + `, t.` + f.GoName + `)`
 
 	} else if f.TypeArray != "" && f.ArraySize == 0 && f.PkgName != "" && !f.PkgIsLocal {
 		// Complex value Slice remote package reference
-		return f.PkgName + `.` + ucFirst(f.RosType) + `__Sequence_to_C((*` + f.PkgName + `.C` + ucFirst(f.RosType) + `__Sequence)(unsafe.Pointer(&mem.` + f.CName + `)), t.` + f.GoName + `)`
+		return f.GoPkgReference() + ucFirst(f.RosType) + `__Sequence_to_C((*` + f.GoPkgReference() + `C` + ucFirst(f.RosType) + `__Sequence)(unsafe.Pointer(&mem.` + f.CName + `)), t.` + f.GoName + `)`
 
 	} else if f.TypeArray == "" && f.PkgName != "" {
 		// Complex value single
@@ -275,7 +312,7 @@ func cStructName(f *ROS2Field, m *ROS2Message) string {
 		return "rosidl_runtime_c__" + f.CType
 	} else if f.PkgName != "" {
 		if f.PkgIsLocal {
-			return m.RosPackage + "__msg__" + f.CType
+			return m.Package + "__msg__" + f.CType
 		} else {
 			return f.PkgName + "__msg__" + f.CType
 		}
@@ -292,7 +329,7 @@ func goSerializationCode(f *ROS2Field, m *ROS2Message) string {
 	} else if f.TypeArray != "" && f.ArraySize > 0 && f.PkgName != "" {
 		// Complex value Array remote package reference
 		return `cSlice_` + f.RosName + ` := mem.` + f.CName + `[:]
-	` + f.PkgName + `.` + ucFirst(f.RosType) + `__Array_to_Go(t.` + f.GoName + `[:], *(*[]` + f.PkgName + `.C` + ucFirst(f.RosType) + `)(unsafe.Pointer(&cSlice_` + f.RosName + `)))`
+	` + f.GoPkgReference() + ucFirst(f.RosType) + `__Array_to_Go(t.` + f.GoName + `[:], *(*[]` + f.GoPkgReference() + `C` + ucFirst(f.RosType) + `)(unsafe.Pointer(&cSlice_` + f.RosName + `)))`
 
 	} else if f.TypeArray != "" && f.ArraySize == 0 && f.PkgName != "" && f.PkgIsLocal {
 		// Complex value Slice local package reference
@@ -300,7 +337,7 @@ func goSerializationCode(f *ROS2Field, m *ROS2Message) string {
 
 	} else if f.TypeArray != "" && f.ArraySize == 0 && f.PkgName != "" && !f.PkgIsLocal {
 		// Complex value Slice remote package reference
-		return f.PkgName + `.` + ucFirst(f.RosType) + `__Sequence_to_Go(&t.` + f.GoName + `, *(*` + f.PkgName + `.C` + ucFirst(f.RosType) + `__Sequence)(unsafe.Pointer(&mem.` + f.CName + `)))`
+		return f.GoPkgReference() + ucFirst(f.RosType) + `__Sequence_to_Go(&t.` + f.GoName + `, *(*` + f.GoPkgReference() + `C` + ucFirst(f.RosType) + `__Sequence)(unsafe.Pointer(&mem.` + f.CName + `)))`
 
 	} else if f.TypeArray == "" && f.PkgName != "" {
 		// Complex value single
@@ -338,7 +375,7 @@ func defaultCode(f *ROS2Field) string {
 			indexesCount = len(defaultValues)
 			sb.Grow(indexesCount + 1)
 
-			sb.WriteString(`t.` + f.GoName + ` = make(` + f.TypeArray + f.PkgReference() + f.GoType + `, ` + strconv.Itoa(indexesCount) + `)` + "\n\t")
+			sb.WriteString(`t.` + f.GoName + ` = make(` + f.TypeArray + f.GoPkgReference() + f.GoType + `, ` + strconv.Itoa(indexesCount) + `)` + "\n\t")
 		}
 
 		for i := 0; i < indexesCount; i++ {
@@ -356,7 +393,7 @@ func defaultCode(f *ROS2Field) string {
 
 	} else if f.DefaultValue != "" && f.TypeArray != "" {
 		// Primitive value array
-		return `t.` + f.GoName + ` = ` + f.TypeArray + f.PkgReference() + f.GoType + `{` + normalizeMsgDefaultArrayValue(f.DefaultValue) + `}` + "\n\t"
+		return `t.` + f.GoName + ` = ` + f.TypeArray + f.GoPkgReference() + f.GoType + `{` + normalizeMsgDefaultArrayValue(f.DefaultValue) + `}` + "\n\t"
 
 	} else if f.DefaultValue != "" {
 		// Primitive value single

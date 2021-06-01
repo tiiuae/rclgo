@@ -162,6 +162,11 @@ func defaultValueSanitizer_(ros2type, defaultValue string) string {
 	return defaultValue
 }
 
+func srvNameFromSrvMsgName(s string) string {
+	re.S(&s, `s/_(Request|Response)$//`)
+	return s
+}
+
 /* So many ways to skin a ROS2 defaults field
 var splitMsgDefaultArrayValues_re = regexp.MustCompile(`((:?^|,)(:?\s*".*?"\s*|.*?)(:?,|$))`)
 var splitMsgDefaultArrayValues_re = regexp.MustCompile(`((?<=^|,)?.*?(?=,|$))`) // Where are lookahead/lookbehind?

@@ -1,0 +1,51 @@
+(*gogen.ROS2Service)({
+  Metadata: (*gogen.Metadata)({
+    Name: (string) (len=10) "NoResponse",
+    Package: (string) "",
+    Type: (string) (len=3) "srv"
+  }),
+  Request: (*gogen.ROS2Message)({
+    Metadata: (*gogen.Metadata)({
+      Name: (string) (len=18) "NoResponse_Request",
+      Package: (string) "",
+      Type: (string) (len=3) "srv"
+    }),
+    Fields: ([]*gogen.ROS2Field) (len=1) {
+      (*gogen.ROS2Field)({
+        TypeArray: (string) "",
+        ArrayBounded: (string) "",
+        ArraySize: (int) 0,
+        DefaultValue: (string) "",
+        PkgName: (string) (len=16) "rosidl_runtime_c",
+        GoPkgName: (string) (len=16) "rosidl_runtime_c",
+        PkgIsLocal: (bool) false,
+        RosType: (string) (len=6) "string",
+        CType: (string) (len=6) "String",
+        GoType: (string) (len=6) "String",
+        RosName: (string) (len=5) "input",
+        CName: (string) (len=5) "input",
+        GoName: (string) (len=5) "Input",
+        Comment: (string) ""
+      })
+    },
+    Constants: ([]*gogen.ROS2Constant) <nil>,
+    GoImports: (map[string]string) (len=1) {
+      (string) (len=49) "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c": (string) (len=16) "rosidl_runtime_c"
+    },
+    CImports: (map[string]bool) {
+    }
+  }),
+  Response: (*gogen.ROS2Message)({
+    Metadata: (*gogen.Metadata)({
+      Name: (string) (len=19) "NoResponse_Response",
+      Package: (string) "",
+      Type: (string) (len=3) "srv"
+    }),
+    Fields: ([]*gogen.ROS2Field) <nil>,
+    Constants: ([]*gogen.ROS2Constant) <nil>,
+    GoImports: (map[string]string) {
+    },
+    CImports: (map[string]bool) {
+    }
+  })
+})

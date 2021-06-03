@@ -78,10 +78,9 @@ func (s *rosResourceStore) Close() error {
 type Context struct {
 	WG *sync.WaitGroup
 
-	rcl_allocator_t    *C.rcutils_allocator_t
-	rcl_context_t      *C.rcl_context_t
-	Clock              *Clock
-	rcl_init_options_t *C.rcl_init_options_t
+	rcl_allocator_t *C.rcutils_allocator_t
+	rcl_context_t   *C.rcl_context_t
+	Clock           *Clock
 
 	rosResourceStore
 }
@@ -124,18 +123,12 @@ func (c *Context) Close() error {
 	var errs *multierror.Error
 	errs = multierror.Append(errs, c.rosResourceStore.Close())
 
-	var rc C.rcl_ret_t
-	rc = C.rcl_init_options_fini(c.rcl_init_options_t)
-	if rc != C.RCL_RET_OK {
-		errs = multierror.Append(errs, ErrorsCastC(rc, fmt.Sprintf("C.rcl_init_options_fini(%+v)", c.rcl_init_options_t)))
-	} else {
-		c.rcl_init_options_t = nil
-	}
-	if rc = C.rcl_shutdown(c.rcl_context_t); rc != C.RCL_RET_OK {
+	if rc := C.rcl_shutdown(c.rcl_context_t); rc != C.RCL_RET_OK {
 		errs = multierror.Append(errs, ErrorsCastC(rc, fmt.Sprintf("C.rcl_shutdown(%+v)", c.rcl_context_t)))
-	} else if rc = C.rcl_context_fini(c.rcl_context_t); rc != C.RCL_RET_OK {
+	} else if rc := C.rcl_context_fini(c.rcl_context_t); rc != C.RCL_RET_OK {
 		errs = multierror.Append(errs, ErrorsCastC(rc, "rcl_context_fini failed"))
 	}
+	C.free(unsafe.Pointer(c.rcl_context_t))
 	C.free(unsafe.Pointer(c.rcl_allocator_t))
 	c.rcl_allocator_t = nil
 

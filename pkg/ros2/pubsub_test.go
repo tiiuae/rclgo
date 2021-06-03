@@ -227,11 +227,12 @@ func TestMultipleTimersInSingleWaitSet(t *testing.T) {
 	})
 }
 
-func BenchsittingmarkMemoryLeak(t *testing.B) {
+func BenchmarkPubsubMemoryLeakAllocateInLoop(t *testing.B) {
 	var messagesReceived int = 0
 	fmt.Printf("Mem from pmap(1) '%skB' messages '%d'\n", getMemReading(), messagesReceived)
 	for {
-		rclContextSub, waitSet, errs := SubscriberBundleReturnWaitSet(context.Background(), nil, nil, "/test", "", "/topic", "test_msgs/UnboundedSequences", nil,
+		runCtx, stopRun := context.WithCancel(context.Background())
+		rclContextSub, waitSet, errs := SubscriberBundleReturnWaitSet(runCtx, nil, nil, "/test", "", "/topic", "test_msgs/UnboundedSequences", nil,
 			func(s *Subscription) {
 				var m test_msgs.UnboundedSequences
 				_, err := s.TakeMessage(&m)
@@ -242,38 +243,42 @@ func BenchsittingmarkMemoryLeak(t *testing.B) {
 				messagesReceived++
 			})
 		if errs != nil {
-			panic(errs)
+			fmt.Println("error:", errs)
+			continue
 		}
-
-		err := waitSet.WaitForReady(time.Second, 10*time.Millisecond)
+		err := waitSet.WaitForReady(2*time.Second, 10*time.Millisecond)
 		if err != nil {
-			panic(err)
+			fmt.Println("error:", err)
+			continue
 		}
 
-		rclContextPub, errs := PublisherBundleTimer(context.Background(), nil, nil, "/test", "", "/topic", "test_msgs/UnboundedSequences", nil, 1*time.Millisecond, "", nil)
+		rclContextPub, errs := PublisherBundleTimer(runCtx, nil, nil, "/test", "", "/topic", "test_msgs/UnboundedSequences", nil, 1*time.Millisecond, "", nil)
 		if errs != nil {
-			panic(errs)
+			fmt.Println("error:", errs)
+			continue
 		}
 
 		time.Sleep(1000 * time.Millisecond)
 
+		stopRun()
 		errs = rclContextSub.Close()
 		if errs != nil {
-			panic(errs)
+			fmt.Println("error:", errs)
 		}
 		errs = rclContextPub.Close()
 		if errs != nil {
-			panic(errs)
+			fmt.Println("error:", errs)
 		}
-
+		runtime.GC()
 		fmt.Printf("Mem from pmap(1) '%skB' messages '%d'\n", getMemReading(), messagesReceived)
 	}
 }
 
-func BenchmarkMemoryLeak(t *testing.B) {
+func BenchmarkPubsubMemoryLeakAllocateOutOfLoop(t *testing.B) {
 	var messagesReceived int = 0
 	fmt.Printf("Mem from pmap(1) '%skB' messages '%d'\n", getMemReading(), messagesReceived)
-	rclContext, waitSet, errs := SubscriberBundleReturnWaitSet(context.Background(), nil, nil, "/test", "", "/topic", "test_msgs/UnboundedSequences", nil,
+	runCtx, stopRun := context.WithCancel(context.Background())
+	rclContext, waitSet, errs := SubscriberBundleReturnWaitSet(runCtx, nil, nil, "/test", "", "/topic", "test_msgs/UnboundedSequences", nil,
 		func(s *Subscription) {
 			var m test_msgs.UnboundedSequences
 			_, err := s.TakeMessage(&m)
@@ -287,16 +292,17 @@ func BenchmarkMemoryLeak(t *testing.B) {
 		panic(errs)
 	}
 
-	err := waitSet.WaitForReady(time.Second, 10*time.Millisecond)
+	err := waitSet.WaitForReady(2*time.Second, 10*time.Millisecond)
 	if err != nil {
 		panic(err)
 	}
 
-	rclContext, errs = PublisherBundleTimer(context.Background(), rclContext, nil, "/test", "", "/topic", "test_msgs/UnboundedSequences", nil, 1*time.Millisecond, "", nil)
+	rclContext, errs = PublisherBundleTimer(runCtx, rclContext, nil, "/test", "", "/topic", "test_msgs/UnboundedSequences", nil, 1*time.Millisecond, "", nil)
 	if errs != nil {
 		panic(errs)
 	}
 	defer rclContext.Close()
+	defer stopRun()
 
 	for {
 		time.Sleep(1000 * time.Millisecond)

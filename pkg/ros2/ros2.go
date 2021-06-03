@@ -41,10 +41,6 @@ package ros2
 ///
 /// These gowrappers are needed to access C arrays
 ///
-static void setString(const char*argv[], int i, const char *str) { // TODO replace with Go pointer arithmetics
-	argv[i] = str;
-}
-
 rcl_subscription_t* gowrapper_get_subscription(rcl_subscription_t** subscriptions, ulong i) {
         return subscriptions[i];
 }
@@ -87,6 +83,7 @@ import (
 	"runtime"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 	"unsafe"
 
@@ -95,35 +92,6 @@ import (
 	"github.com/kivilahtio/go-re/v0"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
 )
-
-type Clock struct {
-	rosID
-	rcl_clock_t *C.rcl_clock_t
-	context     *Context
-}
-
-type Node struct {
-	rosID
-	rosResourceStore
-	rcl_node_t *C.rcl_node_t
-	context    *Context
-}
-
-type Publisher struct {
-	rosID
-	TopicName               string
-	Ros2MsgType             ros2types.ROS2Msg
-	node                    *Node
-	rcl_publisher_options_t *C.rcl_publisher_options_t
-	rcl_publisher_t         *C.rcl_publisher_t
-}
-
-type Timer struct {
-	rosID
-	rcl_timer_t *C.rcl_timer_t
-	Callback    func(*Timer)
-	context     *Context
-}
 
 type RmwMessageInfo struct {
 	SourceTimestamp   time.Time
@@ -202,13 +170,12 @@ func NewRCLArgs(rclArgs string) (*RCLArgs, error) {
 	ra := &RCLArgs{GoArgs: goArgs, CArgc: C.int(len(goArgs))}
 	if len(goArgs) > 0 {
 		// Turn the Golang []string into stone, erm. **C.char
-		argc := C.int(len(goArgs))
-		argv := (**C.char)(C.malloc((C.size_t)((C.int)(unsafe.Sizeof(uintptr(1))) * argc)))
+		argc := C.size_t(len(goArgs))
+		ra.CArgv = (**C.char)(C.malloc(C.size_t(unsafe.Sizeof(uintptr(1))) * argc))
+		cargv := (*[1 << 30]*C.char)(unsafe.Pointer(ra.CArgv))
 		for i, arg := range goArgs {
-			str := C.CString(arg)
-			C.setString(argv, C.int(i), str)
+			cargv[i] = C.CString(arg)
 		}
-		ra.CArgv = argv
 	} else {
 		ra.CArgv = nil
 	}
@@ -222,15 +189,17 @@ func NewRCLArgs(rclArgs string) (*RCLArgs, error) {
 /*
 Close frees the allocated memory
 */
-func (self *RCLArgs) Close() {
-	for i := 0; i < (int)(self.CArgc); i++ {
-		cIdx := unsafe.Pointer(
-			uintptr(unsafe.Pointer(self.CArgv)) + (unsafe.Sizeof(uintptr(1)) * uintptr(i)),
-		)
-		C.free(cIdx)
+func (self *RCLArgs) Close() error {
+	if self.CArgv == nil {
+		return closeErr("rcl args")
+	}
+	cargv := (*[1 << 30]*C.char)(unsafe.Pointer(self.CArgv))
+	for i := 0; i < int(self.CArgc); i++ {
+		C.free(unsafe.Pointer(cargv[i]))
 	}
 	C.free(unsafe.Pointer(self.CArgv))
-	C.free(unsafe.Pointer(&self.CArgc))
+	self.CArgv = nil
+	return nil
 }
 
 /*
@@ -250,67 +219,70 @@ func rclInit(rclArgs *RCLArgs, ctx *Context) error {
 		rclArgs, _ = NewRCLArgs("")
 	}
 
-	/* Instead of receiving the rcl_allocator_t as a golang struct,
-	   prepare C memory from heap to receive a copy of the rcl allocator.
-	   This way Golang wont mess with the rcl_allocator_t memory location
-	   and complaing about nested Golang pointer passed over cgo */
-	ctx.rcl_allocator_t = (*C.rcl_allocator_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_allocator_t{}))))
+	ctx.rcl_allocator_t = (*C.rcl_allocator_t)(C.malloc(C.sizeof_rcl_allocator_t))
 	*ctx.rcl_allocator_t = C.rcl_get_default_allocator()
-	// TODO: Free C.free(ctx.rcl_allocator)
-
-	rclInitLogging(rclArgs)
-
-	ctx.rcl_context_t = (*C.rcl_context_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_context_t{}))))
+	ctx.rcl_context_t = (*C.rcl_context_t)(C.malloc(C.sizeof_rcl_context_t))
 	*ctx.rcl_context_t = C.rcl_get_zero_initialized_context()
 
-	ctx.rcl_init_options_t = (*C.rcl_init_options_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_init_options_t{}))))
-	*ctx.rcl_init_options_t = C.rcl_get_zero_initialized_init_options()
-	rc = C.rcl_init_options_init(ctx.rcl_init_options_t, *ctx.rcl_allocator_t)
+	rclInitLogging(rclArgs, ctx.rcl_allocator_t)
+
+	rcl_init_options_t := C.rcl_get_zero_initialized_init_options()
+	rc = C.rcl_init_options_init(&rcl_init_options_t, *ctx.rcl_allocator_t)
 	if rc != C.RCL_RET_OK {
 		return ErrorsCast(rc)
 	}
 
-	rc = C.rcl_init(rclArgs.CArgc, rclArgs.CArgv, ctx.rcl_init_options_t, ctx.rcl_context_t)
+	rc = C.rcl_init(rclArgs.CArgc, rclArgs.CArgv, &rcl_init_options_t, ctx.rcl_context_t)
 	if rc != C.RCL_RET_OK {
 		return ErrorsCast(rc)
 	}
 	return nil
 }
 
-func rclInitLogging(rclArgs *RCLArgs) error {
-	var rc C.rcl_ret_t
-	var allocator C.rcl_allocator_t = C.rcl_get_default_allocator()
-
-	var rcl_arguments C.rcl_arguments_t = C.rcl_get_zero_initialized_arguments()
-	rc = C.rcl_parse_arguments(rclArgs.CArgc, rclArgs.CArgv, allocator, &rcl_arguments)
+func rclInitLogging(rclArgs *RCLArgs, allocator *C.rcl_allocator_t) error {
+	rcl_arguments := C.rcl_get_zero_initialized_arguments()
+	rc := C.rcl_parse_arguments(rclArgs.CArgc, rclArgs.CArgv, *allocator, &rcl_arguments)
 	if rc != C.RCL_RET_OK {
 		return ErrorsCastC(rc, "rclInitLogging -> rcl_parse_arguments()")
 	}
 
-	rc = C.rcl_logging_configure(&rcl_arguments, &allocator)
+	rc = C.rcl_logging_configure(&rcl_arguments, allocator)
 	if rc != C.RCL_RET_OK {
 		return ErrorsCastC(rc, "rclInitLogging -> rcl_logging_configure()")
 	}
 	return nil
 }
 
-func (c *Context) NewNode(node_name, namespace string) (*Node, error) {
-	ns := strings.ReplaceAll(namespace, "/", "")
-	ns = strings.ReplaceAll(ns, "-", "")
+type Node struct {
+	rosID
+	rosResourceStore
+	rcl_node_t      *C.rcl_node_t
+	context         *Context
+	name, namespace *C.char
+}
 
-	rcl_node_options := (*C.rcl_node_options_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_node_options_t{}))))
-	*rcl_node_options = C.rcl_node_get_default_options()
+func (c *Context) NewNode(node_name, namespace string) (node *Node, err error) {
+	node = &Node{
+		rcl_node_t: (*C.rcl_node_t)(C.malloc(C.sizeof_rcl_node_t)),
+		context:    c,
+		name:       C.CString(node_name),
+		namespace:  C.CString(namespace),
+	}
+	defer onErr(&err, node.Close)
+	*node.rcl_node_t = C.rcl_get_zero_initialized_node()
 
-	rcl_node := (*C.rcl_node_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_node_t{}))))
-	*rcl_node = C.rcl_get_zero_initialized_node()
-
-	var rc C.rcl_ret_t = C.rcl_node_init(rcl_node, C.CString(node_name), C.CString(ns), c.rcl_context_t, rcl_node_options)
+	rcl_node_options := C.rcl_node_get_default_options()
+	rc := C.rcl_node_init(
+		node.rcl_node_t,
+		node.name,
+		node.namespace,
+		c.rcl_context_t,
+		&rcl_node_options,
+	)
 	if rc != C.RCL_RET_OK {
-		fmt.Printf("Error '%d' in rcl_node_init\n", (int)(rc))
-		return nil, ErrorsCast(rc)
+		return nil, ErrorsCastC(rc, "failed to create node:")
 	}
 
-	node := &Node{rcl_node_t: rcl_node, context: c}
 	c.addResource(node)
 	return node, nil
 }
@@ -322,51 +294,59 @@ func (self *Node) Close() error {
 	if self.rcl_node_t == nil {
 		return closeErr("node")
 	}
+	self.context.removeResource(self)
+
 	var err *multierror.Error
 	err = multierror.Append(err, self.rosResourceStore.Close())
-	self.context.removeResource(self)
+
 	rc := C.rcl_node_fini(self.rcl_node_t)
 	if rc != C.RCL_RET_OK {
 		err = multierror.Append(err, ErrorsCast(rc))
 	}
 	C.free(unsafe.Pointer(self.rcl_node_t))
 	self.rcl_node_t = nil
+
+	C.free(unsafe.Pointer(self.name))
+	C.free(unsafe.Pointer(self.namespace))
+
 	return err.ErrorOrNil()
 }
 
-func (self *Node) NewPublisher(topicName string, ros2msg ros2types.ROS2Msg) (*Publisher, error) {
-	rcl_publisher := (*C.rcl_publisher_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_publisher_t{}))))
-	*rcl_publisher = C.rcl_get_zero_initialized_publisher()
+type Publisher struct {
+	rosID
+	TopicName       string
+	Ros2MsgType     ros2types.ROS2Msg
+	node            *Node
+	rcl_publisher_t *C.rcl_publisher_t
+	topicName       *C.char
+}
 
-	rcl_publisher_options := (*C.rcl_publisher_options_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_publisher_options_t{}))))
-	*rcl_publisher_options = C.rcl_publisher_get_default_options()
-	rcl_publisher_options.qos.reliability = C.RMW_QOS_POLICY_RELIABILITY_SYSTEM_DEFAULT
-
-	err := ValidateTopicName(topicName)
-	if err != nil {
-		return nil, err
+func (self *Node) NewPublisher(topicName string, ros2msg ros2types.ROS2Msg) (pub *Publisher, err error) {
+	pub = &Publisher{
+		TopicName:       topicName,
+		Ros2MsgType:     ros2msg,
+		node:            self,
+		rcl_publisher_t: (*C.rcl_publisher_t)(C.malloc(C.sizeof_rcl_publisher_t)),
+		topicName:       C.CString(topicName),
 	}
+	defer onErr(&err, pub.Close)
+	*pub.rcl_publisher_t = C.rcl_get_zero_initialized_publisher()
+	rcl_publisher_options_t := C.rcl_publisher_get_default_options()
+	rcl_publisher_options_t.qos.reliability = C.RMW_QOS_POLICY_RELIABILITY_SYSTEM_DEFAULT
 
 	var rc C.rcl_ret_t = C.rcl_publisher_init(
-		rcl_publisher,
+		pub.rcl_publisher_t,
 		self.rcl_node_t,
 		(*C.rosidl_message_type_support_t)(ros2msg.TypeSupport()),
-		C.CString(topicName),
-		rcl_publisher_options)
+		pub.topicName,
+		&rcl_publisher_options_t,
+	)
 	if rc != C.RCL_RET_OK {
 		return nil, ErrorsCast(rc)
 	}
 
-	publisher := &Publisher{
-		TopicName:               topicName,
-		Ros2MsgType:             ros2msg,
-		node:                    self,
-		rcl_publisher_options_t: rcl_publisher_options,
-		rcl_publisher_t:         rcl_publisher,
-	}
-
-	self.addResource(publisher)
-	return publisher, nil
+	self.addResource(pub)
+	return pub, nil
 }
 
 func (self *Publisher) Publish(ros2msg ros2types.ROS2Msg) error {
@@ -386,26 +366,43 @@ func (self *Publisher) Publish(ros2msg ros2types.ROS2Msg) error {
 Close frees the allocated memory
 */
 func (self *Publisher) Close() error {
+	if self.rcl_publisher_t == nil {
+		return closeErr("publisher")
+	}
+	var err *multierror.Error
 	self.node.removeResource(self)
 	rc := C.rcl_publisher_fini(self.rcl_publisher_t, self.node.rcl_node_t)
 	if rc != C.RCL_RET_OK {
-		return ErrorsCast(rc)
+		err = multierror.Append(err, ErrorsCast(rc))
 	}
-	return nil
+	C.free(unsafe.Pointer(self.rcl_publisher_t))
+	self.rcl_publisher_t = nil
+	C.free(unsafe.Pointer(self.topicName))
+	return err.ErrorOrNil()
 }
 
-func (c *Context) NewClock(clockType Rcl_clock_type_t) (*Clock, error) {
+type Clock struct {
+	rosID
+	rcl_clock_t *C.rcl_clock_t
+	context     *Context
+}
+
+func (c *Context) NewClock(clockType Rcl_clock_type_t) (clock *Clock, err error) {
 	if clockType == 0 {
 		clockType = RCL_ROS_TIME
 	}
-	rcl_clock := (*C.rcl_clock_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_clock_t{})))) //rcl_clock_init() doc says "This will allocate all necessary internal structures, and initialize variables.". The parameter is invalid if no memory allocated beforehand.
-	var rc C.rcl_ret_t = C.rcl_clock_init(uint32(clockType), rcl_clock, c.rcl_allocator_t)
+	clock = &Clock{
+		context:     c,
+		rcl_clock_t: (*C.rcl_clock_t)(C.malloc(C.sizeof_rcl_clock_t)),
+	}
+	defer onErr(&err, c.Close)
+	rc := C.rcl_clock_init(
+		uint32(clockType),
+		clock.rcl_clock_t,
+		c.rcl_allocator_t,
+	)
 	if rc != C.RCL_RET_OK {
 		return nil, ErrorsCast(rc)
-	}
-	clock := &Clock{
-		context:     c,
-		rcl_clock_t: rcl_clock,
 	}
 	c.addResource(clock)
 	return clock, nil
@@ -415,24 +412,37 @@ func (c *Context) NewClock(clockType Rcl_clock_type_t) (*Clock, error) {
 Close frees the allocated memory
 */
 func (self *Clock) Close() error {
+	if self.rcl_clock_t == nil {
+		return closeErr("clock")
+	}
+	var err *multierror.Error
 	self.context.removeResource(self)
 	rc := C.rcl_clock_fini(self.rcl_clock_t)
 	if rc != C.RCL_RET_OK {
-		return ErrorsCast(rc)
+		err = multierror.Append(err, ErrorsCast(rc))
 	}
-	return nil
+	C.free(unsafe.Pointer(self.rcl_clock_t))
+	self.rcl_clock_t = nil
+	return err.ErrorOrNil()
 }
 
-func (c *Context) NewTimer(timeout time.Duration, timer_callback func(*Timer)) (*Timer, error) {
-	var rc C.rcl_ret_t
+type Timer struct {
+	rosID
+	rcl_timer_t *C.rcl_timer_t
+	Callback    func(*Timer)
+	context     *Context
+}
 
+func (c *Context) NewTimer(timeout time.Duration, timer_callback func(*Timer)) (timer *Timer, err error) {
 	if timeout == 0 {
 		timeout = 1000 * time.Millisecond
 	}
-	timer := &Timer{context: c}
-	timer.Callback = timer_callback
-
-	timer.rcl_timer_t = (*C.rcl_timer_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_timer_t{}))))
+	timer = &Timer{
+		rcl_timer_t: (*C.rcl_timer_t)(C.malloc(C.sizeof_rcl_timer_t)),
+		Callback:    timer_callback,
+		context:     c,
+	}
+	defer onErr(&err, timer.Close)
 	*timer.rcl_timer_t = C.rcl_get_zero_initialized_timer()
 
 	if c.Clock == nil {
@@ -443,13 +453,14 @@ func (c *Context) NewTimer(timeout time.Duration, timer_callback func(*Timer)) (
 		}
 	}
 
-	rc = C.rcl_timer_init(
+	rc := C.rcl_timer_init(
 		timer.rcl_timer_t,
 		c.Clock.rcl_clock_t,
 		c.rcl_context_t,
 		(C.long)(timeout),
 		nil,
-		*c.rcl_allocator_t)
+		*c.rcl_allocator_t,
+	)
 	if rc != C.RCL_RET_OK {
 		return nil, ErrorsCast(rc)
 	}
@@ -459,15 +470,12 @@ func (c *Context) NewTimer(timeout time.Duration, timer_callback func(*Timer)) (
 }
 
 func (self *Timer) GetTimeUntilNextCall() (int64, error) {
-	var rc C.rcl_ret_t
-	time_until_next_call := (*C.int64_t)(C.malloc((C.size_t)(8)))
-	defer C.free(unsafe.Pointer(time_until_next_call))
-
-	rc = C.rcl_timer_get_time_until_next_call(self.rcl_timer_t, time_until_next_call)
+	var time_until_next_call C.int64_t
+	rc := C.rcl_timer_get_time_until_next_call(self.rcl_timer_t, &time_until_next_call)
 	if rc != C.RCL_RET_OK {
 		return 0, ErrorsCast(rc)
 	}
-	return int64(*time_until_next_call), nil
+	return int64(time_until_next_call), nil
 }
 
 func (self *Timer) Reset() error {
@@ -483,68 +491,68 @@ func (self *Timer) Reset() error {
 Close frees the allocated memory
 */
 func (self *Timer) Close() error {
+	if self.rcl_timer_t == nil {
+		return closeErr("timer")
+	}
+	var err *multierror.Error
 	self.context.removeResource(self)
 	rc := C.rcl_timer_fini(self.rcl_timer_t)
 	if rc != C.RCL_RET_OK {
-		return ErrorsCast(rc)
+		err = multierror.Append(err, ErrorsCast(rc))
 	}
 	C.free(unsafe.Pointer(self.rcl_timer_t))
-	return nil
+	self.rcl_timer_t = nil
+	return err.ErrorOrNil()
 }
 
 type SubscriptionCallback func(*Subscription)
 
 type Subscription struct {
 	rosID
-	TopicName                  string
-	Ros2MsgType                ros2types.ROS2Msg
-	node                       *Node
-	rcl_subscription_t         *C.rcl_subscription_t
-	rcl_subscription_options_t *C.rcl_subscription_options_t
-	Callback                   SubscriptionCallback
+	TopicName          string
+	Ros2MsgType        ros2types.ROS2Msg
+	Callback           SubscriptionCallback
+	node               *Node
+	rcl_subscription_t *C.rcl_subscription_t
+	topicName          *C.char
 }
 
-func (self *Node) NewSubscription(topic_name string, ros2msg ros2types.ROS2Msg, subscriptionCallback SubscriptionCallback) (*Subscription, error) {
-	subscription := &Subscription{}
-	subscription.rcl_subscription_t = (*C.rcl_subscription_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rcl_subscription_t{}))))
-	*subscription.rcl_subscription_t = C.rcl_get_zero_initialized_subscription()
-	subscription.node = self
-	subscription.Ros2MsgType = ros2msg
-	subscription.TopicName = topic_name
-	subscription.Callback = subscriptionCallback
-
-	err := ValidateTopicName(subscription.TopicName)
-	if err != nil {
-		return subscription, err
+func (self *Node) NewSubscription(topic_name string, ros2msg ros2types.ROS2Msg, subscriptionCallback SubscriptionCallback) (sub *Subscription, err error) {
+	sub = &Subscription{
+		TopicName:          topic_name,
+		Ros2MsgType:        ros2msg,
+		Callback:           subscriptionCallback,
+		node:               self,
+		rcl_subscription_t: (*C.rcl_subscription_t)(C.malloc(C.sizeof_rcl_subscription_t)),
+		topicName:          C.CString(topic_name),
 	}
+	defer onErr(&err, sub.Close)
+	*sub.rcl_subscription_t = C.rcl_get_zero_initialized_subscription()
 
-	sops := C.rcl_subscription_get_default_options()
-	sops.qos.reliability = C.RMW_QOS_POLICY_RELIABILITY_SYSTEM_DEFAULT
-	subscription.rcl_subscription_options_t = &sops
+	opts := C.rcl_subscription_get_default_options()
+	opts.qos.reliability = C.RMW_QOS_POLICY_RELIABILITY_SYSTEM_DEFAULT
 
-	var rc C.rcl_ret_t = C.rcl_subscription_init(
-		subscription.rcl_subscription_t,
+	rc := C.rcl_subscription_init(
+		sub.rcl_subscription_t,
 		self.rcl_node_t,
 		(*C.rosidl_message_type_support_t)(ros2msg.TypeSupport()),
 		C.CString(topic_name),
-		subscription.rcl_subscription_options_t)
+		&opts)
 	if rc != C.RCL_RET_OK {
-		return subscription, ErrorsCastC(rc, fmt.Sprintf("Topic name '%s'", topic_name))
+		return sub, ErrorsCastC(rc, fmt.Sprintf("Topic name '%s'", topic_name))
 	}
 
-	self.addResource(subscription)
-	return subscription, nil
+	self.addResource(sub)
+	return sub, nil
 }
 
 func (s *Subscription) TakeMessage(out ros2types.ROS2Msg) (*RmwMessageInfo, error) {
-	rmw_message_info := (*C.rmw_message_info_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rmw_message_info_t{}))))
-	*rmw_message_info = C.rmw_get_zero_initialized_message_info()
-	defer C.free(unsafe.Pointer(rmw_message_info))
+	rmw_message_info := C.rmw_get_zero_initialized_message_info()
 
 	ros2_msg_receive_buffer := s.Ros2MsgType.PrepareMemory()
 	defer s.Ros2MsgType.ReleaseMemory(ros2_msg_receive_buffer)
 
-	rc := C.rcl_take(s.rcl_subscription_t, ros2_msg_receive_buffer, rmw_message_info, nil)
+	rc := C.rcl_take(s.rcl_subscription_t, ros2_msg_receive_buffer, &rmw_message_info, nil)
 	if rc != C.RCL_RET_OK {
 		return nil, ErrorsCastC(rc, fmt.Sprintf("rcl_take() failed for subscription='%+v'", s))
 	}
@@ -577,12 +585,19 @@ func (s *Subscription) Spin(ctx context.Context, timeout time.Duration) error {
 Close frees the allocated memory
 */
 func (self *Subscription) Close() error {
+	if self.rcl_subscription_t == nil {
+		return closeErr("subscription")
+	}
+	var err *multierror.Error
 	self.node.removeResource(self)
 	rc := C.rcl_subscription_fini(self.rcl_subscription_t, self.node.rcl_node_t)
 	if rc != C.RCL_RET_OK {
-		return ErrorsCast(rc)
+		err = multierror.Append(err, ErrorsCast(rc))
 	}
-	return nil
+	C.free(unsafe.Pointer(self.rcl_subscription_t))
+	self.rcl_subscription_t = nil
+	C.free(unsafe.Pointer(self.topicName))
+	return err.ErrorOrNil()
 }
 
 /*
@@ -655,17 +670,20 @@ func TopicGetTopicNamesAndTypes(rclContext RCLContext, rcl_node *C.rcl_node_t) (
 
 type WaitSet struct {
 	rosID
-	Timeout        time.Duration
-	Subscriptions  []*Subscription
-	Timers         []*Timer
-	services       []*Service
-	clients        []*Client
-	Ready          bool // flag to notify the outside gothreads that this WaitSet is ready to receive messages. Use waitSet.WaitForReady() to synchronize
+	Timeout       time.Duration
+	Subscriptions []*Subscription
+	Timers        []*Timer
+	services      []*Service
+	clients       []*Client
+	// Flag to notify the outside gothreads that this WaitSet is ready to
+	// receive messages. Use waitSet.WaitForReady() to synchronize. Value of 0
+	// means not ready and any other value means ready.
+	ready          uint32
 	rcl_wait_set_t C.rcl_wait_set_t
 	context        *Context
 }
 
-func (c *Context) NewWaitSet(timeout time.Duration) (*WaitSet, error) {
+func (c *Context) NewWaitSet(timeout time.Duration) (ws *WaitSet, err error) {
 	const (
 		subscriptionsCount   = 0
 		guardConditionsCount = 0
@@ -674,7 +692,7 @@ func (c *Context) NewWaitSet(timeout time.Duration) (*WaitSet, error) {
 		servicesCount        = 0
 		eventsCount          = 0
 	)
-	waitSet := &WaitSet{
+	ws = &WaitSet{
 		context:        c,
 		Timeout:        timeout,
 		Subscriptions:  []*Subscription{},
@@ -683,8 +701,9 @@ func (c *Context) NewWaitSet(timeout time.Duration) (*WaitSet, error) {
 		clients:        []*Client{},
 		rcl_wait_set_t: C.rcl_get_zero_initialized_wait_set(),
 	}
+	defer onErr(&err, ws.Close)
 	var rc C.rcl_ret_t = C.rcl_wait_set_init(
-		&waitSet.rcl_wait_set_t,
+		&ws.rcl_wait_set_t,
 		subscriptionsCount,
 		guardConditionsCount,
 		timersCount,
@@ -698,8 +717,8 @@ func (c *Context) NewWaitSet(timeout time.Duration) (*WaitSet, error) {
 		return nil, ErrorsCast(rc)
 	}
 
-	c.addResource(waitSet)
-	return waitSet, nil
+	c.addResource(ws)
+	return ws, nil
 }
 
 func (w *WaitSet) AddSubscriptions(subs ...*Subscription) {
@@ -718,20 +737,30 @@ func (w *WaitSet) AddClients(clients ...*Client) {
 	w.clients = append(w.clients, clients...)
 }
 
+func (w *WaitSet) Ready() bool {
+	return atomic.LoadUint32(&w.ready) > 0
+}
+
+func (w *WaitSet) markReady() {
+	atomic.StoreUint32(&w.ready, 1)
+}
+
 func (self *WaitSet) WaitForReady(timeout, interval time.Duration) error {
-	for !self.Ready {
+	after := time.After(timeout)
+	for {
+		if self.Ready() {
+			return nil
+		}
 		select {
-		case <-time.After(timeout):
-			if self.Ready {
+		case <-after:
+			if self.Ready() {
 				return nil
-			} else {
-				return ErrorsCast(2)
 			}
+			return ErrorsCastC(2, "WaitForReady:")
 		default:
 			time.Sleep(interval)
 		}
 	}
-	return nil
 }
 
 func (self *WaitSet) RunGoroutine(ctx context.Context) {
@@ -760,7 +789,7 @@ func (self *WaitSet) Run(ctx context.Context) error {
 			}
 
 			var rc C.rcl_ret_t = C.rcl_wait(&self.rcl_wait_set_t, (C.long)(self.Timeout))
-			self.Ready = true
+			self.markReady()
 			if rc == C.RCL_RET_TIMEOUT {
 				continue
 			}
@@ -868,13 +897,14 @@ func (self *WaitSet) Close() error {
 	if self.context == nil {
 		return closeErr("wait set")
 	}
+	var err *multierror.Error
 	self.context.removeResource(self)
 	self.context = nil
 	rc := C.rcl_wait_set_fini(&self.rcl_wait_set_t)
 	if rc != C.RCL_RET_OK {
-		return ErrorsCast(rc)
+		err = multierror.Append(err, ErrorsCast(rc))
 	}
-	return nil
+	return err.ErrorOrNil()
 }
 
 type RmwRequestID struct {
@@ -964,6 +994,7 @@ func (s *Service) Close() (err error) {
 	if rc != C.RCL_RET_OK {
 		err = ErrorsCastC(rc, "failed to finalize service")
 	}
+	C.free(unsafe.Pointer(s.rclService))
 	C.free(unsafe.Pointer(s.name))
 	s.name = nil
 	return err
@@ -1079,6 +1110,7 @@ func (c *Client) Close() error {
 	if rc != C.RCL_RET_OK {
 		err = multierror.Append(err, ErrorsCastC(rc, "failed to finalize client"))
 	}
+	C.free(unsafe.Pointer(c.rclClient))
 	c.rclClient = nil
 
 	C.free(unsafe.Pointer(c.serviceName))

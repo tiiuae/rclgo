@@ -35,7 +35,7 @@ func init() {
 }
 
 type _Empty struct {
-	req,resp ros2types.ROS2Msg
+	req, resp ros2types.ROS2Msg
 }
 
 func (s *_Empty) Request() ros2types.ROS2Msg {
@@ -52,6 +52,6 @@ func (s *_Empty) TypeSupport() unsafe.Pointer {
 
 // Modifying this variable is undefined behavior.
 var Empty ros2types.Service = &_Empty{
-	req: &Empty_Request{},
+	req:  &Empty_Request{},
 	resp: &Empty_Response{},
 }

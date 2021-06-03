@@ -23,6 +23,7 @@ import (
 	_ "github.com/tiiuae/rclgo/pkg/ros2/msgs/diagnostic_msgs/srv" //
 	_ "github.com/tiiuae/rclgo/pkg/ros2/msgs/example_interfaces/msg" //
 	_ "github.com/tiiuae/rclgo/pkg/ros2/msgs/example_interfaces/srv" //
+	_ "github.com/tiiuae/rclgo/pkg/ros2/msgs/fog_msgs/srv" //
 	_ "github.com/tiiuae/rclgo/pkg/ros2/msgs/geometry_msgs/msg" //
 	_ "github.com/tiiuae/rclgo/pkg/ros2/msgs/lifecycle_msgs/msg" //
 	_ "github.com/tiiuae/rclgo/pkg/ros2/msgs/lifecycle_msgs/srv" //

@@ -3,12 +3,14 @@ name: main
 on:
   push:
     branches: main
+  pull_request:
+    branches: main
   workflow_dispatch:
 
 jobs:
   rclgo:
     runs-on: ubuntu-latest
-    container: osrf/ros:foxy-desktop
+    container: ros:foxy-ros-core
     steps:
       - uses: actions/checkout@v2
 
@@ -20,9 +22,15 @@ jobs:
       - name: Install additional tools and libraries
         run: |
           apt-get update
-          apt-get install -y make gcc curl ros-foxy-test-msgs
-          curl -fsSL https://github.com/tiiuae/fog_sw/releases/download/ver_ssrc_rel_3/ros-foxy-px4-msgs_2.0.1-5_git20210419.b4c4a12_amd64.deb -o ros-foxy-px4-msgs.deb
-          dpkg -i ros-foxy-px4-msgs.deb
+          apt-get install -y \
+            gcc \
+            make \
+            ros-foxy-builtin-interfaces \
+            ros-foxy-example-interfaces \
+            ros-foxy-sensor-msgs \
+            ros-foxy-std-msgs \
+            ros-foxy-std-srvs \
+            ros-foxy-test-msgs
 
       - name: Run tests
         run: |

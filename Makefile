@@ -15,10 +15,7 @@ install:
 
 .PHONY: test
 test:
-	go test -v ./...
-
-
-
+	go test -v `go list ./... | sed -e '\@^github\.com/tiiuae/rclgo/pkg/ros2/msgs@D' -e '\@^github\.com/tiiuae/rclgo/cmd@D'`
 
 generate:
 	go run cmd/rclgo-gen/main.go generate

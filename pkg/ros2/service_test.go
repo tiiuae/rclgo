@@ -9,10 +9,6 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 	example_interfaces_srv "github.com/tiiuae/rclgo/pkg/ros2/msgs/example_interfaces/srv"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
-
-	// This import is here to make sure that all generated messages included in
-	// the library are compilable.
-	_ "github.com/tiiuae/rclgo/pkg/ros2/msgs"
 )
 
 func TestServiceAndClient(t *testing.T) {

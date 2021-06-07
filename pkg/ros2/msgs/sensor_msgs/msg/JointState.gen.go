@@ -15,7 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
@@ -36,14 +36,14 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/JointState", &JointState{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/JointState", JointStateTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewJointState
 // function instead.
 type JointState struct {
 	Header std_msgs_msg.Header `yaml:"header"`
-	Name []rosidl_runtime_c.String `yaml:"name"`
+	Name []string `yaml:"name"`
 	Position []float64 `yaml:"position"`
 	Velocity []float64 `yaml:"velocity"`
 	Effort []float64 `yaml:"effort"`
@@ -52,45 +52,59 @@ type JointState struct {
 // NewJointState creates a new JointState with default values.
 func NewJointState() *JointState {
 	self := JointState{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *JointState) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *JointState) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__JointState())
-}
-func (t *JointState) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__JointState
-	return (unsafe.Pointer)(C.sensor_msgs__msg__JointState__create())
-}
-func (t *JointState) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__msg__JointState__destroy((*C.sensor_msgs__msg__JointState)(pointer_to_free))
-}
-func (t *JointState) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__msg__JointState)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	rosidl_runtime_c.String__Sequence_to_C((*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.name)), t.Name)
-	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.position)), t.Position)
-	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.velocity)), t.Velocity)
-	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.effort)), t.Effort)
-	return unsafe.Pointer(mem)
-}
-func (t *JointState) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__msg__JointState)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	rosidl_runtime_c.String__Sequence_to_Go(&t.Name, *(*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.name)))
-	rosidl_runtime_c.Float64__Sequence_to_Go(&t.Position, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.position)))
-	rosidl_runtime_c.Float64__Sequence_to_Go(&t.Velocity, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.velocity)))
-	rosidl_runtime_c.Float64__Sequence_to_Go(&t.Effort, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.effort)))
-}
-func (t *JointState) Clone() ros2types.ROS2Msg {
+func (t *JointState) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *JointState) SetDefaults() {
+	t.Header.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var JointStateTypeSupport types.MessageTypeSupport = _JointStateTypeSupport{}
+
+type _JointStateTypeSupport struct{}
+
+func (t _JointStateTypeSupport) New() types.Message {
+	return NewJointState()
+}
+
+func (t _JointStateTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__JointState
+	return (unsafe.Pointer)(C.sensor_msgs__msg__JointState__create())
+}
+
+func (t _JointStateTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__msg__JointState__destroy((*C.sensor_msgs__msg__JointState)(pointer_to_free))
+}
+
+func (t _JointStateTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*JointState)
+	mem := (*C.sensor_msgs__msg__JointState)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	rosidl_runtime_c.String__Sequence_to_C((*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.name)), m.Name)
+	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.position)), m.Position)
+	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.velocity)), m.Velocity)
+	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.effort)), m.Effort)
+}
+
+func (t _JointStateTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*JointState)
+	mem := (*C.sensor_msgs__msg__JointState)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	rosidl_runtime_c.String__Sequence_to_Go(&m.Name, *(*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.name)))
+	rosidl_runtime_c.Float64__Sequence_to_Go(&m.Position, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.position)))
+	rosidl_runtime_c.Float64__Sequence_to_Go(&m.Velocity, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.velocity)))
+	rosidl_runtime_c.Float64__Sequence_to_Go(&m.Effort, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.effort)))
+}
+
+func (t _JointStateTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__JointState())
 }
 
 type CJointState = C.sensor_msgs__msg__JointState
@@ -105,8 +119,7 @@ func JointState__Sequence_to_Go(goSlice *[]JointState, cSlice CJointState__Seque
 		cIdx := (*C.sensor_msgs__msg__JointState__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__JointState * uintptr(i)),
 		))
-		(*goSlice)[i] = JointState{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		JointStateTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func JointState__Sequence_to_C(cSlice *CJointState__Sequence, goSlice []JointState) {
@@ -121,18 +134,16 @@ func JointState__Sequence_to_C(cSlice *CJointState__Sequence, goSlice []JointSta
 		cIdx := (*C.sensor_msgs__msg__JointState)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__JointState * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__msg__JointState)(v.AsCStruct())
+		JointStateTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func JointState__Array_to_Go(goSlice []JointState, cSlice []CJointState) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		JointStateTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func JointState__Array_to_C(cSlice []CJointState, goSlice []JointState) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__msg__JointState)(goSlice[i].AsCStruct())
+		JointStateTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -90,7 +90,7 @@ import (
 	"github.com/google/shlex"
 	"github.com/hashicorp/go-multierror"
 	"github.com/kivilahtio/go-re/v0"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 )
 
 type RmwMessageInfo struct {
@@ -315,16 +315,16 @@ func (self *Node) Close() error {
 type Publisher struct {
 	rosID
 	TopicName       string
-	Ros2MsgType     ros2types.ROS2Msg
+	typeSupport     types.MessageTypeSupport
 	node            *Node
 	rcl_publisher_t *C.rcl_publisher_t
 	topicName       *C.char
 }
 
-func (self *Node) NewPublisher(topicName string, ros2msg ros2types.ROS2Msg) (pub *Publisher, err error) {
+func (self *Node) NewPublisher(topicName string, ros2msg types.MessageTypeSupport) (pub *Publisher, err error) {
 	pub = &Publisher{
 		TopicName:       topicName,
-		Ros2MsgType:     ros2msg,
+		typeSupport:     ros2msg,
 		node:            self,
 		rcl_publisher_t: (*C.rcl_publisher_t)(C.malloc(C.sizeof_rcl_publisher_t)),
 		topicName:       C.CString(topicName),
@@ -349,11 +349,12 @@ func (self *Node) NewPublisher(topicName string, ros2msg ros2types.ROS2Msg) (pub
 	return pub, nil
 }
 
-func (self *Publisher) Publish(ros2msg ros2types.ROS2Msg) error {
+func (self *Publisher) Publish(ros2msg types.Message) error {
 	var rc C.rcl_ret_t
 
-	ptr := ros2msg.AsCStruct()
-	defer ros2msg.ReleaseMemory(unsafe.Pointer(ptr))
+	ptr := self.typeSupport.PrepareMemory()
+	defer self.typeSupport.ReleaseMemory(ptr)
+	self.typeSupport.AsCStruct(ptr, ros2msg)
 
 	rc = C.rcl_publish(self.rcl_publisher_t, ptr, nil)
 	if rc != C.RCL_RET_OK {
@@ -510,14 +511,14 @@ type SubscriptionCallback func(*Subscription)
 type Subscription struct {
 	rosID
 	TopicName          string
-	Ros2MsgType        ros2types.ROS2Msg
+	Ros2MsgType        types.MessageTypeSupport
 	Callback           SubscriptionCallback
 	node               *Node
 	rcl_subscription_t *C.rcl_subscription_t
 	topicName          *C.char
 }
 
-func (self *Node) NewSubscription(topic_name string, ros2msg ros2types.ROS2Msg, subscriptionCallback SubscriptionCallback) (sub *Subscription, err error) {
+func (self *Node) NewSubscription(topic_name string, ros2msg types.MessageTypeSupport, subscriptionCallback SubscriptionCallback) (sub *Subscription, err error) {
 	sub = &Subscription{
 		TopicName:          topic_name,
 		Ros2MsgType:        ros2msg,
@@ -546,7 +547,7 @@ func (self *Node) NewSubscription(topic_name string, ros2msg ros2types.ROS2Msg, 
 	return sub, nil
 }
 
-func (s *Subscription) TakeMessage(out ros2types.ROS2Msg) (*RmwMessageInfo, error) {
+func (s *Subscription) TakeMessage(out types.Message) (*RmwMessageInfo, error) {
 	rmw_message_info := C.rmw_get_zero_initialized_message_info()
 
 	ros2_msg_receive_buffer := s.Ros2MsgType.PrepareMemory()
@@ -556,7 +557,7 @@ func (s *Subscription) TakeMessage(out ros2types.ROS2Msg) (*RmwMessageInfo, erro
 	if rc != C.RCL_RET_OK {
 		return nil, ErrorsCastC(rc, fmt.Sprintf("rcl_take() failed for subscription='%+v'", s))
 	}
-	out.AsGoStruct(ros2_msg_receive_buffer)
+	s.Ros2MsgType.AsGoStruct(out, ros2_msg_receive_buffer)
 	return &RmwMessageInfo{
 		SourceTimestamp:   time.Unix(0, int64(rmw_message_info.source_timestamp)),
 		ReceivedTimestamp: time.Unix(0, int64(rmw_message_info.received_timestamp)),
@@ -927,24 +928,25 @@ func NewDefaultServiceOptions() *ServiceOptions {
 }
 
 type ServiceResponseSender interface {
-	SendResponse(resp ros2types.ROS2Msg) error
+	SendResponse(resp types.Message) error
 }
 
-type serviceResponseSender func(resp ros2types.ROS2Msg) error
+type serviceResponseSender func(resp types.Message) error
 
-func (s serviceResponseSender) SendResponse(resp ros2types.ROS2Msg) error {
+func (s serviceResponseSender) SendResponse(resp types.Message) error {
 	return s(resp)
 }
 
-type ServiceRequestHandler func(*RmwServiceInfo, ros2types.ROS2Msg, ServiceResponseSender)
+type ServiceRequestHandler func(*RmwServiceInfo, types.Message, ServiceResponseSender)
 
 type Service struct {
 	rosID
-	node        *Node
-	rclService  *C.rcl_service_t
-	name        *C.char
-	handler     ServiceRequestHandler
-	typeSupport ros2types.Service
+	node                *Node
+	rclService          *C.rcl_service_t
+	name                *C.char
+	handler             ServiceRequestHandler
+	requestTypeSupport  types.MessageTypeSupport
+	responseTypeSupport types.MessageTypeSupport
 }
 
 // NewService creates a new service.
@@ -953,7 +955,7 @@ type Service struct {
 // nil, default options are used.
 func (n *Node) NewService(
 	name string,
-	typeSupport ros2types.Service,
+	typeSupport types.ServiceTypeSupport,
 	options *ServiceOptions,
 	handler ServiceRequestHandler,
 ) (s *Service, err error) {
@@ -961,11 +963,12 @@ func (n *Node) NewService(
 		options = NewDefaultServiceOptions()
 	}
 	s = &Service{
-		node:        n,
-		rclService:  (*C.rcl_service_t)(C.malloc(C.sizeof_struct_rcl_service_t)),
-		name:        C.CString(name),
-		handler:     handler,
-		typeSupport: typeSupport,
+		requestTypeSupport:  typeSupport.Request(),
+		responseTypeSupport: typeSupport.Response(),
+		node:                n,
+		rclService:          (*C.rcl_service_t)(C.malloc(C.sizeof_struct_rcl_service_t)),
+		name:                C.CString(name),
+		handler:             handler,
 	}
 	defer onErr(&err, s.Close)
 	*s.rclService = C.rcl_get_zero_initialized_service()
@@ -1002,8 +1005,8 @@ func (s *Service) Close() (err error) {
 
 func (s *Service) handleRequest() {
 	var reqHeader C.struct_rmw_service_info_t
-	reqBuffer := s.typeSupport.Request().PrepareMemory()
-	defer s.typeSupport.Request().ReleaseMemory(reqBuffer)
+	reqBuffer := s.requestTypeSupport.PrepareMemory()
+	defer s.requestTypeSupport.ReleaseMemory(reqBuffer)
 	rc := C.rcl_take_request_with_info(s.rclService, &reqHeader, reqBuffer)
 	if rc != C.RCL_RET_OK {
 		log.Println(ErrorsCastC(rc, "failed to take request"))
@@ -1017,14 +1020,15 @@ func (s *Service) handleRequest() {
 			SequenceNumber: int64(reqHeader.request_id.sequence_number),
 		},
 	}
-	req := s.typeSupport.Request().Clone()
-	req.AsGoStruct(reqBuffer)
+	req := s.requestTypeSupport.New()
+	s.requestTypeSupport.AsGoStruct(req, reqBuffer)
 	s.handler(
 		&info,
 		req,
-		serviceResponseSender(func(resp ros2types.ROS2Msg) error {
-			respBuffer := resp.AsCStruct()
-			defer resp.ReleaseMemory(respBuffer)
+		serviceResponseSender(func(resp types.Message) error {
+			respBuffer := s.responseTypeSupport.PrepareMemory()
+			defer s.responseTypeSupport.ReleaseMemory(respBuffer)
+			s.responseTypeSupport.AsCStruct(respBuffer, resp)
 			rc := C.rcl_send_response(s.rclService, &reqHeader.request_id, respBuffer)
 			if rc != C.RCL_RET_OK {
 				return ErrorsCastC(rc, "failed to send response")
@@ -1052,7 +1056,8 @@ type Client struct {
 	serviceName          *C.char
 	pendingRequests      map[C.long]chan *clientSendResult
 	pendingRequestsMutex sync.Mutex
-	typeSupport          ros2types.Service
+	requestTypeSupport   types.MessageTypeSupport
+	responseTypeSupport  types.MessageTypeSupport
 }
 
 // NewClient creates a new client.
@@ -1061,18 +1066,19 @@ type Client struct {
 // nil, default options are used.
 func (n *Node) NewClient(
 	serviceName string,
-	typeSupport ros2types.Service,
+	typeSupport types.ServiceTypeSupport,
 	options *ClientOptions,
 ) (c *Client, err error) {
 	if options == nil {
 		options = NewDefaultClientOptions()
 	}
 	c = &Client{
-		node:            n,
-		rclClient:       (*C.struct_rcl_client_t)(C.malloc(C.sizeof_struct_rcl_client_t)),
-		serviceName:     C.CString(serviceName),
-		pendingRequests: make(map[C.long]chan *clientSendResult),
-		typeSupport:     typeSupport,
+		requestTypeSupport:  typeSupport.Request(),
+		responseTypeSupport: typeSupport.Response(),
+		pendingRequests:     make(map[C.long]chan *clientSendResult),
+		node:                n,
+		rclClient:           (*C.struct_rcl_client_t)(C.malloc(C.sizeof_struct_rcl_client_t)),
+		serviceName:         C.CString(serviceName),
 	}
 	defer onErr(&err, c.Close)
 	*c.rclClient = C.rcl_get_zero_initialized_client()
@@ -1118,7 +1124,7 @@ func (c *Client) Close() error {
 	return err.ErrorOrNil()
 }
 
-func (c *Client) Send(ctx context.Context, req ros2types.ROS2Msg) (ros2types.ROS2Msg, *RmwServiceInfo, error) {
+func (c *Client) Send(ctx context.Context, req types.Message) (types.Message, *RmwServiceInfo, error) {
 	resultChan, err := c.sendRequest(req)
 	if err != nil {
 		return nil, nil, err
@@ -1134,12 +1140,13 @@ func (c *Client) Send(ctx context.Context, req ros2types.ROS2Msg) (ros2types.ROS
 	}
 }
 
-func (c *Client) sendRequest(req ros2types.ROS2Msg) (chan *clientSendResult, error) {
+func (c *Client) sendRequest(req types.Message) (chan *clientSendResult, error) {
 	c.pendingRequestsMutex.Lock()
 	defer c.pendingRequestsMutex.Unlock()
 
-	reqBuf := req.AsCStruct()
-	defer req.ReleaseMemory(reqBuf)
+	reqBuf := c.requestTypeSupport.PrepareMemory()
+	defer c.requestTypeSupport.ReleaseMemory(reqBuf)
+	c.requestTypeSupport.AsCStruct(reqBuf, req)
 
 	var sequenceNumber C.long
 	rc := C.rcl_send_request(c.rclClient, reqBuf, &sequenceNumber)
@@ -1157,8 +1164,8 @@ func (c *Client) handleResponse() {
 	defer c.pendingRequestsMutex.Unlock()
 
 	var respHeader C.struct_rmw_service_info_t
-	respBuf := c.typeSupport.Response().PrepareMemory()
-	defer c.typeSupport.Response().ReleaseMemory(respBuf)
+	respBuf := c.responseTypeSupport.PrepareMemory()
+	defer c.responseTypeSupport.ReleaseMemory(respBuf)
 	rc := C.rcl_take_response_with_info(c.rclClient, &respHeader, respBuf)
 	if rc != C.RCL_RET_OK {
 		log.Println(ErrorsCastC(rc, "failed to take response"))
@@ -1168,7 +1175,7 @@ func (c *Client) handleResponse() {
 	defer close(c.pendingRequests[respHeader.request_id.sequence_number])
 
 	result := &clientSendResult{
-		resp: c.typeSupport.Response().Clone(),
+		resp: c.responseTypeSupport.New(),
 		info: &RmwServiceInfo{
 			SourceTimestamp:   time.Unix(0, int64(respHeader.source_timestamp)),
 			ReceivedTimestamp: time.Unix(0, int64(respHeader.received_timestamp)),
@@ -1178,12 +1185,12 @@ func (c *Client) handleResponse() {
 			},
 		},
 	}
-	result.resp.AsGoStruct(respBuf)
+	c.responseTypeSupport.AsGoStruct(result.resp, respBuf)
 
 	c.pendingRequests[respHeader.request_id.sequence_number] <- result
 }
 
 type clientSendResult struct {
-	resp ros2types.ROS2Msg
+	resp types.Message
 	info *RmwServiceInfo
 }

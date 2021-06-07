@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/GeofenceResult", &GeofenceResult{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/GeofenceResult", GeofenceResultTypeSupport)
 }
 const (
 	GeofenceResult_GF_ACTION_NONE uint8 = 0// no action on geofence violation
@@ -56,42 +56,56 @@ type GeofenceResult struct {
 // NewGeofenceResult creates a new GeofenceResult with default values.
 func NewGeofenceResult() *GeofenceResult {
 	self := GeofenceResult{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *GeofenceResult) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *GeofenceResult) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__GeofenceResult())
-}
-func (t *GeofenceResult) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__GeofenceResult
-	return (unsafe.Pointer)(C.px4_msgs__msg__GeofenceResult__create())
-}
-func (t *GeofenceResult) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__GeofenceResult__destroy((*C.px4_msgs__msg__GeofenceResult)(pointer_to_free))
-}
-func (t *GeofenceResult) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__GeofenceResult)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.geofence_violated = C.bool(t.GeofenceViolated)
-	mem.geofence_action = C.uint8_t(t.GeofenceAction)
-	mem.home_required = C.bool(t.HomeRequired)
-	return unsafe.Pointer(mem)
-}
-func (t *GeofenceResult) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__GeofenceResult)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.GeofenceViolated = bool(mem.geofence_violated)
-	t.GeofenceAction = uint8(mem.geofence_action)
-	t.HomeRequired = bool(mem.home_required)
-}
-func (t *GeofenceResult) Clone() ros2types.ROS2Msg {
+func (t *GeofenceResult) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *GeofenceResult) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var GeofenceResultTypeSupport types.MessageTypeSupport = _GeofenceResultTypeSupport{}
+
+type _GeofenceResultTypeSupport struct{}
+
+func (t _GeofenceResultTypeSupport) New() types.Message {
+	return NewGeofenceResult()
+}
+
+func (t _GeofenceResultTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__GeofenceResult
+	return (unsafe.Pointer)(C.px4_msgs__msg__GeofenceResult__create())
+}
+
+func (t _GeofenceResultTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__GeofenceResult__destroy((*C.px4_msgs__msg__GeofenceResult)(pointer_to_free))
+}
+
+func (t _GeofenceResultTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*GeofenceResult)
+	mem := (*C.px4_msgs__msg__GeofenceResult)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.geofence_violated = C.bool(m.GeofenceViolated)
+	mem.geofence_action = C.uint8_t(m.GeofenceAction)
+	mem.home_required = C.bool(m.HomeRequired)
+}
+
+func (t _GeofenceResultTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*GeofenceResult)
+	mem := (*C.px4_msgs__msg__GeofenceResult)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.GeofenceViolated = bool(mem.geofence_violated)
+	m.GeofenceAction = uint8(mem.geofence_action)
+	m.HomeRequired = bool(mem.home_required)
+}
+
+func (t _GeofenceResultTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__GeofenceResult())
 }
 
 type CGeofenceResult = C.px4_msgs__msg__GeofenceResult
@@ -106,8 +120,7 @@ func GeofenceResult__Sequence_to_Go(goSlice *[]GeofenceResult, cSlice CGeofenceR
 		cIdx := (*C.px4_msgs__msg__GeofenceResult__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__GeofenceResult * uintptr(i)),
 		))
-		(*goSlice)[i] = GeofenceResult{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		GeofenceResultTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func GeofenceResult__Sequence_to_C(cSlice *CGeofenceResult__Sequence, goSlice []GeofenceResult) {
@@ -122,18 +135,16 @@ func GeofenceResult__Sequence_to_C(cSlice *CGeofenceResult__Sequence, goSlice []
 		cIdx := (*C.px4_msgs__msg__GeofenceResult)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__GeofenceResult * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__GeofenceResult)(v.AsCStruct())
+		GeofenceResultTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func GeofenceResult__Array_to_Go(goSlice []GeofenceResult, cSlice []CGeofenceResult) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		GeofenceResultTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func GeofenceResult__Array_to_C(cSlice []CGeofenceResult, goSlice []GeofenceResult) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__GeofenceResult)(goSlice[i].AsCStruct())
+		GeofenceResultTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/LandingTargetInnovations", &LandingTargetInnovations{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/LandingTargetInnovations", LandingTargetInnovationsTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewLandingTargetInnovations
@@ -49,44 +49,58 @@ type LandingTargetInnovations struct {
 // NewLandingTargetInnovations creates a new LandingTargetInnovations with default values.
 func NewLandingTargetInnovations() *LandingTargetInnovations {
 	self := LandingTargetInnovations{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *LandingTargetInnovations) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *LandingTargetInnovations) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__LandingTargetInnovations())
-}
-func (t *LandingTargetInnovations) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__LandingTargetInnovations
-	return (unsafe.Pointer)(C.px4_msgs__msg__LandingTargetInnovations__create())
-}
-func (t *LandingTargetInnovations) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__LandingTargetInnovations__destroy((*C.px4_msgs__msg__LandingTargetInnovations)(pointer_to_free))
-}
-func (t *LandingTargetInnovations) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__LandingTargetInnovations)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.innov_x = C.float(t.InnovX)
-	mem.innov_y = C.float(t.InnovY)
-	mem.innov_cov_x = C.float(t.InnovCovX)
-	mem.innov_cov_y = C.float(t.InnovCovY)
-	return unsafe.Pointer(mem)
-}
-func (t *LandingTargetInnovations) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__LandingTargetInnovations)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.InnovX = float32(mem.innov_x)
-	t.InnovY = float32(mem.innov_y)
-	t.InnovCovX = float32(mem.innov_cov_x)
-	t.InnovCovY = float32(mem.innov_cov_y)
-}
-func (t *LandingTargetInnovations) Clone() ros2types.ROS2Msg {
+func (t *LandingTargetInnovations) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *LandingTargetInnovations) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var LandingTargetInnovationsTypeSupport types.MessageTypeSupport = _LandingTargetInnovationsTypeSupport{}
+
+type _LandingTargetInnovationsTypeSupport struct{}
+
+func (t _LandingTargetInnovationsTypeSupport) New() types.Message {
+	return NewLandingTargetInnovations()
+}
+
+func (t _LandingTargetInnovationsTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__LandingTargetInnovations
+	return (unsafe.Pointer)(C.px4_msgs__msg__LandingTargetInnovations__create())
+}
+
+func (t _LandingTargetInnovationsTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__LandingTargetInnovations__destroy((*C.px4_msgs__msg__LandingTargetInnovations)(pointer_to_free))
+}
+
+func (t _LandingTargetInnovationsTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*LandingTargetInnovations)
+	mem := (*C.px4_msgs__msg__LandingTargetInnovations)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.innov_x = C.float(m.InnovX)
+	mem.innov_y = C.float(m.InnovY)
+	mem.innov_cov_x = C.float(m.InnovCovX)
+	mem.innov_cov_y = C.float(m.InnovCovY)
+}
+
+func (t _LandingTargetInnovationsTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*LandingTargetInnovations)
+	mem := (*C.px4_msgs__msg__LandingTargetInnovations)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.InnovX = float32(mem.innov_x)
+	m.InnovY = float32(mem.innov_y)
+	m.InnovCovX = float32(mem.innov_cov_x)
+	m.InnovCovY = float32(mem.innov_cov_y)
+}
+
+func (t _LandingTargetInnovationsTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__LandingTargetInnovations())
 }
 
 type CLandingTargetInnovations = C.px4_msgs__msg__LandingTargetInnovations
@@ -101,8 +115,7 @@ func LandingTargetInnovations__Sequence_to_Go(goSlice *[]LandingTargetInnovation
 		cIdx := (*C.px4_msgs__msg__LandingTargetInnovations__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__LandingTargetInnovations * uintptr(i)),
 		))
-		(*goSlice)[i] = LandingTargetInnovations{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		LandingTargetInnovationsTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func LandingTargetInnovations__Sequence_to_C(cSlice *CLandingTargetInnovations__Sequence, goSlice []LandingTargetInnovations) {
@@ -117,18 +130,16 @@ func LandingTargetInnovations__Sequence_to_C(cSlice *CLandingTargetInnovations__
 		cIdx := (*C.px4_msgs__msg__LandingTargetInnovations)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__LandingTargetInnovations * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__LandingTargetInnovations)(v.AsCStruct())
+		LandingTargetInnovationsTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func LandingTargetInnovations__Array_to_Go(goSlice []LandingTargetInnovations, cSlice []CLandingTargetInnovations) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		LandingTargetInnovationsTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func LandingTargetInnovations__Array_to_C(cSlice []CLandingTargetInnovations, goSlice []LandingTargetInnovations) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__LandingTargetInnovations)(goSlice[i].AsCStruct())
+		LandingTargetInnovationsTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

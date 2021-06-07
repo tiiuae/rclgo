@@ -15,7 +15,7 @@ package example_interfaces_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("example_interfaces/Int16", &Int16{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("example_interfaces/Int16", Int16TypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewInt16
@@ -45,36 +45,50 @@ type Int16 struct {
 // NewInt16 creates a new Int16 with default values.
 func NewInt16() *Int16 {
 	self := Int16{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Int16) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Int16) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__example_interfaces__msg__Int16())
-}
-func (t *Int16) PrepareMemory() unsafe.Pointer { //returns *C.example_interfaces__msg__Int16
-	return (unsafe.Pointer)(C.example_interfaces__msg__Int16__create())
-}
-func (t *Int16) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.example_interfaces__msg__Int16__destroy((*C.example_interfaces__msg__Int16)(pointer_to_free))
-}
-func (t *Int16) AsCStruct() unsafe.Pointer {
-	mem := (*C.example_interfaces__msg__Int16)(t.PrepareMemory())
-	mem.data = C.int16_t(t.Data)
-	return unsafe.Pointer(mem)
-}
-func (t *Int16) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.example_interfaces__msg__Int16)(ros2_message_buffer)
-	t.Data = int16(mem.data)
-}
-func (t *Int16) Clone() ros2types.ROS2Msg {
+func (t *Int16) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Int16) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var Int16TypeSupport types.MessageTypeSupport = _Int16TypeSupport{}
+
+type _Int16TypeSupport struct{}
+
+func (t _Int16TypeSupport) New() types.Message {
+	return NewInt16()
+}
+
+func (t _Int16TypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.example_interfaces__msg__Int16
+	return (unsafe.Pointer)(C.example_interfaces__msg__Int16__create())
+}
+
+func (t _Int16TypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.example_interfaces__msg__Int16__destroy((*C.example_interfaces__msg__Int16)(pointer_to_free))
+}
+
+func (t _Int16TypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Int16)
+	mem := (*C.example_interfaces__msg__Int16)(dst)
+	mem.data = C.int16_t(m.Data)
+}
+
+func (t _Int16TypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Int16)
+	mem := (*C.example_interfaces__msg__Int16)(ros2_message_buffer)
+	m.Data = int16(mem.data)
+}
+
+func (t _Int16TypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__example_interfaces__msg__Int16())
 }
 
 type CInt16 = C.example_interfaces__msg__Int16
@@ -89,8 +103,7 @@ func Int16__Sequence_to_Go(goSlice *[]Int16, cSlice CInt16__Sequence) {
 		cIdx := (*C.example_interfaces__msg__Int16__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__Int16 * uintptr(i)),
 		))
-		(*goSlice)[i] = Int16{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		Int16TypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Int16__Sequence_to_C(cSlice *CInt16__Sequence, goSlice []Int16) {
@@ -105,18 +118,16 @@ func Int16__Sequence_to_C(cSlice *CInt16__Sequence, goSlice []Int16) {
 		cIdx := (*C.example_interfaces__msg__Int16)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__Int16 * uintptr(i)),
 		))
-		*cIdx = *(*C.example_interfaces__msg__Int16)(v.AsCStruct())
+		Int16TypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Int16__Array_to_Go(goSlice []Int16, cSlice []CInt16) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		Int16TypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Int16__Array_to_C(cSlice []CInt16, goSlice []Int16) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.example_interfaces__msg__Int16)(goSlice[i].AsCStruct())
+		Int16TypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

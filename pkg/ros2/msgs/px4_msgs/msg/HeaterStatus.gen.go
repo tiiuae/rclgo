@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/HeaterStatus", &HeaterStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/HeaterStatus", HeaterStatusTypeSupport)
 }
 const (
 	HeaterStatus_MODE_GPIO uint8 = 1
@@ -59,56 +59,70 @@ type HeaterStatus struct {
 // NewHeaterStatus creates a new HeaterStatus with default values.
 func NewHeaterStatus() *HeaterStatus {
 	self := HeaterStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *HeaterStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *HeaterStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__HeaterStatus())
-}
-func (t *HeaterStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__HeaterStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__HeaterStatus__create())
-}
-func (t *HeaterStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__HeaterStatus__destroy((*C.px4_msgs__msg__HeaterStatus)(pointer_to_free))
-}
-func (t *HeaterStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__HeaterStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.device_id = C.uint32_t(t.DeviceId)
-	mem.heater_on = C.bool(t.HeaterOn)
-	mem.temperature_sensor = C.float(t.TemperatureSensor)
-	mem.temperature_target = C.float(t.TemperatureTarget)
-	mem.controller_period_usec = C.uint32_t(t.ControllerPeriodUsec)
-	mem.controller_time_on_usec = C.uint32_t(t.ControllerTimeOnUsec)
-	mem.proportional_value = C.float(t.ProportionalValue)
-	mem.integrator_value = C.float(t.IntegratorValue)
-	mem.feed_forward_value = C.float(t.FeedForwardValue)
-	mem.mode = C.uint8_t(t.Mode)
-	return unsafe.Pointer(mem)
-}
-func (t *HeaterStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__HeaterStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.DeviceId = uint32(mem.device_id)
-	t.HeaterOn = bool(mem.heater_on)
-	t.TemperatureSensor = float32(mem.temperature_sensor)
-	t.TemperatureTarget = float32(mem.temperature_target)
-	t.ControllerPeriodUsec = uint32(mem.controller_period_usec)
-	t.ControllerTimeOnUsec = uint32(mem.controller_time_on_usec)
-	t.ProportionalValue = float32(mem.proportional_value)
-	t.IntegratorValue = float32(mem.integrator_value)
-	t.FeedForwardValue = float32(mem.feed_forward_value)
-	t.Mode = uint8(mem.mode)
-}
-func (t *HeaterStatus) Clone() ros2types.ROS2Msg {
+func (t *HeaterStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *HeaterStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var HeaterStatusTypeSupport types.MessageTypeSupport = _HeaterStatusTypeSupport{}
+
+type _HeaterStatusTypeSupport struct{}
+
+func (t _HeaterStatusTypeSupport) New() types.Message {
+	return NewHeaterStatus()
+}
+
+func (t _HeaterStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__HeaterStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__HeaterStatus__create())
+}
+
+func (t _HeaterStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__HeaterStatus__destroy((*C.px4_msgs__msg__HeaterStatus)(pointer_to_free))
+}
+
+func (t _HeaterStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*HeaterStatus)
+	mem := (*C.px4_msgs__msg__HeaterStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.device_id = C.uint32_t(m.DeviceId)
+	mem.heater_on = C.bool(m.HeaterOn)
+	mem.temperature_sensor = C.float(m.TemperatureSensor)
+	mem.temperature_target = C.float(m.TemperatureTarget)
+	mem.controller_period_usec = C.uint32_t(m.ControllerPeriodUsec)
+	mem.controller_time_on_usec = C.uint32_t(m.ControllerTimeOnUsec)
+	mem.proportional_value = C.float(m.ProportionalValue)
+	mem.integrator_value = C.float(m.IntegratorValue)
+	mem.feed_forward_value = C.float(m.FeedForwardValue)
+	mem.mode = C.uint8_t(m.Mode)
+}
+
+func (t _HeaterStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*HeaterStatus)
+	mem := (*C.px4_msgs__msg__HeaterStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.DeviceId = uint32(mem.device_id)
+	m.HeaterOn = bool(mem.heater_on)
+	m.TemperatureSensor = float32(mem.temperature_sensor)
+	m.TemperatureTarget = float32(mem.temperature_target)
+	m.ControllerPeriodUsec = uint32(mem.controller_period_usec)
+	m.ControllerTimeOnUsec = uint32(mem.controller_time_on_usec)
+	m.ProportionalValue = float32(mem.proportional_value)
+	m.IntegratorValue = float32(mem.integrator_value)
+	m.FeedForwardValue = float32(mem.feed_forward_value)
+	m.Mode = uint8(mem.mode)
+}
+
+func (t _HeaterStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__HeaterStatus())
 }
 
 type CHeaterStatus = C.px4_msgs__msg__HeaterStatus
@@ -123,8 +137,7 @@ func HeaterStatus__Sequence_to_Go(goSlice *[]HeaterStatus, cSlice CHeaterStatus_
 		cIdx := (*C.px4_msgs__msg__HeaterStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__HeaterStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = HeaterStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		HeaterStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func HeaterStatus__Sequence_to_C(cSlice *CHeaterStatus__Sequence, goSlice []HeaterStatus) {
@@ -139,18 +152,16 @@ func HeaterStatus__Sequence_to_C(cSlice *CHeaterStatus__Sequence, goSlice []Heat
 		cIdx := (*C.px4_msgs__msg__HeaterStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__HeaterStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__HeaterStatus)(v.AsCStruct())
+		HeaterStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func HeaterStatus__Array_to_Go(goSlice []HeaterStatus, cSlice []CHeaterStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		HeaterStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func HeaterStatus__Array_to_C(cSlice []CHeaterStatus, goSlice []HeaterStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__HeaterStatus)(goSlice[i].AsCStruct())
+		HeaterStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

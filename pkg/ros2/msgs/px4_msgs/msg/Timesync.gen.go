@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/Timesync", &Timesync{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/Timesync", TimesyncTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTimesync
@@ -49,44 +49,58 @@ type Timesync struct {
 // NewTimesync creates a new Timesync with default values.
 func NewTimesync() *Timesync {
 	self := Timesync{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Timesync) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Timesync) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__Timesync())
-}
-func (t *Timesync) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__Timesync
-	return (unsafe.Pointer)(C.px4_msgs__msg__Timesync__create())
-}
-func (t *Timesync) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__Timesync__destroy((*C.px4_msgs__msg__Timesync)(pointer_to_free))
-}
-func (t *Timesync) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__Timesync)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.sys_id = C.uint8_t(t.SysId)
-	mem.seq = C.uint8_t(t.Seq)
-	mem.tc1 = C.int64_t(t.Tc1)
-	mem.ts1 = C.int64_t(t.Ts1)
-	return unsafe.Pointer(mem)
-}
-func (t *Timesync) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__Timesync)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.SysId = uint8(mem.sys_id)
-	t.Seq = uint8(mem.seq)
-	t.Tc1 = int64(mem.tc1)
-	t.Ts1 = int64(mem.ts1)
-}
-func (t *Timesync) Clone() ros2types.ROS2Msg {
+func (t *Timesync) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Timesync) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TimesyncTypeSupport types.MessageTypeSupport = _TimesyncTypeSupport{}
+
+type _TimesyncTypeSupport struct{}
+
+func (t _TimesyncTypeSupport) New() types.Message {
+	return NewTimesync()
+}
+
+func (t _TimesyncTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__Timesync
+	return (unsafe.Pointer)(C.px4_msgs__msg__Timesync__create())
+}
+
+func (t _TimesyncTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__Timesync__destroy((*C.px4_msgs__msg__Timesync)(pointer_to_free))
+}
+
+func (t _TimesyncTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Timesync)
+	mem := (*C.px4_msgs__msg__Timesync)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.sys_id = C.uint8_t(m.SysId)
+	mem.seq = C.uint8_t(m.Seq)
+	mem.tc1 = C.int64_t(m.Tc1)
+	mem.ts1 = C.int64_t(m.Ts1)
+}
+
+func (t _TimesyncTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Timesync)
+	mem := (*C.px4_msgs__msg__Timesync)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.SysId = uint8(mem.sys_id)
+	m.Seq = uint8(mem.seq)
+	m.Tc1 = int64(mem.tc1)
+	m.Ts1 = int64(mem.ts1)
+}
+
+func (t _TimesyncTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__Timesync())
 }
 
 type CTimesync = C.px4_msgs__msg__Timesync
@@ -101,8 +115,7 @@ func Timesync__Sequence_to_Go(goSlice *[]Timesync, cSlice CTimesync__Sequence) {
 		cIdx := (*C.px4_msgs__msg__Timesync__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__Timesync * uintptr(i)),
 		))
-		(*goSlice)[i] = Timesync{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TimesyncTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Timesync__Sequence_to_C(cSlice *CTimesync__Sequence, goSlice []Timesync) {
@@ -117,18 +130,16 @@ func Timesync__Sequence_to_C(cSlice *CTimesync__Sequence, goSlice []Timesync) {
 		cIdx := (*C.px4_msgs__msg__Timesync)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__Timesync * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__Timesync)(v.AsCStruct())
+		TimesyncTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Timesync__Array_to_Go(goSlice []Timesync, cSlice []CTimesync) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TimesyncTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Timesync__Array_to_C(cSlice []CTimesync, goSlice []Timesync) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__Timesync)(goSlice[i].AsCStruct())
+		TimesyncTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

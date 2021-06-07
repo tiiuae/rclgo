@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/SensorMag", &SensorMag{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/SensorMag", SensorMagTypeSupport)
 }
 const (
 	SensorMag_ORB_QUEUE_LENGTH uint8 = 4
@@ -56,52 +56,66 @@ type SensorMag struct {
 // NewSensorMag creates a new SensorMag with default values.
 func NewSensorMag() *SensorMag {
 	self := SensorMag{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SensorMag) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *SensorMag) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__SensorMag())
-}
-func (t *SensorMag) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__SensorMag
-	return (unsafe.Pointer)(C.px4_msgs__msg__SensorMag__create())
-}
-func (t *SensorMag) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__SensorMag__destroy((*C.px4_msgs__msg__SensorMag)(pointer_to_free))
-}
-func (t *SensorMag) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__SensorMag)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	mem.device_id = C.uint32_t(t.DeviceId)
-	mem.x = C.float(t.X)
-	mem.y = C.float(t.Y)
-	mem.z = C.float(t.Z)
-	mem.temperature = C.float(t.Temperature)
-	mem.error_count = C.uint32_t(t.ErrorCount)
-	mem.is_external = C.bool(t.IsExternal)
-	return unsafe.Pointer(mem)
-}
-func (t *SensorMag) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__SensorMag)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	t.DeviceId = uint32(mem.device_id)
-	t.X = float32(mem.x)
-	t.Y = float32(mem.y)
-	t.Z = float32(mem.z)
-	t.Temperature = float32(mem.temperature)
-	t.ErrorCount = uint32(mem.error_count)
-	t.IsExternal = bool(mem.is_external)
-}
-func (t *SensorMag) Clone() ros2types.ROS2Msg {
+func (t *SensorMag) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SensorMag) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SensorMagTypeSupport types.MessageTypeSupport = _SensorMagTypeSupport{}
+
+type _SensorMagTypeSupport struct{}
+
+func (t _SensorMagTypeSupport) New() types.Message {
+	return NewSensorMag()
+}
+
+func (t _SensorMagTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__SensorMag
+	return (unsafe.Pointer)(C.px4_msgs__msg__SensorMag__create())
+}
+
+func (t _SensorMagTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__SensorMag__destroy((*C.px4_msgs__msg__SensorMag)(pointer_to_free))
+}
+
+func (t _SensorMagTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*SensorMag)
+	mem := (*C.px4_msgs__msg__SensorMag)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	mem.device_id = C.uint32_t(m.DeviceId)
+	mem.x = C.float(m.X)
+	mem.y = C.float(m.Y)
+	mem.z = C.float(m.Z)
+	mem.temperature = C.float(m.Temperature)
+	mem.error_count = C.uint32_t(m.ErrorCount)
+	mem.is_external = C.bool(m.IsExternal)
+}
+
+func (t _SensorMagTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*SensorMag)
+	mem := (*C.px4_msgs__msg__SensorMag)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	m.DeviceId = uint32(mem.device_id)
+	m.X = float32(mem.x)
+	m.Y = float32(mem.y)
+	m.Z = float32(mem.z)
+	m.Temperature = float32(mem.temperature)
+	m.ErrorCount = uint32(mem.error_count)
+	m.IsExternal = bool(mem.is_external)
+}
+
+func (t _SensorMagTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__SensorMag())
 }
 
 type CSensorMag = C.px4_msgs__msg__SensorMag
@@ -116,8 +130,7 @@ func SensorMag__Sequence_to_Go(goSlice *[]SensorMag, cSlice CSensorMag__Sequence
 		cIdx := (*C.px4_msgs__msg__SensorMag__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__SensorMag * uintptr(i)),
 		))
-		(*goSlice)[i] = SensorMag{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SensorMagTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SensorMag__Sequence_to_C(cSlice *CSensorMag__Sequence, goSlice []SensorMag) {
@@ -132,18 +145,16 @@ func SensorMag__Sequence_to_C(cSlice *CSensorMag__Sequence, goSlice []SensorMag)
 		cIdx := (*C.px4_msgs__msg__SensorMag)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__SensorMag * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__SensorMag)(v.AsCStruct())
+		SensorMagTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SensorMag__Array_to_Go(goSlice []SensorMag, cSlice []CSensorMag) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SensorMagTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SensorMag__Array_to_C(cSlice []CSensorMag, goSlice []SensorMag) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__SensorMag)(goSlice[i].AsCStruct())
+		SensorMagTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

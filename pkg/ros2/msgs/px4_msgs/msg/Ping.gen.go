@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/Ping", &Ping{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/Ping", PingTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPing
@@ -51,48 +51,62 @@ type Ping struct {
 // NewPing creates a new Ping with default values.
 func NewPing() *Ping {
 	self := Ping{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Ping) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Ping) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__Ping())
-}
-func (t *Ping) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__Ping
-	return (unsafe.Pointer)(C.px4_msgs__msg__Ping__create())
-}
-func (t *Ping) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__Ping__destroy((*C.px4_msgs__msg__Ping)(pointer_to_free))
-}
-func (t *Ping) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__Ping)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.ping_time = C.uint64_t(t.PingTime)
-	mem.ping_sequence = C.uint32_t(t.PingSequence)
-	mem.dropped_packets = C.uint32_t(t.DroppedPackets)
-	mem.rtt_ms = C.float(t.RttMs)
-	mem.system_id = C.uint8_t(t.SystemId)
-	mem.component_id = C.uint8_t(t.ComponentId)
-	return unsafe.Pointer(mem)
-}
-func (t *Ping) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__Ping)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.PingTime = uint64(mem.ping_time)
-	t.PingSequence = uint32(mem.ping_sequence)
-	t.DroppedPackets = uint32(mem.dropped_packets)
-	t.RttMs = float32(mem.rtt_ms)
-	t.SystemId = uint8(mem.system_id)
-	t.ComponentId = uint8(mem.component_id)
-}
-func (t *Ping) Clone() ros2types.ROS2Msg {
+func (t *Ping) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Ping) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var PingTypeSupport types.MessageTypeSupport = _PingTypeSupport{}
+
+type _PingTypeSupport struct{}
+
+func (t _PingTypeSupport) New() types.Message {
+	return NewPing()
+}
+
+func (t _PingTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__Ping
+	return (unsafe.Pointer)(C.px4_msgs__msg__Ping__create())
+}
+
+func (t _PingTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__Ping__destroy((*C.px4_msgs__msg__Ping)(pointer_to_free))
+}
+
+func (t _PingTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Ping)
+	mem := (*C.px4_msgs__msg__Ping)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.ping_time = C.uint64_t(m.PingTime)
+	mem.ping_sequence = C.uint32_t(m.PingSequence)
+	mem.dropped_packets = C.uint32_t(m.DroppedPackets)
+	mem.rtt_ms = C.float(m.RttMs)
+	mem.system_id = C.uint8_t(m.SystemId)
+	mem.component_id = C.uint8_t(m.ComponentId)
+}
+
+func (t _PingTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Ping)
+	mem := (*C.px4_msgs__msg__Ping)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.PingTime = uint64(mem.ping_time)
+	m.PingSequence = uint32(mem.ping_sequence)
+	m.DroppedPackets = uint32(mem.dropped_packets)
+	m.RttMs = float32(mem.rtt_ms)
+	m.SystemId = uint8(mem.system_id)
+	m.ComponentId = uint8(mem.component_id)
+}
+
+func (t _PingTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__Ping())
 }
 
 type CPing = C.px4_msgs__msg__Ping
@@ -107,8 +121,7 @@ func Ping__Sequence_to_Go(goSlice *[]Ping, cSlice CPing__Sequence) {
 		cIdx := (*C.px4_msgs__msg__Ping__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__Ping * uintptr(i)),
 		))
-		(*goSlice)[i] = Ping{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		PingTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Ping__Sequence_to_C(cSlice *CPing__Sequence, goSlice []Ping) {
@@ -123,18 +136,16 @@ func Ping__Sequence_to_C(cSlice *CPing__Sequence, goSlice []Ping) {
 		cIdx := (*C.px4_msgs__msg__Ping)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__Ping * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__Ping)(v.AsCStruct())
+		PingTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Ping__Array_to_Go(goSlice []Ping, cSlice []CPing) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		PingTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Ping__Array_to_C(cSlice []CPing, goSlice []Ping) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__Ping)(goSlice[i].AsCStruct())
+		PingTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

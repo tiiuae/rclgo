@@ -15,7 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("std_msgs/Byte", &Byte{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("std_msgs/Byte", ByteTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewByte
@@ -45,36 +45,50 @@ type Byte struct {
 // NewByte creates a new Byte with default values.
 func NewByte() *Byte {
 	self := Byte{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Byte) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Byte) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__std_msgs__msg__Byte())
-}
-func (t *Byte) PrepareMemory() unsafe.Pointer { //returns *C.std_msgs__msg__Byte
-	return (unsafe.Pointer)(C.std_msgs__msg__Byte__create())
-}
-func (t *Byte) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.std_msgs__msg__Byte__destroy((*C.std_msgs__msg__Byte)(pointer_to_free))
-}
-func (t *Byte) AsCStruct() unsafe.Pointer {
-	mem := (*C.std_msgs__msg__Byte)(t.PrepareMemory())
-	mem.data = C.uint8_t(t.Data)
-	return unsafe.Pointer(mem)
-}
-func (t *Byte) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.std_msgs__msg__Byte)(ros2_message_buffer)
-	t.Data = byte(mem.data)
-}
-func (t *Byte) Clone() ros2types.ROS2Msg {
+func (t *Byte) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Byte) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ByteTypeSupport types.MessageTypeSupport = _ByteTypeSupport{}
+
+type _ByteTypeSupport struct{}
+
+func (t _ByteTypeSupport) New() types.Message {
+	return NewByte()
+}
+
+func (t _ByteTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.std_msgs__msg__Byte
+	return (unsafe.Pointer)(C.std_msgs__msg__Byte__create())
+}
+
+func (t _ByteTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.std_msgs__msg__Byte__destroy((*C.std_msgs__msg__Byte)(pointer_to_free))
+}
+
+func (t _ByteTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Byte)
+	mem := (*C.std_msgs__msg__Byte)(dst)
+	mem.data = C.uint8_t(m.Data)
+}
+
+func (t _ByteTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Byte)
+	mem := (*C.std_msgs__msg__Byte)(ros2_message_buffer)
+	m.Data = byte(mem.data)
+}
+
+func (t _ByteTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__std_msgs__msg__Byte())
 }
 
 type CByte = C.std_msgs__msg__Byte
@@ -89,8 +103,7 @@ func Byte__Sequence_to_Go(goSlice *[]Byte, cSlice CByte__Sequence) {
 		cIdx := (*C.std_msgs__msg__Byte__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__Byte * uintptr(i)),
 		))
-		(*goSlice)[i] = Byte{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ByteTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Byte__Sequence_to_C(cSlice *CByte__Sequence, goSlice []Byte) {
@@ -105,18 +118,16 @@ func Byte__Sequence_to_C(cSlice *CByte__Sequence, goSlice []Byte) {
 		cIdx := (*C.std_msgs__msg__Byte)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__Byte * uintptr(i)),
 		))
-		*cIdx = *(*C.std_msgs__msg__Byte)(v.AsCStruct())
+		ByteTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Byte__Array_to_Go(goSlice []Byte, cSlice []CByte) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ByteTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Byte__Array_to_C(cSlice []CByte, goSlice []Byte) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.std_msgs__msg__Byte)(goSlice[i].AsCStruct())
+		ByteTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

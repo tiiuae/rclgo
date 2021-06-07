@@ -15,7 +15,7 @@ package diagnostic_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("diagnostic_msgs/SelfTest_Request", &SelfTest_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("diagnostic_msgs/SelfTest_Request", SelfTest_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSelfTest_Request
@@ -44,34 +44,46 @@ type SelfTest_Request struct {
 // NewSelfTest_Request creates a new SelfTest_Request with default values.
 func NewSelfTest_Request() *SelfTest_Request {
 	self := SelfTest_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SelfTest_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *SelfTest_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__diagnostic_msgs__srv__SelfTest_Request())
-}
-func (t *SelfTest_Request) PrepareMemory() unsafe.Pointer { //returns *C.diagnostic_msgs__srv__SelfTest_Request
-	return (unsafe.Pointer)(C.diagnostic_msgs__srv__SelfTest_Request__create())
-}
-func (t *SelfTest_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.diagnostic_msgs__srv__SelfTest_Request__destroy((*C.diagnostic_msgs__srv__SelfTest_Request)(pointer_to_free))
-}
-func (t *SelfTest_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.diagnostic_msgs__srv__SelfTest_Request)(t.PrepareMemory())
-	return unsafe.Pointer(mem)
-}
-func (t *SelfTest_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	
-}
-func (t *SelfTest_Request) Clone() ros2types.ROS2Msg {
+func (t *SelfTest_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SelfTest_Request) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SelfTest_RequestTypeSupport types.MessageTypeSupport = _SelfTest_RequestTypeSupport{}
+
+type _SelfTest_RequestTypeSupport struct{}
+
+func (t _SelfTest_RequestTypeSupport) New() types.Message {
+	return NewSelfTest_Request()
+}
+
+func (t _SelfTest_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.diagnostic_msgs__srv__SelfTest_Request
+	return (unsafe.Pointer)(C.diagnostic_msgs__srv__SelfTest_Request__create())
+}
+
+func (t _SelfTest_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.diagnostic_msgs__srv__SelfTest_Request__destroy((*C.diagnostic_msgs__srv__SelfTest_Request)(pointer_to_free))
+}
+
+func (t _SelfTest_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	
+}
+
+func (t _SelfTest_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	
+}
+
+func (t _SelfTest_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__diagnostic_msgs__srv__SelfTest_Request())
 }
 
 type CSelfTest_Request = C.diagnostic_msgs__srv__SelfTest_Request
@@ -86,8 +98,7 @@ func SelfTest_Request__Sequence_to_Go(goSlice *[]SelfTest_Request, cSlice CSelfT
 		cIdx := (*C.diagnostic_msgs__srv__SelfTest_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_diagnostic_msgs__srv__SelfTest_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = SelfTest_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SelfTest_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SelfTest_Request__Sequence_to_C(cSlice *CSelfTest_Request__Sequence, goSlice []SelfTest_Request) {
@@ -102,18 +113,16 @@ func SelfTest_Request__Sequence_to_C(cSlice *CSelfTest_Request__Sequence, goSlic
 		cIdx := (*C.diagnostic_msgs__srv__SelfTest_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_diagnostic_msgs__srv__SelfTest_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.diagnostic_msgs__srv__SelfTest_Request)(v.AsCStruct())
+		SelfTest_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SelfTest_Request__Array_to_Go(goSlice []SelfTest_Request, cSlice []CSelfTest_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SelfTest_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SelfTest_Request__Array_to_C(cSlice []CSelfTest_Request, goSlice []SelfTest_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.diagnostic_msgs__srv__SelfTest_Request)(goSlice[i].AsCStruct())
+		SelfTest_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

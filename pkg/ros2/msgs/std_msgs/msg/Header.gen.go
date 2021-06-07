@@ -15,7 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	builtin_interfaces_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/builtin_interfaces/msg"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
@@ -36,53 +36,66 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("std_msgs/Header", &Header{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("std_msgs/Header", HeaderTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewHeader
 // function instead.
 type Header struct {
 	Stamp builtin_interfaces_msg.Time `yaml:"stamp"`// Two-integer timestamp that is expressed as seconds and nanoseconds.
-	FrameId rosidl_runtime_c.String `yaml:"frame_id"`// Transform frame with which this data is associated.
+	FrameId string `yaml:"frame_id"`// Transform frame with which this data is associated.
 }
 
 // NewHeader creates a new Header with default values.
 func NewHeader() *Header {
 	self := Header{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Header) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Stamp.SetDefaults(nil)
-	t.FrameId.SetDefaults("")
-	
-	return t
-}
-
-func (t *Header) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__std_msgs__msg__Header())
-}
-func (t *Header) PrepareMemory() unsafe.Pointer { //returns *C.std_msgs__msg__Header
-	return (unsafe.Pointer)(C.std_msgs__msg__Header__create())
-}
-func (t *Header) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.std_msgs__msg__Header__destroy((*C.std_msgs__msg__Header)(pointer_to_free))
-}
-func (t *Header) AsCStruct() unsafe.Pointer {
-	mem := (*C.std_msgs__msg__Header)(t.PrepareMemory())
-	mem.stamp = *(*C.builtin_interfaces__msg__Time)(t.Stamp.AsCStruct())
-	mem.frame_id = *(*C.rosidl_runtime_c__String)(t.FrameId.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *Header) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.std_msgs__msg__Header)(ros2_message_buffer)
-	t.Stamp.AsGoStruct(unsafe.Pointer(&mem.stamp))
-	t.FrameId.AsGoStruct(unsafe.Pointer(&mem.frame_id))
-}
-func (t *Header) Clone() ros2types.ROS2Msg {
+func (t *Header) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Header) SetDefaults() {
+	t.Stamp.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var HeaderTypeSupport types.MessageTypeSupport = _HeaderTypeSupport{}
+
+type _HeaderTypeSupport struct{}
+
+func (t _HeaderTypeSupport) New() types.Message {
+	return NewHeader()
+}
+
+func (t _HeaderTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.std_msgs__msg__Header
+	return (unsafe.Pointer)(C.std_msgs__msg__Header__create())
+}
+
+func (t _HeaderTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.std_msgs__msg__Header__destroy((*C.std_msgs__msg__Header)(pointer_to_free))
+}
+
+func (t _HeaderTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Header)
+	mem := (*C.std_msgs__msg__Header)(dst)
+	builtin_interfaces_msg.TimeTypeSupport.AsCStruct(unsafe.Pointer(&mem.stamp), &m.Stamp)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.frame_id), m.FrameId)
+}
+
+func (t _HeaderTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Header)
+	mem := (*C.std_msgs__msg__Header)(ros2_message_buffer)
+	builtin_interfaces_msg.TimeTypeSupport.AsGoStruct(&m.Stamp, unsafe.Pointer(&mem.stamp))
+	rosidl_runtime_c.StringAsGoStruct(&m.FrameId, unsafe.Pointer(&mem.frame_id))
+}
+
+func (t _HeaderTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__std_msgs__msg__Header())
 }
 
 type CHeader = C.std_msgs__msg__Header
@@ -97,8 +110,7 @@ func Header__Sequence_to_Go(goSlice *[]Header, cSlice CHeader__Sequence) {
 		cIdx := (*C.std_msgs__msg__Header__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__Header * uintptr(i)),
 		))
-		(*goSlice)[i] = Header{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		HeaderTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Header__Sequence_to_C(cSlice *CHeader__Sequence, goSlice []Header) {
@@ -113,18 +125,16 @@ func Header__Sequence_to_C(cSlice *CHeader__Sequence, goSlice []Header) {
 		cIdx := (*C.std_msgs__msg__Header)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__Header * uintptr(i)),
 		))
-		*cIdx = *(*C.std_msgs__msg__Header)(v.AsCStruct())
+		HeaderTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Header__Array_to_Go(goSlice []Header, cSlice []CHeader) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		HeaderTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Header__Array_to_C(cSlice []CHeader, goSlice []Header) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.std_msgs__msg__Header)(goSlice[i].AsCStruct())
+		HeaderTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

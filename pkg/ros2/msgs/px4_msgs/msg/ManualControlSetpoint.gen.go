@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/ManualControlSetpoint", &ManualControlSetpoint{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/ManualControlSetpoint", ManualControlSetpointTypeSupport)
 }
 const (
 	ManualControlSetpoint_SOURCE_RC uint8 = 1// radio control
@@ -65,62 +65,76 @@ type ManualControlSetpoint struct {
 // NewManualControlSetpoint creates a new ManualControlSetpoint with default values.
 func NewManualControlSetpoint() *ManualControlSetpoint {
 	self := ManualControlSetpoint{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *ManualControlSetpoint) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *ManualControlSetpoint) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__ManualControlSetpoint())
-}
-func (t *ManualControlSetpoint) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__ManualControlSetpoint
-	return (unsafe.Pointer)(C.px4_msgs__msg__ManualControlSetpoint__create())
-}
-func (t *ManualControlSetpoint) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__ManualControlSetpoint__destroy((*C.px4_msgs__msg__ManualControlSetpoint)(pointer_to_free))
-}
-func (t *ManualControlSetpoint) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__ManualControlSetpoint)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	mem.data_source = C.uint8_t(t.DataSource)
-	mem.x = C.float(t.X)
-	mem.y = C.float(t.Y)
-	mem.z = C.float(t.Z)
-	mem.r = C.float(t.R)
-	mem.flaps = C.float(t.Flaps)
-	mem.aux1 = C.float(t.Aux1)
-	mem.aux2 = C.float(t.Aux2)
-	mem.aux3 = C.float(t.Aux3)
-	mem.aux4 = C.float(t.Aux4)
-	mem.aux5 = C.float(t.Aux5)
-	mem.aux6 = C.float(t.Aux6)
-	return unsafe.Pointer(mem)
-}
-func (t *ManualControlSetpoint) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__ManualControlSetpoint)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	t.DataSource = uint8(mem.data_source)
-	t.X = float32(mem.x)
-	t.Y = float32(mem.y)
-	t.Z = float32(mem.z)
-	t.R = float32(mem.r)
-	t.Flaps = float32(mem.flaps)
-	t.Aux1 = float32(mem.aux1)
-	t.Aux2 = float32(mem.aux2)
-	t.Aux3 = float32(mem.aux3)
-	t.Aux4 = float32(mem.aux4)
-	t.Aux5 = float32(mem.aux5)
-	t.Aux6 = float32(mem.aux6)
-}
-func (t *ManualControlSetpoint) Clone() ros2types.ROS2Msg {
+func (t *ManualControlSetpoint) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *ManualControlSetpoint) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ManualControlSetpointTypeSupport types.MessageTypeSupport = _ManualControlSetpointTypeSupport{}
+
+type _ManualControlSetpointTypeSupport struct{}
+
+func (t _ManualControlSetpointTypeSupport) New() types.Message {
+	return NewManualControlSetpoint()
+}
+
+func (t _ManualControlSetpointTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__ManualControlSetpoint
+	return (unsafe.Pointer)(C.px4_msgs__msg__ManualControlSetpoint__create())
+}
+
+func (t _ManualControlSetpointTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__ManualControlSetpoint__destroy((*C.px4_msgs__msg__ManualControlSetpoint)(pointer_to_free))
+}
+
+func (t _ManualControlSetpointTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*ManualControlSetpoint)
+	mem := (*C.px4_msgs__msg__ManualControlSetpoint)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	mem.data_source = C.uint8_t(m.DataSource)
+	mem.x = C.float(m.X)
+	mem.y = C.float(m.Y)
+	mem.z = C.float(m.Z)
+	mem.r = C.float(m.R)
+	mem.flaps = C.float(m.Flaps)
+	mem.aux1 = C.float(m.Aux1)
+	mem.aux2 = C.float(m.Aux2)
+	mem.aux3 = C.float(m.Aux3)
+	mem.aux4 = C.float(m.Aux4)
+	mem.aux5 = C.float(m.Aux5)
+	mem.aux6 = C.float(m.Aux6)
+}
+
+func (t _ManualControlSetpointTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*ManualControlSetpoint)
+	mem := (*C.px4_msgs__msg__ManualControlSetpoint)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	m.DataSource = uint8(mem.data_source)
+	m.X = float32(mem.x)
+	m.Y = float32(mem.y)
+	m.Z = float32(mem.z)
+	m.R = float32(mem.r)
+	m.Flaps = float32(mem.flaps)
+	m.Aux1 = float32(mem.aux1)
+	m.Aux2 = float32(mem.aux2)
+	m.Aux3 = float32(mem.aux3)
+	m.Aux4 = float32(mem.aux4)
+	m.Aux5 = float32(mem.aux5)
+	m.Aux6 = float32(mem.aux6)
+}
+
+func (t _ManualControlSetpointTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__ManualControlSetpoint())
 }
 
 type CManualControlSetpoint = C.px4_msgs__msg__ManualControlSetpoint
@@ -135,8 +149,7 @@ func ManualControlSetpoint__Sequence_to_Go(goSlice *[]ManualControlSetpoint, cSl
 		cIdx := (*C.px4_msgs__msg__ManualControlSetpoint__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__ManualControlSetpoint * uintptr(i)),
 		))
-		(*goSlice)[i] = ManualControlSetpoint{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ManualControlSetpointTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func ManualControlSetpoint__Sequence_to_C(cSlice *CManualControlSetpoint__Sequence, goSlice []ManualControlSetpoint) {
@@ -151,18 +164,16 @@ func ManualControlSetpoint__Sequence_to_C(cSlice *CManualControlSetpoint__Sequen
 		cIdx := (*C.px4_msgs__msg__ManualControlSetpoint)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__ManualControlSetpoint * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__ManualControlSetpoint)(v.AsCStruct())
+		ManualControlSetpointTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func ManualControlSetpoint__Array_to_Go(goSlice []ManualControlSetpoint, cSlice []CManualControlSetpoint) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ManualControlSetpointTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func ManualControlSetpoint__Array_to_C(cSlice []CManualControlSetpoint, goSlice []ManualControlSetpoint) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__ManualControlSetpoint)(goSlice[i].AsCStruct())
+		ManualControlSetpointTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

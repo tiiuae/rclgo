@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/RateCtrlStatus", &RateCtrlStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/RateCtrlStatus", RateCtrlStatusTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewRateCtrlStatus
@@ -49,44 +49,58 @@ type RateCtrlStatus struct {
 // NewRateCtrlStatus creates a new RateCtrlStatus with default values.
 func NewRateCtrlStatus() *RateCtrlStatus {
 	self := RateCtrlStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *RateCtrlStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *RateCtrlStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__RateCtrlStatus())
-}
-func (t *RateCtrlStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__RateCtrlStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__RateCtrlStatus__create())
-}
-func (t *RateCtrlStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__RateCtrlStatus__destroy((*C.px4_msgs__msg__RateCtrlStatus)(pointer_to_free))
-}
-func (t *RateCtrlStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__RateCtrlStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.rollspeed_integ = C.float(t.RollspeedInteg)
-	mem.pitchspeed_integ = C.float(t.PitchspeedInteg)
-	mem.yawspeed_integ = C.float(t.YawspeedInteg)
-	mem.additional_integ1 = C.float(t.AdditionalInteg1)
-	return unsafe.Pointer(mem)
-}
-func (t *RateCtrlStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__RateCtrlStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.RollspeedInteg = float32(mem.rollspeed_integ)
-	t.PitchspeedInteg = float32(mem.pitchspeed_integ)
-	t.YawspeedInteg = float32(mem.yawspeed_integ)
-	t.AdditionalInteg1 = float32(mem.additional_integ1)
-}
-func (t *RateCtrlStatus) Clone() ros2types.ROS2Msg {
+func (t *RateCtrlStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *RateCtrlStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var RateCtrlStatusTypeSupport types.MessageTypeSupport = _RateCtrlStatusTypeSupport{}
+
+type _RateCtrlStatusTypeSupport struct{}
+
+func (t _RateCtrlStatusTypeSupport) New() types.Message {
+	return NewRateCtrlStatus()
+}
+
+func (t _RateCtrlStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__RateCtrlStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__RateCtrlStatus__create())
+}
+
+func (t _RateCtrlStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__RateCtrlStatus__destroy((*C.px4_msgs__msg__RateCtrlStatus)(pointer_to_free))
+}
+
+func (t _RateCtrlStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*RateCtrlStatus)
+	mem := (*C.px4_msgs__msg__RateCtrlStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.rollspeed_integ = C.float(m.RollspeedInteg)
+	mem.pitchspeed_integ = C.float(m.PitchspeedInteg)
+	mem.yawspeed_integ = C.float(m.YawspeedInteg)
+	mem.additional_integ1 = C.float(m.AdditionalInteg1)
+}
+
+func (t _RateCtrlStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*RateCtrlStatus)
+	mem := (*C.px4_msgs__msg__RateCtrlStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.RollspeedInteg = float32(mem.rollspeed_integ)
+	m.PitchspeedInteg = float32(mem.pitchspeed_integ)
+	m.YawspeedInteg = float32(mem.yawspeed_integ)
+	m.AdditionalInteg1 = float32(mem.additional_integ1)
+}
+
+func (t _RateCtrlStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__RateCtrlStatus())
 }
 
 type CRateCtrlStatus = C.px4_msgs__msg__RateCtrlStatus
@@ -101,8 +115,7 @@ func RateCtrlStatus__Sequence_to_Go(goSlice *[]RateCtrlStatus, cSlice CRateCtrlS
 		cIdx := (*C.px4_msgs__msg__RateCtrlStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__RateCtrlStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = RateCtrlStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		RateCtrlStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func RateCtrlStatus__Sequence_to_C(cSlice *CRateCtrlStatus__Sequence, goSlice []RateCtrlStatus) {
@@ -117,18 +130,16 @@ func RateCtrlStatus__Sequence_to_C(cSlice *CRateCtrlStatus__Sequence, goSlice []
 		cIdx := (*C.px4_msgs__msg__RateCtrlStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__RateCtrlStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__RateCtrlStatus)(v.AsCStruct())
+		RateCtrlStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func RateCtrlStatus__Array_to_Go(goSlice []RateCtrlStatus, cSlice []CRateCtrlStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		RateCtrlStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func RateCtrlStatus__Array_to_C(cSlice []CRateCtrlStatus, goSlice []RateCtrlStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__RateCtrlStatus)(goSlice[i].AsCStruct())
+		RateCtrlStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

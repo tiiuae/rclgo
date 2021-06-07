@@ -15,7 +15,7 @@ package lifecycle_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	lifecycle_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/lifecycle_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("lifecycle_msgs/GetAvailableStates_Response", &GetAvailableStates_Response{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("lifecycle_msgs/GetAvailableStates_Response", GetAvailableStates_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewGetAvailableStates_Response
@@ -47,36 +47,50 @@ type GetAvailableStates_Response struct {
 // NewGetAvailableStates_Response creates a new GetAvailableStates_Response with default values.
 func NewGetAvailableStates_Response() *GetAvailableStates_Response {
 	self := GetAvailableStates_Response{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *GetAvailableStates_Response) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *GetAvailableStates_Response) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__lifecycle_msgs__srv__GetAvailableStates_Response())
-}
-func (t *GetAvailableStates_Response) PrepareMemory() unsafe.Pointer { //returns *C.lifecycle_msgs__srv__GetAvailableStates_Response
-	return (unsafe.Pointer)(C.lifecycle_msgs__srv__GetAvailableStates_Response__create())
-}
-func (t *GetAvailableStates_Response) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.lifecycle_msgs__srv__GetAvailableStates_Response__destroy((*C.lifecycle_msgs__srv__GetAvailableStates_Response)(pointer_to_free))
-}
-func (t *GetAvailableStates_Response) AsCStruct() unsafe.Pointer {
-	mem := (*C.lifecycle_msgs__srv__GetAvailableStates_Response)(t.PrepareMemory())
-	lifecycle_msgs_msg.State__Sequence_to_C((*lifecycle_msgs_msg.CState__Sequence)(unsafe.Pointer(&mem.available_states)), t.AvailableStates)
-	return unsafe.Pointer(mem)
-}
-func (t *GetAvailableStates_Response) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.lifecycle_msgs__srv__GetAvailableStates_Response)(ros2_message_buffer)
-	lifecycle_msgs_msg.State__Sequence_to_Go(&t.AvailableStates, *(*lifecycle_msgs_msg.CState__Sequence)(unsafe.Pointer(&mem.available_states)))
-}
-func (t *GetAvailableStates_Response) Clone() ros2types.ROS2Msg {
+func (t *GetAvailableStates_Response) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *GetAvailableStates_Response) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var GetAvailableStates_ResponseTypeSupport types.MessageTypeSupport = _GetAvailableStates_ResponseTypeSupport{}
+
+type _GetAvailableStates_ResponseTypeSupport struct{}
+
+func (t _GetAvailableStates_ResponseTypeSupport) New() types.Message {
+	return NewGetAvailableStates_Response()
+}
+
+func (t _GetAvailableStates_ResponseTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.lifecycle_msgs__srv__GetAvailableStates_Response
+	return (unsafe.Pointer)(C.lifecycle_msgs__srv__GetAvailableStates_Response__create())
+}
+
+func (t _GetAvailableStates_ResponseTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.lifecycle_msgs__srv__GetAvailableStates_Response__destroy((*C.lifecycle_msgs__srv__GetAvailableStates_Response)(pointer_to_free))
+}
+
+func (t _GetAvailableStates_ResponseTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*GetAvailableStates_Response)
+	mem := (*C.lifecycle_msgs__srv__GetAvailableStates_Response)(dst)
+	lifecycle_msgs_msg.State__Sequence_to_C((*lifecycle_msgs_msg.CState__Sequence)(unsafe.Pointer(&mem.available_states)), m.AvailableStates)
+}
+
+func (t _GetAvailableStates_ResponseTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*GetAvailableStates_Response)
+	mem := (*C.lifecycle_msgs__srv__GetAvailableStates_Response)(ros2_message_buffer)
+	lifecycle_msgs_msg.State__Sequence_to_Go(&m.AvailableStates, *(*lifecycle_msgs_msg.CState__Sequence)(unsafe.Pointer(&mem.available_states)))
+}
+
+func (t _GetAvailableStates_ResponseTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__lifecycle_msgs__srv__GetAvailableStates_Response())
 }
 
 type CGetAvailableStates_Response = C.lifecycle_msgs__srv__GetAvailableStates_Response
@@ -91,8 +105,7 @@ func GetAvailableStates_Response__Sequence_to_Go(goSlice *[]GetAvailableStates_R
 		cIdx := (*C.lifecycle_msgs__srv__GetAvailableStates_Response__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_lifecycle_msgs__srv__GetAvailableStates_Response * uintptr(i)),
 		))
-		(*goSlice)[i] = GetAvailableStates_Response{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		GetAvailableStates_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func GetAvailableStates_Response__Sequence_to_C(cSlice *CGetAvailableStates_Response__Sequence, goSlice []GetAvailableStates_Response) {
@@ -107,18 +120,16 @@ func GetAvailableStates_Response__Sequence_to_C(cSlice *CGetAvailableStates_Resp
 		cIdx := (*C.lifecycle_msgs__srv__GetAvailableStates_Response)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_lifecycle_msgs__srv__GetAvailableStates_Response * uintptr(i)),
 		))
-		*cIdx = *(*C.lifecycle_msgs__srv__GetAvailableStates_Response)(v.AsCStruct())
+		GetAvailableStates_ResponseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func GetAvailableStates_Response__Array_to_Go(goSlice []GetAvailableStates_Response, cSlice []CGetAvailableStates_Response) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		GetAvailableStates_ResponseTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func GetAvailableStates_Response__Array_to_C(cSlice []CGetAvailableStates_Response, goSlice []GetAvailableStates_Response) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.lifecycle_msgs__srv__GetAvailableStates_Response)(goSlice[i].AsCStruct())
+		GetAvailableStates_ResponseTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

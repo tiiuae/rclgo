@@ -15,7 +15,7 @@ package trajectory_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
@@ -36,55 +36,69 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("trajectory_msgs/MultiDOFJointTrajectory", &MultiDOFJointTrajectory{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("trajectory_msgs/MultiDOFJointTrajectory", MultiDOFJointTrajectoryTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewMultiDOFJointTrajectory
 // function instead.
 type MultiDOFJointTrajectory struct {
 	Header std_msgs_msg.Header `yaml:"header"`// The header is used to specify the coordinate frame and the reference time for the trajectory durations
-	JointNames []rosidl_runtime_c.String `yaml:"joint_names"`
+	JointNames []string `yaml:"joint_names"`
 	Points []MultiDOFJointTrajectoryPoint `yaml:"points"`
 }
 
 // NewMultiDOFJointTrajectory creates a new MultiDOFJointTrajectory with default values.
 func NewMultiDOFJointTrajectory() *MultiDOFJointTrajectory {
 	self := MultiDOFJointTrajectory{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *MultiDOFJointTrajectory) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *MultiDOFJointTrajectory) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__trajectory_msgs__msg__MultiDOFJointTrajectory())
-}
-func (t *MultiDOFJointTrajectory) PrepareMemory() unsafe.Pointer { //returns *C.trajectory_msgs__msg__MultiDOFJointTrajectory
-	return (unsafe.Pointer)(C.trajectory_msgs__msg__MultiDOFJointTrajectory__create())
-}
-func (t *MultiDOFJointTrajectory) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.trajectory_msgs__msg__MultiDOFJointTrajectory__destroy((*C.trajectory_msgs__msg__MultiDOFJointTrajectory)(pointer_to_free))
-}
-func (t *MultiDOFJointTrajectory) AsCStruct() unsafe.Pointer {
-	mem := (*C.trajectory_msgs__msg__MultiDOFJointTrajectory)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	rosidl_runtime_c.String__Sequence_to_C((*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.joint_names)), t.JointNames)
-	MultiDOFJointTrajectoryPoint__Sequence_to_C(&mem.points, t.Points)
-	return unsafe.Pointer(mem)
-}
-func (t *MultiDOFJointTrajectory) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.trajectory_msgs__msg__MultiDOFJointTrajectory)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	rosidl_runtime_c.String__Sequence_to_Go(&t.JointNames, *(*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.joint_names)))
-	MultiDOFJointTrajectoryPoint__Sequence_to_Go(&t.Points, mem.points)
-}
-func (t *MultiDOFJointTrajectory) Clone() ros2types.ROS2Msg {
+func (t *MultiDOFJointTrajectory) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *MultiDOFJointTrajectory) SetDefaults() {
+	t.Header.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var MultiDOFJointTrajectoryTypeSupport types.MessageTypeSupport = _MultiDOFJointTrajectoryTypeSupport{}
+
+type _MultiDOFJointTrajectoryTypeSupport struct{}
+
+func (t _MultiDOFJointTrajectoryTypeSupport) New() types.Message {
+	return NewMultiDOFJointTrajectory()
+}
+
+func (t _MultiDOFJointTrajectoryTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.trajectory_msgs__msg__MultiDOFJointTrajectory
+	return (unsafe.Pointer)(C.trajectory_msgs__msg__MultiDOFJointTrajectory__create())
+}
+
+func (t _MultiDOFJointTrajectoryTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.trajectory_msgs__msg__MultiDOFJointTrajectory__destroy((*C.trajectory_msgs__msg__MultiDOFJointTrajectory)(pointer_to_free))
+}
+
+func (t _MultiDOFJointTrajectoryTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*MultiDOFJointTrajectory)
+	mem := (*C.trajectory_msgs__msg__MultiDOFJointTrajectory)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	rosidl_runtime_c.String__Sequence_to_C((*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.joint_names)), m.JointNames)
+	MultiDOFJointTrajectoryPoint__Sequence_to_C(&mem.points, m.Points)
+}
+
+func (t _MultiDOFJointTrajectoryTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*MultiDOFJointTrajectory)
+	mem := (*C.trajectory_msgs__msg__MultiDOFJointTrajectory)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	rosidl_runtime_c.String__Sequence_to_Go(&m.JointNames, *(*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.joint_names)))
+	MultiDOFJointTrajectoryPoint__Sequence_to_Go(&m.Points, mem.points)
+}
+
+func (t _MultiDOFJointTrajectoryTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__trajectory_msgs__msg__MultiDOFJointTrajectory())
 }
 
 type CMultiDOFJointTrajectory = C.trajectory_msgs__msg__MultiDOFJointTrajectory
@@ -99,8 +113,7 @@ func MultiDOFJointTrajectory__Sequence_to_Go(goSlice *[]MultiDOFJointTrajectory,
 		cIdx := (*C.trajectory_msgs__msg__MultiDOFJointTrajectory__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_trajectory_msgs__msg__MultiDOFJointTrajectory * uintptr(i)),
 		))
-		(*goSlice)[i] = MultiDOFJointTrajectory{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		MultiDOFJointTrajectoryTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func MultiDOFJointTrajectory__Sequence_to_C(cSlice *CMultiDOFJointTrajectory__Sequence, goSlice []MultiDOFJointTrajectory) {
@@ -115,18 +128,16 @@ func MultiDOFJointTrajectory__Sequence_to_C(cSlice *CMultiDOFJointTrajectory__Se
 		cIdx := (*C.trajectory_msgs__msg__MultiDOFJointTrajectory)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_trajectory_msgs__msg__MultiDOFJointTrajectory * uintptr(i)),
 		))
-		*cIdx = *(*C.trajectory_msgs__msg__MultiDOFJointTrajectory)(v.AsCStruct())
+		MultiDOFJointTrajectoryTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func MultiDOFJointTrajectory__Array_to_Go(goSlice []MultiDOFJointTrajectory, cSlice []CMultiDOFJointTrajectory) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		MultiDOFJointTrajectoryTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func MultiDOFJointTrajectory__Array_to_C(cSlice []CMultiDOFJointTrajectory, goSlice []MultiDOFJointTrajectory) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.trajectory_msgs__msg__MultiDOFJointTrajectory)(goSlice[i].AsCStruct())
+		MultiDOFJointTrajectoryTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

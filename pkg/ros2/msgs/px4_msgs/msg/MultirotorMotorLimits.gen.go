@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/MultirotorMotorLimits", &MultirotorMotorLimits{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/MultirotorMotorLimits", MultirotorMotorLimitsTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewMultirotorMotorLimits
@@ -46,38 +46,52 @@ type MultirotorMotorLimits struct {
 // NewMultirotorMotorLimits creates a new MultirotorMotorLimits with default values.
 func NewMultirotorMotorLimits() *MultirotorMotorLimits {
 	self := MultirotorMotorLimits{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *MultirotorMotorLimits) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *MultirotorMotorLimits) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__MultirotorMotorLimits())
-}
-func (t *MultirotorMotorLimits) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__MultirotorMotorLimits
-	return (unsafe.Pointer)(C.px4_msgs__msg__MultirotorMotorLimits__create())
-}
-func (t *MultirotorMotorLimits) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__MultirotorMotorLimits__destroy((*C.px4_msgs__msg__MultirotorMotorLimits)(pointer_to_free))
-}
-func (t *MultirotorMotorLimits) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__MultirotorMotorLimits)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.saturation_status = C.uint16_t(t.SaturationStatus)
-	return unsafe.Pointer(mem)
-}
-func (t *MultirotorMotorLimits) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__MultirotorMotorLimits)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.SaturationStatus = uint16(mem.saturation_status)
-}
-func (t *MultirotorMotorLimits) Clone() ros2types.ROS2Msg {
+func (t *MultirotorMotorLimits) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *MultirotorMotorLimits) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var MultirotorMotorLimitsTypeSupport types.MessageTypeSupport = _MultirotorMotorLimitsTypeSupport{}
+
+type _MultirotorMotorLimitsTypeSupport struct{}
+
+func (t _MultirotorMotorLimitsTypeSupport) New() types.Message {
+	return NewMultirotorMotorLimits()
+}
+
+func (t _MultirotorMotorLimitsTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__MultirotorMotorLimits
+	return (unsafe.Pointer)(C.px4_msgs__msg__MultirotorMotorLimits__create())
+}
+
+func (t _MultirotorMotorLimitsTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__MultirotorMotorLimits__destroy((*C.px4_msgs__msg__MultirotorMotorLimits)(pointer_to_free))
+}
+
+func (t _MultirotorMotorLimitsTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*MultirotorMotorLimits)
+	mem := (*C.px4_msgs__msg__MultirotorMotorLimits)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.saturation_status = C.uint16_t(m.SaturationStatus)
+}
+
+func (t _MultirotorMotorLimitsTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*MultirotorMotorLimits)
+	mem := (*C.px4_msgs__msg__MultirotorMotorLimits)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.SaturationStatus = uint16(mem.saturation_status)
+}
+
+func (t _MultirotorMotorLimitsTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__MultirotorMotorLimits())
 }
 
 type CMultirotorMotorLimits = C.px4_msgs__msg__MultirotorMotorLimits
@@ -92,8 +106,7 @@ func MultirotorMotorLimits__Sequence_to_Go(goSlice *[]MultirotorMotorLimits, cSl
 		cIdx := (*C.px4_msgs__msg__MultirotorMotorLimits__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__MultirotorMotorLimits * uintptr(i)),
 		))
-		(*goSlice)[i] = MultirotorMotorLimits{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		MultirotorMotorLimitsTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func MultirotorMotorLimits__Sequence_to_C(cSlice *CMultirotorMotorLimits__Sequence, goSlice []MultirotorMotorLimits) {
@@ -108,18 +121,16 @@ func MultirotorMotorLimits__Sequence_to_C(cSlice *CMultirotorMotorLimits__Sequen
 		cIdx := (*C.px4_msgs__msg__MultirotorMotorLimits)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__MultirotorMotorLimits * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__MultirotorMotorLimits)(v.AsCStruct())
+		MultirotorMotorLimitsTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func MultirotorMotorLimits__Array_to_Go(goSlice []MultirotorMotorLimits, cSlice []CMultirotorMotorLimits) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		MultirotorMotorLimitsTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func MultirotorMotorLimits__Array_to_C(cSlice []CMultirotorMotorLimits, goSlice []MultirotorMotorLimits) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__MultirotorMotorLimits)(goSlice[i].AsCStruct())
+		MultirotorMotorLimitsTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

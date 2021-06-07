@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/SensorsStatusImu", &SensorsStatusImu{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/SensorsStatusImu", SensorsStatusImuTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSensorsStatusImu
@@ -54,64 +54,78 @@ type SensorsStatusImu struct {
 // NewSensorsStatusImu creates a new SensorsStatusImu with default values.
 func NewSensorsStatusImu() *SensorsStatusImu {
 	self := SensorsStatusImu{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SensorsStatusImu) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *SensorsStatusImu) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__SensorsStatusImu())
-}
-func (t *SensorsStatusImu) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__SensorsStatusImu
-	return (unsafe.Pointer)(C.px4_msgs__msg__SensorsStatusImu__create())
-}
-func (t *SensorsStatusImu) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__SensorsStatusImu__destroy((*C.px4_msgs__msg__SensorsStatusImu)(pointer_to_free))
-}
-func (t *SensorsStatusImu) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__SensorsStatusImu)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.accel_device_id_primary = C.uint32_t(t.AccelDeviceIdPrimary)
-	cSlice_accel_device_ids := mem.accel_device_ids[:]
-	rosidl_runtime_c.Uint32__Array_to_C(*(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_accel_device_ids)), t.AccelDeviceIds[:])
-	cSlice_accel_inconsistency_m_s_s := mem.accel_inconsistency_m_s_s[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_inconsistency_m_s_s)), t.AccelInconsistencyMSS[:])
-	cSlice_accel_healthy := mem.accel_healthy[:]
-	rosidl_runtime_c.Bool__Array_to_C(*(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_accel_healthy)), t.AccelHealthy[:])
-	mem.gyro_device_id_primary = C.uint32_t(t.GyroDeviceIdPrimary)
-	cSlice_gyro_device_ids := mem.gyro_device_ids[:]
-	rosidl_runtime_c.Uint32__Array_to_C(*(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_gyro_device_ids)), t.GyroDeviceIds[:])
-	cSlice_gyro_inconsistency_rad_s := mem.gyro_inconsistency_rad_s[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_inconsistency_rad_s)), t.GyroInconsistencyRadS[:])
-	cSlice_gyro_healthy := mem.gyro_healthy[:]
-	rosidl_runtime_c.Bool__Array_to_C(*(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_gyro_healthy)), t.GyroHealthy[:])
-	return unsafe.Pointer(mem)
-}
-func (t *SensorsStatusImu) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__SensorsStatusImu)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.AccelDeviceIdPrimary = uint32(mem.accel_device_id_primary)
-	cSlice_accel_device_ids := mem.accel_device_ids[:]
-	rosidl_runtime_c.Uint32__Array_to_Go(t.AccelDeviceIds[:], *(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_accel_device_ids)))
-	cSlice_accel_inconsistency_m_s_s := mem.accel_inconsistency_m_s_s[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.AccelInconsistencyMSS[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_inconsistency_m_s_s)))
-	cSlice_accel_healthy := mem.accel_healthy[:]
-	rosidl_runtime_c.Bool__Array_to_Go(t.AccelHealthy[:], *(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_accel_healthy)))
-	t.GyroDeviceIdPrimary = uint32(mem.gyro_device_id_primary)
-	cSlice_gyro_device_ids := mem.gyro_device_ids[:]
-	rosidl_runtime_c.Uint32__Array_to_Go(t.GyroDeviceIds[:], *(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_gyro_device_ids)))
-	cSlice_gyro_inconsistency_rad_s := mem.gyro_inconsistency_rad_s[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.GyroInconsistencyRadS[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_inconsistency_rad_s)))
-	cSlice_gyro_healthy := mem.gyro_healthy[:]
-	rosidl_runtime_c.Bool__Array_to_Go(t.GyroHealthy[:], *(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_gyro_healthy)))
-}
-func (t *SensorsStatusImu) Clone() ros2types.ROS2Msg {
+func (t *SensorsStatusImu) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SensorsStatusImu) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SensorsStatusImuTypeSupport types.MessageTypeSupport = _SensorsStatusImuTypeSupport{}
+
+type _SensorsStatusImuTypeSupport struct{}
+
+func (t _SensorsStatusImuTypeSupport) New() types.Message {
+	return NewSensorsStatusImu()
+}
+
+func (t _SensorsStatusImuTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__SensorsStatusImu
+	return (unsafe.Pointer)(C.px4_msgs__msg__SensorsStatusImu__create())
+}
+
+func (t _SensorsStatusImuTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__SensorsStatusImu__destroy((*C.px4_msgs__msg__SensorsStatusImu)(pointer_to_free))
+}
+
+func (t _SensorsStatusImuTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*SensorsStatusImu)
+	mem := (*C.px4_msgs__msg__SensorsStatusImu)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.accel_device_id_primary = C.uint32_t(m.AccelDeviceIdPrimary)
+	cSlice_accel_device_ids := mem.accel_device_ids[:]
+	rosidl_runtime_c.Uint32__Array_to_C(*(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_accel_device_ids)), m.AccelDeviceIds[:])
+	cSlice_accel_inconsistency_m_s_s := mem.accel_inconsistency_m_s_s[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_inconsistency_m_s_s)), m.AccelInconsistencyMSS[:])
+	cSlice_accel_healthy := mem.accel_healthy[:]
+	rosidl_runtime_c.Bool__Array_to_C(*(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_accel_healthy)), m.AccelHealthy[:])
+	mem.gyro_device_id_primary = C.uint32_t(m.GyroDeviceIdPrimary)
+	cSlice_gyro_device_ids := mem.gyro_device_ids[:]
+	rosidl_runtime_c.Uint32__Array_to_C(*(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_gyro_device_ids)), m.GyroDeviceIds[:])
+	cSlice_gyro_inconsistency_rad_s := mem.gyro_inconsistency_rad_s[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_inconsistency_rad_s)), m.GyroInconsistencyRadS[:])
+	cSlice_gyro_healthy := mem.gyro_healthy[:]
+	rosidl_runtime_c.Bool__Array_to_C(*(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_gyro_healthy)), m.GyroHealthy[:])
+}
+
+func (t _SensorsStatusImuTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*SensorsStatusImu)
+	mem := (*C.px4_msgs__msg__SensorsStatusImu)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.AccelDeviceIdPrimary = uint32(mem.accel_device_id_primary)
+	cSlice_accel_device_ids := mem.accel_device_ids[:]
+	rosidl_runtime_c.Uint32__Array_to_Go(m.AccelDeviceIds[:], *(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_accel_device_ids)))
+	cSlice_accel_inconsistency_m_s_s := mem.accel_inconsistency_m_s_s[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.AccelInconsistencyMSS[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_inconsistency_m_s_s)))
+	cSlice_accel_healthy := mem.accel_healthy[:]
+	rosidl_runtime_c.Bool__Array_to_Go(m.AccelHealthy[:], *(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_accel_healthy)))
+	m.GyroDeviceIdPrimary = uint32(mem.gyro_device_id_primary)
+	cSlice_gyro_device_ids := mem.gyro_device_ids[:]
+	rosidl_runtime_c.Uint32__Array_to_Go(m.GyroDeviceIds[:], *(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_gyro_device_ids)))
+	cSlice_gyro_inconsistency_rad_s := mem.gyro_inconsistency_rad_s[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.GyroInconsistencyRadS[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_inconsistency_rad_s)))
+	cSlice_gyro_healthy := mem.gyro_healthy[:]
+	rosidl_runtime_c.Bool__Array_to_Go(m.GyroHealthy[:], *(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_gyro_healthy)))
+}
+
+func (t _SensorsStatusImuTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__SensorsStatusImu())
 }
 
 type CSensorsStatusImu = C.px4_msgs__msg__SensorsStatusImu
@@ -126,8 +140,7 @@ func SensorsStatusImu__Sequence_to_Go(goSlice *[]SensorsStatusImu, cSlice CSenso
 		cIdx := (*C.px4_msgs__msg__SensorsStatusImu__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__SensorsStatusImu * uintptr(i)),
 		))
-		(*goSlice)[i] = SensorsStatusImu{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SensorsStatusImuTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SensorsStatusImu__Sequence_to_C(cSlice *CSensorsStatusImu__Sequence, goSlice []SensorsStatusImu) {
@@ -142,18 +155,16 @@ func SensorsStatusImu__Sequence_to_C(cSlice *CSensorsStatusImu__Sequence, goSlic
 		cIdx := (*C.px4_msgs__msg__SensorsStatusImu)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__SensorsStatusImu * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__SensorsStatusImu)(v.AsCStruct())
+		SensorsStatusImuTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SensorsStatusImu__Array_to_Go(goSlice []SensorsStatusImu, cSlice []CSensorsStatusImu) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SensorsStatusImuTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SensorsStatusImu__Array_to_C(cSlice []CSensorsStatusImu, goSlice []SensorsStatusImu) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__SensorsStatusImu)(goSlice[i].AsCStruct())
+		SensorsStatusImuTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

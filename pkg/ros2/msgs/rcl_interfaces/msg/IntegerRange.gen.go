@@ -15,7 +15,7 @@ package rcl_interfaces_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("rcl_interfaces/IntegerRange", &IntegerRange{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("rcl_interfaces/IntegerRange", IntegerRangeTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewIntegerRange
@@ -47,40 +47,54 @@ type IntegerRange struct {
 // NewIntegerRange creates a new IntegerRange with default values.
 func NewIntegerRange() *IntegerRange {
 	self := IntegerRange{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *IntegerRange) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *IntegerRange) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__rcl_interfaces__msg__IntegerRange())
-}
-func (t *IntegerRange) PrepareMemory() unsafe.Pointer { //returns *C.rcl_interfaces__msg__IntegerRange
-	return (unsafe.Pointer)(C.rcl_interfaces__msg__IntegerRange__create())
-}
-func (t *IntegerRange) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.rcl_interfaces__msg__IntegerRange__destroy((*C.rcl_interfaces__msg__IntegerRange)(pointer_to_free))
-}
-func (t *IntegerRange) AsCStruct() unsafe.Pointer {
-	mem := (*C.rcl_interfaces__msg__IntegerRange)(t.PrepareMemory())
-	mem.from_value = C.int64_t(t.FromValue)
-	mem.to_value = C.int64_t(t.ToValue)
-	mem.step = C.uint64_t(t.Step)
-	return unsafe.Pointer(mem)
-}
-func (t *IntegerRange) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.rcl_interfaces__msg__IntegerRange)(ros2_message_buffer)
-	t.FromValue = int64(mem.from_value)
-	t.ToValue = int64(mem.to_value)
-	t.Step = uint64(mem.step)
-}
-func (t *IntegerRange) Clone() ros2types.ROS2Msg {
+func (t *IntegerRange) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *IntegerRange) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var IntegerRangeTypeSupport types.MessageTypeSupport = _IntegerRangeTypeSupport{}
+
+type _IntegerRangeTypeSupport struct{}
+
+func (t _IntegerRangeTypeSupport) New() types.Message {
+	return NewIntegerRange()
+}
+
+func (t _IntegerRangeTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.rcl_interfaces__msg__IntegerRange
+	return (unsafe.Pointer)(C.rcl_interfaces__msg__IntegerRange__create())
+}
+
+func (t _IntegerRangeTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.rcl_interfaces__msg__IntegerRange__destroy((*C.rcl_interfaces__msg__IntegerRange)(pointer_to_free))
+}
+
+func (t _IntegerRangeTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*IntegerRange)
+	mem := (*C.rcl_interfaces__msg__IntegerRange)(dst)
+	mem.from_value = C.int64_t(m.FromValue)
+	mem.to_value = C.int64_t(m.ToValue)
+	mem.step = C.uint64_t(m.Step)
+}
+
+func (t _IntegerRangeTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*IntegerRange)
+	mem := (*C.rcl_interfaces__msg__IntegerRange)(ros2_message_buffer)
+	m.FromValue = int64(mem.from_value)
+	m.ToValue = int64(mem.to_value)
+	m.Step = uint64(mem.step)
+}
+
+func (t _IntegerRangeTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__rcl_interfaces__msg__IntegerRange())
 }
 
 type CIntegerRange = C.rcl_interfaces__msg__IntegerRange
@@ -95,8 +109,7 @@ func IntegerRange__Sequence_to_Go(goSlice *[]IntegerRange, cSlice CIntegerRange_
 		cIdx := (*C.rcl_interfaces__msg__IntegerRange__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rcl_interfaces__msg__IntegerRange * uintptr(i)),
 		))
-		(*goSlice)[i] = IntegerRange{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		IntegerRangeTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func IntegerRange__Sequence_to_C(cSlice *CIntegerRange__Sequence, goSlice []IntegerRange) {
@@ -111,18 +124,16 @@ func IntegerRange__Sequence_to_C(cSlice *CIntegerRange__Sequence, goSlice []Inte
 		cIdx := (*C.rcl_interfaces__msg__IntegerRange)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rcl_interfaces__msg__IntegerRange * uintptr(i)),
 		))
-		*cIdx = *(*C.rcl_interfaces__msg__IntegerRange)(v.AsCStruct())
+		IntegerRangeTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func IntegerRange__Array_to_Go(goSlice []IntegerRange, cSlice []CIntegerRange) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		IntegerRangeTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func IntegerRange__Array_to_C(cSlice []CIntegerRange, goSlice []IntegerRange) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.rcl_interfaces__msg__IntegerRange)(goSlice[i].AsCStruct())
+		IntegerRangeTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

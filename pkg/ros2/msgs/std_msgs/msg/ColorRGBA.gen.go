@@ -15,7 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("std_msgs/ColorRGBA", &ColorRGBA{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("std_msgs/ColorRGBA", ColorRGBATypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewColorRGBA
@@ -48,42 +48,56 @@ type ColorRGBA struct {
 // NewColorRGBA creates a new ColorRGBA with default values.
 func NewColorRGBA() *ColorRGBA {
 	self := ColorRGBA{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *ColorRGBA) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *ColorRGBA) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__std_msgs__msg__ColorRGBA())
-}
-func (t *ColorRGBA) PrepareMemory() unsafe.Pointer { //returns *C.std_msgs__msg__ColorRGBA
-	return (unsafe.Pointer)(C.std_msgs__msg__ColorRGBA__create())
-}
-func (t *ColorRGBA) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.std_msgs__msg__ColorRGBA__destroy((*C.std_msgs__msg__ColorRGBA)(pointer_to_free))
-}
-func (t *ColorRGBA) AsCStruct() unsafe.Pointer {
-	mem := (*C.std_msgs__msg__ColorRGBA)(t.PrepareMemory())
-	mem.r = C.float(t.R)
-	mem.g = C.float(t.G)
-	mem.b = C.float(t.B)
-	mem.a = C.float(t.A)
-	return unsafe.Pointer(mem)
-}
-func (t *ColorRGBA) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.std_msgs__msg__ColorRGBA)(ros2_message_buffer)
-	t.R = float32(mem.r)
-	t.G = float32(mem.g)
-	t.B = float32(mem.b)
-	t.A = float32(mem.a)
-}
-func (t *ColorRGBA) Clone() ros2types.ROS2Msg {
+func (t *ColorRGBA) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *ColorRGBA) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ColorRGBATypeSupport types.MessageTypeSupport = _ColorRGBATypeSupport{}
+
+type _ColorRGBATypeSupport struct{}
+
+func (t _ColorRGBATypeSupport) New() types.Message {
+	return NewColorRGBA()
+}
+
+func (t _ColorRGBATypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.std_msgs__msg__ColorRGBA
+	return (unsafe.Pointer)(C.std_msgs__msg__ColorRGBA__create())
+}
+
+func (t _ColorRGBATypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.std_msgs__msg__ColorRGBA__destroy((*C.std_msgs__msg__ColorRGBA)(pointer_to_free))
+}
+
+func (t _ColorRGBATypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*ColorRGBA)
+	mem := (*C.std_msgs__msg__ColorRGBA)(dst)
+	mem.r = C.float(m.R)
+	mem.g = C.float(m.G)
+	mem.b = C.float(m.B)
+	mem.a = C.float(m.A)
+}
+
+func (t _ColorRGBATypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*ColorRGBA)
+	mem := (*C.std_msgs__msg__ColorRGBA)(ros2_message_buffer)
+	m.R = float32(mem.r)
+	m.G = float32(mem.g)
+	m.B = float32(mem.b)
+	m.A = float32(mem.a)
+}
+
+func (t _ColorRGBATypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__std_msgs__msg__ColorRGBA())
 }
 
 type CColorRGBA = C.std_msgs__msg__ColorRGBA
@@ -98,8 +112,7 @@ func ColorRGBA__Sequence_to_Go(goSlice *[]ColorRGBA, cSlice CColorRGBA__Sequence
 		cIdx := (*C.std_msgs__msg__ColorRGBA__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__ColorRGBA * uintptr(i)),
 		))
-		(*goSlice)[i] = ColorRGBA{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ColorRGBATypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func ColorRGBA__Sequence_to_C(cSlice *CColorRGBA__Sequence, goSlice []ColorRGBA) {
@@ -114,18 +127,16 @@ func ColorRGBA__Sequence_to_C(cSlice *CColorRGBA__Sequence, goSlice []ColorRGBA)
 		cIdx := (*C.std_msgs__msg__ColorRGBA)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__ColorRGBA * uintptr(i)),
 		))
-		*cIdx = *(*C.std_msgs__msg__ColorRGBA)(v.AsCStruct())
+		ColorRGBATypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func ColorRGBA__Array_to_Go(goSlice []ColorRGBA, cSlice []CColorRGBA) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ColorRGBATypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func ColorRGBA__Array_to_C(cSlice []CColorRGBA, goSlice []ColorRGBA) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.std_msgs__msg__ColorRGBA)(goSlice[i].AsCStruct())
+		ColorRGBATypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/IrlockReport", &IrlockReport{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/IrlockReport", IrlockReportTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewIrlockReport
@@ -50,46 +50,60 @@ type IrlockReport struct {
 // NewIrlockReport creates a new IrlockReport with default values.
 func NewIrlockReport() *IrlockReport {
 	self := IrlockReport{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *IrlockReport) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *IrlockReport) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__IrlockReport())
-}
-func (t *IrlockReport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__IrlockReport
-	return (unsafe.Pointer)(C.px4_msgs__msg__IrlockReport__create())
-}
-func (t *IrlockReport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__IrlockReport__destroy((*C.px4_msgs__msg__IrlockReport)(pointer_to_free))
-}
-func (t *IrlockReport) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__IrlockReport)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.signature = C.uint16_t(t.Signature)
-	mem.pos_x = C.float(t.PosX)
-	mem.pos_y = C.float(t.PosY)
-	mem.size_x = C.float(t.SizeX)
-	mem.size_y = C.float(t.SizeY)
-	return unsafe.Pointer(mem)
-}
-func (t *IrlockReport) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__IrlockReport)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Signature = uint16(mem.signature)
-	t.PosX = float32(mem.pos_x)
-	t.PosY = float32(mem.pos_y)
-	t.SizeX = float32(mem.size_x)
-	t.SizeY = float32(mem.size_y)
-}
-func (t *IrlockReport) Clone() ros2types.ROS2Msg {
+func (t *IrlockReport) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *IrlockReport) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var IrlockReportTypeSupport types.MessageTypeSupport = _IrlockReportTypeSupport{}
+
+type _IrlockReportTypeSupport struct{}
+
+func (t _IrlockReportTypeSupport) New() types.Message {
+	return NewIrlockReport()
+}
+
+func (t _IrlockReportTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__IrlockReport
+	return (unsafe.Pointer)(C.px4_msgs__msg__IrlockReport__create())
+}
+
+func (t _IrlockReportTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__IrlockReport__destroy((*C.px4_msgs__msg__IrlockReport)(pointer_to_free))
+}
+
+func (t _IrlockReportTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*IrlockReport)
+	mem := (*C.px4_msgs__msg__IrlockReport)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.signature = C.uint16_t(m.Signature)
+	mem.pos_x = C.float(m.PosX)
+	mem.pos_y = C.float(m.PosY)
+	mem.size_x = C.float(m.SizeX)
+	mem.size_y = C.float(m.SizeY)
+}
+
+func (t _IrlockReportTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*IrlockReport)
+	mem := (*C.px4_msgs__msg__IrlockReport)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Signature = uint16(mem.signature)
+	m.PosX = float32(mem.pos_x)
+	m.PosY = float32(mem.pos_y)
+	m.SizeX = float32(mem.size_x)
+	m.SizeY = float32(mem.size_y)
+}
+
+func (t _IrlockReportTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__IrlockReport())
 }
 
 type CIrlockReport = C.px4_msgs__msg__IrlockReport
@@ -104,8 +118,7 @@ func IrlockReport__Sequence_to_Go(goSlice *[]IrlockReport, cSlice CIrlockReport_
 		cIdx := (*C.px4_msgs__msg__IrlockReport__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__IrlockReport * uintptr(i)),
 		))
-		(*goSlice)[i] = IrlockReport{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		IrlockReportTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func IrlockReport__Sequence_to_C(cSlice *CIrlockReport__Sequence, goSlice []IrlockReport) {
@@ -120,18 +133,16 @@ func IrlockReport__Sequence_to_C(cSlice *CIrlockReport__Sequence, goSlice []Irlo
 		cIdx := (*C.px4_msgs__msg__IrlockReport)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__IrlockReport * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__IrlockReport)(v.AsCStruct())
+		IrlockReportTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func IrlockReport__Array_to_Go(goSlice []IrlockReport, cSlice []CIrlockReport) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		IrlockReportTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func IrlockReport__Array_to_C(cSlice []CIrlockReport, goSlice []IrlockReport) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__IrlockReport)(goSlice[i].AsCStruct())
+		IrlockReportTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

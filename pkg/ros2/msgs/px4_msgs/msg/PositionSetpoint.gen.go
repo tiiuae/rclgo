@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/PositionSetpoint", &PositionSetpoint{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/PositionSetpoint", PositionSetpointTypeSupport)
 }
 const (
 	PositionSetpoint_SETPOINT_TYPE_POSITION uint8 = 0// position setpoint
@@ -78,80 +78,94 @@ type PositionSetpoint struct {
 // NewPositionSetpoint creates a new PositionSetpoint with default values.
 func NewPositionSetpoint() *PositionSetpoint {
 	self := PositionSetpoint{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *PositionSetpoint) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *PositionSetpoint) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__PositionSetpoint())
-}
-func (t *PositionSetpoint) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__PositionSetpoint
-	return (unsafe.Pointer)(C.px4_msgs__msg__PositionSetpoint__create())
-}
-func (t *PositionSetpoint) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__PositionSetpoint__destroy((*C.px4_msgs__msg__PositionSetpoint)(pointer_to_free))
-}
-func (t *PositionSetpoint) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__PositionSetpoint)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.valid = C.bool(t.Valid)
-	mem._type = C.uint8_t(t.Type)
-	mem.vx = C.float(t.Vx)
-	mem.vy = C.float(t.Vy)
-	mem.vz = C.float(t.Vz)
-	mem.velocity_valid = C.bool(t.VelocityValid)
-	mem.velocity_frame = C.uint8_t(t.VelocityFrame)
-	mem.alt_valid = C.bool(t.AltValid)
-	mem.lat = C.double(t.Lat)
-	mem.lon = C.double(t.Lon)
-	mem.alt = C.float(t.Alt)
-	mem.yaw = C.float(t.Yaw)
-	mem.yaw_valid = C.bool(t.YawValid)
-	mem.yawspeed = C.float(t.Yawspeed)
-	mem.yawspeed_valid = C.bool(t.YawspeedValid)
-	mem.landing_gear = C.int8_t(t.LandingGear)
-	mem.loiter_radius = C.float(t.LoiterRadius)
-	mem.loiter_direction = C.int8_t(t.LoiterDirection)
-	mem.acceptance_radius = C.float(t.AcceptanceRadius)
-	mem.cruising_speed = C.float(t.CruisingSpeed)
-	mem.cruising_throttle = C.float(t.CruisingThrottle)
-	mem.disable_weather_vane = C.bool(t.DisableWeatherVane)
-	return unsafe.Pointer(mem)
-}
-func (t *PositionSetpoint) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__PositionSetpoint)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Valid = bool(mem.valid)
-	t.Type = uint8(mem._type)
-	t.Vx = float32(mem.vx)
-	t.Vy = float32(mem.vy)
-	t.Vz = float32(mem.vz)
-	t.VelocityValid = bool(mem.velocity_valid)
-	t.VelocityFrame = uint8(mem.velocity_frame)
-	t.AltValid = bool(mem.alt_valid)
-	t.Lat = float64(mem.lat)
-	t.Lon = float64(mem.lon)
-	t.Alt = float32(mem.alt)
-	t.Yaw = float32(mem.yaw)
-	t.YawValid = bool(mem.yaw_valid)
-	t.Yawspeed = float32(mem.yawspeed)
-	t.YawspeedValid = bool(mem.yawspeed_valid)
-	t.LandingGear = int8(mem.landing_gear)
-	t.LoiterRadius = float32(mem.loiter_radius)
-	t.LoiterDirection = int8(mem.loiter_direction)
-	t.AcceptanceRadius = float32(mem.acceptance_radius)
-	t.CruisingSpeed = float32(mem.cruising_speed)
-	t.CruisingThrottle = float32(mem.cruising_throttle)
-	t.DisableWeatherVane = bool(mem.disable_weather_vane)
-}
-func (t *PositionSetpoint) Clone() ros2types.ROS2Msg {
+func (t *PositionSetpoint) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *PositionSetpoint) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var PositionSetpointTypeSupport types.MessageTypeSupport = _PositionSetpointTypeSupport{}
+
+type _PositionSetpointTypeSupport struct{}
+
+func (t _PositionSetpointTypeSupport) New() types.Message {
+	return NewPositionSetpoint()
+}
+
+func (t _PositionSetpointTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__PositionSetpoint
+	return (unsafe.Pointer)(C.px4_msgs__msg__PositionSetpoint__create())
+}
+
+func (t _PositionSetpointTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__PositionSetpoint__destroy((*C.px4_msgs__msg__PositionSetpoint)(pointer_to_free))
+}
+
+func (t _PositionSetpointTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*PositionSetpoint)
+	mem := (*C.px4_msgs__msg__PositionSetpoint)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.valid = C.bool(m.Valid)
+	mem._type = C.uint8_t(m.Type)
+	mem.vx = C.float(m.Vx)
+	mem.vy = C.float(m.Vy)
+	mem.vz = C.float(m.Vz)
+	mem.velocity_valid = C.bool(m.VelocityValid)
+	mem.velocity_frame = C.uint8_t(m.VelocityFrame)
+	mem.alt_valid = C.bool(m.AltValid)
+	mem.lat = C.double(m.Lat)
+	mem.lon = C.double(m.Lon)
+	mem.alt = C.float(m.Alt)
+	mem.yaw = C.float(m.Yaw)
+	mem.yaw_valid = C.bool(m.YawValid)
+	mem.yawspeed = C.float(m.Yawspeed)
+	mem.yawspeed_valid = C.bool(m.YawspeedValid)
+	mem.landing_gear = C.int8_t(m.LandingGear)
+	mem.loiter_radius = C.float(m.LoiterRadius)
+	mem.loiter_direction = C.int8_t(m.LoiterDirection)
+	mem.acceptance_radius = C.float(m.AcceptanceRadius)
+	mem.cruising_speed = C.float(m.CruisingSpeed)
+	mem.cruising_throttle = C.float(m.CruisingThrottle)
+	mem.disable_weather_vane = C.bool(m.DisableWeatherVane)
+}
+
+func (t _PositionSetpointTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*PositionSetpoint)
+	mem := (*C.px4_msgs__msg__PositionSetpoint)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Valid = bool(mem.valid)
+	m.Type = uint8(mem._type)
+	m.Vx = float32(mem.vx)
+	m.Vy = float32(mem.vy)
+	m.Vz = float32(mem.vz)
+	m.VelocityValid = bool(mem.velocity_valid)
+	m.VelocityFrame = uint8(mem.velocity_frame)
+	m.AltValid = bool(mem.alt_valid)
+	m.Lat = float64(mem.lat)
+	m.Lon = float64(mem.lon)
+	m.Alt = float32(mem.alt)
+	m.Yaw = float32(mem.yaw)
+	m.YawValid = bool(mem.yaw_valid)
+	m.Yawspeed = float32(mem.yawspeed)
+	m.YawspeedValid = bool(mem.yawspeed_valid)
+	m.LandingGear = int8(mem.landing_gear)
+	m.LoiterRadius = float32(mem.loiter_radius)
+	m.LoiterDirection = int8(mem.loiter_direction)
+	m.AcceptanceRadius = float32(mem.acceptance_radius)
+	m.CruisingSpeed = float32(mem.cruising_speed)
+	m.CruisingThrottle = float32(mem.cruising_throttle)
+	m.DisableWeatherVane = bool(mem.disable_weather_vane)
+}
+
+func (t _PositionSetpointTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__PositionSetpoint())
 }
 
 type CPositionSetpoint = C.px4_msgs__msg__PositionSetpoint
@@ -166,8 +180,7 @@ func PositionSetpoint__Sequence_to_Go(goSlice *[]PositionSetpoint, cSlice CPosit
 		cIdx := (*C.px4_msgs__msg__PositionSetpoint__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__PositionSetpoint * uintptr(i)),
 		))
-		(*goSlice)[i] = PositionSetpoint{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		PositionSetpointTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func PositionSetpoint__Sequence_to_C(cSlice *CPositionSetpoint__Sequence, goSlice []PositionSetpoint) {
@@ -182,18 +195,16 @@ func PositionSetpoint__Sequence_to_C(cSlice *CPositionSetpoint__Sequence, goSlic
 		cIdx := (*C.px4_msgs__msg__PositionSetpoint)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__PositionSetpoint * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__PositionSetpoint)(v.AsCStruct())
+		PositionSetpointTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func PositionSetpoint__Array_to_Go(goSlice []PositionSetpoint, cSlice []CPositionSetpoint) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		PositionSetpointTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func PositionSetpoint__Array_to_C(cSlice []CPositionSetpoint, goSlice []PositionSetpoint) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__PositionSetpoint)(goSlice[i].AsCStruct())
+		PositionSetpointTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/RcChannels", &RcChannels{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/RcChannels", RcChannelsTypeSupport)
 }
 const (
 	RcChannels_FUNCTION_THROTTLE uint8 = 0
@@ -81,54 +81,68 @@ type RcChannels struct {
 // NewRcChannels creates a new RcChannels with default values.
 func NewRcChannels() *RcChannels {
 	self := RcChannels{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *RcChannels) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *RcChannels) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__RcChannels())
-}
-func (t *RcChannels) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__RcChannels
-	return (unsafe.Pointer)(C.px4_msgs__msg__RcChannels__create())
-}
-func (t *RcChannels) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__RcChannels__destroy((*C.px4_msgs__msg__RcChannels)(pointer_to_free))
-}
-func (t *RcChannels) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__RcChannels)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_last_valid = C.uint64_t(t.TimestampLastValid)
-	cSlice_channels := mem.channels[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_channels)), t.Channels[:])
-	mem.channel_count = C.uint8_t(t.ChannelCount)
-	cSlice_function := mem.function[:]
-	rosidl_runtime_c.Int8__Array_to_C(*(*[]rosidl_runtime_c.CInt8)(unsafe.Pointer(&cSlice_function)), t.Function[:])
-	mem.rssi = C.uint8_t(t.Rssi)
-	mem.signal_lost = C.bool(t.SignalLost)
-	mem.frame_drop_count = C.uint32_t(t.FrameDropCount)
-	return unsafe.Pointer(mem)
-}
-func (t *RcChannels) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__RcChannels)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampLastValid = uint64(mem.timestamp_last_valid)
-	cSlice_channels := mem.channels[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Channels[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_channels)))
-	t.ChannelCount = uint8(mem.channel_count)
-	cSlice_function := mem.function[:]
-	rosidl_runtime_c.Int8__Array_to_Go(t.Function[:], *(*[]rosidl_runtime_c.CInt8)(unsafe.Pointer(&cSlice_function)))
-	t.Rssi = uint8(mem.rssi)
-	t.SignalLost = bool(mem.signal_lost)
-	t.FrameDropCount = uint32(mem.frame_drop_count)
-}
-func (t *RcChannels) Clone() ros2types.ROS2Msg {
+func (t *RcChannels) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *RcChannels) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var RcChannelsTypeSupport types.MessageTypeSupport = _RcChannelsTypeSupport{}
+
+type _RcChannelsTypeSupport struct{}
+
+func (t _RcChannelsTypeSupport) New() types.Message {
+	return NewRcChannels()
+}
+
+func (t _RcChannelsTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__RcChannels
+	return (unsafe.Pointer)(C.px4_msgs__msg__RcChannels__create())
+}
+
+func (t _RcChannelsTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__RcChannels__destroy((*C.px4_msgs__msg__RcChannels)(pointer_to_free))
+}
+
+func (t _RcChannelsTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*RcChannels)
+	mem := (*C.px4_msgs__msg__RcChannels)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_last_valid = C.uint64_t(m.TimestampLastValid)
+	cSlice_channels := mem.channels[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_channels)), m.Channels[:])
+	mem.channel_count = C.uint8_t(m.ChannelCount)
+	cSlice_function := mem.function[:]
+	rosidl_runtime_c.Int8__Array_to_C(*(*[]rosidl_runtime_c.CInt8)(unsafe.Pointer(&cSlice_function)), m.Function[:])
+	mem.rssi = C.uint8_t(m.Rssi)
+	mem.signal_lost = C.bool(m.SignalLost)
+	mem.frame_drop_count = C.uint32_t(m.FrameDropCount)
+}
+
+func (t _RcChannelsTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*RcChannels)
+	mem := (*C.px4_msgs__msg__RcChannels)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampLastValid = uint64(mem.timestamp_last_valid)
+	cSlice_channels := mem.channels[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Channels[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_channels)))
+	m.ChannelCount = uint8(mem.channel_count)
+	cSlice_function := mem.function[:]
+	rosidl_runtime_c.Int8__Array_to_Go(m.Function[:], *(*[]rosidl_runtime_c.CInt8)(unsafe.Pointer(&cSlice_function)))
+	m.Rssi = uint8(mem.rssi)
+	m.SignalLost = bool(mem.signal_lost)
+	m.FrameDropCount = uint32(mem.frame_drop_count)
+}
+
+func (t _RcChannelsTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__RcChannels())
 }
 
 type CRcChannels = C.px4_msgs__msg__RcChannels
@@ -143,8 +157,7 @@ func RcChannels__Sequence_to_Go(goSlice *[]RcChannels, cSlice CRcChannels__Seque
 		cIdx := (*C.px4_msgs__msg__RcChannels__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__RcChannels * uintptr(i)),
 		))
-		(*goSlice)[i] = RcChannels{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		RcChannelsTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func RcChannels__Sequence_to_C(cSlice *CRcChannels__Sequence, goSlice []RcChannels) {
@@ -159,18 +172,16 @@ func RcChannels__Sequence_to_C(cSlice *CRcChannels__Sequence, goSlice []RcChanne
 		cIdx := (*C.px4_msgs__msg__RcChannels)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__RcChannels * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__RcChannels)(v.AsCStruct())
+		RcChannelsTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func RcChannels__Array_to_Go(goSlice []RcChannels, cSlice []CRcChannels) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		RcChannelsTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func RcChannels__Array_to_C(cSlice []CRcChannels, goSlice []RcChannels) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__RcChannels)(goSlice[i].AsCStruct())
+		RcChannelsTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

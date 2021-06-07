@@ -15,7 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/TwistWithCovarianceStamped", &TwistWithCovarianceStamped{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/TwistWithCovarianceStamped", TwistWithCovarianceStampedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTwistWithCovarianceStamped
@@ -48,40 +48,54 @@ type TwistWithCovarianceStamped struct {
 // NewTwistWithCovarianceStamped creates a new TwistWithCovarianceStamped with default values.
 func NewTwistWithCovarianceStamped() *TwistWithCovarianceStamped {
 	self := TwistWithCovarianceStamped{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *TwistWithCovarianceStamped) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.Twist.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *TwistWithCovarianceStamped) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__TwistWithCovarianceStamped())
-}
-func (t *TwistWithCovarianceStamped) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__TwistWithCovarianceStamped
-	return (unsafe.Pointer)(C.geometry_msgs__msg__TwistWithCovarianceStamped__create())
-}
-func (t *TwistWithCovarianceStamped) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.geometry_msgs__msg__TwistWithCovarianceStamped__destroy((*C.geometry_msgs__msg__TwistWithCovarianceStamped)(pointer_to_free))
-}
-func (t *TwistWithCovarianceStamped) AsCStruct() unsafe.Pointer {
-	mem := (*C.geometry_msgs__msg__TwistWithCovarianceStamped)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.twist = *(*C.geometry_msgs__msg__TwistWithCovariance)(t.Twist.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *TwistWithCovarianceStamped) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.geometry_msgs__msg__TwistWithCovarianceStamped)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.Twist.AsGoStruct(unsafe.Pointer(&mem.twist))
-}
-func (t *TwistWithCovarianceStamped) Clone() ros2types.ROS2Msg {
+func (t *TwistWithCovarianceStamped) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *TwistWithCovarianceStamped) SetDefaults() {
+	t.Header.SetDefaults()
+	t.Twist.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TwistWithCovarianceStampedTypeSupport types.MessageTypeSupport = _TwistWithCovarianceStampedTypeSupport{}
+
+type _TwistWithCovarianceStampedTypeSupport struct{}
+
+func (t _TwistWithCovarianceStampedTypeSupport) New() types.Message {
+	return NewTwistWithCovarianceStamped()
+}
+
+func (t _TwistWithCovarianceStampedTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__TwistWithCovarianceStamped
+	return (unsafe.Pointer)(C.geometry_msgs__msg__TwistWithCovarianceStamped__create())
+}
+
+func (t _TwistWithCovarianceStampedTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.geometry_msgs__msg__TwistWithCovarianceStamped__destroy((*C.geometry_msgs__msg__TwistWithCovarianceStamped)(pointer_to_free))
+}
+
+func (t _TwistWithCovarianceStampedTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*TwistWithCovarianceStamped)
+	mem := (*C.geometry_msgs__msg__TwistWithCovarianceStamped)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	TwistWithCovarianceTypeSupport.AsCStruct(unsafe.Pointer(&mem.twist), &m.Twist)
+}
+
+func (t _TwistWithCovarianceStampedTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*TwistWithCovarianceStamped)
+	mem := (*C.geometry_msgs__msg__TwistWithCovarianceStamped)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	TwistWithCovarianceTypeSupport.AsGoStruct(&m.Twist, unsafe.Pointer(&mem.twist))
+}
+
+func (t _TwistWithCovarianceStampedTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__TwistWithCovarianceStamped())
 }
 
 type CTwistWithCovarianceStamped = C.geometry_msgs__msg__TwistWithCovarianceStamped
@@ -96,8 +110,7 @@ func TwistWithCovarianceStamped__Sequence_to_Go(goSlice *[]TwistWithCovarianceSt
 		cIdx := (*C.geometry_msgs__msg__TwistWithCovarianceStamped__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__TwistWithCovarianceStamped * uintptr(i)),
 		))
-		(*goSlice)[i] = TwistWithCovarianceStamped{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TwistWithCovarianceStampedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func TwistWithCovarianceStamped__Sequence_to_C(cSlice *CTwistWithCovarianceStamped__Sequence, goSlice []TwistWithCovarianceStamped) {
@@ -112,18 +125,16 @@ func TwistWithCovarianceStamped__Sequence_to_C(cSlice *CTwistWithCovarianceStamp
 		cIdx := (*C.geometry_msgs__msg__TwistWithCovarianceStamped)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__TwistWithCovarianceStamped * uintptr(i)),
 		))
-		*cIdx = *(*C.geometry_msgs__msg__TwistWithCovarianceStamped)(v.AsCStruct())
+		TwistWithCovarianceStampedTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func TwistWithCovarianceStamped__Array_to_Go(goSlice []TwistWithCovarianceStamped, cSlice []CTwistWithCovarianceStamped) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TwistWithCovarianceStampedTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func TwistWithCovarianceStamped__Array_to_C(cSlice []CTwistWithCovarianceStamped, goSlice []TwistWithCovarianceStamped) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.geometry_msgs__msg__TwistWithCovarianceStamped)(goSlice[i].AsCStruct())
+		TwistWithCovarianceStampedTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("test_msgs/Empty", Empty)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("test_msgs/Empty", EmptyTypeSupport)
 }
 
-type _Empty struct {
-	req,resp ros2types.ROS2Msg
+type _EmptyTypeSupport struct {}
+
+func (s _EmptyTypeSupport) Request() types.MessageTypeSupport {
+	return Empty_RequestTypeSupport
 }
 
-func (s *_Empty) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _EmptyTypeSupport) Response() types.MessageTypeSupport {
+	return Empty_ResponseTypeSupport
 }
 
-func (s *_Empty) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_Empty) TypeSupport() unsafe.Pointer {
+func (s _EmptyTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__test_msgs__srv__Empty())
 }
 
 // Modifying this variable is undefined behavior.
-var Empty ros2types.Service = &_Empty{
-	req: &Empty_Request{},
-	resp: &Empty_Response{},
-}
+var EmptyTypeSupport types.ServiceTypeSupport = _EmptyTypeSupport{}

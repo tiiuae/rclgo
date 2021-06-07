@@ -15,7 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/Vector3", &Vector3{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/Vector3", Vector3TypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewVector3
@@ -47,40 +47,54 @@ type Vector3 struct {
 // NewVector3 creates a new Vector3 with default values.
 func NewVector3() *Vector3 {
 	self := Vector3{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Vector3) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Vector3) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__Vector3())
-}
-func (t *Vector3) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__Vector3
-	return (unsafe.Pointer)(C.geometry_msgs__msg__Vector3__create())
-}
-func (t *Vector3) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.geometry_msgs__msg__Vector3__destroy((*C.geometry_msgs__msg__Vector3)(pointer_to_free))
-}
-func (t *Vector3) AsCStruct() unsafe.Pointer {
-	mem := (*C.geometry_msgs__msg__Vector3)(t.PrepareMemory())
-	mem.x = C.double(t.X)
-	mem.y = C.double(t.Y)
-	mem.z = C.double(t.Z)
-	return unsafe.Pointer(mem)
-}
-func (t *Vector3) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.geometry_msgs__msg__Vector3)(ros2_message_buffer)
-	t.X = float64(mem.x)
-	t.Y = float64(mem.y)
-	t.Z = float64(mem.z)
-}
-func (t *Vector3) Clone() ros2types.ROS2Msg {
+func (t *Vector3) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Vector3) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var Vector3TypeSupport types.MessageTypeSupport = _Vector3TypeSupport{}
+
+type _Vector3TypeSupport struct{}
+
+func (t _Vector3TypeSupport) New() types.Message {
+	return NewVector3()
+}
+
+func (t _Vector3TypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__Vector3
+	return (unsafe.Pointer)(C.geometry_msgs__msg__Vector3__create())
+}
+
+func (t _Vector3TypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.geometry_msgs__msg__Vector3__destroy((*C.geometry_msgs__msg__Vector3)(pointer_to_free))
+}
+
+func (t _Vector3TypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Vector3)
+	mem := (*C.geometry_msgs__msg__Vector3)(dst)
+	mem.x = C.double(m.X)
+	mem.y = C.double(m.Y)
+	mem.z = C.double(m.Z)
+}
+
+func (t _Vector3TypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Vector3)
+	mem := (*C.geometry_msgs__msg__Vector3)(ros2_message_buffer)
+	m.X = float64(mem.x)
+	m.Y = float64(mem.y)
+	m.Z = float64(mem.z)
+}
+
+func (t _Vector3TypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__Vector3())
 }
 
 type CVector3 = C.geometry_msgs__msg__Vector3
@@ -95,8 +109,7 @@ func Vector3__Sequence_to_Go(goSlice *[]Vector3, cSlice CVector3__Sequence) {
 		cIdx := (*C.geometry_msgs__msg__Vector3__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Vector3 * uintptr(i)),
 		))
-		(*goSlice)[i] = Vector3{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		Vector3TypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Vector3__Sequence_to_C(cSlice *CVector3__Sequence, goSlice []Vector3) {
@@ -111,18 +124,16 @@ func Vector3__Sequence_to_C(cSlice *CVector3__Sequence, goSlice []Vector3) {
 		cIdx := (*C.geometry_msgs__msg__Vector3)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Vector3 * uintptr(i)),
 		))
-		*cIdx = *(*C.geometry_msgs__msg__Vector3)(v.AsCStruct())
+		Vector3TypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Vector3__Array_to_Go(goSlice []Vector3, cSlice []CVector3) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		Vector3TypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Vector3__Array_to_C(cSlice []CVector3, goSlice []Vector3) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.geometry_msgs__msg__Vector3)(goSlice[i].AsCStruct())
+		Vector3TypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

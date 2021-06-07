@@ -15,7 +15,7 @@ package rcl_interfaces_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("rcl_interfaces/GetParameterTypes_Response", &GetParameterTypes_Response{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("rcl_interfaces/GetParameterTypes_Response", GetParameterTypes_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewGetParameterTypes_Response
@@ -46,36 +46,50 @@ type GetParameterTypes_Response struct {
 // NewGetParameterTypes_Response creates a new GetParameterTypes_Response with default values.
 func NewGetParameterTypes_Response() *GetParameterTypes_Response {
 	self := GetParameterTypes_Response{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *GetParameterTypes_Response) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *GetParameterTypes_Response) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__rcl_interfaces__srv__GetParameterTypes_Response())
-}
-func (t *GetParameterTypes_Response) PrepareMemory() unsafe.Pointer { //returns *C.rcl_interfaces__srv__GetParameterTypes_Response
-	return (unsafe.Pointer)(C.rcl_interfaces__srv__GetParameterTypes_Response__create())
-}
-func (t *GetParameterTypes_Response) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.rcl_interfaces__srv__GetParameterTypes_Response__destroy((*C.rcl_interfaces__srv__GetParameterTypes_Response)(pointer_to_free))
-}
-func (t *GetParameterTypes_Response) AsCStruct() unsafe.Pointer {
-	mem := (*C.rcl_interfaces__srv__GetParameterTypes_Response)(t.PrepareMemory())
-	rosidl_runtime_c.Uint8__Sequence_to_C((*rosidl_runtime_c.CUint8__Sequence)(unsafe.Pointer(&mem.types)), t.Types)
-	return unsafe.Pointer(mem)
-}
-func (t *GetParameterTypes_Response) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.rcl_interfaces__srv__GetParameterTypes_Response)(ros2_message_buffer)
-	rosidl_runtime_c.Uint8__Sequence_to_Go(&t.Types, *(*rosidl_runtime_c.CUint8__Sequence)(unsafe.Pointer(&mem.types)))
-}
-func (t *GetParameterTypes_Response) Clone() ros2types.ROS2Msg {
+func (t *GetParameterTypes_Response) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *GetParameterTypes_Response) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var GetParameterTypes_ResponseTypeSupport types.MessageTypeSupport = _GetParameterTypes_ResponseTypeSupport{}
+
+type _GetParameterTypes_ResponseTypeSupport struct{}
+
+func (t _GetParameterTypes_ResponseTypeSupport) New() types.Message {
+	return NewGetParameterTypes_Response()
+}
+
+func (t _GetParameterTypes_ResponseTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.rcl_interfaces__srv__GetParameterTypes_Response
+	return (unsafe.Pointer)(C.rcl_interfaces__srv__GetParameterTypes_Response__create())
+}
+
+func (t _GetParameterTypes_ResponseTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.rcl_interfaces__srv__GetParameterTypes_Response__destroy((*C.rcl_interfaces__srv__GetParameterTypes_Response)(pointer_to_free))
+}
+
+func (t _GetParameterTypes_ResponseTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*GetParameterTypes_Response)
+	mem := (*C.rcl_interfaces__srv__GetParameterTypes_Response)(dst)
+	rosidl_runtime_c.Uint8__Sequence_to_C((*rosidl_runtime_c.CUint8__Sequence)(unsafe.Pointer(&mem.types)), m.Types)
+}
+
+func (t _GetParameterTypes_ResponseTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*GetParameterTypes_Response)
+	mem := (*C.rcl_interfaces__srv__GetParameterTypes_Response)(ros2_message_buffer)
+	rosidl_runtime_c.Uint8__Sequence_to_Go(&m.Types, *(*rosidl_runtime_c.CUint8__Sequence)(unsafe.Pointer(&mem.types)))
+}
+
+func (t _GetParameterTypes_ResponseTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__rcl_interfaces__srv__GetParameterTypes_Response())
 }
 
 type CGetParameterTypes_Response = C.rcl_interfaces__srv__GetParameterTypes_Response
@@ -90,8 +104,7 @@ func GetParameterTypes_Response__Sequence_to_Go(goSlice *[]GetParameterTypes_Res
 		cIdx := (*C.rcl_interfaces__srv__GetParameterTypes_Response__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rcl_interfaces__srv__GetParameterTypes_Response * uintptr(i)),
 		))
-		(*goSlice)[i] = GetParameterTypes_Response{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		GetParameterTypes_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func GetParameterTypes_Response__Sequence_to_C(cSlice *CGetParameterTypes_Response__Sequence, goSlice []GetParameterTypes_Response) {
@@ -106,18 +119,16 @@ func GetParameterTypes_Response__Sequence_to_C(cSlice *CGetParameterTypes_Respon
 		cIdx := (*C.rcl_interfaces__srv__GetParameterTypes_Response)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rcl_interfaces__srv__GetParameterTypes_Response * uintptr(i)),
 		))
-		*cIdx = *(*C.rcl_interfaces__srv__GetParameterTypes_Response)(v.AsCStruct())
+		GetParameterTypes_ResponseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func GetParameterTypes_Response__Array_to_Go(goSlice []GetParameterTypes_Response, cSlice []CGetParameterTypes_Response) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		GetParameterTypes_ResponseTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func GetParameterTypes_Response__Array_to_C(cSlice []CGetParameterTypes_Response, goSlice []GetParameterTypes_Response) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.rcl_interfaces__srv__GetParameterTypes_Response)(goSlice[i].AsCStruct())
+		GetParameterTypes_ResponseTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

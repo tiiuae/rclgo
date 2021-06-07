@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/ControlAllocatorStatus", &ControlAllocatorStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/ControlAllocatorStatus", ControlAllocatorStatusTypeSupport)
 }
 const (
 	ControlAllocatorStatus_ACTUATOR_SATURATION_OK int8 = 0// The actuator is not saturated
@@ -60,60 +60,74 @@ type ControlAllocatorStatus struct {
 // NewControlAllocatorStatus creates a new ControlAllocatorStatus with default values.
 func NewControlAllocatorStatus() *ControlAllocatorStatus {
 	self := ControlAllocatorStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *ControlAllocatorStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *ControlAllocatorStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__ControlAllocatorStatus())
-}
-func (t *ControlAllocatorStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__ControlAllocatorStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__ControlAllocatorStatus__create())
-}
-func (t *ControlAllocatorStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__ControlAllocatorStatus__destroy((*C.px4_msgs__msg__ControlAllocatorStatus)(pointer_to_free))
-}
-func (t *ControlAllocatorStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__ControlAllocatorStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.torque_setpoint_achieved = C.bool(t.TorqueSetpointAchieved)
-	cSlice_allocated_torque := mem.allocated_torque[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_allocated_torque)), t.AllocatedTorque[:])
-	cSlice_unallocated_torque := mem.unallocated_torque[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_unallocated_torque)), t.UnallocatedTorque[:])
-	mem.thrust_setpoint_achieved = C.bool(t.ThrustSetpointAchieved)
-	cSlice_allocated_thrust := mem.allocated_thrust[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_allocated_thrust)), t.AllocatedThrust[:])
-	cSlice_unallocated_thrust := mem.unallocated_thrust[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_unallocated_thrust)), t.UnallocatedThrust[:])
-	cSlice_actuator_saturation := mem.actuator_saturation[:]
-	rosidl_runtime_c.Int8__Array_to_C(*(*[]rosidl_runtime_c.CInt8)(unsafe.Pointer(&cSlice_actuator_saturation)), t.ActuatorSaturation[:])
-	return unsafe.Pointer(mem)
-}
-func (t *ControlAllocatorStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__ControlAllocatorStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TorqueSetpointAchieved = bool(mem.torque_setpoint_achieved)
-	cSlice_allocated_torque := mem.allocated_torque[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.AllocatedTorque[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_allocated_torque)))
-	cSlice_unallocated_torque := mem.unallocated_torque[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.UnallocatedTorque[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_unallocated_torque)))
-	t.ThrustSetpointAchieved = bool(mem.thrust_setpoint_achieved)
-	cSlice_allocated_thrust := mem.allocated_thrust[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.AllocatedThrust[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_allocated_thrust)))
-	cSlice_unallocated_thrust := mem.unallocated_thrust[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.UnallocatedThrust[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_unallocated_thrust)))
-	cSlice_actuator_saturation := mem.actuator_saturation[:]
-	rosidl_runtime_c.Int8__Array_to_Go(t.ActuatorSaturation[:], *(*[]rosidl_runtime_c.CInt8)(unsafe.Pointer(&cSlice_actuator_saturation)))
-}
-func (t *ControlAllocatorStatus) Clone() ros2types.ROS2Msg {
+func (t *ControlAllocatorStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *ControlAllocatorStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ControlAllocatorStatusTypeSupport types.MessageTypeSupport = _ControlAllocatorStatusTypeSupport{}
+
+type _ControlAllocatorStatusTypeSupport struct{}
+
+func (t _ControlAllocatorStatusTypeSupport) New() types.Message {
+	return NewControlAllocatorStatus()
+}
+
+func (t _ControlAllocatorStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__ControlAllocatorStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__ControlAllocatorStatus__create())
+}
+
+func (t _ControlAllocatorStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__ControlAllocatorStatus__destroy((*C.px4_msgs__msg__ControlAllocatorStatus)(pointer_to_free))
+}
+
+func (t _ControlAllocatorStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*ControlAllocatorStatus)
+	mem := (*C.px4_msgs__msg__ControlAllocatorStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.torque_setpoint_achieved = C.bool(m.TorqueSetpointAchieved)
+	cSlice_allocated_torque := mem.allocated_torque[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_allocated_torque)), m.AllocatedTorque[:])
+	cSlice_unallocated_torque := mem.unallocated_torque[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_unallocated_torque)), m.UnallocatedTorque[:])
+	mem.thrust_setpoint_achieved = C.bool(m.ThrustSetpointAchieved)
+	cSlice_allocated_thrust := mem.allocated_thrust[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_allocated_thrust)), m.AllocatedThrust[:])
+	cSlice_unallocated_thrust := mem.unallocated_thrust[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_unallocated_thrust)), m.UnallocatedThrust[:])
+	cSlice_actuator_saturation := mem.actuator_saturation[:]
+	rosidl_runtime_c.Int8__Array_to_C(*(*[]rosidl_runtime_c.CInt8)(unsafe.Pointer(&cSlice_actuator_saturation)), m.ActuatorSaturation[:])
+}
+
+func (t _ControlAllocatorStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*ControlAllocatorStatus)
+	mem := (*C.px4_msgs__msg__ControlAllocatorStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TorqueSetpointAchieved = bool(mem.torque_setpoint_achieved)
+	cSlice_allocated_torque := mem.allocated_torque[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.AllocatedTorque[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_allocated_torque)))
+	cSlice_unallocated_torque := mem.unallocated_torque[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.UnallocatedTorque[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_unallocated_torque)))
+	m.ThrustSetpointAchieved = bool(mem.thrust_setpoint_achieved)
+	cSlice_allocated_thrust := mem.allocated_thrust[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.AllocatedThrust[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_allocated_thrust)))
+	cSlice_unallocated_thrust := mem.unallocated_thrust[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.UnallocatedThrust[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_unallocated_thrust)))
+	cSlice_actuator_saturation := mem.actuator_saturation[:]
+	rosidl_runtime_c.Int8__Array_to_Go(m.ActuatorSaturation[:], *(*[]rosidl_runtime_c.CInt8)(unsafe.Pointer(&cSlice_actuator_saturation)))
+}
+
+func (t _ControlAllocatorStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__ControlAllocatorStatus())
 }
 
 type CControlAllocatorStatus = C.px4_msgs__msg__ControlAllocatorStatus
@@ -128,8 +142,7 @@ func ControlAllocatorStatus__Sequence_to_Go(goSlice *[]ControlAllocatorStatus, c
 		cIdx := (*C.px4_msgs__msg__ControlAllocatorStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__ControlAllocatorStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = ControlAllocatorStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ControlAllocatorStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func ControlAllocatorStatus__Sequence_to_C(cSlice *CControlAllocatorStatus__Sequence, goSlice []ControlAllocatorStatus) {
@@ -144,18 +157,16 @@ func ControlAllocatorStatus__Sequence_to_C(cSlice *CControlAllocatorStatus__Sequ
 		cIdx := (*C.px4_msgs__msg__ControlAllocatorStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__ControlAllocatorStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__ControlAllocatorStatus)(v.AsCStruct())
+		ControlAllocatorStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func ControlAllocatorStatus__Array_to_Go(goSlice []ControlAllocatorStatus, cSlice []CControlAllocatorStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ControlAllocatorStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func ControlAllocatorStatus__Array_to_C(cSlice []CControlAllocatorStatus, goSlice []ControlAllocatorStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__ControlAllocatorStatus)(goSlice[i].AsCStruct())
+		ControlAllocatorStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

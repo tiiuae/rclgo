@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/LandingGear", &LandingGear{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/LandingGear", LandingGearTypeSupport)
 }
 const (
 	LandingGear_GEAR_UP int8 = 1// landing gear up
@@ -51,38 +51,52 @@ type LandingGear struct {
 // NewLandingGear creates a new LandingGear with default values.
 func NewLandingGear() *LandingGear {
 	self := LandingGear{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *LandingGear) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *LandingGear) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__LandingGear())
-}
-func (t *LandingGear) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__LandingGear
-	return (unsafe.Pointer)(C.px4_msgs__msg__LandingGear__create())
-}
-func (t *LandingGear) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__LandingGear__destroy((*C.px4_msgs__msg__LandingGear)(pointer_to_free))
-}
-func (t *LandingGear) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__LandingGear)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.landing_gear = C.int8_t(t.LandingGear)
-	return unsafe.Pointer(mem)
-}
-func (t *LandingGear) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__LandingGear)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.LandingGear = int8(mem.landing_gear)
-}
-func (t *LandingGear) Clone() ros2types.ROS2Msg {
+func (t *LandingGear) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *LandingGear) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var LandingGearTypeSupport types.MessageTypeSupport = _LandingGearTypeSupport{}
+
+type _LandingGearTypeSupport struct{}
+
+func (t _LandingGearTypeSupport) New() types.Message {
+	return NewLandingGear()
+}
+
+func (t _LandingGearTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__LandingGear
+	return (unsafe.Pointer)(C.px4_msgs__msg__LandingGear__create())
+}
+
+func (t _LandingGearTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__LandingGear__destroy((*C.px4_msgs__msg__LandingGear)(pointer_to_free))
+}
+
+func (t _LandingGearTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*LandingGear)
+	mem := (*C.px4_msgs__msg__LandingGear)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.landing_gear = C.int8_t(m.LandingGear)
+}
+
+func (t _LandingGearTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*LandingGear)
+	mem := (*C.px4_msgs__msg__LandingGear)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.LandingGear = int8(mem.landing_gear)
+}
+
+func (t _LandingGearTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__LandingGear())
 }
 
 type CLandingGear = C.px4_msgs__msg__LandingGear
@@ -97,8 +111,7 @@ func LandingGear__Sequence_to_Go(goSlice *[]LandingGear, cSlice CLandingGear__Se
 		cIdx := (*C.px4_msgs__msg__LandingGear__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__LandingGear * uintptr(i)),
 		))
-		(*goSlice)[i] = LandingGear{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		LandingGearTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func LandingGear__Sequence_to_C(cSlice *CLandingGear__Sequence, goSlice []LandingGear) {
@@ -113,18 +126,16 @@ func LandingGear__Sequence_to_C(cSlice *CLandingGear__Sequence, goSlice []Landin
 		cIdx := (*C.px4_msgs__msg__LandingGear)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__LandingGear * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__LandingGear)(v.AsCStruct())
+		LandingGearTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func LandingGear__Array_to_Go(goSlice []LandingGear, cSlice []CLandingGear) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		LandingGearTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func LandingGear__Array_to_C(cSlice []CLandingGear, goSlice []LandingGear) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__LandingGear)(goSlice[i].AsCStruct())
+		LandingGearTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

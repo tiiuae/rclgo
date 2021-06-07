@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/ActuatorControls1", &ActuatorControls1{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/ActuatorControls1", ActuatorControls1TypeSupport)
 }
 const (
 	ActuatorControls1_NUM_ACTUATOR_CONTROLS uint8 = 8
@@ -69,42 +69,56 @@ type ActuatorControls1 struct {
 // NewActuatorControls1 creates a new ActuatorControls1 with default values.
 func NewActuatorControls1() *ActuatorControls1 {
 	self := ActuatorControls1{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *ActuatorControls1) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *ActuatorControls1) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__ActuatorControls1())
-}
-func (t *ActuatorControls1) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__ActuatorControls1
-	return (unsafe.Pointer)(C.px4_msgs__msg__ActuatorControls1__create())
-}
-func (t *ActuatorControls1) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__ActuatorControls1__destroy((*C.px4_msgs__msg__ActuatorControls1)(pointer_to_free))
-}
-func (t *ActuatorControls1) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__ActuatorControls1)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	cSlice_control := mem.control[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_control)), t.Control[:])
-	return unsafe.Pointer(mem)
-}
-func (t *ActuatorControls1) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__ActuatorControls1)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	cSlice_control := mem.control[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Control[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_control)))
-}
-func (t *ActuatorControls1) Clone() ros2types.ROS2Msg {
+func (t *ActuatorControls1) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *ActuatorControls1) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ActuatorControls1TypeSupport types.MessageTypeSupport = _ActuatorControls1TypeSupport{}
+
+type _ActuatorControls1TypeSupport struct{}
+
+func (t _ActuatorControls1TypeSupport) New() types.Message {
+	return NewActuatorControls1()
+}
+
+func (t _ActuatorControls1TypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__ActuatorControls1
+	return (unsafe.Pointer)(C.px4_msgs__msg__ActuatorControls1__create())
+}
+
+func (t _ActuatorControls1TypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__ActuatorControls1__destroy((*C.px4_msgs__msg__ActuatorControls1)(pointer_to_free))
+}
+
+func (t _ActuatorControls1TypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*ActuatorControls1)
+	mem := (*C.px4_msgs__msg__ActuatorControls1)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	cSlice_control := mem.control[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_control)), m.Control[:])
+}
+
+func (t _ActuatorControls1TypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*ActuatorControls1)
+	mem := (*C.px4_msgs__msg__ActuatorControls1)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	cSlice_control := mem.control[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Control[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_control)))
+}
+
+func (t _ActuatorControls1TypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__ActuatorControls1())
 }
 
 type CActuatorControls1 = C.px4_msgs__msg__ActuatorControls1
@@ -119,8 +133,7 @@ func ActuatorControls1__Sequence_to_Go(goSlice *[]ActuatorControls1, cSlice CAct
 		cIdx := (*C.px4_msgs__msg__ActuatorControls1__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__ActuatorControls1 * uintptr(i)),
 		))
-		(*goSlice)[i] = ActuatorControls1{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ActuatorControls1TypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func ActuatorControls1__Sequence_to_C(cSlice *CActuatorControls1__Sequence, goSlice []ActuatorControls1) {
@@ -135,18 +148,16 @@ func ActuatorControls1__Sequence_to_C(cSlice *CActuatorControls1__Sequence, goSl
 		cIdx := (*C.px4_msgs__msg__ActuatorControls1)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__ActuatorControls1 * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__ActuatorControls1)(v.AsCStruct())
+		ActuatorControls1TypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func ActuatorControls1__Array_to_Go(goSlice []ActuatorControls1, cSlice []CActuatorControls1) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ActuatorControls1TypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func ActuatorControls1__Array_to_C(cSlice []CActuatorControls1, goSlice []ActuatorControls1) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__ActuatorControls1)(goSlice[i].AsCStruct())
+		ActuatorControls1TypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

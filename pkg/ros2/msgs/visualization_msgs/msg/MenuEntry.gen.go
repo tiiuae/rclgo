@@ -15,7 +15,7 @@ package visualization_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("visualization_msgs/MenuEntry", &MenuEntry{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("visualization_msgs/MenuEntry", MenuEntryTypeSupport)
 }
 const (
 	MenuEntry_FEEDBACK uint8 = 0// Command_type stores the type of response desired when this menuentry is clicked.FEEDBACK: send an InteractiveMarkerFeedback message with menu_entry_id set to this entry's id.ROSRUN: execute "rosrun" with arguments given in the command field (above).ROSLAUNCH: execute "roslaunch" with arguments given in the command field (above).
@@ -47,54 +47,66 @@ const (
 type MenuEntry struct {
 	Id uint32 `yaml:"id"`// ID is a number for each menu entry.  Must be unique within thecontrol, and should never be 0.
 	ParentId uint32 `yaml:"parent_id"`// ID of the parent of this menu entry, if it is a submenu.  If thismenu entry is a top-level entry, set parent_id to 0.
-	Title rosidl_runtime_c.String `yaml:"title"`// menu / entry title
-	Command rosidl_runtime_c.String `yaml:"command"`// Arguments to command indicated by command_type (below)
+	Title string `yaml:"title"`// menu / entry title
+	Command string `yaml:"command"`// Arguments to command indicated by command_type (below)
 	CommandType uint8 `yaml:"command_type"`// Command_type stores the type of response desired when this menuentry is clicked.FEEDBACK: send an InteractiveMarkerFeedback message with menu_entry_id set to this entry's id.ROSRUN: execute "rosrun" with arguments given in the command field (above).ROSLAUNCH: execute "roslaunch" with arguments given in the command field (above).
 }
 
 // NewMenuEntry creates a new MenuEntry with default values.
 func NewMenuEntry() *MenuEntry {
 	self := MenuEntry{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *MenuEntry) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Title.SetDefaults("")
-	t.Command.SetDefaults("")
-	
-	return t
-}
-
-func (t *MenuEntry) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__visualization_msgs__msg__MenuEntry())
-}
-func (t *MenuEntry) PrepareMemory() unsafe.Pointer { //returns *C.visualization_msgs__msg__MenuEntry
-	return (unsafe.Pointer)(C.visualization_msgs__msg__MenuEntry__create())
-}
-func (t *MenuEntry) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.visualization_msgs__msg__MenuEntry__destroy((*C.visualization_msgs__msg__MenuEntry)(pointer_to_free))
-}
-func (t *MenuEntry) AsCStruct() unsafe.Pointer {
-	mem := (*C.visualization_msgs__msg__MenuEntry)(t.PrepareMemory())
-	mem.id = C.uint32_t(t.Id)
-	mem.parent_id = C.uint32_t(t.ParentId)
-	mem.title = *(*C.rosidl_runtime_c__String)(t.Title.AsCStruct())
-	mem.command = *(*C.rosidl_runtime_c__String)(t.Command.AsCStruct())
-	mem.command_type = C.uint8_t(t.CommandType)
-	return unsafe.Pointer(mem)
-}
-func (t *MenuEntry) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.visualization_msgs__msg__MenuEntry)(ros2_message_buffer)
-	t.Id = uint32(mem.id)
-	t.ParentId = uint32(mem.parent_id)
-	t.Title.AsGoStruct(unsafe.Pointer(&mem.title))
-	t.Command.AsGoStruct(unsafe.Pointer(&mem.command))
-	t.CommandType = uint8(mem.command_type)
-}
-func (t *MenuEntry) Clone() ros2types.ROS2Msg {
+func (t *MenuEntry) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *MenuEntry) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var MenuEntryTypeSupport types.MessageTypeSupport = _MenuEntryTypeSupport{}
+
+type _MenuEntryTypeSupport struct{}
+
+func (t _MenuEntryTypeSupport) New() types.Message {
+	return NewMenuEntry()
+}
+
+func (t _MenuEntryTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.visualization_msgs__msg__MenuEntry
+	return (unsafe.Pointer)(C.visualization_msgs__msg__MenuEntry__create())
+}
+
+func (t _MenuEntryTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.visualization_msgs__msg__MenuEntry__destroy((*C.visualization_msgs__msg__MenuEntry)(pointer_to_free))
+}
+
+func (t _MenuEntryTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*MenuEntry)
+	mem := (*C.visualization_msgs__msg__MenuEntry)(dst)
+	mem.id = C.uint32_t(m.Id)
+	mem.parent_id = C.uint32_t(m.ParentId)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.title), m.Title)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.command), m.Command)
+	mem.command_type = C.uint8_t(m.CommandType)
+}
+
+func (t _MenuEntryTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*MenuEntry)
+	mem := (*C.visualization_msgs__msg__MenuEntry)(ros2_message_buffer)
+	m.Id = uint32(mem.id)
+	m.ParentId = uint32(mem.parent_id)
+	rosidl_runtime_c.StringAsGoStruct(&m.Title, unsafe.Pointer(&mem.title))
+	rosidl_runtime_c.StringAsGoStruct(&m.Command, unsafe.Pointer(&mem.command))
+	m.CommandType = uint8(mem.command_type)
+}
+
+func (t _MenuEntryTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__visualization_msgs__msg__MenuEntry())
 }
 
 type CMenuEntry = C.visualization_msgs__msg__MenuEntry
@@ -109,8 +121,7 @@ func MenuEntry__Sequence_to_Go(goSlice *[]MenuEntry, cSlice CMenuEntry__Sequence
 		cIdx := (*C.visualization_msgs__msg__MenuEntry__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_visualization_msgs__msg__MenuEntry * uintptr(i)),
 		))
-		(*goSlice)[i] = MenuEntry{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		MenuEntryTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func MenuEntry__Sequence_to_C(cSlice *CMenuEntry__Sequence, goSlice []MenuEntry) {
@@ -125,18 +136,16 @@ func MenuEntry__Sequence_to_C(cSlice *CMenuEntry__Sequence, goSlice []MenuEntry)
 		cIdx := (*C.visualization_msgs__msg__MenuEntry)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_visualization_msgs__msg__MenuEntry * uintptr(i)),
 		))
-		*cIdx = *(*C.visualization_msgs__msg__MenuEntry)(v.AsCStruct())
+		MenuEntryTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func MenuEntry__Array_to_Go(goSlice []MenuEntry, cSlice []CMenuEntry) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		MenuEntryTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func MenuEntry__Array_to_C(cSlice []CMenuEntry, goSlice []MenuEntry) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.visualization_msgs__msg__MenuEntry)(goSlice[i].AsCStruct())
+		MenuEntryTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/RegionOfInterest", &RegionOfInterest{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/RegionOfInterest", RegionOfInterestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewRegionOfInterest
@@ -49,44 +49,58 @@ type RegionOfInterest struct {
 // NewRegionOfInterest creates a new RegionOfInterest with default values.
 func NewRegionOfInterest() *RegionOfInterest {
 	self := RegionOfInterest{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *RegionOfInterest) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *RegionOfInterest) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__RegionOfInterest())
-}
-func (t *RegionOfInterest) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__RegionOfInterest
-	return (unsafe.Pointer)(C.sensor_msgs__msg__RegionOfInterest__create())
-}
-func (t *RegionOfInterest) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__msg__RegionOfInterest__destroy((*C.sensor_msgs__msg__RegionOfInterest)(pointer_to_free))
-}
-func (t *RegionOfInterest) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__msg__RegionOfInterest)(t.PrepareMemory())
-	mem.x_offset = C.uint32_t(t.XOffset)
-	mem.y_offset = C.uint32_t(t.YOffset)
-	mem.height = C.uint32_t(t.Height)
-	mem.width = C.uint32_t(t.Width)
-	mem.do_rectify = C.bool(t.DoRectify)
-	return unsafe.Pointer(mem)
-}
-func (t *RegionOfInterest) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__msg__RegionOfInterest)(ros2_message_buffer)
-	t.XOffset = uint32(mem.x_offset)
-	t.YOffset = uint32(mem.y_offset)
-	t.Height = uint32(mem.height)
-	t.Width = uint32(mem.width)
-	t.DoRectify = bool(mem.do_rectify)
-}
-func (t *RegionOfInterest) Clone() ros2types.ROS2Msg {
+func (t *RegionOfInterest) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *RegionOfInterest) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var RegionOfInterestTypeSupport types.MessageTypeSupport = _RegionOfInterestTypeSupport{}
+
+type _RegionOfInterestTypeSupport struct{}
+
+func (t _RegionOfInterestTypeSupport) New() types.Message {
+	return NewRegionOfInterest()
+}
+
+func (t _RegionOfInterestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__RegionOfInterest
+	return (unsafe.Pointer)(C.sensor_msgs__msg__RegionOfInterest__create())
+}
+
+func (t _RegionOfInterestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__msg__RegionOfInterest__destroy((*C.sensor_msgs__msg__RegionOfInterest)(pointer_to_free))
+}
+
+func (t _RegionOfInterestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*RegionOfInterest)
+	mem := (*C.sensor_msgs__msg__RegionOfInterest)(dst)
+	mem.x_offset = C.uint32_t(m.XOffset)
+	mem.y_offset = C.uint32_t(m.YOffset)
+	mem.height = C.uint32_t(m.Height)
+	mem.width = C.uint32_t(m.Width)
+	mem.do_rectify = C.bool(m.DoRectify)
+}
+
+func (t _RegionOfInterestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*RegionOfInterest)
+	mem := (*C.sensor_msgs__msg__RegionOfInterest)(ros2_message_buffer)
+	m.XOffset = uint32(mem.x_offset)
+	m.YOffset = uint32(mem.y_offset)
+	m.Height = uint32(mem.height)
+	m.Width = uint32(mem.width)
+	m.DoRectify = bool(mem.do_rectify)
+}
+
+func (t _RegionOfInterestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__RegionOfInterest())
 }
 
 type CRegionOfInterest = C.sensor_msgs__msg__RegionOfInterest
@@ -101,8 +115,7 @@ func RegionOfInterest__Sequence_to_Go(goSlice *[]RegionOfInterest, cSlice CRegio
 		cIdx := (*C.sensor_msgs__msg__RegionOfInterest__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__RegionOfInterest * uintptr(i)),
 		))
-		(*goSlice)[i] = RegionOfInterest{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		RegionOfInterestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func RegionOfInterest__Sequence_to_C(cSlice *CRegionOfInterest__Sequence, goSlice []RegionOfInterest) {
@@ -117,18 +130,16 @@ func RegionOfInterest__Sequence_to_C(cSlice *CRegionOfInterest__Sequence, goSlic
 		cIdx := (*C.sensor_msgs__msg__RegionOfInterest)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__RegionOfInterest * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__msg__RegionOfInterest)(v.AsCStruct())
+		RegionOfInterestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func RegionOfInterest__Array_to_Go(goSlice []RegionOfInterest, cSlice []CRegionOfInterest) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		RegionOfInterestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func RegionOfInterest__Array_to_C(cSlice []CRegionOfInterest, goSlice []RegionOfInterest) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__msg__RegionOfInterest)(goSlice[i].AsCStruct())
+		RegionOfInterestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

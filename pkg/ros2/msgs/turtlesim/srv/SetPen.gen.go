@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("turtlesim/SetPen", SetPen)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("turtlesim/SetPen", SetPenTypeSupport)
 }
 
-type _SetPen struct {
-	req,resp ros2types.ROS2Msg
+type _SetPenTypeSupport struct {}
+
+func (s _SetPenTypeSupport) Request() types.MessageTypeSupport {
+	return SetPen_RequestTypeSupport
 }
 
-func (s *_SetPen) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _SetPenTypeSupport) Response() types.MessageTypeSupport {
+	return SetPen_ResponseTypeSupport
 }
 
-func (s *_SetPen) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_SetPen) TypeSupport() unsafe.Pointer {
+func (s _SetPenTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__turtlesim__srv__SetPen())
 }
 
 // Modifying this variable is undefined behavior.
-var SetPen ros2types.Service = &_SetPen{
-	req: &SetPen_Request{},
-	resp: &SetPen_Response{},
-}
+var SetPenTypeSupport types.ServiceTypeSupport = _SetPenTypeSupport{}

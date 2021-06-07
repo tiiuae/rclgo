@@ -15,7 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("std_msgs/Char", &Char{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("std_msgs/Char", CharTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewChar
@@ -45,36 +45,50 @@ type Char struct {
 // NewChar creates a new Char with default values.
 func NewChar() *Char {
 	self := Char{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Char) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Char) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__std_msgs__msg__Char())
-}
-func (t *Char) PrepareMemory() unsafe.Pointer { //returns *C.std_msgs__msg__Char
-	return (unsafe.Pointer)(C.std_msgs__msg__Char__create())
-}
-func (t *Char) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.std_msgs__msg__Char__destroy((*C.std_msgs__msg__Char)(pointer_to_free))
-}
-func (t *Char) AsCStruct() unsafe.Pointer {
-	mem := (*C.std_msgs__msg__Char)(t.PrepareMemory())
-	mem.data = C.uchar(t.Data)
-	return unsafe.Pointer(mem)
-}
-func (t *Char) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.std_msgs__msg__Char)(ros2_message_buffer)
-	t.Data = byte(mem.data)
-}
-func (t *Char) Clone() ros2types.ROS2Msg {
+func (t *Char) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Char) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var CharTypeSupport types.MessageTypeSupport = _CharTypeSupport{}
+
+type _CharTypeSupport struct{}
+
+func (t _CharTypeSupport) New() types.Message {
+	return NewChar()
+}
+
+func (t _CharTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.std_msgs__msg__Char
+	return (unsafe.Pointer)(C.std_msgs__msg__Char__create())
+}
+
+func (t _CharTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.std_msgs__msg__Char__destroy((*C.std_msgs__msg__Char)(pointer_to_free))
+}
+
+func (t _CharTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Char)
+	mem := (*C.std_msgs__msg__Char)(dst)
+	mem.data = C.uchar(m.Data)
+}
+
+func (t _CharTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Char)
+	mem := (*C.std_msgs__msg__Char)(ros2_message_buffer)
+	m.Data = byte(mem.data)
+}
+
+func (t _CharTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__std_msgs__msg__Char())
 }
 
 type CChar = C.std_msgs__msg__Char
@@ -89,8 +103,7 @@ func Char__Sequence_to_Go(goSlice *[]Char, cSlice CChar__Sequence) {
 		cIdx := (*C.std_msgs__msg__Char__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__Char * uintptr(i)),
 		))
-		(*goSlice)[i] = Char{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		CharTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Char__Sequence_to_C(cSlice *CChar__Sequence, goSlice []Char) {
@@ -105,18 +118,16 @@ func Char__Sequence_to_C(cSlice *CChar__Sequence, goSlice []Char) {
 		cIdx := (*C.std_msgs__msg__Char)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__Char * uintptr(i)),
 		))
-		*cIdx = *(*C.std_msgs__msg__Char)(v.AsCStruct())
+		CharTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Char__Array_to_Go(goSlice []Char, cSlice []CChar) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		CharTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Char__Array_to_C(cSlice []CChar, goSlice []Char) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.std_msgs__msg__Char)(goSlice[i].AsCStruct())
+		CharTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

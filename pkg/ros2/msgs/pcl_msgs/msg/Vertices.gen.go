@@ -15,7 +15,7 @@ package pcl_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("pcl_msgs/Vertices", &Vertices{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("pcl_msgs/Vertices", VerticesTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewVertices
@@ -46,36 +46,50 @@ type Vertices struct {
 // NewVertices creates a new Vertices with default values.
 func NewVertices() *Vertices {
 	self := Vertices{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Vertices) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Vertices) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__pcl_msgs__msg__Vertices())
-}
-func (t *Vertices) PrepareMemory() unsafe.Pointer { //returns *C.pcl_msgs__msg__Vertices
-	return (unsafe.Pointer)(C.pcl_msgs__msg__Vertices__create())
-}
-func (t *Vertices) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.pcl_msgs__msg__Vertices__destroy((*C.pcl_msgs__msg__Vertices)(pointer_to_free))
-}
-func (t *Vertices) AsCStruct() unsafe.Pointer {
-	mem := (*C.pcl_msgs__msg__Vertices)(t.PrepareMemory())
-	rosidl_runtime_c.Uint32__Sequence_to_C((*rosidl_runtime_c.CUint32__Sequence)(unsafe.Pointer(&mem.vertices)), t.Vertices)
-	return unsafe.Pointer(mem)
-}
-func (t *Vertices) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.pcl_msgs__msg__Vertices)(ros2_message_buffer)
-	rosidl_runtime_c.Uint32__Sequence_to_Go(&t.Vertices, *(*rosidl_runtime_c.CUint32__Sequence)(unsafe.Pointer(&mem.vertices)))
-}
-func (t *Vertices) Clone() ros2types.ROS2Msg {
+func (t *Vertices) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Vertices) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VerticesTypeSupport types.MessageTypeSupport = _VerticesTypeSupport{}
+
+type _VerticesTypeSupport struct{}
+
+func (t _VerticesTypeSupport) New() types.Message {
+	return NewVertices()
+}
+
+func (t _VerticesTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.pcl_msgs__msg__Vertices
+	return (unsafe.Pointer)(C.pcl_msgs__msg__Vertices__create())
+}
+
+func (t _VerticesTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.pcl_msgs__msg__Vertices__destroy((*C.pcl_msgs__msg__Vertices)(pointer_to_free))
+}
+
+func (t _VerticesTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Vertices)
+	mem := (*C.pcl_msgs__msg__Vertices)(dst)
+	rosidl_runtime_c.Uint32__Sequence_to_C((*rosidl_runtime_c.CUint32__Sequence)(unsafe.Pointer(&mem.vertices)), m.Vertices)
+}
+
+func (t _VerticesTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Vertices)
+	mem := (*C.pcl_msgs__msg__Vertices)(ros2_message_buffer)
+	rosidl_runtime_c.Uint32__Sequence_to_Go(&m.Vertices, *(*rosidl_runtime_c.CUint32__Sequence)(unsafe.Pointer(&mem.vertices)))
+}
+
+func (t _VerticesTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__pcl_msgs__msg__Vertices())
 }
 
 type CVertices = C.pcl_msgs__msg__Vertices
@@ -90,8 +104,7 @@ func Vertices__Sequence_to_Go(goSlice *[]Vertices, cSlice CVertices__Sequence) {
 		cIdx := (*C.pcl_msgs__msg__Vertices__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_pcl_msgs__msg__Vertices * uintptr(i)),
 		))
-		(*goSlice)[i] = Vertices{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VerticesTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Vertices__Sequence_to_C(cSlice *CVertices__Sequence, goSlice []Vertices) {
@@ -106,18 +119,16 @@ func Vertices__Sequence_to_C(cSlice *CVertices__Sequence, goSlice []Vertices) {
 		cIdx := (*C.pcl_msgs__msg__Vertices)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_pcl_msgs__msg__Vertices * uintptr(i)),
 		))
-		*cIdx = *(*C.pcl_msgs__msg__Vertices)(v.AsCStruct())
+		VerticesTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Vertices__Array_to_Go(goSlice []Vertices, cSlice []CVertices) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VerticesTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Vertices__Array_to_C(cSlice []CVertices, goSlice []Vertices) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.pcl_msgs__msg__Vertices)(goSlice[i].AsCStruct())
+		VerticesTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

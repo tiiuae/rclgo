@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/RcParameterMap", &RcParameterMap{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/RcParameterMap", RcParameterMapTypeSupport)
 }
 const (
 	RcParameterMap_RC_PARAM_MAP_NCHAN uint8 = 3// This limit is also hardcoded in the enum RC_CHANNELS_FUNCTION in rc_channels.h
@@ -57,64 +57,78 @@ type RcParameterMap struct {
 // NewRcParameterMap creates a new RcParameterMap with default values.
 func NewRcParameterMap() *RcParameterMap {
 	self := RcParameterMap{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *RcParameterMap) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *RcParameterMap) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__RcParameterMap())
-}
-func (t *RcParameterMap) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__RcParameterMap
-	return (unsafe.Pointer)(C.px4_msgs__msg__RcParameterMap__create())
-}
-func (t *RcParameterMap) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__RcParameterMap__destroy((*C.px4_msgs__msg__RcParameterMap)(pointer_to_free))
-}
-func (t *RcParameterMap) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__RcParameterMap)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	cSlice_valid := mem.valid[:]
-	rosidl_runtime_c.Bool__Array_to_C(*(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_valid)), t.Valid[:])
-	cSlice_param_index := mem.param_index[:]
-	rosidl_runtime_c.Int32__Array_to_C(*(*[]rosidl_runtime_c.CInt32)(unsafe.Pointer(&cSlice_param_index)), t.ParamIndex[:])
-	cSlice_param_id := mem.param_id[:]
-	rosidl_runtime_c.Char__Array_to_C(*(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_param_id)), t.ParamId[:])
-	cSlice_scale := mem.scale[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_scale)), t.Scale[:])
-	cSlice_value0 := mem.value0[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_value0)), t.Value0[:])
-	cSlice_value_min := mem.value_min[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_value_min)), t.ValueMin[:])
-	cSlice_value_max := mem.value_max[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_value_max)), t.ValueMax[:])
-	return unsafe.Pointer(mem)
-}
-func (t *RcParameterMap) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__RcParameterMap)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	cSlice_valid := mem.valid[:]
-	rosidl_runtime_c.Bool__Array_to_Go(t.Valid[:], *(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_valid)))
-	cSlice_param_index := mem.param_index[:]
-	rosidl_runtime_c.Int32__Array_to_Go(t.ParamIndex[:], *(*[]rosidl_runtime_c.CInt32)(unsafe.Pointer(&cSlice_param_index)))
-	cSlice_param_id := mem.param_id[:]
-	rosidl_runtime_c.Char__Array_to_Go(t.ParamId[:], *(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_param_id)))
-	cSlice_scale := mem.scale[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Scale[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_scale)))
-	cSlice_value0 := mem.value0[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Value0[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_value0)))
-	cSlice_value_min := mem.value_min[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.ValueMin[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_value_min)))
-	cSlice_value_max := mem.value_max[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.ValueMax[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_value_max)))
-}
-func (t *RcParameterMap) Clone() ros2types.ROS2Msg {
+func (t *RcParameterMap) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *RcParameterMap) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var RcParameterMapTypeSupport types.MessageTypeSupport = _RcParameterMapTypeSupport{}
+
+type _RcParameterMapTypeSupport struct{}
+
+func (t _RcParameterMapTypeSupport) New() types.Message {
+	return NewRcParameterMap()
+}
+
+func (t _RcParameterMapTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__RcParameterMap
+	return (unsafe.Pointer)(C.px4_msgs__msg__RcParameterMap__create())
+}
+
+func (t _RcParameterMapTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__RcParameterMap__destroy((*C.px4_msgs__msg__RcParameterMap)(pointer_to_free))
+}
+
+func (t _RcParameterMapTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*RcParameterMap)
+	mem := (*C.px4_msgs__msg__RcParameterMap)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	cSlice_valid := mem.valid[:]
+	rosidl_runtime_c.Bool__Array_to_C(*(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_valid)), m.Valid[:])
+	cSlice_param_index := mem.param_index[:]
+	rosidl_runtime_c.Int32__Array_to_C(*(*[]rosidl_runtime_c.CInt32)(unsafe.Pointer(&cSlice_param_index)), m.ParamIndex[:])
+	cSlice_param_id := mem.param_id[:]
+	rosidl_runtime_c.Char__Array_to_C(*(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_param_id)), m.ParamId[:])
+	cSlice_scale := mem.scale[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_scale)), m.Scale[:])
+	cSlice_value0 := mem.value0[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_value0)), m.Value0[:])
+	cSlice_value_min := mem.value_min[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_value_min)), m.ValueMin[:])
+	cSlice_value_max := mem.value_max[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_value_max)), m.ValueMax[:])
+}
+
+func (t _RcParameterMapTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*RcParameterMap)
+	mem := (*C.px4_msgs__msg__RcParameterMap)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	cSlice_valid := mem.valid[:]
+	rosidl_runtime_c.Bool__Array_to_Go(m.Valid[:], *(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_valid)))
+	cSlice_param_index := mem.param_index[:]
+	rosidl_runtime_c.Int32__Array_to_Go(m.ParamIndex[:], *(*[]rosidl_runtime_c.CInt32)(unsafe.Pointer(&cSlice_param_index)))
+	cSlice_param_id := mem.param_id[:]
+	rosidl_runtime_c.Char__Array_to_Go(m.ParamId[:], *(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_param_id)))
+	cSlice_scale := mem.scale[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Scale[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_scale)))
+	cSlice_value0 := mem.value0[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Value0[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_value0)))
+	cSlice_value_min := mem.value_min[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.ValueMin[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_value_min)))
+	cSlice_value_max := mem.value_max[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.ValueMax[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_value_max)))
+}
+
+func (t _RcParameterMapTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__RcParameterMap())
 }
 
 type CRcParameterMap = C.px4_msgs__msg__RcParameterMap
@@ -129,8 +143,7 @@ func RcParameterMap__Sequence_to_Go(goSlice *[]RcParameterMap, cSlice CRcParamet
 		cIdx := (*C.px4_msgs__msg__RcParameterMap__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__RcParameterMap * uintptr(i)),
 		))
-		(*goSlice)[i] = RcParameterMap{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		RcParameterMapTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func RcParameterMap__Sequence_to_C(cSlice *CRcParameterMap__Sequence, goSlice []RcParameterMap) {
@@ -145,18 +158,16 @@ func RcParameterMap__Sequence_to_C(cSlice *CRcParameterMap__Sequence, goSlice []
 		cIdx := (*C.px4_msgs__msg__RcParameterMap)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__RcParameterMap * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__RcParameterMap)(v.AsCStruct())
+		RcParameterMapTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func RcParameterMap__Array_to_Go(goSlice []RcParameterMap, cSlice []CRcParameterMap) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		RcParameterMapTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func RcParameterMap__Array_to_C(cSlice []CRcParameterMap, goSlice []RcParameterMap) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__RcParameterMap)(goSlice[i].AsCStruct())
+		RcParameterMapTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

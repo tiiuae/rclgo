@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/SensorBaro", &SensorBaro{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/SensorBaro", SensorBaroTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSensorBaro
@@ -50,46 +50,60 @@ type SensorBaro struct {
 // NewSensorBaro creates a new SensorBaro with default values.
 func NewSensorBaro() *SensorBaro {
 	self := SensorBaro{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SensorBaro) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *SensorBaro) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__SensorBaro())
-}
-func (t *SensorBaro) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__SensorBaro
-	return (unsafe.Pointer)(C.px4_msgs__msg__SensorBaro__create())
-}
-func (t *SensorBaro) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__SensorBaro__destroy((*C.px4_msgs__msg__SensorBaro)(pointer_to_free))
-}
-func (t *SensorBaro) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__SensorBaro)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	mem.device_id = C.uint32_t(t.DeviceId)
-	mem.error_count = C.uint32_t(t.ErrorCount)
-	mem.pressure = C.float(t.Pressure)
-	mem.temperature = C.float(t.Temperature)
-	return unsafe.Pointer(mem)
-}
-func (t *SensorBaro) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__SensorBaro)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	t.DeviceId = uint32(mem.device_id)
-	t.ErrorCount = uint32(mem.error_count)
-	t.Pressure = float32(mem.pressure)
-	t.Temperature = float32(mem.temperature)
-}
-func (t *SensorBaro) Clone() ros2types.ROS2Msg {
+func (t *SensorBaro) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SensorBaro) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SensorBaroTypeSupport types.MessageTypeSupport = _SensorBaroTypeSupport{}
+
+type _SensorBaroTypeSupport struct{}
+
+func (t _SensorBaroTypeSupport) New() types.Message {
+	return NewSensorBaro()
+}
+
+func (t _SensorBaroTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__SensorBaro
+	return (unsafe.Pointer)(C.px4_msgs__msg__SensorBaro__create())
+}
+
+func (t _SensorBaroTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__SensorBaro__destroy((*C.px4_msgs__msg__SensorBaro)(pointer_to_free))
+}
+
+func (t _SensorBaroTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*SensorBaro)
+	mem := (*C.px4_msgs__msg__SensorBaro)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	mem.device_id = C.uint32_t(m.DeviceId)
+	mem.error_count = C.uint32_t(m.ErrorCount)
+	mem.pressure = C.float(m.Pressure)
+	mem.temperature = C.float(m.Temperature)
+}
+
+func (t _SensorBaroTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*SensorBaro)
+	mem := (*C.px4_msgs__msg__SensorBaro)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	m.DeviceId = uint32(mem.device_id)
+	m.ErrorCount = uint32(mem.error_count)
+	m.Pressure = float32(mem.pressure)
+	m.Temperature = float32(mem.temperature)
+}
+
+func (t _SensorBaroTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__SensorBaro())
 }
 
 type CSensorBaro = C.px4_msgs__msg__SensorBaro
@@ -104,8 +118,7 @@ func SensorBaro__Sequence_to_Go(goSlice *[]SensorBaro, cSlice CSensorBaro__Seque
 		cIdx := (*C.px4_msgs__msg__SensorBaro__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__SensorBaro * uintptr(i)),
 		))
-		(*goSlice)[i] = SensorBaro{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SensorBaroTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SensorBaro__Sequence_to_C(cSlice *CSensorBaro__Sequence, goSlice []SensorBaro) {
@@ -120,18 +133,16 @@ func SensorBaro__Sequence_to_C(cSlice *CSensorBaro__Sequence, goSlice []SensorBa
 		cIdx := (*C.px4_msgs__msg__SensorBaro)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__SensorBaro * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__SensorBaro)(v.AsCStruct())
+		SensorBaroTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SensorBaro__Array_to_Go(goSlice []SensorBaro, cSlice []CSensorBaro) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SensorBaroTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SensorBaro__Array_to_C(cSlice []CSensorBaro, goSlice []SensorBaro) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__SensorBaro)(goSlice[i].AsCStruct())
+		SensorBaroTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleLocalPosition", &VehicleLocalPosition{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleLocalPosition", VehicleLocalPositionTypeSupport)
 }
 const (
 	VehicleLocalPosition_DIST_BOTTOM_SENSOR_NONE uint8 = 0// Distance to surface
@@ -94,126 +94,140 @@ type VehicleLocalPosition struct {
 // NewVehicleLocalPosition creates a new VehicleLocalPosition with default values.
 func NewVehicleLocalPosition() *VehicleLocalPosition {
 	self := VehicleLocalPosition{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *VehicleLocalPosition) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *VehicleLocalPosition) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleLocalPosition())
-}
-func (t *VehicleLocalPosition) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleLocalPosition
-	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleLocalPosition__create())
-}
-func (t *VehicleLocalPosition) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__VehicleLocalPosition__destroy((*C.px4_msgs__msg__VehicleLocalPosition)(pointer_to_free))
-}
-func (t *VehicleLocalPosition) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__VehicleLocalPosition)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	mem.xy_valid = C.bool(t.XyValid)
-	mem.z_valid = C.bool(t.ZValid)
-	mem.v_xy_valid = C.bool(t.VXyValid)
-	mem.v_z_valid = C.bool(t.VZValid)
-	mem.x = C.float(t.X)
-	mem.y = C.float(t.Y)
-	mem.z = C.float(t.Z)
-	cSlice_delta_xy := mem.delta_xy[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_xy)), t.DeltaXy[:])
-	mem.xy_reset_counter = C.uint8_t(t.XyResetCounter)
-	mem.delta_z = C.float(t.DeltaZ)
-	mem.z_reset_counter = C.uint8_t(t.ZResetCounter)
-	mem.vx = C.float(t.Vx)
-	mem.vy = C.float(t.Vy)
-	mem.vz = C.float(t.Vz)
-	mem.z_deriv = C.float(t.ZDeriv)
-	cSlice_delta_vxy := mem.delta_vxy[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_vxy)), t.DeltaVxy[:])
-	mem.vxy_reset_counter = C.uint8_t(t.VxyResetCounter)
-	mem.delta_vz = C.float(t.DeltaVz)
-	mem.vz_reset_counter = C.uint8_t(t.VzResetCounter)
-	mem.ax = C.float(t.Ax)
-	mem.ay = C.float(t.Ay)
-	mem.az = C.float(t.Az)
-	mem.heading = C.float(t.Heading)
-	mem.delta_heading = C.float(t.DeltaHeading)
-	mem.heading_reset_counter = C.uint8_t(t.HeadingResetCounter)
-	mem.xy_global = C.bool(t.XyGlobal)
-	mem.z_global = C.bool(t.ZGlobal)
-	mem.ref_timestamp = C.uint64_t(t.RefTimestamp)
-	mem.ref_lat = C.double(t.RefLat)
-	mem.ref_lon = C.double(t.RefLon)
-	mem.ref_alt = C.float(t.RefAlt)
-	mem.dist_bottom = C.float(t.DistBottom)
-	mem.dist_bottom_valid = C.bool(t.DistBottomValid)
-	mem.dist_bottom_sensor_bitfield = C.uint8_t(t.DistBottomSensorBitfield)
-	mem.eph = C.float(t.Eph)
-	mem.epv = C.float(t.Epv)
-	mem.evh = C.float(t.Evh)
-	mem.evv = C.float(t.Evv)
-	mem.vxy_max = C.float(t.VxyMax)
-	mem.vz_max = C.float(t.VzMax)
-	mem.hagl_min = C.float(t.HaglMin)
-	mem.hagl_max = C.float(t.HaglMax)
-	return unsafe.Pointer(mem)
-}
-func (t *VehicleLocalPosition) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__VehicleLocalPosition)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	t.XyValid = bool(mem.xy_valid)
-	t.ZValid = bool(mem.z_valid)
-	t.VXyValid = bool(mem.v_xy_valid)
-	t.VZValid = bool(mem.v_z_valid)
-	t.X = float32(mem.x)
-	t.Y = float32(mem.y)
-	t.Z = float32(mem.z)
-	cSlice_delta_xy := mem.delta_xy[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.DeltaXy[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_xy)))
-	t.XyResetCounter = uint8(mem.xy_reset_counter)
-	t.DeltaZ = float32(mem.delta_z)
-	t.ZResetCounter = uint8(mem.z_reset_counter)
-	t.Vx = float32(mem.vx)
-	t.Vy = float32(mem.vy)
-	t.Vz = float32(mem.vz)
-	t.ZDeriv = float32(mem.z_deriv)
-	cSlice_delta_vxy := mem.delta_vxy[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.DeltaVxy[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_vxy)))
-	t.VxyResetCounter = uint8(mem.vxy_reset_counter)
-	t.DeltaVz = float32(mem.delta_vz)
-	t.VzResetCounter = uint8(mem.vz_reset_counter)
-	t.Ax = float32(mem.ax)
-	t.Ay = float32(mem.ay)
-	t.Az = float32(mem.az)
-	t.Heading = float32(mem.heading)
-	t.DeltaHeading = float32(mem.delta_heading)
-	t.HeadingResetCounter = uint8(mem.heading_reset_counter)
-	t.XyGlobal = bool(mem.xy_global)
-	t.ZGlobal = bool(mem.z_global)
-	t.RefTimestamp = uint64(mem.ref_timestamp)
-	t.RefLat = float64(mem.ref_lat)
-	t.RefLon = float64(mem.ref_lon)
-	t.RefAlt = float32(mem.ref_alt)
-	t.DistBottom = float32(mem.dist_bottom)
-	t.DistBottomValid = bool(mem.dist_bottom_valid)
-	t.DistBottomSensorBitfield = uint8(mem.dist_bottom_sensor_bitfield)
-	t.Eph = float32(mem.eph)
-	t.Epv = float32(mem.epv)
-	t.Evh = float32(mem.evh)
-	t.Evv = float32(mem.evv)
-	t.VxyMax = float32(mem.vxy_max)
-	t.VzMax = float32(mem.vz_max)
-	t.HaglMin = float32(mem.hagl_min)
-	t.HaglMax = float32(mem.hagl_max)
-}
-func (t *VehicleLocalPosition) Clone() ros2types.ROS2Msg {
+func (t *VehicleLocalPosition) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *VehicleLocalPosition) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VehicleLocalPositionTypeSupport types.MessageTypeSupport = _VehicleLocalPositionTypeSupport{}
+
+type _VehicleLocalPositionTypeSupport struct{}
+
+func (t _VehicleLocalPositionTypeSupport) New() types.Message {
+	return NewVehicleLocalPosition()
+}
+
+func (t _VehicleLocalPositionTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleLocalPosition
+	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleLocalPosition__create())
+}
+
+func (t _VehicleLocalPositionTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__VehicleLocalPosition__destroy((*C.px4_msgs__msg__VehicleLocalPosition)(pointer_to_free))
+}
+
+func (t _VehicleLocalPositionTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*VehicleLocalPosition)
+	mem := (*C.px4_msgs__msg__VehicleLocalPosition)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	mem.xy_valid = C.bool(m.XyValid)
+	mem.z_valid = C.bool(m.ZValid)
+	mem.v_xy_valid = C.bool(m.VXyValid)
+	mem.v_z_valid = C.bool(m.VZValid)
+	mem.x = C.float(m.X)
+	mem.y = C.float(m.Y)
+	mem.z = C.float(m.Z)
+	cSlice_delta_xy := mem.delta_xy[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_xy)), m.DeltaXy[:])
+	mem.xy_reset_counter = C.uint8_t(m.XyResetCounter)
+	mem.delta_z = C.float(m.DeltaZ)
+	mem.z_reset_counter = C.uint8_t(m.ZResetCounter)
+	mem.vx = C.float(m.Vx)
+	mem.vy = C.float(m.Vy)
+	mem.vz = C.float(m.Vz)
+	mem.z_deriv = C.float(m.ZDeriv)
+	cSlice_delta_vxy := mem.delta_vxy[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_vxy)), m.DeltaVxy[:])
+	mem.vxy_reset_counter = C.uint8_t(m.VxyResetCounter)
+	mem.delta_vz = C.float(m.DeltaVz)
+	mem.vz_reset_counter = C.uint8_t(m.VzResetCounter)
+	mem.ax = C.float(m.Ax)
+	mem.ay = C.float(m.Ay)
+	mem.az = C.float(m.Az)
+	mem.heading = C.float(m.Heading)
+	mem.delta_heading = C.float(m.DeltaHeading)
+	mem.heading_reset_counter = C.uint8_t(m.HeadingResetCounter)
+	mem.xy_global = C.bool(m.XyGlobal)
+	mem.z_global = C.bool(m.ZGlobal)
+	mem.ref_timestamp = C.uint64_t(m.RefTimestamp)
+	mem.ref_lat = C.double(m.RefLat)
+	mem.ref_lon = C.double(m.RefLon)
+	mem.ref_alt = C.float(m.RefAlt)
+	mem.dist_bottom = C.float(m.DistBottom)
+	mem.dist_bottom_valid = C.bool(m.DistBottomValid)
+	mem.dist_bottom_sensor_bitfield = C.uint8_t(m.DistBottomSensorBitfield)
+	mem.eph = C.float(m.Eph)
+	mem.epv = C.float(m.Epv)
+	mem.evh = C.float(m.Evh)
+	mem.evv = C.float(m.Evv)
+	mem.vxy_max = C.float(m.VxyMax)
+	mem.vz_max = C.float(m.VzMax)
+	mem.hagl_min = C.float(m.HaglMin)
+	mem.hagl_max = C.float(m.HaglMax)
+}
+
+func (t _VehicleLocalPositionTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*VehicleLocalPosition)
+	mem := (*C.px4_msgs__msg__VehicleLocalPosition)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	m.XyValid = bool(mem.xy_valid)
+	m.ZValid = bool(mem.z_valid)
+	m.VXyValid = bool(mem.v_xy_valid)
+	m.VZValid = bool(mem.v_z_valid)
+	m.X = float32(mem.x)
+	m.Y = float32(mem.y)
+	m.Z = float32(mem.z)
+	cSlice_delta_xy := mem.delta_xy[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.DeltaXy[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_xy)))
+	m.XyResetCounter = uint8(mem.xy_reset_counter)
+	m.DeltaZ = float32(mem.delta_z)
+	m.ZResetCounter = uint8(mem.z_reset_counter)
+	m.Vx = float32(mem.vx)
+	m.Vy = float32(mem.vy)
+	m.Vz = float32(mem.vz)
+	m.ZDeriv = float32(mem.z_deriv)
+	cSlice_delta_vxy := mem.delta_vxy[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.DeltaVxy[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_vxy)))
+	m.VxyResetCounter = uint8(mem.vxy_reset_counter)
+	m.DeltaVz = float32(mem.delta_vz)
+	m.VzResetCounter = uint8(mem.vz_reset_counter)
+	m.Ax = float32(mem.ax)
+	m.Ay = float32(mem.ay)
+	m.Az = float32(mem.az)
+	m.Heading = float32(mem.heading)
+	m.DeltaHeading = float32(mem.delta_heading)
+	m.HeadingResetCounter = uint8(mem.heading_reset_counter)
+	m.XyGlobal = bool(mem.xy_global)
+	m.ZGlobal = bool(mem.z_global)
+	m.RefTimestamp = uint64(mem.ref_timestamp)
+	m.RefLat = float64(mem.ref_lat)
+	m.RefLon = float64(mem.ref_lon)
+	m.RefAlt = float32(mem.ref_alt)
+	m.DistBottom = float32(mem.dist_bottom)
+	m.DistBottomValid = bool(mem.dist_bottom_valid)
+	m.DistBottomSensorBitfield = uint8(mem.dist_bottom_sensor_bitfield)
+	m.Eph = float32(mem.eph)
+	m.Epv = float32(mem.epv)
+	m.Evh = float32(mem.evh)
+	m.Evv = float32(mem.evv)
+	m.VxyMax = float32(mem.vxy_max)
+	m.VzMax = float32(mem.vz_max)
+	m.HaglMin = float32(mem.hagl_min)
+	m.HaglMax = float32(mem.hagl_max)
+}
+
+func (t _VehicleLocalPositionTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleLocalPosition())
 }
 
 type CVehicleLocalPosition = C.px4_msgs__msg__VehicleLocalPosition
@@ -228,8 +242,7 @@ func VehicleLocalPosition__Sequence_to_Go(goSlice *[]VehicleLocalPosition, cSlic
 		cIdx := (*C.px4_msgs__msg__VehicleLocalPosition__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleLocalPosition * uintptr(i)),
 		))
-		(*goSlice)[i] = VehicleLocalPosition{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VehicleLocalPositionTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func VehicleLocalPosition__Sequence_to_C(cSlice *CVehicleLocalPosition__Sequence, goSlice []VehicleLocalPosition) {
@@ -244,18 +257,16 @@ func VehicleLocalPosition__Sequence_to_C(cSlice *CVehicleLocalPosition__Sequence
 		cIdx := (*C.px4_msgs__msg__VehicleLocalPosition)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleLocalPosition * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__VehicleLocalPosition)(v.AsCStruct())
+		VehicleLocalPositionTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func VehicleLocalPosition__Array_to_Go(goSlice []VehicleLocalPosition, cSlice []CVehicleLocalPosition) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VehicleLocalPositionTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func VehicleLocalPosition__Array_to_C(cSlice []CVehicleLocalPosition, goSlice []VehicleLocalPosition) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__VehicleLocalPosition)(goSlice[i].AsCStruct())
+		VehicleLocalPositionTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

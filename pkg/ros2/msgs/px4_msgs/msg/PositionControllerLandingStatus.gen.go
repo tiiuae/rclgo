@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/PositionControllerLandingStatus", &PositionControllerLandingStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/PositionControllerLandingStatus", PositionControllerLandingStatusTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPositionControllerLandingStatus
@@ -49,44 +49,58 @@ type PositionControllerLandingStatus struct {
 // NewPositionControllerLandingStatus creates a new PositionControllerLandingStatus with default values.
 func NewPositionControllerLandingStatus() *PositionControllerLandingStatus {
 	self := PositionControllerLandingStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *PositionControllerLandingStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *PositionControllerLandingStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__PositionControllerLandingStatus())
-}
-func (t *PositionControllerLandingStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__PositionControllerLandingStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__PositionControllerLandingStatus__create())
-}
-func (t *PositionControllerLandingStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__PositionControllerLandingStatus__destroy((*C.px4_msgs__msg__PositionControllerLandingStatus)(pointer_to_free))
-}
-func (t *PositionControllerLandingStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__PositionControllerLandingStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.horizontal_slope_displacement = C.float(t.HorizontalSlopeDisplacement)
-	mem.slope_angle_rad = C.float(t.SlopeAngleRad)
-	mem.flare_length = C.float(t.FlareLength)
-	mem.abort_landing = C.bool(t.AbortLanding)
-	return unsafe.Pointer(mem)
-}
-func (t *PositionControllerLandingStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__PositionControllerLandingStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.HorizontalSlopeDisplacement = float32(mem.horizontal_slope_displacement)
-	t.SlopeAngleRad = float32(mem.slope_angle_rad)
-	t.FlareLength = float32(mem.flare_length)
-	t.AbortLanding = bool(mem.abort_landing)
-}
-func (t *PositionControllerLandingStatus) Clone() ros2types.ROS2Msg {
+func (t *PositionControllerLandingStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *PositionControllerLandingStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var PositionControllerLandingStatusTypeSupport types.MessageTypeSupport = _PositionControllerLandingStatusTypeSupport{}
+
+type _PositionControllerLandingStatusTypeSupport struct{}
+
+func (t _PositionControllerLandingStatusTypeSupport) New() types.Message {
+	return NewPositionControllerLandingStatus()
+}
+
+func (t _PositionControllerLandingStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__PositionControllerLandingStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__PositionControllerLandingStatus__create())
+}
+
+func (t _PositionControllerLandingStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__PositionControllerLandingStatus__destroy((*C.px4_msgs__msg__PositionControllerLandingStatus)(pointer_to_free))
+}
+
+func (t _PositionControllerLandingStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*PositionControllerLandingStatus)
+	mem := (*C.px4_msgs__msg__PositionControllerLandingStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.horizontal_slope_displacement = C.float(m.HorizontalSlopeDisplacement)
+	mem.slope_angle_rad = C.float(m.SlopeAngleRad)
+	mem.flare_length = C.float(m.FlareLength)
+	mem.abort_landing = C.bool(m.AbortLanding)
+}
+
+func (t _PositionControllerLandingStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*PositionControllerLandingStatus)
+	mem := (*C.px4_msgs__msg__PositionControllerLandingStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.HorizontalSlopeDisplacement = float32(mem.horizontal_slope_displacement)
+	m.SlopeAngleRad = float32(mem.slope_angle_rad)
+	m.FlareLength = float32(mem.flare_length)
+	m.AbortLanding = bool(mem.abort_landing)
+}
+
+func (t _PositionControllerLandingStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__PositionControllerLandingStatus())
 }
 
 type CPositionControllerLandingStatus = C.px4_msgs__msg__PositionControllerLandingStatus
@@ -101,8 +115,7 @@ func PositionControllerLandingStatus__Sequence_to_Go(goSlice *[]PositionControll
 		cIdx := (*C.px4_msgs__msg__PositionControllerLandingStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__PositionControllerLandingStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = PositionControllerLandingStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		PositionControllerLandingStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func PositionControllerLandingStatus__Sequence_to_C(cSlice *CPositionControllerLandingStatus__Sequence, goSlice []PositionControllerLandingStatus) {
@@ -117,18 +130,16 @@ func PositionControllerLandingStatus__Sequence_to_C(cSlice *CPositionControllerL
 		cIdx := (*C.px4_msgs__msg__PositionControllerLandingStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__PositionControllerLandingStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__PositionControllerLandingStatus)(v.AsCStruct())
+		PositionControllerLandingStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func PositionControllerLandingStatus__Array_to_Go(goSlice []PositionControllerLandingStatus, cSlice []CPositionControllerLandingStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		PositionControllerLandingStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func PositionControllerLandingStatus__Array_to_C(cSlice []CPositionControllerLandingStatus, goSlice []PositionControllerLandingStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__PositionControllerLandingStatus)(goSlice[i].AsCStruct())
+		PositionControllerLandingStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

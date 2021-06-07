@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("sensor_msgs/SetCameraInfo", SetCameraInfo)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("sensor_msgs/SetCameraInfo", SetCameraInfoTypeSupport)
 }
 
-type _SetCameraInfo struct {
-	req,resp ros2types.ROS2Msg
+type _SetCameraInfoTypeSupport struct {}
+
+func (s _SetCameraInfoTypeSupport) Request() types.MessageTypeSupport {
+	return SetCameraInfo_RequestTypeSupport
 }
 
-func (s *_SetCameraInfo) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _SetCameraInfoTypeSupport) Response() types.MessageTypeSupport {
+	return SetCameraInfo_ResponseTypeSupport
 }
 
-func (s *_SetCameraInfo) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_SetCameraInfo) TypeSupport() unsafe.Pointer {
+func (s _SetCameraInfoTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__sensor_msgs__srv__SetCameraInfo())
 }
 
 // Modifying this variable is undefined behavior.
-var SetCameraInfo ros2types.Service = &_SetCameraInfo{
-	req: &SetCameraInfo_Request{},
-	resp: &SetCameraInfo_Response{},
-}
+var SetCameraInfoTypeSupport types.ServiceTypeSupport = _SetCameraInfoTypeSupport{}

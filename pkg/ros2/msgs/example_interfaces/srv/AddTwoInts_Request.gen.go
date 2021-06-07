@@ -15,7 +15,7 @@ package example_interfaces_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("example_interfaces/AddTwoInts_Request", &AddTwoInts_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("example_interfaces/AddTwoInts_Request", AddTwoInts_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewAddTwoInts_Request
@@ -46,38 +46,52 @@ type AddTwoInts_Request struct {
 // NewAddTwoInts_Request creates a new AddTwoInts_Request with default values.
 func NewAddTwoInts_Request() *AddTwoInts_Request {
 	self := AddTwoInts_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *AddTwoInts_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *AddTwoInts_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__example_interfaces__srv__AddTwoInts_Request())
-}
-func (t *AddTwoInts_Request) PrepareMemory() unsafe.Pointer { //returns *C.example_interfaces__srv__AddTwoInts_Request
-	return (unsafe.Pointer)(C.example_interfaces__srv__AddTwoInts_Request__create())
-}
-func (t *AddTwoInts_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.example_interfaces__srv__AddTwoInts_Request__destroy((*C.example_interfaces__srv__AddTwoInts_Request)(pointer_to_free))
-}
-func (t *AddTwoInts_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.example_interfaces__srv__AddTwoInts_Request)(t.PrepareMemory())
-	mem.a = C.int64_t(t.A)
-	mem.b = C.int64_t(t.B)
-	return unsafe.Pointer(mem)
-}
-func (t *AddTwoInts_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.example_interfaces__srv__AddTwoInts_Request)(ros2_message_buffer)
-	t.A = int64(mem.a)
-	t.B = int64(mem.b)
-}
-func (t *AddTwoInts_Request) Clone() ros2types.ROS2Msg {
+func (t *AddTwoInts_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *AddTwoInts_Request) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var AddTwoInts_RequestTypeSupport types.MessageTypeSupport = _AddTwoInts_RequestTypeSupport{}
+
+type _AddTwoInts_RequestTypeSupport struct{}
+
+func (t _AddTwoInts_RequestTypeSupport) New() types.Message {
+	return NewAddTwoInts_Request()
+}
+
+func (t _AddTwoInts_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.example_interfaces__srv__AddTwoInts_Request
+	return (unsafe.Pointer)(C.example_interfaces__srv__AddTwoInts_Request__create())
+}
+
+func (t _AddTwoInts_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.example_interfaces__srv__AddTwoInts_Request__destroy((*C.example_interfaces__srv__AddTwoInts_Request)(pointer_to_free))
+}
+
+func (t _AddTwoInts_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*AddTwoInts_Request)
+	mem := (*C.example_interfaces__srv__AddTwoInts_Request)(dst)
+	mem.a = C.int64_t(m.A)
+	mem.b = C.int64_t(m.B)
+}
+
+func (t _AddTwoInts_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*AddTwoInts_Request)
+	mem := (*C.example_interfaces__srv__AddTwoInts_Request)(ros2_message_buffer)
+	m.A = int64(mem.a)
+	m.B = int64(mem.b)
+}
+
+func (t _AddTwoInts_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__example_interfaces__srv__AddTwoInts_Request())
 }
 
 type CAddTwoInts_Request = C.example_interfaces__srv__AddTwoInts_Request
@@ -92,8 +106,7 @@ func AddTwoInts_Request__Sequence_to_Go(goSlice *[]AddTwoInts_Request, cSlice CA
 		cIdx := (*C.example_interfaces__srv__AddTwoInts_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__srv__AddTwoInts_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = AddTwoInts_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		AddTwoInts_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func AddTwoInts_Request__Sequence_to_C(cSlice *CAddTwoInts_Request__Sequence, goSlice []AddTwoInts_Request) {
@@ -108,18 +121,16 @@ func AddTwoInts_Request__Sequence_to_C(cSlice *CAddTwoInts_Request__Sequence, go
 		cIdx := (*C.example_interfaces__srv__AddTwoInts_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__srv__AddTwoInts_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.example_interfaces__srv__AddTwoInts_Request)(v.AsCStruct())
+		AddTwoInts_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func AddTwoInts_Request__Array_to_Go(goSlice []AddTwoInts_Request, cSlice []CAddTwoInts_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		AddTwoInts_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func AddTwoInts_Request__Array_to_C(cSlice []CAddTwoInts_Request, goSlice []AddTwoInts_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.example_interfaces__srv__AddTwoInts_Request)(goSlice[i].AsCStruct())
+		AddTwoInts_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package lifecycle_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	lifecycle_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/lifecycle_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("lifecycle_msgs/ChangeState_Request", &ChangeState_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("lifecycle_msgs/ChangeState_Request", ChangeState_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewChangeState_Request
@@ -47,37 +47,51 @@ type ChangeState_Request struct {
 // NewChangeState_Request creates a new ChangeState_Request with default values.
 func NewChangeState_Request() *ChangeState_Request {
 	self := ChangeState_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *ChangeState_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Transition.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *ChangeState_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__lifecycle_msgs__srv__ChangeState_Request())
-}
-func (t *ChangeState_Request) PrepareMemory() unsafe.Pointer { //returns *C.lifecycle_msgs__srv__ChangeState_Request
-	return (unsafe.Pointer)(C.lifecycle_msgs__srv__ChangeState_Request__create())
-}
-func (t *ChangeState_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.lifecycle_msgs__srv__ChangeState_Request__destroy((*C.lifecycle_msgs__srv__ChangeState_Request)(pointer_to_free))
-}
-func (t *ChangeState_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.lifecycle_msgs__srv__ChangeState_Request)(t.PrepareMemory())
-	mem.transition = *(*C.lifecycle_msgs__msg__Transition)(t.Transition.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *ChangeState_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.lifecycle_msgs__srv__ChangeState_Request)(ros2_message_buffer)
-	t.Transition.AsGoStruct(unsafe.Pointer(&mem.transition))
-}
-func (t *ChangeState_Request) Clone() ros2types.ROS2Msg {
+func (t *ChangeState_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *ChangeState_Request) SetDefaults() {
+	t.Transition.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ChangeState_RequestTypeSupport types.MessageTypeSupport = _ChangeState_RequestTypeSupport{}
+
+type _ChangeState_RequestTypeSupport struct{}
+
+func (t _ChangeState_RequestTypeSupport) New() types.Message {
+	return NewChangeState_Request()
+}
+
+func (t _ChangeState_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.lifecycle_msgs__srv__ChangeState_Request
+	return (unsafe.Pointer)(C.lifecycle_msgs__srv__ChangeState_Request__create())
+}
+
+func (t _ChangeState_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.lifecycle_msgs__srv__ChangeState_Request__destroy((*C.lifecycle_msgs__srv__ChangeState_Request)(pointer_to_free))
+}
+
+func (t _ChangeState_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*ChangeState_Request)
+	mem := (*C.lifecycle_msgs__srv__ChangeState_Request)(dst)
+	lifecycle_msgs_msg.TransitionTypeSupport.AsCStruct(unsafe.Pointer(&mem.transition), &m.Transition)
+}
+
+func (t _ChangeState_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*ChangeState_Request)
+	mem := (*C.lifecycle_msgs__srv__ChangeState_Request)(ros2_message_buffer)
+	lifecycle_msgs_msg.TransitionTypeSupport.AsGoStruct(&m.Transition, unsafe.Pointer(&mem.transition))
+}
+
+func (t _ChangeState_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__lifecycle_msgs__srv__ChangeState_Request())
 }
 
 type CChangeState_Request = C.lifecycle_msgs__srv__ChangeState_Request
@@ -92,8 +106,7 @@ func ChangeState_Request__Sequence_to_Go(goSlice *[]ChangeState_Request, cSlice 
 		cIdx := (*C.lifecycle_msgs__srv__ChangeState_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_lifecycle_msgs__srv__ChangeState_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = ChangeState_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ChangeState_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func ChangeState_Request__Sequence_to_C(cSlice *CChangeState_Request__Sequence, goSlice []ChangeState_Request) {
@@ -108,18 +121,16 @@ func ChangeState_Request__Sequence_to_C(cSlice *CChangeState_Request__Sequence, 
 		cIdx := (*C.lifecycle_msgs__srv__ChangeState_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_lifecycle_msgs__srv__ChangeState_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.lifecycle_msgs__srv__ChangeState_Request)(v.AsCStruct())
+		ChangeState_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func ChangeState_Request__Array_to_Go(goSlice []ChangeState_Request, cSlice []CChangeState_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ChangeState_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func ChangeState_Request__Array_to_C(cSlice []CChangeState_Request, goSlice []ChangeState_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.lifecycle_msgs__srv__ChangeState_Request)(goSlice[i].AsCStruct())
+		ChangeState_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/SensorSelection", &SensorSelection{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/SensorSelection", SensorSelectionTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSensorSelection
@@ -47,40 +47,54 @@ type SensorSelection struct {
 // NewSensorSelection creates a new SensorSelection with default values.
 func NewSensorSelection() *SensorSelection {
 	self := SensorSelection{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SensorSelection) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *SensorSelection) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__SensorSelection())
-}
-func (t *SensorSelection) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__SensorSelection
-	return (unsafe.Pointer)(C.px4_msgs__msg__SensorSelection__create())
-}
-func (t *SensorSelection) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__SensorSelection__destroy((*C.px4_msgs__msg__SensorSelection)(pointer_to_free))
-}
-func (t *SensorSelection) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__SensorSelection)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.accel_device_id = C.uint32_t(t.AccelDeviceId)
-	mem.gyro_device_id = C.uint32_t(t.GyroDeviceId)
-	return unsafe.Pointer(mem)
-}
-func (t *SensorSelection) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__SensorSelection)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.AccelDeviceId = uint32(mem.accel_device_id)
-	t.GyroDeviceId = uint32(mem.gyro_device_id)
-}
-func (t *SensorSelection) Clone() ros2types.ROS2Msg {
+func (t *SensorSelection) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SensorSelection) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SensorSelectionTypeSupport types.MessageTypeSupport = _SensorSelectionTypeSupport{}
+
+type _SensorSelectionTypeSupport struct{}
+
+func (t _SensorSelectionTypeSupport) New() types.Message {
+	return NewSensorSelection()
+}
+
+func (t _SensorSelectionTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__SensorSelection
+	return (unsafe.Pointer)(C.px4_msgs__msg__SensorSelection__create())
+}
+
+func (t _SensorSelectionTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__SensorSelection__destroy((*C.px4_msgs__msg__SensorSelection)(pointer_to_free))
+}
+
+func (t _SensorSelectionTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*SensorSelection)
+	mem := (*C.px4_msgs__msg__SensorSelection)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.accel_device_id = C.uint32_t(m.AccelDeviceId)
+	mem.gyro_device_id = C.uint32_t(m.GyroDeviceId)
+}
+
+func (t _SensorSelectionTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*SensorSelection)
+	mem := (*C.px4_msgs__msg__SensorSelection)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.AccelDeviceId = uint32(mem.accel_device_id)
+	m.GyroDeviceId = uint32(mem.gyro_device_id)
+}
+
+func (t _SensorSelectionTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__SensorSelection())
 }
 
 type CSensorSelection = C.px4_msgs__msg__SensorSelection
@@ -95,8 +109,7 @@ func SensorSelection__Sequence_to_Go(goSlice *[]SensorSelection, cSlice CSensorS
 		cIdx := (*C.px4_msgs__msg__SensorSelection__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__SensorSelection * uintptr(i)),
 		))
-		(*goSlice)[i] = SensorSelection{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SensorSelectionTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SensorSelection__Sequence_to_C(cSlice *CSensorSelection__Sequence, goSlice []SensorSelection) {
@@ -111,18 +124,16 @@ func SensorSelection__Sequence_to_C(cSlice *CSensorSelection__Sequence, goSlice 
 		cIdx := (*C.px4_msgs__msg__SensorSelection)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__SensorSelection * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__SensorSelection)(v.AsCStruct())
+		SensorSelectionTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SensorSelection__Array_to_Go(goSlice []SensorSelection, cSlice []CSensorSelection) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SensorSelectionTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SensorSelection__Array_to_C(cSlice []CSensorSelection, goSlice []SensorSelection) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__SensorSelection)(goSlice[i].AsCStruct())
+		SensorSelectionTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

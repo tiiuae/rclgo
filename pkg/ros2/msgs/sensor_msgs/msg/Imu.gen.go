@@ -15,7 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	geometry_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/geometry_msgs/msg"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
@@ -38,7 +38,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/Imu", &Imu{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/Imu", ImuTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewImu
@@ -56,58 +56,72 @@ type Imu struct {
 // NewImu creates a new Imu with default values.
 func NewImu() *Imu {
 	self := Imu{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Imu) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.Orientation.SetDefaults(nil)
-	t.AngularVelocity.SetDefaults(nil)
-	t.LinearAcceleration.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *Imu) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__Imu())
-}
-func (t *Imu) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__Imu
-	return (unsafe.Pointer)(C.sensor_msgs__msg__Imu__create())
-}
-func (t *Imu) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__msg__Imu__destroy((*C.sensor_msgs__msg__Imu)(pointer_to_free))
-}
-func (t *Imu) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__msg__Imu)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.orientation = *(*C.geometry_msgs__msg__Quaternion)(t.Orientation.AsCStruct())
-	cSlice_orientation_covariance := mem.orientation_covariance[:]
-	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_orientation_covariance)), t.OrientationCovariance[:])
-	mem.angular_velocity = *(*C.geometry_msgs__msg__Vector3)(t.AngularVelocity.AsCStruct())
-	cSlice_angular_velocity_covariance := mem.angular_velocity_covariance[:]
-	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_angular_velocity_covariance)), t.AngularVelocityCovariance[:])
-	mem.linear_acceleration = *(*C.geometry_msgs__msg__Vector3)(t.LinearAcceleration.AsCStruct())
-	cSlice_linear_acceleration_covariance := mem.linear_acceleration_covariance[:]
-	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_linear_acceleration_covariance)), t.LinearAccelerationCovariance[:])
-	return unsafe.Pointer(mem)
-}
-func (t *Imu) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__msg__Imu)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.Orientation.AsGoStruct(unsafe.Pointer(&mem.orientation))
-	cSlice_orientation_covariance := mem.orientation_covariance[:]
-	rosidl_runtime_c.Float64__Array_to_Go(t.OrientationCovariance[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_orientation_covariance)))
-	t.AngularVelocity.AsGoStruct(unsafe.Pointer(&mem.angular_velocity))
-	cSlice_angular_velocity_covariance := mem.angular_velocity_covariance[:]
-	rosidl_runtime_c.Float64__Array_to_Go(t.AngularVelocityCovariance[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_angular_velocity_covariance)))
-	t.LinearAcceleration.AsGoStruct(unsafe.Pointer(&mem.linear_acceleration))
-	cSlice_linear_acceleration_covariance := mem.linear_acceleration_covariance[:]
-	rosidl_runtime_c.Float64__Array_to_Go(t.LinearAccelerationCovariance[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_linear_acceleration_covariance)))
-}
-func (t *Imu) Clone() ros2types.ROS2Msg {
+func (t *Imu) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Imu) SetDefaults() {
+	t.Header.SetDefaults()
+	t.Orientation.SetDefaults()
+	t.AngularVelocity.SetDefaults()
+	t.LinearAcceleration.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ImuTypeSupport types.MessageTypeSupport = _ImuTypeSupport{}
+
+type _ImuTypeSupport struct{}
+
+func (t _ImuTypeSupport) New() types.Message {
+	return NewImu()
+}
+
+func (t _ImuTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__Imu
+	return (unsafe.Pointer)(C.sensor_msgs__msg__Imu__create())
+}
+
+func (t _ImuTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__msg__Imu__destroy((*C.sensor_msgs__msg__Imu)(pointer_to_free))
+}
+
+func (t _ImuTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Imu)
+	mem := (*C.sensor_msgs__msg__Imu)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	geometry_msgs_msg.QuaternionTypeSupport.AsCStruct(unsafe.Pointer(&mem.orientation), &m.Orientation)
+	cSlice_orientation_covariance := mem.orientation_covariance[:]
+	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_orientation_covariance)), m.OrientationCovariance[:])
+	geometry_msgs_msg.Vector3TypeSupport.AsCStruct(unsafe.Pointer(&mem.angular_velocity), &m.AngularVelocity)
+	cSlice_angular_velocity_covariance := mem.angular_velocity_covariance[:]
+	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_angular_velocity_covariance)), m.AngularVelocityCovariance[:])
+	geometry_msgs_msg.Vector3TypeSupport.AsCStruct(unsafe.Pointer(&mem.linear_acceleration), &m.LinearAcceleration)
+	cSlice_linear_acceleration_covariance := mem.linear_acceleration_covariance[:]
+	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_linear_acceleration_covariance)), m.LinearAccelerationCovariance[:])
+}
+
+func (t _ImuTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Imu)
+	mem := (*C.sensor_msgs__msg__Imu)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	geometry_msgs_msg.QuaternionTypeSupport.AsGoStruct(&m.Orientation, unsafe.Pointer(&mem.orientation))
+	cSlice_orientation_covariance := mem.orientation_covariance[:]
+	rosidl_runtime_c.Float64__Array_to_Go(m.OrientationCovariance[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_orientation_covariance)))
+	geometry_msgs_msg.Vector3TypeSupport.AsGoStruct(&m.AngularVelocity, unsafe.Pointer(&mem.angular_velocity))
+	cSlice_angular_velocity_covariance := mem.angular_velocity_covariance[:]
+	rosidl_runtime_c.Float64__Array_to_Go(m.AngularVelocityCovariance[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_angular_velocity_covariance)))
+	geometry_msgs_msg.Vector3TypeSupport.AsGoStruct(&m.LinearAcceleration, unsafe.Pointer(&mem.linear_acceleration))
+	cSlice_linear_acceleration_covariance := mem.linear_acceleration_covariance[:]
+	rosidl_runtime_c.Float64__Array_to_Go(m.LinearAccelerationCovariance[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_linear_acceleration_covariance)))
+}
+
+func (t _ImuTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__Imu())
 }
 
 type CImu = C.sensor_msgs__msg__Imu
@@ -122,8 +136,7 @@ func Imu__Sequence_to_Go(goSlice *[]Imu, cSlice CImu__Sequence) {
 		cIdx := (*C.sensor_msgs__msg__Imu__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__Imu * uintptr(i)),
 		))
-		(*goSlice)[i] = Imu{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ImuTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Imu__Sequence_to_C(cSlice *CImu__Sequence, goSlice []Imu) {
@@ -138,18 +151,16 @@ func Imu__Sequence_to_C(cSlice *CImu__Sequence, goSlice []Imu) {
 		cIdx := (*C.sensor_msgs__msg__Imu)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__Imu * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__msg__Imu)(v.AsCStruct())
+		ImuTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Imu__Array_to_Go(goSlice []Imu, cSlice []CImu) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ImuTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Imu__Array_to_C(cSlice []CImu, goSlice []Imu) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__msg__Imu)(goSlice[i].AsCStruct())
+		ImuTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

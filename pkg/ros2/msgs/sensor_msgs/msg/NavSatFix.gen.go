@@ -15,7 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
@@ -36,7 +36,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/NavSatFix", &NavSatFix{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/NavSatFix", NavSatFixTypeSupport)
 }
 const (
 	NavSatFix_COVARIANCE_TYPE_UNKNOWN uint8 = 0
@@ -60,52 +60,66 @@ type NavSatFix struct {
 // NewNavSatFix creates a new NavSatFix with default values.
 func NewNavSatFix() *NavSatFix {
 	self := NavSatFix{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *NavSatFix) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.Status.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *NavSatFix) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__NavSatFix())
-}
-func (t *NavSatFix) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__NavSatFix
-	return (unsafe.Pointer)(C.sensor_msgs__msg__NavSatFix__create())
-}
-func (t *NavSatFix) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__msg__NavSatFix__destroy((*C.sensor_msgs__msg__NavSatFix)(pointer_to_free))
-}
-func (t *NavSatFix) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__msg__NavSatFix)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.status = *(*C.sensor_msgs__msg__NavSatStatus)(t.Status.AsCStruct())
-	mem.latitude = C.double(t.Latitude)
-	mem.longitude = C.double(t.Longitude)
-	mem.altitude = C.double(t.Altitude)
-	cSlice_position_covariance := mem.position_covariance[:]
-	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_position_covariance)), t.PositionCovariance[:])
-	mem.position_covariance_type = C.uint8_t(t.PositionCovarianceType)
-	return unsafe.Pointer(mem)
-}
-func (t *NavSatFix) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__msg__NavSatFix)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.Status.AsGoStruct(unsafe.Pointer(&mem.status))
-	t.Latitude = float64(mem.latitude)
-	t.Longitude = float64(mem.longitude)
-	t.Altitude = float64(mem.altitude)
-	cSlice_position_covariance := mem.position_covariance[:]
-	rosidl_runtime_c.Float64__Array_to_Go(t.PositionCovariance[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_position_covariance)))
-	t.PositionCovarianceType = uint8(mem.position_covariance_type)
-}
-func (t *NavSatFix) Clone() ros2types.ROS2Msg {
+func (t *NavSatFix) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *NavSatFix) SetDefaults() {
+	t.Header.SetDefaults()
+	t.Status.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var NavSatFixTypeSupport types.MessageTypeSupport = _NavSatFixTypeSupport{}
+
+type _NavSatFixTypeSupport struct{}
+
+func (t _NavSatFixTypeSupport) New() types.Message {
+	return NewNavSatFix()
+}
+
+func (t _NavSatFixTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__NavSatFix
+	return (unsafe.Pointer)(C.sensor_msgs__msg__NavSatFix__create())
+}
+
+func (t _NavSatFixTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__msg__NavSatFix__destroy((*C.sensor_msgs__msg__NavSatFix)(pointer_to_free))
+}
+
+func (t _NavSatFixTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*NavSatFix)
+	mem := (*C.sensor_msgs__msg__NavSatFix)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	NavSatStatusTypeSupport.AsCStruct(unsafe.Pointer(&mem.status), &m.Status)
+	mem.latitude = C.double(m.Latitude)
+	mem.longitude = C.double(m.Longitude)
+	mem.altitude = C.double(m.Altitude)
+	cSlice_position_covariance := mem.position_covariance[:]
+	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_position_covariance)), m.PositionCovariance[:])
+	mem.position_covariance_type = C.uint8_t(m.PositionCovarianceType)
+}
+
+func (t _NavSatFixTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*NavSatFix)
+	mem := (*C.sensor_msgs__msg__NavSatFix)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	NavSatStatusTypeSupport.AsGoStruct(&m.Status, unsafe.Pointer(&mem.status))
+	m.Latitude = float64(mem.latitude)
+	m.Longitude = float64(mem.longitude)
+	m.Altitude = float64(mem.altitude)
+	cSlice_position_covariance := mem.position_covariance[:]
+	rosidl_runtime_c.Float64__Array_to_Go(m.PositionCovariance[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_position_covariance)))
+	m.PositionCovarianceType = uint8(mem.position_covariance_type)
+}
+
+func (t _NavSatFixTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__NavSatFix())
 }
 
 type CNavSatFix = C.sensor_msgs__msg__NavSatFix
@@ -120,8 +134,7 @@ func NavSatFix__Sequence_to_Go(goSlice *[]NavSatFix, cSlice CNavSatFix__Sequence
 		cIdx := (*C.sensor_msgs__msg__NavSatFix__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__NavSatFix * uintptr(i)),
 		))
-		(*goSlice)[i] = NavSatFix{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		NavSatFixTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func NavSatFix__Sequence_to_C(cSlice *CNavSatFix__Sequence, goSlice []NavSatFix) {
@@ -136,18 +149,16 @@ func NavSatFix__Sequence_to_C(cSlice *CNavSatFix__Sequence, goSlice []NavSatFix)
 		cIdx := (*C.sensor_msgs__msg__NavSatFix)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__NavSatFix * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__msg__NavSatFix)(v.AsCStruct())
+		NavSatFixTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func NavSatFix__Array_to_Go(goSlice []NavSatFix, cSlice []CNavSatFix) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		NavSatFixTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func NavSatFix__Array_to_C(cSlice []CNavSatFix, goSlice []NavSatFix) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__msg__NavSatFix)(goSlice[i].AsCStruct())
+		NavSatFixTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

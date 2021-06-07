@@ -15,7 +15,7 @@ package tf2_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	geometry_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/geometry_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("tf2_msgs/TFMessage", &TFMessage{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("tf2_msgs/TFMessage", TFMessageTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTFMessage
@@ -47,36 +47,50 @@ type TFMessage struct {
 // NewTFMessage creates a new TFMessage with default values.
 func NewTFMessage() *TFMessage {
 	self := TFMessage{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *TFMessage) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *TFMessage) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__tf2_msgs__msg__TFMessage())
-}
-func (t *TFMessage) PrepareMemory() unsafe.Pointer { //returns *C.tf2_msgs__msg__TFMessage
-	return (unsafe.Pointer)(C.tf2_msgs__msg__TFMessage__create())
-}
-func (t *TFMessage) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.tf2_msgs__msg__TFMessage__destroy((*C.tf2_msgs__msg__TFMessage)(pointer_to_free))
-}
-func (t *TFMessage) AsCStruct() unsafe.Pointer {
-	mem := (*C.tf2_msgs__msg__TFMessage)(t.PrepareMemory())
-	geometry_msgs_msg.TransformStamped__Sequence_to_C((*geometry_msgs_msg.CTransformStamped__Sequence)(unsafe.Pointer(&mem.transforms)), t.Transforms)
-	return unsafe.Pointer(mem)
-}
-func (t *TFMessage) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.tf2_msgs__msg__TFMessage)(ros2_message_buffer)
-	geometry_msgs_msg.TransformStamped__Sequence_to_Go(&t.Transforms, *(*geometry_msgs_msg.CTransformStamped__Sequence)(unsafe.Pointer(&mem.transforms)))
-}
-func (t *TFMessage) Clone() ros2types.ROS2Msg {
+func (t *TFMessage) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *TFMessage) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TFMessageTypeSupport types.MessageTypeSupport = _TFMessageTypeSupport{}
+
+type _TFMessageTypeSupport struct{}
+
+func (t _TFMessageTypeSupport) New() types.Message {
+	return NewTFMessage()
+}
+
+func (t _TFMessageTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.tf2_msgs__msg__TFMessage
+	return (unsafe.Pointer)(C.tf2_msgs__msg__TFMessage__create())
+}
+
+func (t _TFMessageTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.tf2_msgs__msg__TFMessage__destroy((*C.tf2_msgs__msg__TFMessage)(pointer_to_free))
+}
+
+func (t _TFMessageTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*TFMessage)
+	mem := (*C.tf2_msgs__msg__TFMessage)(dst)
+	geometry_msgs_msg.TransformStamped__Sequence_to_C((*geometry_msgs_msg.CTransformStamped__Sequence)(unsafe.Pointer(&mem.transforms)), m.Transforms)
+}
+
+func (t _TFMessageTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*TFMessage)
+	mem := (*C.tf2_msgs__msg__TFMessage)(ros2_message_buffer)
+	geometry_msgs_msg.TransformStamped__Sequence_to_Go(&m.Transforms, *(*geometry_msgs_msg.CTransformStamped__Sequence)(unsafe.Pointer(&mem.transforms)))
+}
+
+func (t _TFMessageTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__tf2_msgs__msg__TFMessage())
 }
 
 type CTFMessage = C.tf2_msgs__msg__TFMessage
@@ -91,8 +105,7 @@ func TFMessage__Sequence_to_Go(goSlice *[]TFMessage, cSlice CTFMessage__Sequence
 		cIdx := (*C.tf2_msgs__msg__TFMessage__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_tf2_msgs__msg__TFMessage * uintptr(i)),
 		))
-		(*goSlice)[i] = TFMessage{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TFMessageTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func TFMessage__Sequence_to_C(cSlice *CTFMessage__Sequence, goSlice []TFMessage) {
@@ -107,18 +120,16 @@ func TFMessage__Sequence_to_C(cSlice *CTFMessage__Sequence, goSlice []TFMessage)
 		cIdx := (*C.tf2_msgs__msg__TFMessage)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_tf2_msgs__msg__TFMessage * uintptr(i)),
 		))
-		*cIdx = *(*C.tf2_msgs__msg__TFMessage)(v.AsCStruct())
+		TFMessageTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func TFMessage__Array_to_Go(goSlice []TFMessage, cSlice []CTFMessage) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TFMessageTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func TFMessage__Array_to_C(cSlice []CTFMessage, goSlice []TFMessage) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.tf2_msgs__msg__TFMessage)(goSlice[i].AsCStruct())
+		TFMessageTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

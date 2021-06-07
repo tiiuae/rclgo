@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("composition_interfaces/ListNodes", ListNodes)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("composition_interfaces/ListNodes", ListNodesTypeSupport)
 }
 
-type _ListNodes struct {
-	req,resp ros2types.ROS2Msg
+type _ListNodesTypeSupport struct {}
+
+func (s _ListNodesTypeSupport) Request() types.MessageTypeSupport {
+	return ListNodes_RequestTypeSupport
 }
 
-func (s *_ListNodes) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _ListNodesTypeSupport) Response() types.MessageTypeSupport {
+	return ListNodes_ResponseTypeSupport
 }
 
-func (s *_ListNodes) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_ListNodes) TypeSupport() unsafe.Pointer {
+func (s _ListNodesTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__composition_interfaces__srv__ListNodes())
 }
 
 // Modifying this variable is undefined behavior.
-var ListNodes ros2types.Service = &_ListNodes{
-	req: &ListNodes_Request{},
-	resp: &ListNodes_Response{},
-}
+var ListNodesTypeSupport types.ServiceTypeSupport = _ListNodesTypeSupport{}

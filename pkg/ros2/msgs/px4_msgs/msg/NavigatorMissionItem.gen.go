@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/NavigatorMissionItem", &NavigatorMissionItem{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/NavigatorMissionItem", NavigatorMissionItemTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewNavigatorMissionItem
@@ -62,70 +62,84 @@ type NavigatorMissionItem struct {
 // NewNavigatorMissionItem creates a new NavigatorMissionItem with default values.
 func NewNavigatorMissionItem() *NavigatorMissionItem {
 	self := NavigatorMissionItem{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *NavigatorMissionItem) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *NavigatorMissionItem) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__NavigatorMissionItem())
-}
-func (t *NavigatorMissionItem) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__NavigatorMissionItem
-	return (unsafe.Pointer)(C.px4_msgs__msg__NavigatorMissionItem__create())
-}
-func (t *NavigatorMissionItem) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__NavigatorMissionItem__destroy((*C.px4_msgs__msg__NavigatorMissionItem)(pointer_to_free))
-}
-func (t *NavigatorMissionItem) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__NavigatorMissionItem)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.instance_count = C.uint32_t(t.InstanceCount)
-	mem.sequence_current = C.uint16_t(t.SequenceCurrent)
-	mem.nav_cmd = C.uint16_t(t.NavCmd)
-	mem.latitude = C.float(t.Latitude)
-	mem.longitude = C.float(t.Longitude)
-	mem.time_inside = C.float(t.TimeInside)
-	mem.acceptance_radius = C.float(t.AcceptanceRadius)
-	mem.loiter_radius = C.float(t.LoiterRadius)
-	mem.yaw = C.float(t.Yaw)
-	mem.altitude = C.float(t.Altitude)
-	mem.frame = C.uint8_t(t.Frame)
-	mem.origin = C.uint8_t(t.Origin)
-	mem.loiter_exit_xtrack = C.bool(t.LoiterExitXtrack)
-	mem.force_heading = C.bool(t.ForceHeading)
-	mem.altitude_is_relative = C.bool(t.AltitudeIsRelative)
-	mem.autocontinue = C.bool(t.Autocontinue)
-	mem.vtol_back_transition = C.bool(t.VtolBackTransition)
-	return unsafe.Pointer(mem)
-}
-func (t *NavigatorMissionItem) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__NavigatorMissionItem)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.InstanceCount = uint32(mem.instance_count)
-	t.SequenceCurrent = uint16(mem.sequence_current)
-	t.NavCmd = uint16(mem.nav_cmd)
-	t.Latitude = float32(mem.latitude)
-	t.Longitude = float32(mem.longitude)
-	t.TimeInside = float32(mem.time_inside)
-	t.AcceptanceRadius = float32(mem.acceptance_radius)
-	t.LoiterRadius = float32(mem.loiter_radius)
-	t.Yaw = float32(mem.yaw)
-	t.Altitude = float32(mem.altitude)
-	t.Frame = uint8(mem.frame)
-	t.Origin = uint8(mem.origin)
-	t.LoiterExitXtrack = bool(mem.loiter_exit_xtrack)
-	t.ForceHeading = bool(mem.force_heading)
-	t.AltitudeIsRelative = bool(mem.altitude_is_relative)
-	t.Autocontinue = bool(mem.autocontinue)
-	t.VtolBackTransition = bool(mem.vtol_back_transition)
-}
-func (t *NavigatorMissionItem) Clone() ros2types.ROS2Msg {
+func (t *NavigatorMissionItem) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *NavigatorMissionItem) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var NavigatorMissionItemTypeSupport types.MessageTypeSupport = _NavigatorMissionItemTypeSupport{}
+
+type _NavigatorMissionItemTypeSupport struct{}
+
+func (t _NavigatorMissionItemTypeSupport) New() types.Message {
+	return NewNavigatorMissionItem()
+}
+
+func (t _NavigatorMissionItemTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__NavigatorMissionItem
+	return (unsafe.Pointer)(C.px4_msgs__msg__NavigatorMissionItem__create())
+}
+
+func (t _NavigatorMissionItemTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__NavigatorMissionItem__destroy((*C.px4_msgs__msg__NavigatorMissionItem)(pointer_to_free))
+}
+
+func (t _NavigatorMissionItemTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*NavigatorMissionItem)
+	mem := (*C.px4_msgs__msg__NavigatorMissionItem)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.instance_count = C.uint32_t(m.InstanceCount)
+	mem.sequence_current = C.uint16_t(m.SequenceCurrent)
+	mem.nav_cmd = C.uint16_t(m.NavCmd)
+	mem.latitude = C.float(m.Latitude)
+	mem.longitude = C.float(m.Longitude)
+	mem.time_inside = C.float(m.TimeInside)
+	mem.acceptance_radius = C.float(m.AcceptanceRadius)
+	mem.loiter_radius = C.float(m.LoiterRadius)
+	mem.yaw = C.float(m.Yaw)
+	mem.altitude = C.float(m.Altitude)
+	mem.frame = C.uint8_t(m.Frame)
+	mem.origin = C.uint8_t(m.Origin)
+	mem.loiter_exit_xtrack = C.bool(m.LoiterExitXtrack)
+	mem.force_heading = C.bool(m.ForceHeading)
+	mem.altitude_is_relative = C.bool(m.AltitudeIsRelative)
+	mem.autocontinue = C.bool(m.Autocontinue)
+	mem.vtol_back_transition = C.bool(m.VtolBackTransition)
+}
+
+func (t _NavigatorMissionItemTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*NavigatorMissionItem)
+	mem := (*C.px4_msgs__msg__NavigatorMissionItem)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.InstanceCount = uint32(mem.instance_count)
+	m.SequenceCurrent = uint16(mem.sequence_current)
+	m.NavCmd = uint16(mem.nav_cmd)
+	m.Latitude = float32(mem.latitude)
+	m.Longitude = float32(mem.longitude)
+	m.TimeInside = float32(mem.time_inside)
+	m.AcceptanceRadius = float32(mem.acceptance_radius)
+	m.LoiterRadius = float32(mem.loiter_radius)
+	m.Yaw = float32(mem.yaw)
+	m.Altitude = float32(mem.altitude)
+	m.Frame = uint8(mem.frame)
+	m.Origin = uint8(mem.origin)
+	m.LoiterExitXtrack = bool(mem.loiter_exit_xtrack)
+	m.ForceHeading = bool(mem.force_heading)
+	m.AltitudeIsRelative = bool(mem.altitude_is_relative)
+	m.Autocontinue = bool(mem.autocontinue)
+	m.VtolBackTransition = bool(mem.vtol_back_transition)
+}
+
+func (t _NavigatorMissionItemTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__NavigatorMissionItem())
 }
 
 type CNavigatorMissionItem = C.px4_msgs__msg__NavigatorMissionItem
@@ -140,8 +154,7 @@ func NavigatorMissionItem__Sequence_to_Go(goSlice *[]NavigatorMissionItem, cSlic
 		cIdx := (*C.px4_msgs__msg__NavigatorMissionItem__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__NavigatorMissionItem * uintptr(i)),
 		))
-		(*goSlice)[i] = NavigatorMissionItem{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		NavigatorMissionItemTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func NavigatorMissionItem__Sequence_to_C(cSlice *CNavigatorMissionItem__Sequence, goSlice []NavigatorMissionItem) {
@@ -156,18 +169,16 @@ func NavigatorMissionItem__Sequence_to_C(cSlice *CNavigatorMissionItem__Sequence
 		cIdx := (*C.px4_msgs__msg__NavigatorMissionItem)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__NavigatorMissionItem * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__NavigatorMissionItem)(v.AsCStruct())
+		NavigatorMissionItemTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func NavigatorMissionItem__Array_to_Go(goSlice []NavigatorMissionItem, cSlice []CNavigatorMissionItem) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		NavigatorMissionItemTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func NavigatorMissionItem__Array_to_C(cSlice []CNavigatorMissionItem, goSlice []NavigatorMissionItem) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__NavigatorMissionItem)(goSlice[i].AsCStruct())
+		NavigatorMissionItemTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package test_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("test_msgs/Defaults", &Defaults{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("test_msgs/Defaults", DefaultsTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewDefaults
@@ -57,11 +57,16 @@ type Defaults struct {
 // NewDefaults creates a new Defaults with default values.
 func NewDefaults() *Defaults {
 	self := Defaults{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Defaults) SetDefaults(d interface{}) ros2types.ROS2Msg {
+func (t *Defaults) Clone() types.Message {
+	clone := *t
+	return &clone
+}
+
+func (t *Defaults) SetDefaults() {
 	t.BoolValue = true
 	t.ByteValue = 50
 	t.CharValue = 100
@@ -76,54 +81,63 @@ func (t *Defaults) SetDefaults(d interface{}) ros2types.ROS2Msg {
 	t.Int64Value = -40000000
 	t.Uint64Value = 50000000
 	
-	return t
 }
 
-func (t *Defaults) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__msg__Defaults())
+// Modifying this variable is undefined behavior.
+var DefaultsTypeSupport types.MessageTypeSupport = _DefaultsTypeSupport{}
+
+type _DefaultsTypeSupport struct{}
+
+func (t _DefaultsTypeSupport) New() types.Message {
+	return NewDefaults()
 }
-func (t *Defaults) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__msg__Defaults
+
+func (t _DefaultsTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__msg__Defaults
 	return (unsafe.Pointer)(C.test_msgs__msg__Defaults__create())
 }
-func (t *Defaults) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+
+func (t _DefaultsTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
 	C.test_msgs__msg__Defaults__destroy((*C.test_msgs__msg__Defaults)(pointer_to_free))
 }
-func (t *Defaults) AsCStruct() unsafe.Pointer {
-	mem := (*C.test_msgs__msg__Defaults)(t.PrepareMemory())
-	mem.bool_value = C.bool(t.BoolValue)
-	mem.byte_value = C.uint8_t(t.ByteValue)
-	mem.char_value = C.uchar(t.CharValue)
-	mem.float32_value = C.float(t.Float32Value)
-	mem.float64_value = C.double(t.Float64Value)
-	mem.int8_value = C.int8_t(t.Int8Value)
-	mem.uint8_value = C.uint8_t(t.Uint8Value)
-	mem.int16_value = C.int16_t(t.Int16Value)
-	mem.uint16_value = C.uint16_t(t.Uint16Value)
-	mem.int32_value = C.int32_t(t.Int32Value)
-	mem.uint32_value = C.uint32_t(t.Uint32Value)
-	mem.int64_value = C.int64_t(t.Int64Value)
-	mem.uint64_value = C.uint64_t(t.Uint64Value)
-	return unsafe.Pointer(mem)
+
+func (t _DefaultsTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Defaults)
+	mem := (*C.test_msgs__msg__Defaults)(dst)
+	mem.bool_value = C.bool(m.BoolValue)
+	mem.byte_value = C.uint8_t(m.ByteValue)
+	mem.char_value = C.uchar(m.CharValue)
+	mem.float32_value = C.float(m.Float32Value)
+	mem.float64_value = C.double(m.Float64Value)
+	mem.int8_value = C.int8_t(m.Int8Value)
+	mem.uint8_value = C.uint8_t(m.Uint8Value)
+	mem.int16_value = C.int16_t(m.Int16Value)
+	mem.uint16_value = C.uint16_t(m.Uint16Value)
+	mem.int32_value = C.int32_t(m.Int32Value)
+	mem.uint32_value = C.uint32_t(m.Uint32Value)
+	mem.int64_value = C.int64_t(m.Int64Value)
+	mem.uint64_value = C.uint64_t(m.Uint64Value)
 }
-func (t *Defaults) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
+
+func (t _DefaultsTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Defaults)
 	mem := (*C.test_msgs__msg__Defaults)(ros2_message_buffer)
-	t.BoolValue = bool(mem.bool_value)
-	t.ByteValue = byte(mem.byte_value)
-	t.CharValue = byte(mem.char_value)
-	t.Float32Value = float32(mem.float32_value)
-	t.Float64Value = float64(mem.float64_value)
-	t.Int8Value = int8(mem.int8_value)
-	t.Uint8Value = uint8(mem.uint8_value)
-	t.Int16Value = int16(mem.int16_value)
-	t.Uint16Value = uint16(mem.uint16_value)
-	t.Int32Value = int32(mem.int32_value)
-	t.Uint32Value = uint32(mem.uint32_value)
-	t.Int64Value = int64(mem.int64_value)
-	t.Uint64Value = uint64(mem.uint64_value)
+	m.BoolValue = bool(mem.bool_value)
+	m.ByteValue = byte(mem.byte_value)
+	m.CharValue = byte(mem.char_value)
+	m.Float32Value = float32(mem.float32_value)
+	m.Float64Value = float64(mem.float64_value)
+	m.Int8Value = int8(mem.int8_value)
+	m.Uint8Value = uint8(mem.uint8_value)
+	m.Int16Value = int16(mem.int16_value)
+	m.Uint16Value = uint16(mem.uint16_value)
+	m.Int32Value = int32(mem.int32_value)
+	m.Uint32Value = uint32(mem.uint32_value)
+	m.Int64Value = int64(mem.int64_value)
+	m.Uint64Value = uint64(mem.uint64_value)
 }
-func (t *Defaults) Clone() ros2types.ROS2Msg {
-	clone := *t
-	return &clone
+
+func (t _DefaultsTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__msg__Defaults())
 }
 
 type CDefaults = C.test_msgs__msg__Defaults
@@ -138,8 +152,7 @@ func Defaults__Sequence_to_Go(goSlice *[]Defaults, cSlice CDefaults__Sequence) {
 		cIdx := (*C.test_msgs__msg__Defaults__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__msg__Defaults * uintptr(i)),
 		))
-		(*goSlice)[i] = Defaults{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		DefaultsTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Defaults__Sequence_to_C(cSlice *CDefaults__Sequence, goSlice []Defaults) {
@@ -154,18 +167,16 @@ func Defaults__Sequence_to_C(cSlice *CDefaults__Sequence, goSlice []Defaults) {
 		cIdx := (*C.test_msgs__msg__Defaults)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__msg__Defaults * uintptr(i)),
 		))
-		*cIdx = *(*C.test_msgs__msg__Defaults)(v.AsCStruct())
+		DefaultsTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Defaults__Array_to_Go(goSlice []Defaults, cSlice []CDefaults) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		DefaultsTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Defaults__Array_to_C(cSlice []CDefaults, goSlice []Defaults) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.test_msgs__msg__Defaults)(goSlice[i].AsCStruct())
+		DefaultsTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

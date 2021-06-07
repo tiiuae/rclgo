@@ -15,7 +15,7 @@ package example_interfaces_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("example_interfaces/Bool", &Bool{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("example_interfaces/Bool", BoolTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewBool
@@ -45,36 +45,50 @@ type Bool struct {
 // NewBool creates a new Bool with default values.
 func NewBool() *Bool {
 	self := Bool{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Bool) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Bool) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__example_interfaces__msg__Bool())
-}
-func (t *Bool) PrepareMemory() unsafe.Pointer { //returns *C.example_interfaces__msg__Bool
-	return (unsafe.Pointer)(C.example_interfaces__msg__Bool__create())
-}
-func (t *Bool) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.example_interfaces__msg__Bool__destroy((*C.example_interfaces__msg__Bool)(pointer_to_free))
-}
-func (t *Bool) AsCStruct() unsafe.Pointer {
-	mem := (*C.example_interfaces__msg__Bool)(t.PrepareMemory())
-	mem.data = C.bool(t.Data)
-	return unsafe.Pointer(mem)
-}
-func (t *Bool) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.example_interfaces__msg__Bool)(ros2_message_buffer)
-	t.Data = bool(mem.data)
-}
-func (t *Bool) Clone() ros2types.ROS2Msg {
+func (t *Bool) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Bool) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var BoolTypeSupport types.MessageTypeSupport = _BoolTypeSupport{}
+
+type _BoolTypeSupport struct{}
+
+func (t _BoolTypeSupport) New() types.Message {
+	return NewBool()
+}
+
+func (t _BoolTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.example_interfaces__msg__Bool
+	return (unsafe.Pointer)(C.example_interfaces__msg__Bool__create())
+}
+
+func (t _BoolTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.example_interfaces__msg__Bool__destroy((*C.example_interfaces__msg__Bool)(pointer_to_free))
+}
+
+func (t _BoolTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Bool)
+	mem := (*C.example_interfaces__msg__Bool)(dst)
+	mem.data = C.bool(m.Data)
+}
+
+func (t _BoolTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Bool)
+	mem := (*C.example_interfaces__msg__Bool)(ros2_message_buffer)
+	m.Data = bool(mem.data)
+}
+
+func (t _BoolTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__example_interfaces__msg__Bool())
 }
 
 type CBool = C.example_interfaces__msg__Bool
@@ -89,8 +103,7 @@ func Bool__Sequence_to_Go(goSlice *[]Bool, cSlice CBool__Sequence) {
 		cIdx := (*C.example_interfaces__msg__Bool__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__Bool * uintptr(i)),
 		))
-		(*goSlice)[i] = Bool{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		BoolTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Bool__Sequence_to_C(cSlice *CBool__Sequence, goSlice []Bool) {
@@ -105,18 +118,16 @@ func Bool__Sequence_to_C(cSlice *CBool__Sequence, goSlice []Bool) {
 		cIdx := (*C.example_interfaces__msg__Bool)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__Bool * uintptr(i)),
 		))
-		*cIdx = *(*C.example_interfaces__msg__Bool)(v.AsCStruct())
+		BoolTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Bool__Array_to_Go(goSlice []Bool, cSlice []CBool) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		BoolTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Bool__Array_to_C(cSlice []CBool, goSlice []Bool) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.example_interfaces__msg__Bool)(goSlice[i].AsCStruct())
+		BoolTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

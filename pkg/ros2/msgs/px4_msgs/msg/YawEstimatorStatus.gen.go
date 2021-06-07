@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/YawEstimatorStatus", &YawEstimatorStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/YawEstimatorStatus", YawEstimatorStatusTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewYawEstimatorStatus
@@ -53,58 +53,72 @@ type YawEstimatorStatus struct {
 // NewYawEstimatorStatus creates a new YawEstimatorStatus with default values.
 func NewYawEstimatorStatus() *YawEstimatorStatus {
 	self := YawEstimatorStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *YawEstimatorStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *YawEstimatorStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__YawEstimatorStatus())
-}
-func (t *YawEstimatorStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__YawEstimatorStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__YawEstimatorStatus__create())
-}
-func (t *YawEstimatorStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__YawEstimatorStatus__destroy((*C.px4_msgs__msg__YawEstimatorStatus)(pointer_to_free))
-}
-func (t *YawEstimatorStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__YawEstimatorStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	mem.yaw_composite = C.float(t.YawComposite)
-	mem.yaw_variance = C.float(t.YawVariance)
-	cSlice_yaw := mem.yaw[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_yaw)), t.Yaw[:])
-	cSlice_innov_vn := mem.innov_vn[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_innov_vn)), t.InnovVn[:])
-	cSlice_innov_ve := mem.innov_ve[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_innov_ve)), t.InnovVe[:])
-	cSlice_weight := mem.weight[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_weight)), t.Weight[:])
-	return unsafe.Pointer(mem)
-}
-func (t *YawEstimatorStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__YawEstimatorStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	t.YawComposite = float32(mem.yaw_composite)
-	t.YawVariance = float32(mem.yaw_variance)
-	cSlice_yaw := mem.yaw[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Yaw[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_yaw)))
-	cSlice_innov_vn := mem.innov_vn[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.InnovVn[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_innov_vn)))
-	cSlice_innov_ve := mem.innov_ve[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.InnovVe[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_innov_ve)))
-	cSlice_weight := mem.weight[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Weight[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_weight)))
-}
-func (t *YawEstimatorStatus) Clone() ros2types.ROS2Msg {
+func (t *YawEstimatorStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *YawEstimatorStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var YawEstimatorStatusTypeSupport types.MessageTypeSupport = _YawEstimatorStatusTypeSupport{}
+
+type _YawEstimatorStatusTypeSupport struct{}
+
+func (t _YawEstimatorStatusTypeSupport) New() types.Message {
+	return NewYawEstimatorStatus()
+}
+
+func (t _YawEstimatorStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__YawEstimatorStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__YawEstimatorStatus__create())
+}
+
+func (t _YawEstimatorStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__YawEstimatorStatus__destroy((*C.px4_msgs__msg__YawEstimatorStatus)(pointer_to_free))
+}
+
+func (t _YawEstimatorStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*YawEstimatorStatus)
+	mem := (*C.px4_msgs__msg__YawEstimatorStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	mem.yaw_composite = C.float(m.YawComposite)
+	mem.yaw_variance = C.float(m.YawVariance)
+	cSlice_yaw := mem.yaw[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_yaw)), m.Yaw[:])
+	cSlice_innov_vn := mem.innov_vn[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_innov_vn)), m.InnovVn[:])
+	cSlice_innov_ve := mem.innov_ve[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_innov_ve)), m.InnovVe[:])
+	cSlice_weight := mem.weight[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_weight)), m.Weight[:])
+}
+
+func (t _YawEstimatorStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*YawEstimatorStatus)
+	mem := (*C.px4_msgs__msg__YawEstimatorStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	m.YawComposite = float32(mem.yaw_composite)
+	m.YawVariance = float32(mem.yaw_variance)
+	cSlice_yaw := mem.yaw[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Yaw[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_yaw)))
+	cSlice_innov_vn := mem.innov_vn[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.InnovVn[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_innov_vn)))
+	cSlice_innov_ve := mem.innov_ve[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.InnovVe[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_innov_ve)))
+	cSlice_weight := mem.weight[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Weight[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_weight)))
+}
+
+func (t _YawEstimatorStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__YawEstimatorStatus())
 }
 
 type CYawEstimatorStatus = C.px4_msgs__msg__YawEstimatorStatus
@@ -119,8 +133,7 @@ func YawEstimatorStatus__Sequence_to_Go(goSlice *[]YawEstimatorStatus, cSlice CY
 		cIdx := (*C.px4_msgs__msg__YawEstimatorStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__YawEstimatorStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = YawEstimatorStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		YawEstimatorStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func YawEstimatorStatus__Sequence_to_C(cSlice *CYawEstimatorStatus__Sequence, goSlice []YawEstimatorStatus) {
@@ -135,18 +148,16 @@ func YawEstimatorStatus__Sequence_to_C(cSlice *CYawEstimatorStatus__Sequence, go
 		cIdx := (*C.px4_msgs__msg__YawEstimatorStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__YawEstimatorStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__YawEstimatorStatus)(v.AsCStruct())
+		YawEstimatorStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func YawEstimatorStatus__Array_to_Go(goSlice []YawEstimatorStatus, cSlice []CYawEstimatorStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		YawEstimatorStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func YawEstimatorStatus__Array_to_C(cSlice []CYawEstimatorStatus, goSlice []YawEstimatorStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__YawEstimatorStatus)(goSlice[i].AsCStruct())
+		YawEstimatorStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

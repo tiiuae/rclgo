@@ -15,7 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/Temperature", &Temperature{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/Temperature", TemperatureTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTemperature
@@ -49,41 +49,55 @@ type Temperature struct {
 // NewTemperature creates a new Temperature with default values.
 func NewTemperature() *Temperature {
 	self := Temperature{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Temperature) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *Temperature) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__Temperature())
-}
-func (t *Temperature) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__Temperature
-	return (unsafe.Pointer)(C.sensor_msgs__msg__Temperature__create())
-}
-func (t *Temperature) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__msg__Temperature__destroy((*C.sensor_msgs__msg__Temperature)(pointer_to_free))
-}
-func (t *Temperature) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__msg__Temperature)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.temperature = C.double(t.Temperature)
-	mem.variance = C.double(t.Variance)
-	return unsafe.Pointer(mem)
-}
-func (t *Temperature) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__msg__Temperature)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.Temperature = float64(mem.temperature)
-	t.Variance = float64(mem.variance)
-}
-func (t *Temperature) Clone() ros2types.ROS2Msg {
+func (t *Temperature) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Temperature) SetDefaults() {
+	t.Header.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TemperatureTypeSupport types.MessageTypeSupport = _TemperatureTypeSupport{}
+
+type _TemperatureTypeSupport struct{}
+
+func (t _TemperatureTypeSupport) New() types.Message {
+	return NewTemperature()
+}
+
+func (t _TemperatureTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__Temperature
+	return (unsafe.Pointer)(C.sensor_msgs__msg__Temperature__create())
+}
+
+func (t _TemperatureTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__msg__Temperature__destroy((*C.sensor_msgs__msg__Temperature)(pointer_to_free))
+}
+
+func (t _TemperatureTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Temperature)
+	mem := (*C.sensor_msgs__msg__Temperature)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	mem.temperature = C.double(m.Temperature)
+	mem.variance = C.double(m.Variance)
+}
+
+func (t _TemperatureTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Temperature)
+	mem := (*C.sensor_msgs__msg__Temperature)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	m.Temperature = float64(mem.temperature)
+	m.Variance = float64(mem.variance)
+}
+
+func (t _TemperatureTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__Temperature())
 }
 
 type CTemperature = C.sensor_msgs__msg__Temperature
@@ -98,8 +112,7 @@ func Temperature__Sequence_to_Go(goSlice *[]Temperature, cSlice CTemperature__Se
 		cIdx := (*C.sensor_msgs__msg__Temperature__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__Temperature * uintptr(i)),
 		))
-		(*goSlice)[i] = Temperature{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TemperatureTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Temperature__Sequence_to_C(cSlice *CTemperature__Sequence, goSlice []Temperature) {
@@ -114,18 +127,16 @@ func Temperature__Sequence_to_C(cSlice *CTemperature__Sequence, goSlice []Temper
 		cIdx := (*C.sensor_msgs__msg__Temperature)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__Temperature * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__msg__Temperature)(v.AsCStruct())
+		TemperatureTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Temperature__Array_to_Go(goSlice []Temperature, cSlice []CTemperature) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TemperatureTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Temperature__Array_to_C(cSlice []CTemperature, goSlice []Temperature) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__msg__Temperature)(goSlice[i].AsCStruct())
+		TemperatureTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

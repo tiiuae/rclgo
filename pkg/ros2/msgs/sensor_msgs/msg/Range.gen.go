@@ -15,7 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/Range", &Range{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/Range", RangeTypeSupport)
 }
 const (
 	Range_ULTRASOUND uint8 = 0// Radiation type enumsIf you want a value added to this list, send an email to the ros-users list
@@ -56,47 +56,61 @@ type Range struct {
 // NewRange creates a new Range with default values.
 func NewRange() *Range {
 	self := Range{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Range) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *Range) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__Range())
-}
-func (t *Range) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__Range
-	return (unsafe.Pointer)(C.sensor_msgs__msg__Range__create())
-}
-func (t *Range) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__msg__Range__destroy((*C.sensor_msgs__msg__Range)(pointer_to_free))
-}
-func (t *Range) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__msg__Range)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.radiation_type = C.uint8_t(t.RadiationType)
-	mem.field_of_view = C.float(t.FieldOfView)
-	mem.min_range = C.float(t.MinRange)
-	mem.max_range = C.float(t.MaxRange)
-	mem._range = C.float(t.Range)
-	return unsafe.Pointer(mem)
-}
-func (t *Range) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__msg__Range)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.RadiationType = uint8(mem.radiation_type)
-	t.FieldOfView = float32(mem.field_of_view)
-	t.MinRange = float32(mem.min_range)
-	t.MaxRange = float32(mem.max_range)
-	t.Range = float32(mem._range)
-}
-func (t *Range) Clone() ros2types.ROS2Msg {
+func (t *Range) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Range) SetDefaults() {
+	t.Header.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var RangeTypeSupport types.MessageTypeSupport = _RangeTypeSupport{}
+
+type _RangeTypeSupport struct{}
+
+func (t _RangeTypeSupport) New() types.Message {
+	return NewRange()
+}
+
+func (t _RangeTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__Range
+	return (unsafe.Pointer)(C.sensor_msgs__msg__Range__create())
+}
+
+func (t _RangeTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__msg__Range__destroy((*C.sensor_msgs__msg__Range)(pointer_to_free))
+}
+
+func (t _RangeTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Range)
+	mem := (*C.sensor_msgs__msg__Range)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	mem.radiation_type = C.uint8_t(m.RadiationType)
+	mem.field_of_view = C.float(m.FieldOfView)
+	mem.min_range = C.float(m.MinRange)
+	mem.max_range = C.float(m.MaxRange)
+	mem._range = C.float(m.Range)
+}
+
+func (t _RangeTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Range)
+	mem := (*C.sensor_msgs__msg__Range)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	m.RadiationType = uint8(mem.radiation_type)
+	m.FieldOfView = float32(mem.field_of_view)
+	m.MinRange = float32(mem.min_range)
+	m.MaxRange = float32(mem.max_range)
+	m.Range = float32(mem._range)
+}
+
+func (t _RangeTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__Range())
 }
 
 type CRange = C.sensor_msgs__msg__Range
@@ -111,8 +125,7 @@ func Range__Sequence_to_Go(goSlice *[]Range, cSlice CRange__Sequence) {
 		cIdx := (*C.sensor_msgs__msg__Range__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__Range * uintptr(i)),
 		))
-		(*goSlice)[i] = Range{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		RangeTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Range__Sequence_to_C(cSlice *CRange__Sequence, goSlice []Range) {
@@ -127,18 +140,16 @@ func Range__Sequence_to_C(cSlice *CRange__Sequence, goSlice []Range) {
 		cIdx := (*C.sensor_msgs__msg__Range)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__Range * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__msg__Range)(v.AsCStruct())
+		RangeTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Range__Array_to_Go(goSlice []Range, cSlice []CRange) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		RangeTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Range__Array_to_C(cSlice []CRange, goSlice []Range) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__msg__Range)(goSlice[i].AsCStruct())
+		RangeTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("example_interfaces/AddTwoInts", AddTwoInts)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("example_interfaces/AddTwoInts", AddTwoIntsTypeSupport)
 }
 
-type _AddTwoInts struct {
-	req,resp ros2types.ROS2Msg
+type _AddTwoIntsTypeSupport struct {}
+
+func (s _AddTwoIntsTypeSupport) Request() types.MessageTypeSupport {
+	return AddTwoInts_RequestTypeSupport
 }
 
-func (s *_AddTwoInts) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _AddTwoIntsTypeSupport) Response() types.MessageTypeSupport {
+	return AddTwoInts_ResponseTypeSupport
 }
 
-func (s *_AddTwoInts) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_AddTwoInts) TypeSupport() unsafe.Pointer {
+func (s _AddTwoIntsTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__example_interfaces__srv__AddTwoInts())
 }
 
 // Modifying this variable is undefined behavior.
-var AddTwoInts ros2types.Service = &_AddTwoInts{
-	req: &AddTwoInts_Request{},
-	resp: &AddTwoInts_Response{},
-}
+var AddTwoIntsTypeSupport types.ServiceTypeSupport = _AddTwoIntsTypeSupport{}

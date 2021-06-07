@@ -15,7 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
@@ -36,7 +36,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/CameraInfo", &CameraInfo{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/CameraInfo", CameraInfoTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewCameraInfo
@@ -45,7 +45,7 @@ type CameraInfo struct {
 	Header std_msgs_msg.Header `yaml:"header"`// Header timestamp should be acquisition time of image. Time of image acquisition, camera coordinate frame ID
 	Height uint32 `yaml:"height"`// The image dimensions with which the camera was calibrated.Normally this will be the full camera resolution in pixels.
 	Width uint32 `yaml:"width"`// The image dimensions with which the camera was calibrated.Normally this will be the full camera resolution in pixels.
-	DistortionModel rosidl_runtime_c.String `yaml:"distortion_model"`// The distortion model used. Supported models are listed insensor_msgs/distortion_models.hpp. For most cameras, "plumb_bob" - asimple model of radial and tangential distortion - is sufficent.
+	DistortionModel string `yaml:"distortion_model"`// The distortion model used. Supported models are listed insensor_msgs/distortion_models.hpp. For most cameras, "plumb_bob" - asimple model of radial and tangential distortion - is sufficent.
 	D []float64 `yaml:"d"`// The distortion parameters, size depending on the distortion model.For "plumb_bob", the 5 parameters are: (k1, k2, t1, t2, k3).
 	K [9]float64 `yaml:"k"`// 3x3 row-major matrix. Intrinsic camera matrix for the raw (distorted) images.[fx  0 cx]K = [ 0 fy cy][ 0  0  1]Projects 3D points in the camera coordinate frame to 2D pixelcoordinates using the focal lengths (fx, fy) and principal point(cx, cy).
 	R [9]float64 `yaml:"r"`// 3x3 row-major matrix. Rectification matrix (stereo cameras only)A rotation matrix aligning the camera coordinate system to the idealstereo image plane so that epipolar lines in both stereo images areparallel.
@@ -58,65 +58,78 @@ type CameraInfo struct {
 // NewCameraInfo creates a new CameraInfo with default values.
 func NewCameraInfo() *CameraInfo {
 	self := CameraInfo{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *CameraInfo) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.DistortionModel.SetDefaults("")
-	t.Roi.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *CameraInfo) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__CameraInfo())
-}
-func (t *CameraInfo) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__CameraInfo
-	return (unsafe.Pointer)(C.sensor_msgs__msg__CameraInfo__create())
-}
-func (t *CameraInfo) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__msg__CameraInfo__destroy((*C.sensor_msgs__msg__CameraInfo)(pointer_to_free))
-}
-func (t *CameraInfo) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__msg__CameraInfo)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.height = C.uint32_t(t.Height)
-	mem.width = C.uint32_t(t.Width)
-	mem.distortion_model = *(*C.rosidl_runtime_c__String)(t.DistortionModel.AsCStruct())
-	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.d)), t.D)
-	cSlice_k := mem.k[:]
-	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_k)), t.K[:])
-	cSlice_r := mem.r[:]
-	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_r)), t.R[:])
-	cSlice_p := mem.p[:]
-	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_p)), t.P[:])
-	mem.binning_x = C.uint32_t(t.BinningX)
-	mem.binning_y = C.uint32_t(t.BinningY)
-	mem.roi = *(*C.sensor_msgs__msg__RegionOfInterest)(t.Roi.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *CameraInfo) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__msg__CameraInfo)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.Height = uint32(mem.height)
-	t.Width = uint32(mem.width)
-	t.DistortionModel.AsGoStruct(unsafe.Pointer(&mem.distortion_model))
-	rosidl_runtime_c.Float64__Sequence_to_Go(&t.D, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.d)))
-	cSlice_k := mem.k[:]
-	rosidl_runtime_c.Float64__Array_to_Go(t.K[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_k)))
-	cSlice_r := mem.r[:]
-	rosidl_runtime_c.Float64__Array_to_Go(t.R[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_r)))
-	cSlice_p := mem.p[:]
-	rosidl_runtime_c.Float64__Array_to_Go(t.P[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_p)))
-	t.BinningX = uint32(mem.binning_x)
-	t.BinningY = uint32(mem.binning_y)
-	t.Roi.AsGoStruct(unsafe.Pointer(&mem.roi))
-}
-func (t *CameraInfo) Clone() ros2types.ROS2Msg {
+func (t *CameraInfo) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *CameraInfo) SetDefaults() {
+	t.Header.SetDefaults()
+	t.Roi.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var CameraInfoTypeSupport types.MessageTypeSupport = _CameraInfoTypeSupport{}
+
+type _CameraInfoTypeSupport struct{}
+
+func (t _CameraInfoTypeSupport) New() types.Message {
+	return NewCameraInfo()
+}
+
+func (t _CameraInfoTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__CameraInfo
+	return (unsafe.Pointer)(C.sensor_msgs__msg__CameraInfo__create())
+}
+
+func (t _CameraInfoTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__msg__CameraInfo__destroy((*C.sensor_msgs__msg__CameraInfo)(pointer_to_free))
+}
+
+func (t _CameraInfoTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*CameraInfo)
+	mem := (*C.sensor_msgs__msg__CameraInfo)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	mem.height = C.uint32_t(m.Height)
+	mem.width = C.uint32_t(m.Width)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.distortion_model), m.DistortionModel)
+	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.d)), m.D)
+	cSlice_k := mem.k[:]
+	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_k)), m.K[:])
+	cSlice_r := mem.r[:]
+	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_r)), m.R[:])
+	cSlice_p := mem.p[:]
+	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_p)), m.P[:])
+	mem.binning_x = C.uint32_t(m.BinningX)
+	mem.binning_y = C.uint32_t(m.BinningY)
+	RegionOfInterestTypeSupport.AsCStruct(unsafe.Pointer(&mem.roi), &m.Roi)
+}
+
+func (t _CameraInfoTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*CameraInfo)
+	mem := (*C.sensor_msgs__msg__CameraInfo)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	m.Height = uint32(mem.height)
+	m.Width = uint32(mem.width)
+	rosidl_runtime_c.StringAsGoStruct(&m.DistortionModel, unsafe.Pointer(&mem.distortion_model))
+	rosidl_runtime_c.Float64__Sequence_to_Go(&m.D, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.d)))
+	cSlice_k := mem.k[:]
+	rosidl_runtime_c.Float64__Array_to_Go(m.K[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_k)))
+	cSlice_r := mem.r[:]
+	rosidl_runtime_c.Float64__Array_to_Go(m.R[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_r)))
+	cSlice_p := mem.p[:]
+	rosidl_runtime_c.Float64__Array_to_Go(m.P[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_p)))
+	m.BinningX = uint32(mem.binning_x)
+	m.BinningY = uint32(mem.binning_y)
+	RegionOfInterestTypeSupport.AsGoStruct(&m.Roi, unsafe.Pointer(&mem.roi))
+}
+
+func (t _CameraInfoTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__CameraInfo())
 }
 
 type CCameraInfo = C.sensor_msgs__msg__CameraInfo
@@ -131,8 +144,7 @@ func CameraInfo__Sequence_to_Go(goSlice *[]CameraInfo, cSlice CCameraInfo__Seque
 		cIdx := (*C.sensor_msgs__msg__CameraInfo__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__CameraInfo * uintptr(i)),
 		))
-		(*goSlice)[i] = CameraInfo{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		CameraInfoTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func CameraInfo__Sequence_to_C(cSlice *CCameraInfo__Sequence, goSlice []CameraInfo) {
@@ -147,18 +159,16 @@ func CameraInfo__Sequence_to_C(cSlice *CCameraInfo__Sequence, goSlice []CameraIn
 		cIdx := (*C.sensor_msgs__msg__CameraInfo)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__CameraInfo * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__msg__CameraInfo)(v.AsCStruct())
+		CameraInfoTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func CameraInfo__Array_to_Go(goSlice []CameraInfo, cSlice []CCameraInfo) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		CameraInfoTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func CameraInfo__Array_to_C(cSlice []CCameraInfo, goSlice []CameraInfo) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__msg__CameraInfo)(goSlice[i].AsCStruct())
+		CameraInfoTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

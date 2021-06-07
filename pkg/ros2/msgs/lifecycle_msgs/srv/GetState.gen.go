@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("lifecycle_msgs/GetState", GetState)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("lifecycle_msgs/GetState", GetStateTypeSupport)
 }
 
-type _GetState struct {
-	req,resp ros2types.ROS2Msg
+type _GetStateTypeSupport struct {}
+
+func (s _GetStateTypeSupport) Request() types.MessageTypeSupport {
+	return GetState_RequestTypeSupport
 }
 
-func (s *_GetState) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _GetStateTypeSupport) Response() types.MessageTypeSupport {
+	return GetState_ResponseTypeSupport
 }
 
-func (s *_GetState) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_GetState) TypeSupport() unsafe.Pointer {
+func (s _GetStateTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__lifecycle_msgs__srv__GetState())
 }
 
 // Modifying this variable is undefined behavior.
-var GetState ros2types.Service = &_GetState{
-	req: &GetState_Request{},
-	resp: &GetState_Response{},
-}
+var GetStateTypeSupport types.ServiceTypeSupport = _GetStateTypeSupport{}

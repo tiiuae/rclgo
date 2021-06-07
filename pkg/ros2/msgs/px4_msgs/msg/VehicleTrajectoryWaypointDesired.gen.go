@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleTrajectoryWaypointDesired", &VehicleTrajectoryWaypointDesired{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleTrajectoryWaypointDesired", VehicleTrajectoryWaypointDesiredTypeSupport)
 }
 const (
 	VehicleTrajectoryWaypointDesired_MAV_TRAJECTORY_REPRESENTATION_WAYPOINTS uint8 = 0
@@ -56,45 +56,59 @@ type VehicleTrajectoryWaypointDesired struct {
 // NewVehicleTrajectoryWaypointDesired creates a new VehicleTrajectoryWaypointDesired with default values.
 func NewVehicleTrajectoryWaypointDesired() *VehicleTrajectoryWaypointDesired {
 	self := VehicleTrajectoryWaypointDesired{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *VehicleTrajectoryWaypointDesired) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Waypoints[0].SetDefaults(nil)
-	t.Waypoints[1].SetDefaults(nil)
-	t.Waypoints[2].SetDefaults(nil)
-	t.Waypoints[3].SetDefaults(nil)
-	t.Waypoints[4].SetDefaults(nil)
-	
-	return t
-}
-
-func (t *VehicleTrajectoryWaypointDesired) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleTrajectoryWaypointDesired())
-}
-func (t *VehicleTrajectoryWaypointDesired) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleTrajectoryWaypointDesired
-	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleTrajectoryWaypointDesired__create())
-}
-func (t *VehicleTrajectoryWaypointDesired) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__VehicleTrajectoryWaypointDesired__destroy((*C.px4_msgs__msg__VehicleTrajectoryWaypointDesired)(pointer_to_free))
-}
-func (t *VehicleTrajectoryWaypointDesired) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__VehicleTrajectoryWaypointDesired)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem._type = C.uint8_t(t.Type)
-	TrajectoryWaypoint__Array_to_C(mem.waypoints[:], t.Waypoints[:])
-	return unsafe.Pointer(mem)
-}
-func (t *VehicleTrajectoryWaypointDesired) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__VehicleTrajectoryWaypointDesired)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Type = uint8(mem._type)
-	TrajectoryWaypoint__Array_to_Go(t.Waypoints[:], mem.waypoints[:])
-}
-func (t *VehicleTrajectoryWaypointDesired) Clone() ros2types.ROS2Msg {
+func (t *VehicleTrajectoryWaypointDesired) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *VehicleTrajectoryWaypointDesired) SetDefaults() {
+	t.Waypoints[0].SetDefaults()
+	t.Waypoints[1].SetDefaults()
+	t.Waypoints[2].SetDefaults()
+	t.Waypoints[3].SetDefaults()
+	t.Waypoints[4].SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VehicleTrajectoryWaypointDesiredTypeSupport types.MessageTypeSupport = _VehicleTrajectoryWaypointDesiredTypeSupport{}
+
+type _VehicleTrajectoryWaypointDesiredTypeSupport struct{}
+
+func (t _VehicleTrajectoryWaypointDesiredTypeSupport) New() types.Message {
+	return NewVehicleTrajectoryWaypointDesired()
+}
+
+func (t _VehicleTrajectoryWaypointDesiredTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleTrajectoryWaypointDesired
+	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleTrajectoryWaypointDesired__create())
+}
+
+func (t _VehicleTrajectoryWaypointDesiredTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__VehicleTrajectoryWaypointDesired__destroy((*C.px4_msgs__msg__VehicleTrajectoryWaypointDesired)(pointer_to_free))
+}
+
+func (t _VehicleTrajectoryWaypointDesiredTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*VehicleTrajectoryWaypointDesired)
+	mem := (*C.px4_msgs__msg__VehicleTrajectoryWaypointDesired)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem._type = C.uint8_t(m.Type)
+	TrajectoryWaypoint__Array_to_C(mem.waypoints[:], m.Waypoints[:])
+}
+
+func (t _VehicleTrajectoryWaypointDesiredTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*VehicleTrajectoryWaypointDesired)
+	mem := (*C.px4_msgs__msg__VehicleTrajectoryWaypointDesired)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Type = uint8(mem._type)
+	TrajectoryWaypoint__Array_to_Go(m.Waypoints[:], mem.waypoints[:])
+}
+
+func (t _VehicleTrajectoryWaypointDesiredTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleTrajectoryWaypointDesired())
 }
 
 type CVehicleTrajectoryWaypointDesired = C.px4_msgs__msg__VehicleTrajectoryWaypointDesired
@@ -109,8 +123,7 @@ func VehicleTrajectoryWaypointDesired__Sequence_to_Go(goSlice *[]VehicleTrajecto
 		cIdx := (*C.px4_msgs__msg__VehicleTrajectoryWaypointDesired__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleTrajectoryWaypointDesired * uintptr(i)),
 		))
-		(*goSlice)[i] = VehicleTrajectoryWaypointDesired{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VehicleTrajectoryWaypointDesiredTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func VehicleTrajectoryWaypointDesired__Sequence_to_C(cSlice *CVehicleTrajectoryWaypointDesired__Sequence, goSlice []VehicleTrajectoryWaypointDesired) {
@@ -125,18 +138,16 @@ func VehicleTrajectoryWaypointDesired__Sequence_to_C(cSlice *CVehicleTrajectoryW
 		cIdx := (*C.px4_msgs__msg__VehicleTrajectoryWaypointDesired)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleTrajectoryWaypointDesired * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__VehicleTrajectoryWaypointDesired)(v.AsCStruct())
+		VehicleTrajectoryWaypointDesiredTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func VehicleTrajectoryWaypointDesired__Array_to_Go(goSlice []VehicleTrajectoryWaypointDesired, cSlice []CVehicleTrajectoryWaypointDesired) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VehicleTrajectoryWaypointDesiredTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func VehicleTrajectoryWaypointDesired__Array_to_C(cSlice []CVehicleTrajectoryWaypointDesired, goSlice []VehicleTrajectoryWaypointDesired) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__VehicleTrajectoryWaypointDesired)(goSlice[i].AsCStruct())
+		VehicleTrajectoryWaypointDesiredTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

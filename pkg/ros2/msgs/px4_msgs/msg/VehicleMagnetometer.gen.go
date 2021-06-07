@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleMagnetometer", &VehicleMagnetometer{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleMagnetometer", VehicleMagnetometerTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewVehicleMagnetometer
@@ -50,46 +50,60 @@ type VehicleMagnetometer struct {
 // NewVehicleMagnetometer creates a new VehicleMagnetometer with default values.
 func NewVehicleMagnetometer() *VehicleMagnetometer {
 	self := VehicleMagnetometer{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *VehicleMagnetometer) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *VehicleMagnetometer) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleMagnetometer())
-}
-func (t *VehicleMagnetometer) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleMagnetometer
-	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleMagnetometer__create())
-}
-func (t *VehicleMagnetometer) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__VehicleMagnetometer__destroy((*C.px4_msgs__msg__VehicleMagnetometer)(pointer_to_free))
-}
-func (t *VehicleMagnetometer) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__VehicleMagnetometer)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	mem.device_id = C.uint32_t(t.DeviceId)
-	cSlice_magnetometer_ga := mem.magnetometer_ga[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_magnetometer_ga)), t.MagnetometerGa[:])
-	mem.calibration_count = C.uint8_t(t.CalibrationCount)
-	return unsafe.Pointer(mem)
-}
-func (t *VehicleMagnetometer) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__VehicleMagnetometer)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	t.DeviceId = uint32(mem.device_id)
-	cSlice_magnetometer_ga := mem.magnetometer_ga[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.MagnetometerGa[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_magnetometer_ga)))
-	t.CalibrationCount = uint8(mem.calibration_count)
-}
-func (t *VehicleMagnetometer) Clone() ros2types.ROS2Msg {
+func (t *VehicleMagnetometer) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *VehicleMagnetometer) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VehicleMagnetometerTypeSupport types.MessageTypeSupport = _VehicleMagnetometerTypeSupport{}
+
+type _VehicleMagnetometerTypeSupport struct{}
+
+func (t _VehicleMagnetometerTypeSupport) New() types.Message {
+	return NewVehicleMagnetometer()
+}
+
+func (t _VehicleMagnetometerTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleMagnetometer
+	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleMagnetometer__create())
+}
+
+func (t _VehicleMagnetometerTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__VehicleMagnetometer__destroy((*C.px4_msgs__msg__VehicleMagnetometer)(pointer_to_free))
+}
+
+func (t _VehicleMagnetometerTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*VehicleMagnetometer)
+	mem := (*C.px4_msgs__msg__VehicleMagnetometer)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	mem.device_id = C.uint32_t(m.DeviceId)
+	cSlice_magnetometer_ga := mem.magnetometer_ga[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_magnetometer_ga)), m.MagnetometerGa[:])
+	mem.calibration_count = C.uint8_t(m.CalibrationCount)
+}
+
+func (t _VehicleMagnetometerTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*VehicleMagnetometer)
+	mem := (*C.px4_msgs__msg__VehicleMagnetometer)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	m.DeviceId = uint32(mem.device_id)
+	cSlice_magnetometer_ga := mem.magnetometer_ga[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.MagnetometerGa[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_magnetometer_ga)))
+	m.CalibrationCount = uint8(mem.calibration_count)
+}
+
+func (t _VehicleMagnetometerTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleMagnetometer())
 }
 
 type CVehicleMagnetometer = C.px4_msgs__msg__VehicleMagnetometer
@@ -104,8 +118,7 @@ func VehicleMagnetometer__Sequence_to_Go(goSlice *[]VehicleMagnetometer, cSlice 
 		cIdx := (*C.px4_msgs__msg__VehicleMagnetometer__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleMagnetometer * uintptr(i)),
 		))
-		(*goSlice)[i] = VehicleMagnetometer{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VehicleMagnetometerTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func VehicleMagnetometer__Sequence_to_C(cSlice *CVehicleMagnetometer__Sequence, goSlice []VehicleMagnetometer) {
@@ -120,18 +133,16 @@ func VehicleMagnetometer__Sequence_to_C(cSlice *CVehicleMagnetometer__Sequence, 
 		cIdx := (*C.px4_msgs__msg__VehicleMagnetometer)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleMagnetometer * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__VehicleMagnetometer)(v.AsCStruct())
+		VehicleMagnetometerTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func VehicleMagnetometer__Array_to_Go(goSlice []VehicleMagnetometer, cSlice []CVehicleMagnetometer) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VehicleMagnetometerTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func VehicleMagnetometer__Array_to_C(cSlice []CVehicleMagnetometer, goSlice []VehicleMagnetometer) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__VehicleMagnetometer)(goSlice[i].AsCStruct())
+		VehicleMagnetometerTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

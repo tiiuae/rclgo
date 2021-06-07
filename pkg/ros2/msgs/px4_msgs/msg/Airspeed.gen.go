@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/Airspeed", &Airspeed{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/Airspeed", AirspeedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewAirspeed
@@ -49,44 +49,58 @@ type Airspeed struct {
 // NewAirspeed creates a new Airspeed with default values.
 func NewAirspeed() *Airspeed {
 	self := Airspeed{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Airspeed) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Airspeed) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__Airspeed())
-}
-func (t *Airspeed) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__Airspeed
-	return (unsafe.Pointer)(C.px4_msgs__msg__Airspeed__create())
-}
-func (t *Airspeed) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__Airspeed__destroy((*C.px4_msgs__msg__Airspeed)(pointer_to_free))
-}
-func (t *Airspeed) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__Airspeed)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.indicated_airspeed_m_s = C.float(t.IndicatedAirspeedMS)
-	mem.true_airspeed_m_s = C.float(t.TrueAirspeedMS)
-	mem.air_temperature_celsius = C.float(t.AirTemperatureCelsius)
-	mem.confidence = C.float(t.Confidence)
-	return unsafe.Pointer(mem)
-}
-func (t *Airspeed) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__Airspeed)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.IndicatedAirspeedMS = float32(mem.indicated_airspeed_m_s)
-	t.TrueAirspeedMS = float32(mem.true_airspeed_m_s)
-	t.AirTemperatureCelsius = float32(mem.air_temperature_celsius)
-	t.Confidence = float32(mem.confidence)
-}
-func (t *Airspeed) Clone() ros2types.ROS2Msg {
+func (t *Airspeed) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Airspeed) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var AirspeedTypeSupport types.MessageTypeSupport = _AirspeedTypeSupport{}
+
+type _AirspeedTypeSupport struct{}
+
+func (t _AirspeedTypeSupport) New() types.Message {
+	return NewAirspeed()
+}
+
+func (t _AirspeedTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__Airspeed
+	return (unsafe.Pointer)(C.px4_msgs__msg__Airspeed__create())
+}
+
+func (t _AirspeedTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__Airspeed__destroy((*C.px4_msgs__msg__Airspeed)(pointer_to_free))
+}
+
+func (t _AirspeedTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Airspeed)
+	mem := (*C.px4_msgs__msg__Airspeed)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.indicated_airspeed_m_s = C.float(m.IndicatedAirspeedMS)
+	mem.true_airspeed_m_s = C.float(m.TrueAirspeedMS)
+	mem.air_temperature_celsius = C.float(m.AirTemperatureCelsius)
+	mem.confidence = C.float(m.Confidence)
+}
+
+func (t _AirspeedTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Airspeed)
+	mem := (*C.px4_msgs__msg__Airspeed)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.IndicatedAirspeedMS = float32(mem.indicated_airspeed_m_s)
+	m.TrueAirspeedMS = float32(mem.true_airspeed_m_s)
+	m.AirTemperatureCelsius = float32(mem.air_temperature_celsius)
+	m.Confidence = float32(mem.confidence)
+}
+
+func (t _AirspeedTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__Airspeed())
 }
 
 type CAirspeed = C.px4_msgs__msg__Airspeed
@@ -101,8 +115,7 @@ func Airspeed__Sequence_to_Go(goSlice *[]Airspeed, cSlice CAirspeed__Sequence) {
 		cIdx := (*C.px4_msgs__msg__Airspeed__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__Airspeed * uintptr(i)),
 		))
-		(*goSlice)[i] = Airspeed{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		AirspeedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Airspeed__Sequence_to_C(cSlice *CAirspeed__Sequence, goSlice []Airspeed) {
@@ -117,18 +130,16 @@ func Airspeed__Sequence_to_C(cSlice *CAirspeed__Sequence, goSlice []Airspeed) {
 		cIdx := (*C.px4_msgs__msg__Airspeed)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__Airspeed * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__Airspeed)(v.AsCStruct())
+		AirspeedTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Airspeed__Array_to_Go(goSlice []Airspeed, cSlice []CAirspeed) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		AirspeedTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Airspeed__Array_to_C(cSlice []CAirspeed, goSlice []Airspeed) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__Airspeed)(goSlice[i].AsCStruct())
+		AirspeedTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package shape_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("shape_msgs/Plane", &Plane{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("shape_msgs/Plane", PlaneTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPlane
@@ -46,38 +46,52 @@ type Plane struct {
 // NewPlane creates a new Plane with default values.
 func NewPlane() *Plane {
 	self := Plane{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Plane) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Plane) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__shape_msgs__msg__Plane())
-}
-func (t *Plane) PrepareMemory() unsafe.Pointer { //returns *C.shape_msgs__msg__Plane
-	return (unsafe.Pointer)(C.shape_msgs__msg__Plane__create())
-}
-func (t *Plane) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.shape_msgs__msg__Plane__destroy((*C.shape_msgs__msg__Plane)(pointer_to_free))
-}
-func (t *Plane) AsCStruct() unsafe.Pointer {
-	mem := (*C.shape_msgs__msg__Plane)(t.PrepareMemory())
-	cSlice_coef := mem.coef[:]
-	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_coef)), t.Coef[:])
-	return unsafe.Pointer(mem)
-}
-func (t *Plane) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.shape_msgs__msg__Plane)(ros2_message_buffer)
-	cSlice_coef := mem.coef[:]
-	rosidl_runtime_c.Float64__Array_to_Go(t.Coef[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_coef)))
-}
-func (t *Plane) Clone() ros2types.ROS2Msg {
+func (t *Plane) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Plane) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var PlaneTypeSupport types.MessageTypeSupport = _PlaneTypeSupport{}
+
+type _PlaneTypeSupport struct{}
+
+func (t _PlaneTypeSupport) New() types.Message {
+	return NewPlane()
+}
+
+func (t _PlaneTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.shape_msgs__msg__Plane
+	return (unsafe.Pointer)(C.shape_msgs__msg__Plane__create())
+}
+
+func (t _PlaneTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.shape_msgs__msg__Plane__destroy((*C.shape_msgs__msg__Plane)(pointer_to_free))
+}
+
+func (t _PlaneTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Plane)
+	mem := (*C.shape_msgs__msg__Plane)(dst)
+	cSlice_coef := mem.coef[:]
+	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_coef)), m.Coef[:])
+}
+
+func (t _PlaneTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Plane)
+	mem := (*C.shape_msgs__msg__Plane)(ros2_message_buffer)
+	cSlice_coef := mem.coef[:]
+	rosidl_runtime_c.Float64__Array_to_Go(m.Coef[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_coef)))
+}
+
+func (t _PlaneTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__shape_msgs__msg__Plane())
 }
 
 type CPlane = C.shape_msgs__msg__Plane
@@ -92,8 +106,7 @@ func Plane__Sequence_to_Go(goSlice *[]Plane, cSlice CPlane__Sequence) {
 		cIdx := (*C.shape_msgs__msg__Plane__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_shape_msgs__msg__Plane * uintptr(i)),
 		))
-		(*goSlice)[i] = Plane{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		PlaneTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Plane__Sequence_to_C(cSlice *CPlane__Sequence, goSlice []Plane) {
@@ -108,18 +121,16 @@ func Plane__Sequence_to_C(cSlice *CPlane__Sequence, goSlice []Plane) {
 		cIdx := (*C.shape_msgs__msg__Plane)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_shape_msgs__msg__Plane * uintptr(i)),
 		))
-		*cIdx = *(*C.shape_msgs__msg__Plane)(v.AsCStruct())
+		PlaneTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Plane__Array_to_Go(goSlice []Plane, cSlice []CPlane) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		PlaneTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Plane__Array_to_C(cSlice []CPlane, goSlice []Plane) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.shape_msgs__msg__Plane)(goSlice[i].AsCStruct())
+		PlaneTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

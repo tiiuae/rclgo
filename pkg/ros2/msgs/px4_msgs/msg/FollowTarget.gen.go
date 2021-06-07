@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/FollowTarget", &FollowTarget{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/FollowTarget", FollowTargetTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewFollowTarget
@@ -52,50 +52,64 @@ type FollowTarget struct {
 // NewFollowTarget creates a new FollowTarget with default values.
 func NewFollowTarget() *FollowTarget {
 	self := FollowTarget{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *FollowTarget) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *FollowTarget) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__FollowTarget())
-}
-func (t *FollowTarget) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__FollowTarget
-	return (unsafe.Pointer)(C.px4_msgs__msg__FollowTarget__create())
-}
-func (t *FollowTarget) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__FollowTarget__destroy((*C.px4_msgs__msg__FollowTarget)(pointer_to_free))
-}
-func (t *FollowTarget) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__FollowTarget)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.lat = C.double(t.Lat)
-	mem.lon = C.double(t.Lon)
-	mem.alt = C.float(t.Alt)
-	mem.vy = C.float(t.Vy)
-	mem.vx = C.float(t.Vx)
-	mem.vz = C.float(t.Vz)
-	mem.est_cap = C.uint8_t(t.EstCap)
-	return unsafe.Pointer(mem)
-}
-func (t *FollowTarget) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__FollowTarget)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Lat = float64(mem.lat)
-	t.Lon = float64(mem.lon)
-	t.Alt = float32(mem.alt)
-	t.Vy = float32(mem.vy)
-	t.Vx = float32(mem.vx)
-	t.Vz = float32(mem.vz)
-	t.EstCap = uint8(mem.est_cap)
-}
-func (t *FollowTarget) Clone() ros2types.ROS2Msg {
+func (t *FollowTarget) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *FollowTarget) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var FollowTargetTypeSupport types.MessageTypeSupport = _FollowTargetTypeSupport{}
+
+type _FollowTargetTypeSupport struct{}
+
+func (t _FollowTargetTypeSupport) New() types.Message {
+	return NewFollowTarget()
+}
+
+func (t _FollowTargetTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__FollowTarget
+	return (unsafe.Pointer)(C.px4_msgs__msg__FollowTarget__create())
+}
+
+func (t _FollowTargetTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__FollowTarget__destroy((*C.px4_msgs__msg__FollowTarget)(pointer_to_free))
+}
+
+func (t _FollowTargetTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*FollowTarget)
+	mem := (*C.px4_msgs__msg__FollowTarget)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.lat = C.double(m.Lat)
+	mem.lon = C.double(m.Lon)
+	mem.alt = C.float(m.Alt)
+	mem.vy = C.float(m.Vy)
+	mem.vx = C.float(m.Vx)
+	mem.vz = C.float(m.Vz)
+	mem.est_cap = C.uint8_t(m.EstCap)
+}
+
+func (t _FollowTargetTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*FollowTarget)
+	mem := (*C.px4_msgs__msg__FollowTarget)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Lat = float64(mem.lat)
+	m.Lon = float64(mem.lon)
+	m.Alt = float32(mem.alt)
+	m.Vy = float32(mem.vy)
+	m.Vx = float32(mem.vx)
+	m.Vz = float32(mem.vz)
+	m.EstCap = uint8(mem.est_cap)
+}
+
+func (t _FollowTargetTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__FollowTarget())
 }
 
 type CFollowTarget = C.px4_msgs__msg__FollowTarget
@@ -110,8 +124,7 @@ func FollowTarget__Sequence_to_Go(goSlice *[]FollowTarget, cSlice CFollowTarget_
 		cIdx := (*C.px4_msgs__msg__FollowTarget__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__FollowTarget * uintptr(i)),
 		))
-		(*goSlice)[i] = FollowTarget{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		FollowTargetTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func FollowTarget__Sequence_to_C(cSlice *CFollowTarget__Sequence, goSlice []FollowTarget) {
@@ -126,18 +139,16 @@ func FollowTarget__Sequence_to_C(cSlice *CFollowTarget__Sequence, goSlice []Foll
 		cIdx := (*C.px4_msgs__msg__FollowTarget)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__FollowTarget * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__FollowTarget)(v.AsCStruct())
+		FollowTargetTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func FollowTarget__Array_to_Go(goSlice []FollowTarget, cSlice []CFollowTarget) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		FollowTargetTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func FollowTarget__Array_to_C(cSlice []CFollowTarget, goSlice []FollowTarget) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__FollowTarget)(goSlice[i].AsCStruct())
+		FollowTargetTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package map_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	sensor_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/sensor_msgs/msg"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
@@ -37,7 +37,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("map_msgs/PointCloud2Update", &PointCloud2Update{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("map_msgs/PointCloud2Update", PointCloud2UpdateTypeSupport)
 }
 const (
 	PointCloud2Update_ADD uint32 = 0
@@ -55,42 +55,56 @@ type PointCloud2Update struct {
 // NewPointCloud2Update creates a new PointCloud2Update with default values.
 func NewPointCloud2Update() *PointCloud2Update {
 	self := PointCloud2Update{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *PointCloud2Update) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.Points.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *PointCloud2Update) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__map_msgs__msg__PointCloud2Update())
-}
-func (t *PointCloud2Update) PrepareMemory() unsafe.Pointer { //returns *C.map_msgs__msg__PointCloud2Update
-	return (unsafe.Pointer)(C.map_msgs__msg__PointCloud2Update__create())
-}
-func (t *PointCloud2Update) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.map_msgs__msg__PointCloud2Update__destroy((*C.map_msgs__msg__PointCloud2Update)(pointer_to_free))
-}
-func (t *PointCloud2Update) AsCStruct() unsafe.Pointer {
-	mem := (*C.map_msgs__msg__PointCloud2Update)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem._type = C.uint32_t(t.Type)
-	mem.points = *(*C.sensor_msgs__msg__PointCloud2)(t.Points.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *PointCloud2Update) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.map_msgs__msg__PointCloud2Update)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.Type = uint32(mem._type)
-	t.Points.AsGoStruct(unsafe.Pointer(&mem.points))
-}
-func (t *PointCloud2Update) Clone() ros2types.ROS2Msg {
+func (t *PointCloud2Update) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *PointCloud2Update) SetDefaults() {
+	t.Header.SetDefaults()
+	t.Points.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var PointCloud2UpdateTypeSupport types.MessageTypeSupport = _PointCloud2UpdateTypeSupport{}
+
+type _PointCloud2UpdateTypeSupport struct{}
+
+func (t _PointCloud2UpdateTypeSupport) New() types.Message {
+	return NewPointCloud2Update()
+}
+
+func (t _PointCloud2UpdateTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.map_msgs__msg__PointCloud2Update
+	return (unsafe.Pointer)(C.map_msgs__msg__PointCloud2Update__create())
+}
+
+func (t _PointCloud2UpdateTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.map_msgs__msg__PointCloud2Update__destroy((*C.map_msgs__msg__PointCloud2Update)(pointer_to_free))
+}
+
+func (t _PointCloud2UpdateTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*PointCloud2Update)
+	mem := (*C.map_msgs__msg__PointCloud2Update)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	mem._type = C.uint32_t(m.Type)
+	sensor_msgs_msg.PointCloud2TypeSupport.AsCStruct(unsafe.Pointer(&mem.points), &m.Points)
+}
+
+func (t _PointCloud2UpdateTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*PointCloud2Update)
+	mem := (*C.map_msgs__msg__PointCloud2Update)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	m.Type = uint32(mem._type)
+	sensor_msgs_msg.PointCloud2TypeSupport.AsGoStruct(&m.Points, unsafe.Pointer(&mem.points))
+}
+
+func (t _PointCloud2UpdateTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__map_msgs__msg__PointCloud2Update())
 }
 
 type CPointCloud2Update = C.map_msgs__msg__PointCloud2Update
@@ -105,8 +119,7 @@ func PointCloud2Update__Sequence_to_Go(goSlice *[]PointCloud2Update, cSlice CPoi
 		cIdx := (*C.map_msgs__msg__PointCloud2Update__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_map_msgs__msg__PointCloud2Update * uintptr(i)),
 		))
-		(*goSlice)[i] = PointCloud2Update{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		PointCloud2UpdateTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func PointCloud2Update__Sequence_to_C(cSlice *CPointCloud2Update__Sequence, goSlice []PointCloud2Update) {
@@ -121,18 +134,16 @@ func PointCloud2Update__Sequence_to_C(cSlice *CPointCloud2Update__Sequence, goSl
 		cIdx := (*C.map_msgs__msg__PointCloud2Update)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_map_msgs__msg__PointCloud2Update * uintptr(i)),
 		))
-		*cIdx = *(*C.map_msgs__msg__PointCloud2Update)(v.AsCStruct())
+		PointCloud2UpdateTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func PointCloud2Update__Array_to_Go(goSlice []PointCloud2Update, cSlice []CPointCloud2Update) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		PointCloud2UpdateTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func PointCloud2Update__Array_to_C(cSlice []CPointCloud2Update, goSlice []PointCloud2Update) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.map_msgs__msg__PointCloud2Update)(goSlice[i].AsCStruct())
+		PointCloud2UpdateTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

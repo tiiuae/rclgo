@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/PwmInput", &PwmInput{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/PwmInput", PwmInputTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPwmInput
@@ -48,42 +48,56 @@ type PwmInput struct {
 // NewPwmInput creates a new PwmInput with default values.
 func NewPwmInput() *PwmInput {
 	self := PwmInput{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *PwmInput) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *PwmInput) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__PwmInput())
-}
-func (t *PwmInput) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__PwmInput
-	return (unsafe.Pointer)(C.px4_msgs__msg__PwmInput__create())
-}
-func (t *PwmInput) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__PwmInput__destroy((*C.px4_msgs__msg__PwmInput)(pointer_to_free))
-}
-func (t *PwmInput) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__PwmInput)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.error_count = C.uint64_t(t.ErrorCount)
-	mem.pulse_width = C.uint32_t(t.PulseWidth)
-	mem.period = C.uint32_t(t.Period)
-	return unsafe.Pointer(mem)
-}
-func (t *PwmInput) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__PwmInput)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.ErrorCount = uint64(mem.error_count)
-	t.PulseWidth = uint32(mem.pulse_width)
-	t.Period = uint32(mem.period)
-}
-func (t *PwmInput) Clone() ros2types.ROS2Msg {
+func (t *PwmInput) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *PwmInput) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var PwmInputTypeSupport types.MessageTypeSupport = _PwmInputTypeSupport{}
+
+type _PwmInputTypeSupport struct{}
+
+func (t _PwmInputTypeSupport) New() types.Message {
+	return NewPwmInput()
+}
+
+func (t _PwmInputTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__PwmInput
+	return (unsafe.Pointer)(C.px4_msgs__msg__PwmInput__create())
+}
+
+func (t _PwmInputTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__PwmInput__destroy((*C.px4_msgs__msg__PwmInput)(pointer_to_free))
+}
+
+func (t _PwmInputTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*PwmInput)
+	mem := (*C.px4_msgs__msg__PwmInput)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.error_count = C.uint64_t(m.ErrorCount)
+	mem.pulse_width = C.uint32_t(m.PulseWidth)
+	mem.period = C.uint32_t(m.Period)
+}
+
+func (t _PwmInputTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*PwmInput)
+	mem := (*C.px4_msgs__msg__PwmInput)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.ErrorCount = uint64(mem.error_count)
+	m.PulseWidth = uint32(mem.pulse_width)
+	m.Period = uint32(mem.period)
+}
+
+func (t _PwmInputTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__PwmInput())
 }
 
 type CPwmInput = C.px4_msgs__msg__PwmInput
@@ -98,8 +112,7 @@ func PwmInput__Sequence_to_Go(goSlice *[]PwmInput, cSlice CPwmInput__Sequence) {
 		cIdx := (*C.px4_msgs__msg__PwmInput__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__PwmInput * uintptr(i)),
 		))
-		(*goSlice)[i] = PwmInput{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		PwmInputTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func PwmInput__Sequence_to_C(cSlice *CPwmInput__Sequence, goSlice []PwmInput) {
@@ -114,18 +127,16 @@ func PwmInput__Sequence_to_C(cSlice *CPwmInput__Sequence, goSlice []PwmInput) {
 		cIdx := (*C.px4_msgs__msg__PwmInput)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__PwmInput * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__PwmInput)(v.AsCStruct())
+		PwmInputTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func PwmInput__Array_to_Go(goSlice []PwmInput, cSlice []CPwmInput) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		PwmInputTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func PwmInput__Array_to_C(cSlice []CPwmInput, goSlice []PwmInput) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__PwmInput)(goSlice[i].AsCStruct())
+		PwmInputTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

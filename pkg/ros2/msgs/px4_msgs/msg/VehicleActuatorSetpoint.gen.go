@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleActuatorSetpoint", &VehicleActuatorSetpoint{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleActuatorSetpoint", VehicleActuatorSetpointTypeSupport)
 }
 const (
 	VehicleActuatorSetpoint_NUM_ACTUATOR_SETPOINT uint8 = 16
@@ -51,42 +51,56 @@ type VehicleActuatorSetpoint struct {
 // NewVehicleActuatorSetpoint creates a new VehicleActuatorSetpoint with default values.
 func NewVehicleActuatorSetpoint() *VehicleActuatorSetpoint {
 	self := VehicleActuatorSetpoint{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *VehicleActuatorSetpoint) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *VehicleActuatorSetpoint) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleActuatorSetpoint())
-}
-func (t *VehicleActuatorSetpoint) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleActuatorSetpoint
-	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleActuatorSetpoint__create())
-}
-func (t *VehicleActuatorSetpoint) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__VehicleActuatorSetpoint__destroy((*C.px4_msgs__msg__VehicleActuatorSetpoint)(pointer_to_free))
-}
-func (t *VehicleActuatorSetpoint) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__VehicleActuatorSetpoint)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	cSlice_actuator := mem.actuator[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_actuator)), t.Actuator[:])
-	return unsafe.Pointer(mem)
-}
-func (t *VehicleActuatorSetpoint) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__VehicleActuatorSetpoint)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	cSlice_actuator := mem.actuator[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Actuator[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_actuator)))
-}
-func (t *VehicleActuatorSetpoint) Clone() ros2types.ROS2Msg {
+func (t *VehicleActuatorSetpoint) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *VehicleActuatorSetpoint) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VehicleActuatorSetpointTypeSupport types.MessageTypeSupport = _VehicleActuatorSetpointTypeSupport{}
+
+type _VehicleActuatorSetpointTypeSupport struct{}
+
+func (t _VehicleActuatorSetpointTypeSupport) New() types.Message {
+	return NewVehicleActuatorSetpoint()
+}
+
+func (t _VehicleActuatorSetpointTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleActuatorSetpoint
+	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleActuatorSetpoint__create())
+}
+
+func (t _VehicleActuatorSetpointTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__VehicleActuatorSetpoint__destroy((*C.px4_msgs__msg__VehicleActuatorSetpoint)(pointer_to_free))
+}
+
+func (t _VehicleActuatorSetpointTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*VehicleActuatorSetpoint)
+	mem := (*C.px4_msgs__msg__VehicleActuatorSetpoint)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	cSlice_actuator := mem.actuator[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_actuator)), m.Actuator[:])
+}
+
+func (t _VehicleActuatorSetpointTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*VehicleActuatorSetpoint)
+	mem := (*C.px4_msgs__msg__VehicleActuatorSetpoint)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	cSlice_actuator := mem.actuator[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Actuator[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_actuator)))
+}
+
+func (t _VehicleActuatorSetpointTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleActuatorSetpoint())
 }
 
 type CVehicleActuatorSetpoint = C.px4_msgs__msg__VehicleActuatorSetpoint
@@ -101,8 +115,7 @@ func VehicleActuatorSetpoint__Sequence_to_Go(goSlice *[]VehicleActuatorSetpoint,
 		cIdx := (*C.px4_msgs__msg__VehicleActuatorSetpoint__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleActuatorSetpoint * uintptr(i)),
 		))
-		(*goSlice)[i] = VehicleActuatorSetpoint{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VehicleActuatorSetpointTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func VehicleActuatorSetpoint__Sequence_to_C(cSlice *CVehicleActuatorSetpoint__Sequence, goSlice []VehicleActuatorSetpoint) {
@@ -117,18 +130,16 @@ func VehicleActuatorSetpoint__Sequence_to_C(cSlice *CVehicleActuatorSetpoint__Se
 		cIdx := (*C.px4_msgs__msg__VehicleActuatorSetpoint)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleActuatorSetpoint * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__VehicleActuatorSetpoint)(v.AsCStruct())
+		VehicleActuatorSetpointTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func VehicleActuatorSetpoint__Array_to_Go(goSlice []VehicleActuatorSetpoint, cSlice []CVehicleActuatorSetpoint) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VehicleActuatorSetpointTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func VehicleActuatorSetpoint__Array_to_C(cSlice []CVehicleActuatorSetpoint, goSlice []VehicleActuatorSetpoint) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__VehicleActuatorSetpoint)(goSlice[i].AsCStruct())
+		VehicleActuatorSetpointTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

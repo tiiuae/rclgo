@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("diagnostic_msgs/SelfTest", SelfTest)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("diagnostic_msgs/SelfTest", SelfTestTypeSupport)
 }
 
-type _SelfTest struct {
-	req,resp ros2types.ROS2Msg
+type _SelfTestTypeSupport struct {}
+
+func (s _SelfTestTypeSupport) Request() types.MessageTypeSupport {
+	return SelfTest_RequestTypeSupport
 }
 
-func (s *_SelfTest) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _SelfTestTypeSupport) Response() types.MessageTypeSupport {
+	return SelfTest_ResponseTypeSupport
 }
 
-func (s *_SelfTest) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_SelfTest) TypeSupport() unsafe.Pointer {
+func (s _SelfTestTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__diagnostic_msgs__srv__SelfTest())
 }
 
 // Modifying this variable is undefined behavior.
-var SelfTest ros2types.Service = &_SelfTest{
-	req: &SelfTest_Request{},
-	resp: &SelfTest_Response{},
-}
+var SelfTestTypeSupport types.ServiceTypeSupport = _SelfTestTypeSupport{}

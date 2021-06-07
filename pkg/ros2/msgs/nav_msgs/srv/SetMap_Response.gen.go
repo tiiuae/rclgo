@@ -15,7 +15,7 @@ package nav_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("nav_msgs/SetMap_Response", &SetMap_Response{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("nav_msgs/SetMap_Response", SetMap_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSetMap_Response
@@ -45,36 +45,50 @@ type SetMap_Response struct {
 // NewSetMap_Response creates a new SetMap_Response with default values.
 func NewSetMap_Response() *SetMap_Response {
 	self := SetMap_Response{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SetMap_Response) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *SetMap_Response) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__nav_msgs__srv__SetMap_Response())
-}
-func (t *SetMap_Response) PrepareMemory() unsafe.Pointer { //returns *C.nav_msgs__srv__SetMap_Response
-	return (unsafe.Pointer)(C.nav_msgs__srv__SetMap_Response__create())
-}
-func (t *SetMap_Response) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.nav_msgs__srv__SetMap_Response__destroy((*C.nav_msgs__srv__SetMap_Response)(pointer_to_free))
-}
-func (t *SetMap_Response) AsCStruct() unsafe.Pointer {
-	mem := (*C.nav_msgs__srv__SetMap_Response)(t.PrepareMemory())
-	mem.success = C.bool(t.Success)
-	return unsafe.Pointer(mem)
-}
-func (t *SetMap_Response) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.nav_msgs__srv__SetMap_Response)(ros2_message_buffer)
-	t.Success = bool(mem.success)
-}
-func (t *SetMap_Response) Clone() ros2types.ROS2Msg {
+func (t *SetMap_Response) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SetMap_Response) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SetMap_ResponseTypeSupport types.MessageTypeSupport = _SetMap_ResponseTypeSupport{}
+
+type _SetMap_ResponseTypeSupport struct{}
+
+func (t _SetMap_ResponseTypeSupport) New() types.Message {
+	return NewSetMap_Response()
+}
+
+func (t _SetMap_ResponseTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.nav_msgs__srv__SetMap_Response
+	return (unsafe.Pointer)(C.nav_msgs__srv__SetMap_Response__create())
+}
+
+func (t _SetMap_ResponseTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.nav_msgs__srv__SetMap_Response__destroy((*C.nav_msgs__srv__SetMap_Response)(pointer_to_free))
+}
+
+func (t _SetMap_ResponseTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*SetMap_Response)
+	mem := (*C.nav_msgs__srv__SetMap_Response)(dst)
+	mem.success = C.bool(m.Success)
+}
+
+func (t _SetMap_ResponseTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*SetMap_Response)
+	mem := (*C.nav_msgs__srv__SetMap_Response)(ros2_message_buffer)
+	m.Success = bool(mem.success)
+}
+
+func (t _SetMap_ResponseTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__nav_msgs__srv__SetMap_Response())
 }
 
 type CSetMap_Response = C.nav_msgs__srv__SetMap_Response
@@ -89,8 +103,7 @@ func SetMap_Response__Sequence_to_Go(goSlice *[]SetMap_Response, cSlice CSetMap_
 		cIdx := (*C.nav_msgs__srv__SetMap_Response__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_nav_msgs__srv__SetMap_Response * uintptr(i)),
 		))
-		(*goSlice)[i] = SetMap_Response{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SetMap_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SetMap_Response__Sequence_to_C(cSlice *CSetMap_Response__Sequence, goSlice []SetMap_Response) {
@@ -105,18 +118,16 @@ func SetMap_Response__Sequence_to_C(cSlice *CSetMap_Response__Sequence, goSlice 
 		cIdx := (*C.nav_msgs__srv__SetMap_Response)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_nav_msgs__srv__SetMap_Response * uintptr(i)),
 		))
-		*cIdx = *(*C.nav_msgs__srv__SetMap_Response)(v.AsCStruct())
+		SetMap_ResponseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SetMap_Response__Array_to_Go(goSlice []SetMap_Response, cSlice []CSetMap_Response) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SetMap_ResponseTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SetMap_Response__Array_to_C(cSlice []CSetMap_Response, goSlice []SetMap_Response) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.nav_msgs__srv__SetMap_Response)(goSlice[i].AsCStruct())
+		SetMap_ResponseTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

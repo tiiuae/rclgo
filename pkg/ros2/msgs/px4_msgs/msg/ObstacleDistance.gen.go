@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/ObstacleDistance", &ObstacleDistance{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/ObstacleDistance", ObstacleDistanceTypeSupport)
 }
 const (
 	ObstacleDistance_MAV_FRAME_GLOBAL uint8 = 0
@@ -62,52 +62,66 @@ type ObstacleDistance struct {
 // NewObstacleDistance creates a new ObstacleDistance with default values.
 func NewObstacleDistance() *ObstacleDistance {
 	self := ObstacleDistance{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *ObstacleDistance) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *ObstacleDistance) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__ObstacleDistance())
-}
-func (t *ObstacleDistance) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__ObstacleDistance
-	return (unsafe.Pointer)(C.px4_msgs__msg__ObstacleDistance__create())
-}
-func (t *ObstacleDistance) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__ObstacleDistance__destroy((*C.px4_msgs__msg__ObstacleDistance)(pointer_to_free))
-}
-func (t *ObstacleDistance) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__ObstacleDistance)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.frame = C.uint8_t(t.Frame)
-	mem.sensor_type = C.uint8_t(t.SensorType)
-	cSlice_distances := mem.distances[:]
-	rosidl_runtime_c.Uint16__Array_to_C(*(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_distances)), t.Distances[:])
-	mem.increment = C.float(t.Increment)
-	mem.min_distance = C.uint16_t(t.MinDistance)
-	mem.max_distance = C.uint16_t(t.MaxDistance)
-	mem.angle_offset = C.float(t.AngleOffset)
-	return unsafe.Pointer(mem)
-}
-func (t *ObstacleDistance) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__ObstacleDistance)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Frame = uint8(mem.frame)
-	t.SensorType = uint8(mem.sensor_type)
-	cSlice_distances := mem.distances[:]
-	rosidl_runtime_c.Uint16__Array_to_Go(t.Distances[:], *(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_distances)))
-	t.Increment = float32(mem.increment)
-	t.MinDistance = uint16(mem.min_distance)
-	t.MaxDistance = uint16(mem.max_distance)
-	t.AngleOffset = float32(mem.angle_offset)
-}
-func (t *ObstacleDistance) Clone() ros2types.ROS2Msg {
+func (t *ObstacleDistance) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *ObstacleDistance) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ObstacleDistanceTypeSupport types.MessageTypeSupport = _ObstacleDistanceTypeSupport{}
+
+type _ObstacleDistanceTypeSupport struct{}
+
+func (t _ObstacleDistanceTypeSupport) New() types.Message {
+	return NewObstacleDistance()
+}
+
+func (t _ObstacleDistanceTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__ObstacleDistance
+	return (unsafe.Pointer)(C.px4_msgs__msg__ObstacleDistance__create())
+}
+
+func (t _ObstacleDistanceTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__ObstacleDistance__destroy((*C.px4_msgs__msg__ObstacleDistance)(pointer_to_free))
+}
+
+func (t _ObstacleDistanceTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*ObstacleDistance)
+	mem := (*C.px4_msgs__msg__ObstacleDistance)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.frame = C.uint8_t(m.Frame)
+	mem.sensor_type = C.uint8_t(m.SensorType)
+	cSlice_distances := mem.distances[:]
+	rosidl_runtime_c.Uint16__Array_to_C(*(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_distances)), m.Distances[:])
+	mem.increment = C.float(m.Increment)
+	mem.min_distance = C.uint16_t(m.MinDistance)
+	mem.max_distance = C.uint16_t(m.MaxDistance)
+	mem.angle_offset = C.float(m.AngleOffset)
+}
+
+func (t _ObstacleDistanceTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*ObstacleDistance)
+	mem := (*C.px4_msgs__msg__ObstacleDistance)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Frame = uint8(mem.frame)
+	m.SensorType = uint8(mem.sensor_type)
+	cSlice_distances := mem.distances[:]
+	rosidl_runtime_c.Uint16__Array_to_Go(m.Distances[:], *(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_distances)))
+	m.Increment = float32(mem.increment)
+	m.MinDistance = uint16(mem.min_distance)
+	m.MaxDistance = uint16(mem.max_distance)
+	m.AngleOffset = float32(mem.angle_offset)
+}
+
+func (t _ObstacleDistanceTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__ObstacleDistance())
 }
 
 type CObstacleDistance = C.px4_msgs__msg__ObstacleDistance
@@ -122,8 +136,7 @@ func ObstacleDistance__Sequence_to_Go(goSlice *[]ObstacleDistance, cSlice CObsta
 		cIdx := (*C.px4_msgs__msg__ObstacleDistance__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__ObstacleDistance * uintptr(i)),
 		))
-		(*goSlice)[i] = ObstacleDistance{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ObstacleDistanceTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func ObstacleDistance__Sequence_to_C(cSlice *CObstacleDistance__Sequence, goSlice []ObstacleDistance) {
@@ -138,18 +151,16 @@ func ObstacleDistance__Sequence_to_C(cSlice *CObstacleDistance__Sequence, goSlic
 		cIdx := (*C.px4_msgs__msg__ObstacleDistance)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__ObstacleDistance * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__ObstacleDistance)(v.AsCStruct())
+		ObstacleDistanceTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func ObstacleDistance__Array_to_Go(goSlice []ObstacleDistance, cSlice []CObstacleDistance) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ObstacleDistanceTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func ObstacleDistance__Array_to_C(cSlice []CObstacleDistance, goSlice []ObstacleDistance) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__ObstacleDistance)(goSlice[i].AsCStruct())
+		ObstacleDistanceTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

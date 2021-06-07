@@ -15,7 +15,7 @@ package shape_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("shape_msgs/SolidPrimitive", &SolidPrimitive{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("shape_msgs/SolidPrimitive", SolidPrimitiveTypeSupport)
 }
 const (
 	SolidPrimitive_BOX uint8 = 1
@@ -61,38 +61,52 @@ type SolidPrimitive struct {
 // NewSolidPrimitive creates a new SolidPrimitive with default values.
 func NewSolidPrimitive() *SolidPrimitive {
 	self := SolidPrimitive{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SolidPrimitive) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *SolidPrimitive) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__shape_msgs__msg__SolidPrimitive())
-}
-func (t *SolidPrimitive) PrepareMemory() unsafe.Pointer { //returns *C.shape_msgs__msg__SolidPrimitive
-	return (unsafe.Pointer)(C.shape_msgs__msg__SolidPrimitive__create())
-}
-func (t *SolidPrimitive) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.shape_msgs__msg__SolidPrimitive__destroy((*C.shape_msgs__msg__SolidPrimitive)(pointer_to_free))
-}
-func (t *SolidPrimitive) AsCStruct() unsafe.Pointer {
-	mem := (*C.shape_msgs__msg__SolidPrimitive)(t.PrepareMemory())
-	mem._type = C.uint8_t(t.Type)
-	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.dimensions)), t.Dimensions)
-	return unsafe.Pointer(mem)
-}
-func (t *SolidPrimitive) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.shape_msgs__msg__SolidPrimitive)(ros2_message_buffer)
-	t.Type = uint8(mem._type)
-	rosidl_runtime_c.Float64__Sequence_to_Go(&t.Dimensions, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.dimensions)))
-}
-func (t *SolidPrimitive) Clone() ros2types.ROS2Msg {
+func (t *SolidPrimitive) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SolidPrimitive) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SolidPrimitiveTypeSupport types.MessageTypeSupport = _SolidPrimitiveTypeSupport{}
+
+type _SolidPrimitiveTypeSupport struct{}
+
+func (t _SolidPrimitiveTypeSupport) New() types.Message {
+	return NewSolidPrimitive()
+}
+
+func (t _SolidPrimitiveTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.shape_msgs__msg__SolidPrimitive
+	return (unsafe.Pointer)(C.shape_msgs__msg__SolidPrimitive__create())
+}
+
+func (t _SolidPrimitiveTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.shape_msgs__msg__SolidPrimitive__destroy((*C.shape_msgs__msg__SolidPrimitive)(pointer_to_free))
+}
+
+func (t _SolidPrimitiveTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*SolidPrimitive)
+	mem := (*C.shape_msgs__msg__SolidPrimitive)(dst)
+	mem._type = C.uint8_t(m.Type)
+	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.dimensions)), m.Dimensions)
+}
+
+func (t _SolidPrimitiveTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*SolidPrimitive)
+	mem := (*C.shape_msgs__msg__SolidPrimitive)(ros2_message_buffer)
+	m.Type = uint8(mem._type)
+	rosidl_runtime_c.Float64__Sequence_to_Go(&m.Dimensions, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.dimensions)))
+}
+
+func (t _SolidPrimitiveTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__shape_msgs__msg__SolidPrimitive())
 }
 
 type CSolidPrimitive = C.shape_msgs__msg__SolidPrimitive
@@ -107,8 +121,7 @@ func SolidPrimitive__Sequence_to_Go(goSlice *[]SolidPrimitive, cSlice CSolidPrim
 		cIdx := (*C.shape_msgs__msg__SolidPrimitive__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_shape_msgs__msg__SolidPrimitive * uintptr(i)),
 		))
-		(*goSlice)[i] = SolidPrimitive{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SolidPrimitiveTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SolidPrimitive__Sequence_to_C(cSlice *CSolidPrimitive__Sequence, goSlice []SolidPrimitive) {
@@ -123,18 +136,16 @@ func SolidPrimitive__Sequence_to_C(cSlice *CSolidPrimitive__Sequence, goSlice []
 		cIdx := (*C.shape_msgs__msg__SolidPrimitive)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_shape_msgs__msg__SolidPrimitive * uintptr(i)),
 		))
-		*cIdx = *(*C.shape_msgs__msg__SolidPrimitive)(v.AsCStruct())
+		SolidPrimitiveTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SolidPrimitive__Array_to_Go(goSlice []SolidPrimitive, cSlice []CSolidPrimitive) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SolidPrimitiveTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SolidPrimitive__Array_to_C(cSlice []CSolidPrimitive, goSlice []SolidPrimitive) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.shape_msgs__msg__SolidPrimitive)(goSlice[i].AsCStruct())
+		SolidPrimitiveTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

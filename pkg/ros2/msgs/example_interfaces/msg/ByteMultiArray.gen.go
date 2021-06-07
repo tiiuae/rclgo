@@ -15,7 +15,7 @@ package example_interfaces_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("example_interfaces/ByteMultiArray", &ByteMultiArray{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("example_interfaces/ByteMultiArray", ByteMultiArrayTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewByteMultiArray
@@ -47,39 +47,53 @@ type ByteMultiArray struct {
 // NewByteMultiArray creates a new ByteMultiArray with default values.
 func NewByteMultiArray() *ByteMultiArray {
 	self := ByteMultiArray{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *ByteMultiArray) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Layout.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *ByteMultiArray) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__example_interfaces__msg__ByteMultiArray())
-}
-func (t *ByteMultiArray) PrepareMemory() unsafe.Pointer { //returns *C.example_interfaces__msg__ByteMultiArray
-	return (unsafe.Pointer)(C.example_interfaces__msg__ByteMultiArray__create())
-}
-func (t *ByteMultiArray) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.example_interfaces__msg__ByteMultiArray__destroy((*C.example_interfaces__msg__ByteMultiArray)(pointer_to_free))
-}
-func (t *ByteMultiArray) AsCStruct() unsafe.Pointer {
-	mem := (*C.example_interfaces__msg__ByteMultiArray)(t.PrepareMemory())
-	mem.layout = *(*C.example_interfaces__msg__MultiArrayLayout)(t.Layout.AsCStruct())
-	rosidl_runtime_c.Byte__Sequence_to_C((*rosidl_runtime_c.CByte__Sequence)(unsafe.Pointer(&mem.data)), t.Data)
-	return unsafe.Pointer(mem)
-}
-func (t *ByteMultiArray) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.example_interfaces__msg__ByteMultiArray)(ros2_message_buffer)
-	t.Layout.AsGoStruct(unsafe.Pointer(&mem.layout))
-	rosidl_runtime_c.Byte__Sequence_to_Go(&t.Data, *(*rosidl_runtime_c.CByte__Sequence)(unsafe.Pointer(&mem.data)))
-}
-func (t *ByteMultiArray) Clone() ros2types.ROS2Msg {
+func (t *ByteMultiArray) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *ByteMultiArray) SetDefaults() {
+	t.Layout.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ByteMultiArrayTypeSupport types.MessageTypeSupport = _ByteMultiArrayTypeSupport{}
+
+type _ByteMultiArrayTypeSupport struct{}
+
+func (t _ByteMultiArrayTypeSupport) New() types.Message {
+	return NewByteMultiArray()
+}
+
+func (t _ByteMultiArrayTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.example_interfaces__msg__ByteMultiArray
+	return (unsafe.Pointer)(C.example_interfaces__msg__ByteMultiArray__create())
+}
+
+func (t _ByteMultiArrayTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.example_interfaces__msg__ByteMultiArray__destroy((*C.example_interfaces__msg__ByteMultiArray)(pointer_to_free))
+}
+
+func (t _ByteMultiArrayTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*ByteMultiArray)
+	mem := (*C.example_interfaces__msg__ByteMultiArray)(dst)
+	MultiArrayLayoutTypeSupport.AsCStruct(unsafe.Pointer(&mem.layout), &m.Layout)
+	rosidl_runtime_c.Byte__Sequence_to_C((*rosidl_runtime_c.CByte__Sequence)(unsafe.Pointer(&mem.data)), m.Data)
+}
+
+func (t _ByteMultiArrayTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*ByteMultiArray)
+	mem := (*C.example_interfaces__msg__ByteMultiArray)(ros2_message_buffer)
+	MultiArrayLayoutTypeSupport.AsGoStruct(&m.Layout, unsafe.Pointer(&mem.layout))
+	rosidl_runtime_c.Byte__Sequence_to_Go(&m.Data, *(*rosidl_runtime_c.CByte__Sequence)(unsafe.Pointer(&mem.data)))
+}
+
+func (t _ByteMultiArrayTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__example_interfaces__msg__ByteMultiArray())
 }
 
 type CByteMultiArray = C.example_interfaces__msg__ByteMultiArray
@@ -94,8 +108,7 @@ func ByteMultiArray__Sequence_to_Go(goSlice *[]ByteMultiArray, cSlice CByteMulti
 		cIdx := (*C.example_interfaces__msg__ByteMultiArray__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__ByteMultiArray * uintptr(i)),
 		))
-		(*goSlice)[i] = ByteMultiArray{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ByteMultiArrayTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func ByteMultiArray__Sequence_to_C(cSlice *CByteMultiArray__Sequence, goSlice []ByteMultiArray) {
@@ -110,18 +123,16 @@ func ByteMultiArray__Sequence_to_C(cSlice *CByteMultiArray__Sequence, goSlice []
 		cIdx := (*C.example_interfaces__msg__ByteMultiArray)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__ByteMultiArray * uintptr(i)),
 		))
-		*cIdx = *(*C.example_interfaces__msg__ByteMultiArray)(v.AsCStruct())
+		ByteMultiArrayTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func ByteMultiArray__Array_to_Go(goSlice []ByteMultiArray, cSlice []CByteMultiArray) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ByteMultiArrayTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func ByteMultiArray__Array_to_C(cSlice []CByteMultiArray, goSlice []ByteMultiArray) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.example_interfaces__msg__ByteMultiArray)(goSlice[i].AsCStruct())
+		ByteMultiArrayTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

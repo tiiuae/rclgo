@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/CollisionConstraints", &CollisionConstraints{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/CollisionConstraints", CollisionConstraintsTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewCollisionConstraints
@@ -48,44 +48,58 @@ type CollisionConstraints struct {
 // NewCollisionConstraints creates a new CollisionConstraints with default values.
 func NewCollisionConstraints() *CollisionConstraints {
 	self := CollisionConstraints{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *CollisionConstraints) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *CollisionConstraints) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__CollisionConstraints())
-}
-func (t *CollisionConstraints) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__CollisionConstraints
-	return (unsafe.Pointer)(C.px4_msgs__msg__CollisionConstraints__create())
-}
-func (t *CollisionConstraints) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__CollisionConstraints__destroy((*C.px4_msgs__msg__CollisionConstraints)(pointer_to_free))
-}
-func (t *CollisionConstraints) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__CollisionConstraints)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	cSlice_original_setpoint := mem.original_setpoint[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_original_setpoint)), t.OriginalSetpoint[:])
-	cSlice_adapted_setpoint := mem.adapted_setpoint[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_adapted_setpoint)), t.AdaptedSetpoint[:])
-	return unsafe.Pointer(mem)
-}
-func (t *CollisionConstraints) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__CollisionConstraints)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	cSlice_original_setpoint := mem.original_setpoint[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.OriginalSetpoint[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_original_setpoint)))
-	cSlice_adapted_setpoint := mem.adapted_setpoint[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.AdaptedSetpoint[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_adapted_setpoint)))
-}
-func (t *CollisionConstraints) Clone() ros2types.ROS2Msg {
+func (t *CollisionConstraints) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *CollisionConstraints) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var CollisionConstraintsTypeSupport types.MessageTypeSupport = _CollisionConstraintsTypeSupport{}
+
+type _CollisionConstraintsTypeSupport struct{}
+
+func (t _CollisionConstraintsTypeSupport) New() types.Message {
+	return NewCollisionConstraints()
+}
+
+func (t _CollisionConstraintsTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__CollisionConstraints
+	return (unsafe.Pointer)(C.px4_msgs__msg__CollisionConstraints__create())
+}
+
+func (t _CollisionConstraintsTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__CollisionConstraints__destroy((*C.px4_msgs__msg__CollisionConstraints)(pointer_to_free))
+}
+
+func (t _CollisionConstraintsTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*CollisionConstraints)
+	mem := (*C.px4_msgs__msg__CollisionConstraints)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	cSlice_original_setpoint := mem.original_setpoint[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_original_setpoint)), m.OriginalSetpoint[:])
+	cSlice_adapted_setpoint := mem.adapted_setpoint[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_adapted_setpoint)), m.AdaptedSetpoint[:])
+}
+
+func (t _CollisionConstraintsTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*CollisionConstraints)
+	mem := (*C.px4_msgs__msg__CollisionConstraints)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	cSlice_original_setpoint := mem.original_setpoint[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.OriginalSetpoint[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_original_setpoint)))
+	cSlice_adapted_setpoint := mem.adapted_setpoint[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.AdaptedSetpoint[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_adapted_setpoint)))
+}
+
+func (t _CollisionConstraintsTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__CollisionConstraints())
 }
 
 type CCollisionConstraints = C.px4_msgs__msg__CollisionConstraints
@@ -100,8 +114,7 @@ func CollisionConstraints__Sequence_to_Go(goSlice *[]CollisionConstraints, cSlic
 		cIdx := (*C.px4_msgs__msg__CollisionConstraints__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__CollisionConstraints * uintptr(i)),
 		))
-		(*goSlice)[i] = CollisionConstraints{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		CollisionConstraintsTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func CollisionConstraints__Sequence_to_C(cSlice *CCollisionConstraints__Sequence, goSlice []CollisionConstraints) {
@@ -116,18 +129,16 @@ func CollisionConstraints__Sequence_to_C(cSlice *CCollisionConstraints__Sequence
 		cIdx := (*C.px4_msgs__msg__CollisionConstraints)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__CollisionConstraints * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__CollisionConstraints)(v.AsCStruct())
+		CollisionConstraintsTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func CollisionConstraints__Array_to_Go(goSlice []CollisionConstraints, cSlice []CCollisionConstraints) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		CollisionConstraintsTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func CollisionConstraints__Array_to_C(cSlice []CCollisionConstraints, goSlice []CollisionConstraints) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__CollisionConstraints)(goSlice[i].AsCStruct())
+		CollisionConstraintsTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

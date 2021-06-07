@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleStatus", &VehicleStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleStatus", VehicleStatusTypeSupport)
 }
 const (
 	VehicleStatus_ARMING_STATE_INIT uint8 = 0
@@ -135,96 +135,110 @@ type VehicleStatus struct {
 // NewVehicleStatus creates a new VehicleStatus with default values.
 func NewVehicleStatus() *VehicleStatus {
 	self := VehicleStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *VehicleStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *VehicleStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleStatus())
-}
-func (t *VehicleStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleStatus__create())
-}
-func (t *VehicleStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__VehicleStatus__destroy((*C.px4_msgs__msg__VehicleStatus)(pointer_to_free))
-}
-func (t *VehicleStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__VehicleStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.nav_state = C.uint8_t(t.NavState)
-	mem.nav_state_timestamp = C.uint64_t(t.NavStateTimestamp)
-	mem.arming_state = C.uint8_t(t.ArmingState)
-	mem.hil_state = C.uint8_t(t.HilState)
-	mem.failsafe = C.bool(t.Failsafe)
-	mem.failsafe_timestamp = C.uint64_t(t.FailsafeTimestamp)
-	mem.system_type = C.uint8_t(t.SystemType)
-	mem.system_id = C.uint8_t(t.SystemId)
-	mem.component_id = C.uint8_t(t.ComponentId)
-	mem.vehicle_type = C.uint8_t(t.VehicleType)
-	mem.is_vtol = C.bool(t.IsVtol)
-	mem.is_vtol_tailsitter = C.bool(t.IsVtolTailsitter)
-	mem.vtol_fw_permanent_stab = C.bool(t.VtolFwPermanentStab)
-	mem.in_transition_mode = C.bool(t.InTransitionMode)
-	mem.in_transition_to_fw = C.bool(t.InTransitionToFw)
-	mem.rc_signal_lost = C.bool(t.RcSignalLost)
-	mem.rc_input_mode = C.uint8_t(t.RcInputMode)
-	mem.data_link_lost = C.bool(t.DataLinkLost)
-	mem.data_link_lost_counter = C.uint8_t(t.DataLinkLostCounter)
-	mem.high_latency_data_link_lost = C.bool(t.HighLatencyDataLinkLost)
-	mem.engine_failure = C.bool(t.EngineFailure)
-	mem.mission_failure = C.bool(t.MissionFailure)
-	mem.failure_detector_status = C.uint8_t(t.FailureDetectorStatus)
-	mem.onboard_control_sensors_present = C.uint32_t(t.OnboardControlSensorsPresent)
-	mem.onboard_control_sensors_enabled = C.uint32_t(t.OnboardControlSensorsEnabled)
-	mem.onboard_control_sensors_health = C.uint32_t(t.OnboardControlSensorsHealth)
-	mem.latest_arming_reason = C.uint8_t(t.LatestArmingReason)
-	mem.latest_disarming_reason = C.uint8_t(t.LatestDisarmingReason)
-	mem.armed_time = C.uint64_t(t.ArmedTime)
-	mem.takeoff_time = C.uint64_t(t.TakeoffTime)
-	return unsafe.Pointer(mem)
-}
-func (t *VehicleStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__VehicleStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.NavState = uint8(mem.nav_state)
-	t.NavStateTimestamp = uint64(mem.nav_state_timestamp)
-	t.ArmingState = uint8(mem.arming_state)
-	t.HilState = uint8(mem.hil_state)
-	t.Failsafe = bool(mem.failsafe)
-	t.FailsafeTimestamp = uint64(mem.failsafe_timestamp)
-	t.SystemType = uint8(mem.system_type)
-	t.SystemId = uint8(mem.system_id)
-	t.ComponentId = uint8(mem.component_id)
-	t.VehicleType = uint8(mem.vehicle_type)
-	t.IsVtol = bool(mem.is_vtol)
-	t.IsVtolTailsitter = bool(mem.is_vtol_tailsitter)
-	t.VtolFwPermanentStab = bool(mem.vtol_fw_permanent_stab)
-	t.InTransitionMode = bool(mem.in_transition_mode)
-	t.InTransitionToFw = bool(mem.in_transition_to_fw)
-	t.RcSignalLost = bool(mem.rc_signal_lost)
-	t.RcInputMode = uint8(mem.rc_input_mode)
-	t.DataLinkLost = bool(mem.data_link_lost)
-	t.DataLinkLostCounter = uint8(mem.data_link_lost_counter)
-	t.HighLatencyDataLinkLost = bool(mem.high_latency_data_link_lost)
-	t.EngineFailure = bool(mem.engine_failure)
-	t.MissionFailure = bool(mem.mission_failure)
-	t.FailureDetectorStatus = uint8(mem.failure_detector_status)
-	t.OnboardControlSensorsPresent = uint32(mem.onboard_control_sensors_present)
-	t.OnboardControlSensorsEnabled = uint32(mem.onboard_control_sensors_enabled)
-	t.OnboardControlSensorsHealth = uint32(mem.onboard_control_sensors_health)
-	t.LatestArmingReason = uint8(mem.latest_arming_reason)
-	t.LatestDisarmingReason = uint8(mem.latest_disarming_reason)
-	t.ArmedTime = uint64(mem.armed_time)
-	t.TakeoffTime = uint64(mem.takeoff_time)
-}
-func (t *VehicleStatus) Clone() ros2types.ROS2Msg {
+func (t *VehicleStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *VehicleStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VehicleStatusTypeSupport types.MessageTypeSupport = _VehicleStatusTypeSupport{}
+
+type _VehicleStatusTypeSupport struct{}
+
+func (t _VehicleStatusTypeSupport) New() types.Message {
+	return NewVehicleStatus()
+}
+
+func (t _VehicleStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleStatus__create())
+}
+
+func (t _VehicleStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__VehicleStatus__destroy((*C.px4_msgs__msg__VehicleStatus)(pointer_to_free))
+}
+
+func (t _VehicleStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*VehicleStatus)
+	mem := (*C.px4_msgs__msg__VehicleStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.nav_state = C.uint8_t(m.NavState)
+	mem.nav_state_timestamp = C.uint64_t(m.NavStateTimestamp)
+	mem.arming_state = C.uint8_t(m.ArmingState)
+	mem.hil_state = C.uint8_t(m.HilState)
+	mem.failsafe = C.bool(m.Failsafe)
+	mem.failsafe_timestamp = C.uint64_t(m.FailsafeTimestamp)
+	mem.system_type = C.uint8_t(m.SystemType)
+	mem.system_id = C.uint8_t(m.SystemId)
+	mem.component_id = C.uint8_t(m.ComponentId)
+	mem.vehicle_type = C.uint8_t(m.VehicleType)
+	mem.is_vtol = C.bool(m.IsVtol)
+	mem.is_vtol_tailsitter = C.bool(m.IsVtolTailsitter)
+	mem.vtol_fw_permanent_stab = C.bool(m.VtolFwPermanentStab)
+	mem.in_transition_mode = C.bool(m.InTransitionMode)
+	mem.in_transition_to_fw = C.bool(m.InTransitionToFw)
+	mem.rc_signal_lost = C.bool(m.RcSignalLost)
+	mem.rc_input_mode = C.uint8_t(m.RcInputMode)
+	mem.data_link_lost = C.bool(m.DataLinkLost)
+	mem.data_link_lost_counter = C.uint8_t(m.DataLinkLostCounter)
+	mem.high_latency_data_link_lost = C.bool(m.HighLatencyDataLinkLost)
+	mem.engine_failure = C.bool(m.EngineFailure)
+	mem.mission_failure = C.bool(m.MissionFailure)
+	mem.failure_detector_status = C.uint8_t(m.FailureDetectorStatus)
+	mem.onboard_control_sensors_present = C.uint32_t(m.OnboardControlSensorsPresent)
+	mem.onboard_control_sensors_enabled = C.uint32_t(m.OnboardControlSensorsEnabled)
+	mem.onboard_control_sensors_health = C.uint32_t(m.OnboardControlSensorsHealth)
+	mem.latest_arming_reason = C.uint8_t(m.LatestArmingReason)
+	mem.latest_disarming_reason = C.uint8_t(m.LatestDisarmingReason)
+	mem.armed_time = C.uint64_t(m.ArmedTime)
+	mem.takeoff_time = C.uint64_t(m.TakeoffTime)
+}
+
+func (t _VehicleStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*VehicleStatus)
+	mem := (*C.px4_msgs__msg__VehicleStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.NavState = uint8(mem.nav_state)
+	m.NavStateTimestamp = uint64(mem.nav_state_timestamp)
+	m.ArmingState = uint8(mem.arming_state)
+	m.HilState = uint8(mem.hil_state)
+	m.Failsafe = bool(mem.failsafe)
+	m.FailsafeTimestamp = uint64(mem.failsafe_timestamp)
+	m.SystemType = uint8(mem.system_type)
+	m.SystemId = uint8(mem.system_id)
+	m.ComponentId = uint8(mem.component_id)
+	m.VehicleType = uint8(mem.vehicle_type)
+	m.IsVtol = bool(mem.is_vtol)
+	m.IsVtolTailsitter = bool(mem.is_vtol_tailsitter)
+	m.VtolFwPermanentStab = bool(mem.vtol_fw_permanent_stab)
+	m.InTransitionMode = bool(mem.in_transition_mode)
+	m.InTransitionToFw = bool(mem.in_transition_to_fw)
+	m.RcSignalLost = bool(mem.rc_signal_lost)
+	m.RcInputMode = uint8(mem.rc_input_mode)
+	m.DataLinkLost = bool(mem.data_link_lost)
+	m.DataLinkLostCounter = uint8(mem.data_link_lost_counter)
+	m.HighLatencyDataLinkLost = bool(mem.high_latency_data_link_lost)
+	m.EngineFailure = bool(mem.engine_failure)
+	m.MissionFailure = bool(mem.mission_failure)
+	m.FailureDetectorStatus = uint8(mem.failure_detector_status)
+	m.OnboardControlSensorsPresent = uint32(mem.onboard_control_sensors_present)
+	m.OnboardControlSensorsEnabled = uint32(mem.onboard_control_sensors_enabled)
+	m.OnboardControlSensorsHealth = uint32(mem.onboard_control_sensors_health)
+	m.LatestArmingReason = uint8(mem.latest_arming_reason)
+	m.LatestDisarmingReason = uint8(mem.latest_disarming_reason)
+	m.ArmedTime = uint64(mem.armed_time)
+	m.TakeoffTime = uint64(mem.takeoff_time)
+}
+
+func (t _VehicleStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleStatus())
 }
 
 type CVehicleStatus = C.px4_msgs__msg__VehicleStatus
@@ -239,8 +253,7 @@ func VehicleStatus__Sequence_to_Go(goSlice *[]VehicleStatus, cSlice CVehicleStat
 		cIdx := (*C.px4_msgs__msg__VehicleStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = VehicleStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VehicleStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func VehicleStatus__Sequence_to_C(cSlice *CVehicleStatus__Sequence, goSlice []VehicleStatus) {
@@ -255,18 +268,16 @@ func VehicleStatus__Sequence_to_C(cSlice *CVehicleStatus__Sequence, goSlice []Ve
 		cIdx := (*C.px4_msgs__msg__VehicleStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__VehicleStatus)(v.AsCStruct())
+		VehicleStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func VehicleStatus__Array_to_Go(goSlice []VehicleStatus, cSlice []CVehicleStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VehicleStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func VehicleStatus__Array_to_C(cSlice []CVehicleStatus, goSlice []VehicleStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__VehicleStatus)(goSlice[i].AsCStruct())
+		VehicleStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

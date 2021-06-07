@@ -15,7 +15,7 @@ package actionlib_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("actionlib_msgs/GoalStatusArray", &GoalStatusArray{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("actionlib_msgs/GoalStatusArray", GoalStatusArrayTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewGoalStatusArray
@@ -48,39 +48,53 @@ type GoalStatusArray struct {
 // NewGoalStatusArray creates a new GoalStatusArray with default values.
 func NewGoalStatusArray() *GoalStatusArray {
 	self := GoalStatusArray{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *GoalStatusArray) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *GoalStatusArray) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__actionlib_msgs__msg__GoalStatusArray())
-}
-func (t *GoalStatusArray) PrepareMemory() unsafe.Pointer { //returns *C.actionlib_msgs__msg__GoalStatusArray
-	return (unsafe.Pointer)(C.actionlib_msgs__msg__GoalStatusArray__create())
-}
-func (t *GoalStatusArray) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.actionlib_msgs__msg__GoalStatusArray__destroy((*C.actionlib_msgs__msg__GoalStatusArray)(pointer_to_free))
-}
-func (t *GoalStatusArray) AsCStruct() unsafe.Pointer {
-	mem := (*C.actionlib_msgs__msg__GoalStatusArray)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	GoalStatus__Sequence_to_C(&mem.status_list, t.StatusList)
-	return unsafe.Pointer(mem)
-}
-func (t *GoalStatusArray) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.actionlib_msgs__msg__GoalStatusArray)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	GoalStatus__Sequence_to_Go(&t.StatusList, mem.status_list)
-}
-func (t *GoalStatusArray) Clone() ros2types.ROS2Msg {
+func (t *GoalStatusArray) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *GoalStatusArray) SetDefaults() {
+	t.Header.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var GoalStatusArrayTypeSupport types.MessageTypeSupport = _GoalStatusArrayTypeSupport{}
+
+type _GoalStatusArrayTypeSupport struct{}
+
+func (t _GoalStatusArrayTypeSupport) New() types.Message {
+	return NewGoalStatusArray()
+}
+
+func (t _GoalStatusArrayTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.actionlib_msgs__msg__GoalStatusArray
+	return (unsafe.Pointer)(C.actionlib_msgs__msg__GoalStatusArray__create())
+}
+
+func (t _GoalStatusArrayTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.actionlib_msgs__msg__GoalStatusArray__destroy((*C.actionlib_msgs__msg__GoalStatusArray)(pointer_to_free))
+}
+
+func (t _GoalStatusArrayTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*GoalStatusArray)
+	mem := (*C.actionlib_msgs__msg__GoalStatusArray)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	GoalStatus__Sequence_to_C(&mem.status_list, m.StatusList)
+}
+
+func (t _GoalStatusArrayTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*GoalStatusArray)
+	mem := (*C.actionlib_msgs__msg__GoalStatusArray)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	GoalStatus__Sequence_to_Go(&m.StatusList, mem.status_list)
+}
+
+func (t _GoalStatusArrayTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__actionlib_msgs__msg__GoalStatusArray())
 }
 
 type CGoalStatusArray = C.actionlib_msgs__msg__GoalStatusArray
@@ -95,8 +109,7 @@ func GoalStatusArray__Sequence_to_Go(goSlice *[]GoalStatusArray, cSlice CGoalSta
 		cIdx := (*C.actionlib_msgs__msg__GoalStatusArray__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_actionlib_msgs__msg__GoalStatusArray * uintptr(i)),
 		))
-		(*goSlice)[i] = GoalStatusArray{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		GoalStatusArrayTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func GoalStatusArray__Sequence_to_C(cSlice *CGoalStatusArray__Sequence, goSlice []GoalStatusArray) {
@@ -111,18 +124,16 @@ func GoalStatusArray__Sequence_to_C(cSlice *CGoalStatusArray__Sequence, goSlice 
 		cIdx := (*C.actionlib_msgs__msg__GoalStatusArray)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_actionlib_msgs__msg__GoalStatusArray * uintptr(i)),
 		))
-		*cIdx = *(*C.actionlib_msgs__msg__GoalStatusArray)(v.AsCStruct())
+		GoalStatusArrayTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func GoalStatusArray__Array_to_Go(goSlice []GoalStatusArray, cSlice []CGoalStatusArray) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		GoalStatusArrayTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func GoalStatusArray__Array_to_C(cSlice []CGoalStatusArray, goSlice []GoalStatusArray) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.actionlib_msgs__msg__GoalStatusArray)(goSlice[i].AsCStruct())
+		GoalStatusArrayTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/MountOrientation", &MountOrientation{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/MountOrientation", MountOrientationTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewMountOrientation
@@ -47,40 +47,54 @@ type MountOrientation struct {
 // NewMountOrientation creates a new MountOrientation with default values.
 func NewMountOrientation() *MountOrientation {
 	self := MountOrientation{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *MountOrientation) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *MountOrientation) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__MountOrientation())
-}
-func (t *MountOrientation) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__MountOrientation
-	return (unsafe.Pointer)(C.px4_msgs__msg__MountOrientation__create())
-}
-func (t *MountOrientation) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__MountOrientation__destroy((*C.px4_msgs__msg__MountOrientation)(pointer_to_free))
-}
-func (t *MountOrientation) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__MountOrientation)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	cSlice_attitude_euler_angle := mem.attitude_euler_angle[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_attitude_euler_angle)), t.AttitudeEulerAngle[:])
-	return unsafe.Pointer(mem)
-}
-func (t *MountOrientation) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__MountOrientation)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	cSlice_attitude_euler_angle := mem.attitude_euler_angle[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.AttitudeEulerAngle[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_attitude_euler_angle)))
-}
-func (t *MountOrientation) Clone() ros2types.ROS2Msg {
+func (t *MountOrientation) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *MountOrientation) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var MountOrientationTypeSupport types.MessageTypeSupport = _MountOrientationTypeSupport{}
+
+type _MountOrientationTypeSupport struct{}
+
+func (t _MountOrientationTypeSupport) New() types.Message {
+	return NewMountOrientation()
+}
+
+func (t _MountOrientationTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__MountOrientation
+	return (unsafe.Pointer)(C.px4_msgs__msg__MountOrientation__create())
+}
+
+func (t _MountOrientationTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__MountOrientation__destroy((*C.px4_msgs__msg__MountOrientation)(pointer_to_free))
+}
+
+func (t _MountOrientationTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*MountOrientation)
+	mem := (*C.px4_msgs__msg__MountOrientation)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	cSlice_attitude_euler_angle := mem.attitude_euler_angle[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_attitude_euler_angle)), m.AttitudeEulerAngle[:])
+}
+
+func (t _MountOrientationTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*MountOrientation)
+	mem := (*C.px4_msgs__msg__MountOrientation)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	cSlice_attitude_euler_angle := mem.attitude_euler_angle[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.AttitudeEulerAngle[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_attitude_euler_angle)))
+}
+
+func (t _MountOrientationTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__MountOrientation())
 }
 
 type CMountOrientation = C.px4_msgs__msg__MountOrientation
@@ -95,8 +109,7 @@ func MountOrientation__Sequence_to_Go(goSlice *[]MountOrientation, cSlice CMount
 		cIdx := (*C.px4_msgs__msg__MountOrientation__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__MountOrientation * uintptr(i)),
 		))
-		(*goSlice)[i] = MountOrientation{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		MountOrientationTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func MountOrientation__Sequence_to_C(cSlice *CMountOrientation__Sequence, goSlice []MountOrientation) {
@@ -111,18 +124,16 @@ func MountOrientation__Sequence_to_C(cSlice *CMountOrientation__Sequence, goSlic
 		cIdx := (*C.px4_msgs__msg__MountOrientation)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__MountOrientation * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__MountOrientation)(v.AsCStruct())
+		MountOrientationTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func MountOrientation__Array_to_Go(goSlice []MountOrientation, cSlice []CMountOrientation) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		MountOrientationTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func MountOrientation__Array_to_C(cSlice []CMountOrientation, goSlice []MountOrientation) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__MountOrientation)(goSlice[i].AsCStruct())
+		MountOrientationTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

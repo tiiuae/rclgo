@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("pcl_msgs/UpdateFilename", UpdateFilename)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("pcl_msgs/UpdateFilename", UpdateFilenameTypeSupport)
 }
 
-type _UpdateFilename struct {
-	req,resp ros2types.ROS2Msg
+type _UpdateFilenameTypeSupport struct {}
+
+func (s _UpdateFilenameTypeSupport) Request() types.MessageTypeSupport {
+	return UpdateFilename_RequestTypeSupport
 }
 
-func (s *_UpdateFilename) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _UpdateFilenameTypeSupport) Response() types.MessageTypeSupport {
+	return UpdateFilename_ResponseTypeSupport
 }
 
-func (s *_UpdateFilename) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_UpdateFilename) TypeSupport() unsafe.Pointer {
+func (s _UpdateFilenameTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__pcl_msgs__srv__UpdateFilename())
 }
 
 // Modifying this variable is undefined behavior.
-var UpdateFilename ros2types.Service = &_UpdateFilename{
-	req: &UpdateFilename_Request{},
-	resp: &UpdateFilename_Response{},
-}
+var UpdateFilenameTypeSupport types.ServiceTypeSupport = _UpdateFilenameTypeSupport{}

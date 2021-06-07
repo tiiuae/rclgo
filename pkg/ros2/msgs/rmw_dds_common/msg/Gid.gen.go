@@ -15,7 +15,7 @@ package rmw_dds_common_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("rmw_dds_common/Gid", &Gid{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("rmw_dds_common/Gid", GidTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewGid
@@ -46,38 +46,52 @@ type Gid struct {
 // NewGid creates a new Gid with default values.
 func NewGid() *Gid {
 	self := Gid{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Gid) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Gid) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__rmw_dds_common__msg__Gid())
-}
-func (t *Gid) PrepareMemory() unsafe.Pointer { //returns *C.rmw_dds_common__msg__Gid
-	return (unsafe.Pointer)(C.rmw_dds_common__msg__Gid__create())
-}
-func (t *Gid) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.rmw_dds_common__msg__Gid__destroy((*C.rmw_dds_common__msg__Gid)(pointer_to_free))
-}
-func (t *Gid) AsCStruct() unsafe.Pointer {
-	mem := (*C.rmw_dds_common__msg__Gid)(t.PrepareMemory())
-	cSlice_data := mem.data[:]
-	rosidl_runtime_c.Char__Array_to_C(*(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_data)), t.Data[:])
-	return unsafe.Pointer(mem)
-}
-func (t *Gid) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.rmw_dds_common__msg__Gid)(ros2_message_buffer)
-	cSlice_data := mem.data[:]
-	rosidl_runtime_c.Char__Array_to_Go(t.Data[:], *(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_data)))
-}
-func (t *Gid) Clone() ros2types.ROS2Msg {
+func (t *Gid) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Gid) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var GidTypeSupport types.MessageTypeSupport = _GidTypeSupport{}
+
+type _GidTypeSupport struct{}
+
+func (t _GidTypeSupport) New() types.Message {
+	return NewGid()
+}
+
+func (t _GidTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.rmw_dds_common__msg__Gid
+	return (unsafe.Pointer)(C.rmw_dds_common__msg__Gid__create())
+}
+
+func (t _GidTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.rmw_dds_common__msg__Gid__destroy((*C.rmw_dds_common__msg__Gid)(pointer_to_free))
+}
+
+func (t _GidTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Gid)
+	mem := (*C.rmw_dds_common__msg__Gid)(dst)
+	cSlice_data := mem.data[:]
+	rosidl_runtime_c.Char__Array_to_C(*(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_data)), m.Data[:])
+}
+
+func (t _GidTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Gid)
+	mem := (*C.rmw_dds_common__msg__Gid)(ros2_message_buffer)
+	cSlice_data := mem.data[:]
+	rosidl_runtime_c.Char__Array_to_Go(m.Data[:], *(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_data)))
+}
+
+func (t _GidTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__rmw_dds_common__msg__Gid())
 }
 
 type CGid = C.rmw_dds_common__msg__Gid
@@ -92,8 +106,7 @@ func Gid__Sequence_to_Go(goSlice *[]Gid, cSlice CGid__Sequence) {
 		cIdx := (*C.rmw_dds_common__msg__Gid__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rmw_dds_common__msg__Gid * uintptr(i)),
 		))
-		(*goSlice)[i] = Gid{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		GidTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Gid__Sequence_to_C(cSlice *CGid__Sequence, goSlice []Gid) {
@@ -108,18 +121,16 @@ func Gid__Sequence_to_C(cSlice *CGid__Sequence, goSlice []Gid) {
 		cIdx := (*C.rmw_dds_common__msg__Gid)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rmw_dds_common__msg__Gid * uintptr(i)),
 		))
-		*cIdx = *(*C.rmw_dds_common__msg__Gid)(v.AsCStruct())
+		GidTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Gid__Array_to_Go(goSlice []Gid, cSlice []CGid) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		GidTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Gid__Array_to_C(cSlice []CGid, goSlice []Gid) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.rmw_dds_common__msg__Gid)(goSlice[i].AsCStruct())
+		GidTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

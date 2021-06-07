@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/DistanceSensor", &DistanceSensor{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/DistanceSensor", DistanceSensorTypeSupport)
 }
 const (
 	DistanceSensor_MAV_DISTANCE_SENSOR_LASER uint8 = 0
@@ -78,60 +78,74 @@ type DistanceSensor struct {
 // NewDistanceSensor creates a new DistanceSensor with default values.
 func NewDistanceSensor() *DistanceSensor {
 	self := DistanceSensor{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *DistanceSensor) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *DistanceSensor) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__DistanceSensor())
-}
-func (t *DistanceSensor) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__DistanceSensor
-	return (unsafe.Pointer)(C.px4_msgs__msg__DistanceSensor__create())
-}
-func (t *DistanceSensor) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__DistanceSensor__destroy((*C.px4_msgs__msg__DistanceSensor)(pointer_to_free))
-}
-func (t *DistanceSensor) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__DistanceSensor)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.device_id = C.uint32_t(t.DeviceId)
-	mem.min_distance = C.float(t.MinDistance)
-	mem.max_distance = C.float(t.MaxDistance)
-	mem.current_distance = C.float(t.CurrentDistance)
-	mem.variance = C.float(t.Variance)
-	mem.signal_quality = C.int8_t(t.SignalQuality)
-	mem._type = C.uint8_t(t.Type)
-	mem.h_fov = C.float(t.HFov)
-	mem.v_fov = C.float(t.VFov)
-	cSlice_q := mem.q[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)), t.Q[:])
-	mem.orientation = C.uint8_t(t.Orientation)
-	return unsafe.Pointer(mem)
-}
-func (t *DistanceSensor) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__DistanceSensor)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.DeviceId = uint32(mem.device_id)
-	t.MinDistance = float32(mem.min_distance)
-	t.MaxDistance = float32(mem.max_distance)
-	t.CurrentDistance = float32(mem.current_distance)
-	t.Variance = float32(mem.variance)
-	t.SignalQuality = int8(mem.signal_quality)
-	t.Type = uint8(mem._type)
-	t.HFov = float32(mem.h_fov)
-	t.VFov = float32(mem.v_fov)
-	cSlice_q := mem.q[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Q[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)))
-	t.Orientation = uint8(mem.orientation)
-}
-func (t *DistanceSensor) Clone() ros2types.ROS2Msg {
+func (t *DistanceSensor) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *DistanceSensor) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var DistanceSensorTypeSupport types.MessageTypeSupport = _DistanceSensorTypeSupport{}
+
+type _DistanceSensorTypeSupport struct{}
+
+func (t _DistanceSensorTypeSupport) New() types.Message {
+	return NewDistanceSensor()
+}
+
+func (t _DistanceSensorTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__DistanceSensor
+	return (unsafe.Pointer)(C.px4_msgs__msg__DistanceSensor__create())
+}
+
+func (t _DistanceSensorTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__DistanceSensor__destroy((*C.px4_msgs__msg__DistanceSensor)(pointer_to_free))
+}
+
+func (t _DistanceSensorTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*DistanceSensor)
+	mem := (*C.px4_msgs__msg__DistanceSensor)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.device_id = C.uint32_t(m.DeviceId)
+	mem.min_distance = C.float(m.MinDistance)
+	mem.max_distance = C.float(m.MaxDistance)
+	mem.current_distance = C.float(m.CurrentDistance)
+	mem.variance = C.float(m.Variance)
+	mem.signal_quality = C.int8_t(m.SignalQuality)
+	mem._type = C.uint8_t(m.Type)
+	mem.h_fov = C.float(m.HFov)
+	mem.v_fov = C.float(m.VFov)
+	cSlice_q := mem.q[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)), m.Q[:])
+	mem.orientation = C.uint8_t(m.Orientation)
+}
+
+func (t _DistanceSensorTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*DistanceSensor)
+	mem := (*C.px4_msgs__msg__DistanceSensor)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.DeviceId = uint32(mem.device_id)
+	m.MinDistance = float32(mem.min_distance)
+	m.MaxDistance = float32(mem.max_distance)
+	m.CurrentDistance = float32(mem.current_distance)
+	m.Variance = float32(mem.variance)
+	m.SignalQuality = int8(mem.signal_quality)
+	m.Type = uint8(mem._type)
+	m.HFov = float32(mem.h_fov)
+	m.VFov = float32(mem.v_fov)
+	cSlice_q := mem.q[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Q[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)))
+	m.Orientation = uint8(mem.orientation)
+}
+
+func (t _DistanceSensorTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__DistanceSensor())
 }
 
 type CDistanceSensor = C.px4_msgs__msg__DistanceSensor
@@ -146,8 +160,7 @@ func DistanceSensor__Sequence_to_Go(goSlice *[]DistanceSensor, cSlice CDistanceS
 		cIdx := (*C.px4_msgs__msg__DistanceSensor__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__DistanceSensor * uintptr(i)),
 		))
-		(*goSlice)[i] = DistanceSensor{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		DistanceSensorTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func DistanceSensor__Sequence_to_C(cSlice *CDistanceSensor__Sequence, goSlice []DistanceSensor) {
@@ -162,18 +175,16 @@ func DistanceSensor__Sequence_to_C(cSlice *CDistanceSensor__Sequence, goSlice []
 		cIdx := (*C.px4_msgs__msg__DistanceSensor)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__DistanceSensor * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__DistanceSensor)(v.AsCStruct())
+		DistanceSensorTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func DistanceSensor__Array_to_Go(goSlice []DistanceSensor, cSlice []CDistanceSensor) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		DistanceSensorTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func DistanceSensor__Array_to_C(cSlice []CDistanceSensor, goSlice []DistanceSensor) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__DistanceSensor)(goSlice[i].AsCStruct())
+		DistanceSensorTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

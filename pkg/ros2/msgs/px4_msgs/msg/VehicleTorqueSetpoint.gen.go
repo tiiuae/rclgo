@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleTorqueSetpoint", &VehicleTorqueSetpoint{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleTorqueSetpoint", VehicleTorqueSetpointTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewVehicleTorqueSetpoint
@@ -48,42 +48,56 @@ type VehicleTorqueSetpoint struct {
 // NewVehicleTorqueSetpoint creates a new VehicleTorqueSetpoint with default values.
 func NewVehicleTorqueSetpoint() *VehicleTorqueSetpoint {
 	self := VehicleTorqueSetpoint{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *VehicleTorqueSetpoint) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *VehicleTorqueSetpoint) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleTorqueSetpoint())
-}
-func (t *VehicleTorqueSetpoint) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleTorqueSetpoint
-	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleTorqueSetpoint__create())
-}
-func (t *VehicleTorqueSetpoint) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__VehicleTorqueSetpoint__destroy((*C.px4_msgs__msg__VehicleTorqueSetpoint)(pointer_to_free))
-}
-func (t *VehicleTorqueSetpoint) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__VehicleTorqueSetpoint)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	cSlice_xyz := mem.xyz[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_xyz)), t.Xyz[:])
-	return unsafe.Pointer(mem)
-}
-func (t *VehicleTorqueSetpoint) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__VehicleTorqueSetpoint)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	cSlice_xyz := mem.xyz[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Xyz[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_xyz)))
-}
-func (t *VehicleTorqueSetpoint) Clone() ros2types.ROS2Msg {
+func (t *VehicleTorqueSetpoint) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *VehicleTorqueSetpoint) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VehicleTorqueSetpointTypeSupport types.MessageTypeSupport = _VehicleTorqueSetpointTypeSupport{}
+
+type _VehicleTorqueSetpointTypeSupport struct{}
+
+func (t _VehicleTorqueSetpointTypeSupport) New() types.Message {
+	return NewVehicleTorqueSetpoint()
+}
+
+func (t _VehicleTorqueSetpointTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleTorqueSetpoint
+	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleTorqueSetpoint__create())
+}
+
+func (t _VehicleTorqueSetpointTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__VehicleTorqueSetpoint__destroy((*C.px4_msgs__msg__VehicleTorqueSetpoint)(pointer_to_free))
+}
+
+func (t _VehicleTorqueSetpointTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*VehicleTorqueSetpoint)
+	mem := (*C.px4_msgs__msg__VehicleTorqueSetpoint)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	cSlice_xyz := mem.xyz[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_xyz)), m.Xyz[:])
+}
+
+func (t _VehicleTorqueSetpointTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*VehicleTorqueSetpoint)
+	mem := (*C.px4_msgs__msg__VehicleTorqueSetpoint)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	cSlice_xyz := mem.xyz[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Xyz[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_xyz)))
+}
+
+func (t _VehicleTorqueSetpointTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleTorqueSetpoint())
 }
 
 type CVehicleTorqueSetpoint = C.px4_msgs__msg__VehicleTorqueSetpoint
@@ -98,8 +112,7 @@ func VehicleTorqueSetpoint__Sequence_to_Go(goSlice *[]VehicleTorqueSetpoint, cSl
 		cIdx := (*C.px4_msgs__msg__VehicleTorqueSetpoint__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleTorqueSetpoint * uintptr(i)),
 		))
-		(*goSlice)[i] = VehicleTorqueSetpoint{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VehicleTorqueSetpointTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func VehicleTorqueSetpoint__Sequence_to_C(cSlice *CVehicleTorqueSetpoint__Sequence, goSlice []VehicleTorqueSetpoint) {
@@ -114,18 +127,16 @@ func VehicleTorqueSetpoint__Sequence_to_C(cSlice *CVehicleTorqueSetpoint__Sequen
 		cIdx := (*C.px4_msgs__msg__VehicleTorqueSetpoint)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleTorqueSetpoint * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__VehicleTorqueSetpoint)(v.AsCStruct())
+		VehicleTorqueSetpointTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func VehicleTorqueSetpoint__Array_to_Go(goSlice []VehicleTorqueSetpoint, cSlice []CVehicleTorqueSetpoint) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VehicleTorqueSetpointTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func VehicleTorqueSetpoint__Array_to_C(cSlice []CVehicleTorqueSetpoint, goSlice []VehicleTorqueSetpoint) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__VehicleTorqueSetpoint)(goSlice[i].AsCStruct())
+		VehicleTorqueSetpointTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

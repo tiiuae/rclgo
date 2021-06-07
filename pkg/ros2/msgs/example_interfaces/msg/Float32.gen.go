@@ -15,7 +15,7 @@ package example_interfaces_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("example_interfaces/Float32", &Float32{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("example_interfaces/Float32", Float32TypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewFloat32
@@ -45,36 +45,50 @@ type Float32 struct {
 // NewFloat32 creates a new Float32 with default values.
 func NewFloat32() *Float32 {
 	self := Float32{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Float32) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Float32) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__example_interfaces__msg__Float32())
-}
-func (t *Float32) PrepareMemory() unsafe.Pointer { //returns *C.example_interfaces__msg__Float32
-	return (unsafe.Pointer)(C.example_interfaces__msg__Float32__create())
-}
-func (t *Float32) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.example_interfaces__msg__Float32__destroy((*C.example_interfaces__msg__Float32)(pointer_to_free))
-}
-func (t *Float32) AsCStruct() unsafe.Pointer {
-	mem := (*C.example_interfaces__msg__Float32)(t.PrepareMemory())
-	mem.data = C.float(t.Data)
-	return unsafe.Pointer(mem)
-}
-func (t *Float32) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.example_interfaces__msg__Float32)(ros2_message_buffer)
-	t.Data = float32(mem.data)
-}
-func (t *Float32) Clone() ros2types.ROS2Msg {
+func (t *Float32) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Float32) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var Float32TypeSupport types.MessageTypeSupport = _Float32TypeSupport{}
+
+type _Float32TypeSupport struct{}
+
+func (t _Float32TypeSupport) New() types.Message {
+	return NewFloat32()
+}
+
+func (t _Float32TypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.example_interfaces__msg__Float32
+	return (unsafe.Pointer)(C.example_interfaces__msg__Float32__create())
+}
+
+func (t _Float32TypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.example_interfaces__msg__Float32__destroy((*C.example_interfaces__msg__Float32)(pointer_to_free))
+}
+
+func (t _Float32TypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Float32)
+	mem := (*C.example_interfaces__msg__Float32)(dst)
+	mem.data = C.float(m.Data)
+}
+
+func (t _Float32TypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Float32)
+	mem := (*C.example_interfaces__msg__Float32)(ros2_message_buffer)
+	m.Data = float32(mem.data)
+}
+
+func (t _Float32TypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__example_interfaces__msg__Float32())
 }
 
 type CFloat32 = C.example_interfaces__msg__Float32
@@ -89,8 +103,7 @@ func Float32__Sequence_to_Go(goSlice *[]Float32, cSlice CFloat32__Sequence) {
 		cIdx := (*C.example_interfaces__msg__Float32__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__Float32 * uintptr(i)),
 		))
-		(*goSlice)[i] = Float32{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		Float32TypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Float32__Sequence_to_C(cSlice *CFloat32__Sequence, goSlice []Float32) {
@@ -105,18 +118,16 @@ func Float32__Sequence_to_C(cSlice *CFloat32__Sequence, goSlice []Float32) {
 		cIdx := (*C.example_interfaces__msg__Float32)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__Float32 * uintptr(i)),
 		))
-		*cIdx = *(*C.example_interfaces__msg__Float32)(v.AsCStruct())
+		Float32TypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Float32__Array_to_Go(goSlice []Float32, cSlice []CFloat32) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		Float32TypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Float32__Array_to_C(cSlice []CFloat32, goSlice []Float32) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.example_interfaces__msg__Float32)(goSlice[i].AsCStruct())
+		Float32TypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package test_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("test_msgs/BoundedSequences", &BoundedSequences{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("test_msgs/BoundedSequences", BoundedSequencesTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewBoundedSequences
@@ -53,7 +53,7 @@ type BoundedSequences struct {
 	Uint32Values []uint32 `yaml:"uint32_values"`// Bounded sequences of different types
 	Int64Values []int64 `yaml:"int64_values"`// Bounded sequences of different types
 	Uint64Values []uint64 `yaml:"uint64_values"`// Bounded sequences of different types
-	StringValues []rosidl_runtime_c.String `yaml:"string_values"`// Bounded sequences of different types
+	StringValues []string `yaml:"string_values"`// Bounded sequences of different types
 	BasicTypesValues []BasicTypes `yaml:"basic_types_values"`// Bounded sequences of different types
 	ConstantsValues []Constants `yaml:"constants_values"`// Bounded sequences of different types
 	DefaultsValues []Defaults `yaml:"defaults_values"`// Bounded sequences of different types
@@ -70,122 +70,133 @@ type BoundedSequences struct {
 	Uint32ValuesDefault []uint32 `yaml:"uint32_values_default"`// Bounded sequences of different types
 	Int64ValuesDefault []int64 `yaml:"int64_values_default"`// Bounded sequences of different types
 	Uint64ValuesDefault []uint64 `yaml:"uint64_values_default"`// Bounded sequences of different types
-	StringValuesDefault []rosidl_runtime_c.String `yaml:"string_values_default"`// Bounded sequences of different types
+	StringValuesDefault []string `yaml:"string_values_default"`// Bounded sequences of different types
 	AlignmentCheck int32 `yaml:"alignment_check"`// Bounded sequences of different typesRegression test: check alignment of basic field after a sequence field is correct
 }
 
 // NewBoundedSequences creates a new BoundedSequences with default values.
 func NewBoundedSequences() *BoundedSequences {
 	self := BoundedSequences{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *BoundedSequences) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.BoolValuesDefault = []bool{false, true, false}
-	t.ByteValuesDefault = []byte{0, 1, 255}
-	t.CharValuesDefault = []byte{0, 1, 127}
-	t.Float32ValuesDefault = []float32{1.125, 0.0, -1.125}
-	t.Float64ValuesDefault = []float64{3.1415, 0.0, -3.1415}
-	t.Int8ValuesDefault = []int8{0, 127, -128}
-	t.Uint8ValuesDefault = []uint8{0, 1, 255}
-	t.Int16ValuesDefault = []int16{0, 32767, -32768}
-	t.Uint16ValuesDefault = []uint16{0, 1, 65535}
-	t.Int32ValuesDefault = []int32{0, 2147483647, -2147483648}
-	t.Uint32ValuesDefault = []uint32{0, 1, 4294967295}
-	t.Int64ValuesDefault = []int64{0, 9223372036854775807, -9223372036854775808}
-	t.Uint64ValuesDefault = []uint64{0, 1, 18446744073709551615}
-	t.StringValuesDefault = make([]rosidl_runtime_c.String, 3)
-	t.StringValuesDefault[0].SetDefaults("")
-	t.StringValuesDefault[1].SetDefaults("max value")
-	t.StringValuesDefault[2].SetDefaults("min value")
-	
-	return t
-}
-
-func (t *BoundedSequences) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__msg__BoundedSequences())
-}
-func (t *BoundedSequences) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__msg__BoundedSequences
-	return (unsafe.Pointer)(C.test_msgs__msg__BoundedSequences__create())
-}
-func (t *BoundedSequences) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.test_msgs__msg__BoundedSequences__destroy((*C.test_msgs__msg__BoundedSequences)(pointer_to_free))
-}
-func (t *BoundedSequences) AsCStruct() unsafe.Pointer {
-	mem := (*C.test_msgs__msg__BoundedSequences)(t.PrepareMemory())
-	rosidl_runtime_c.Bool__Sequence_to_C((*rosidl_runtime_c.CBool__Sequence)(unsafe.Pointer(&mem.bool_values)), t.BoolValues)
-	rosidl_runtime_c.Byte__Sequence_to_C((*rosidl_runtime_c.CByte__Sequence)(unsafe.Pointer(&mem.byte_values)), t.ByteValues)
-	rosidl_runtime_c.Char__Sequence_to_C((*rosidl_runtime_c.CChar__Sequence)(unsafe.Pointer(&mem.char_values)), t.CharValues)
-	rosidl_runtime_c.Float32__Sequence_to_C((*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.float32_values)), t.Float32Values)
-	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.float64_values)), t.Float64Values)
-	rosidl_runtime_c.Int8__Sequence_to_C((*rosidl_runtime_c.CInt8__Sequence)(unsafe.Pointer(&mem.int8_values)), t.Int8Values)
-	rosidl_runtime_c.Uint8__Sequence_to_C((*rosidl_runtime_c.CUint8__Sequence)(unsafe.Pointer(&mem.uint8_values)), t.Uint8Values)
-	rosidl_runtime_c.Int16__Sequence_to_C((*rosidl_runtime_c.CInt16__Sequence)(unsafe.Pointer(&mem.int16_values)), t.Int16Values)
-	rosidl_runtime_c.Uint16__Sequence_to_C((*rosidl_runtime_c.CUint16__Sequence)(unsafe.Pointer(&mem.uint16_values)), t.Uint16Values)
-	rosidl_runtime_c.Int32__Sequence_to_C((*rosidl_runtime_c.CInt32__Sequence)(unsafe.Pointer(&mem.int32_values)), t.Int32Values)
-	rosidl_runtime_c.Uint32__Sequence_to_C((*rosidl_runtime_c.CUint32__Sequence)(unsafe.Pointer(&mem.uint32_values)), t.Uint32Values)
-	rosidl_runtime_c.Int64__Sequence_to_C((*rosidl_runtime_c.CInt64__Sequence)(unsafe.Pointer(&mem.int64_values)), t.Int64Values)
-	rosidl_runtime_c.Uint64__Sequence_to_C((*rosidl_runtime_c.CUint64__Sequence)(unsafe.Pointer(&mem.uint64_values)), t.Uint64Values)
-	rosidl_runtime_c.String__Sequence_to_C((*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.string_values)), t.StringValues)
-	BasicTypes__Sequence_to_C(&mem.basic_types_values, t.BasicTypesValues)
-	Constants__Sequence_to_C(&mem.constants_values, t.ConstantsValues)
-	Defaults__Sequence_to_C(&mem.defaults_values, t.DefaultsValues)
-	rosidl_runtime_c.Bool__Sequence_to_C((*rosidl_runtime_c.CBool__Sequence)(unsafe.Pointer(&mem.bool_values_default)), t.BoolValuesDefault)
-	rosidl_runtime_c.Byte__Sequence_to_C((*rosidl_runtime_c.CByte__Sequence)(unsafe.Pointer(&mem.byte_values_default)), t.ByteValuesDefault)
-	rosidl_runtime_c.Char__Sequence_to_C((*rosidl_runtime_c.CChar__Sequence)(unsafe.Pointer(&mem.char_values_default)), t.CharValuesDefault)
-	rosidl_runtime_c.Float32__Sequence_to_C((*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.float32_values_default)), t.Float32ValuesDefault)
-	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.float64_values_default)), t.Float64ValuesDefault)
-	rosidl_runtime_c.Int8__Sequence_to_C((*rosidl_runtime_c.CInt8__Sequence)(unsafe.Pointer(&mem.int8_values_default)), t.Int8ValuesDefault)
-	rosidl_runtime_c.Uint8__Sequence_to_C((*rosidl_runtime_c.CUint8__Sequence)(unsafe.Pointer(&mem.uint8_values_default)), t.Uint8ValuesDefault)
-	rosidl_runtime_c.Int16__Sequence_to_C((*rosidl_runtime_c.CInt16__Sequence)(unsafe.Pointer(&mem.int16_values_default)), t.Int16ValuesDefault)
-	rosidl_runtime_c.Uint16__Sequence_to_C((*rosidl_runtime_c.CUint16__Sequence)(unsafe.Pointer(&mem.uint16_values_default)), t.Uint16ValuesDefault)
-	rosidl_runtime_c.Int32__Sequence_to_C((*rosidl_runtime_c.CInt32__Sequence)(unsafe.Pointer(&mem.int32_values_default)), t.Int32ValuesDefault)
-	rosidl_runtime_c.Uint32__Sequence_to_C((*rosidl_runtime_c.CUint32__Sequence)(unsafe.Pointer(&mem.uint32_values_default)), t.Uint32ValuesDefault)
-	rosidl_runtime_c.Int64__Sequence_to_C((*rosidl_runtime_c.CInt64__Sequence)(unsafe.Pointer(&mem.int64_values_default)), t.Int64ValuesDefault)
-	rosidl_runtime_c.Uint64__Sequence_to_C((*rosidl_runtime_c.CUint64__Sequence)(unsafe.Pointer(&mem.uint64_values_default)), t.Uint64ValuesDefault)
-	rosidl_runtime_c.String__Sequence_to_C((*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.string_values_default)), t.StringValuesDefault)
-	mem.alignment_check = C.int32_t(t.AlignmentCheck)
-	return unsafe.Pointer(mem)
-}
-func (t *BoundedSequences) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.test_msgs__msg__BoundedSequences)(ros2_message_buffer)
-	rosidl_runtime_c.Bool__Sequence_to_Go(&t.BoolValues, *(*rosidl_runtime_c.CBool__Sequence)(unsafe.Pointer(&mem.bool_values)))
-	rosidl_runtime_c.Byte__Sequence_to_Go(&t.ByteValues, *(*rosidl_runtime_c.CByte__Sequence)(unsafe.Pointer(&mem.byte_values)))
-	rosidl_runtime_c.Char__Sequence_to_Go(&t.CharValues, *(*rosidl_runtime_c.CChar__Sequence)(unsafe.Pointer(&mem.char_values)))
-	rosidl_runtime_c.Float32__Sequence_to_Go(&t.Float32Values, *(*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.float32_values)))
-	rosidl_runtime_c.Float64__Sequence_to_Go(&t.Float64Values, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.float64_values)))
-	rosidl_runtime_c.Int8__Sequence_to_Go(&t.Int8Values, *(*rosidl_runtime_c.CInt8__Sequence)(unsafe.Pointer(&mem.int8_values)))
-	rosidl_runtime_c.Uint8__Sequence_to_Go(&t.Uint8Values, *(*rosidl_runtime_c.CUint8__Sequence)(unsafe.Pointer(&mem.uint8_values)))
-	rosidl_runtime_c.Int16__Sequence_to_Go(&t.Int16Values, *(*rosidl_runtime_c.CInt16__Sequence)(unsafe.Pointer(&mem.int16_values)))
-	rosidl_runtime_c.Uint16__Sequence_to_Go(&t.Uint16Values, *(*rosidl_runtime_c.CUint16__Sequence)(unsafe.Pointer(&mem.uint16_values)))
-	rosidl_runtime_c.Int32__Sequence_to_Go(&t.Int32Values, *(*rosidl_runtime_c.CInt32__Sequence)(unsafe.Pointer(&mem.int32_values)))
-	rosidl_runtime_c.Uint32__Sequence_to_Go(&t.Uint32Values, *(*rosidl_runtime_c.CUint32__Sequence)(unsafe.Pointer(&mem.uint32_values)))
-	rosidl_runtime_c.Int64__Sequence_to_Go(&t.Int64Values, *(*rosidl_runtime_c.CInt64__Sequence)(unsafe.Pointer(&mem.int64_values)))
-	rosidl_runtime_c.Uint64__Sequence_to_Go(&t.Uint64Values, *(*rosidl_runtime_c.CUint64__Sequence)(unsafe.Pointer(&mem.uint64_values)))
-	rosidl_runtime_c.String__Sequence_to_Go(&t.StringValues, *(*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.string_values)))
-	BasicTypes__Sequence_to_Go(&t.BasicTypesValues, mem.basic_types_values)
-	Constants__Sequence_to_Go(&t.ConstantsValues, mem.constants_values)
-	Defaults__Sequence_to_Go(&t.DefaultsValues, mem.defaults_values)
-	rosidl_runtime_c.Bool__Sequence_to_Go(&t.BoolValuesDefault, *(*rosidl_runtime_c.CBool__Sequence)(unsafe.Pointer(&mem.bool_values_default)))
-	rosidl_runtime_c.Byte__Sequence_to_Go(&t.ByteValuesDefault, *(*rosidl_runtime_c.CByte__Sequence)(unsafe.Pointer(&mem.byte_values_default)))
-	rosidl_runtime_c.Char__Sequence_to_Go(&t.CharValuesDefault, *(*rosidl_runtime_c.CChar__Sequence)(unsafe.Pointer(&mem.char_values_default)))
-	rosidl_runtime_c.Float32__Sequence_to_Go(&t.Float32ValuesDefault, *(*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.float32_values_default)))
-	rosidl_runtime_c.Float64__Sequence_to_Go(&t.Float64ValuesDefault, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.float64_values_default)))
-	rosidl_runtime_c.Int8__Sequence_to_Go(&t.Int8ValuesDefault, *(*rosidl_runtime_c.CInt8__Sequence)(unsafe.Pointer(&mem.int8_values_default)))
-	rosidl_runtime_c.Uint8__Sequence_to_Go(&t.Uint8ValuesDefault, *(*rosidl_runtime_c.CUint8__Sequence)(unsafe.Pointer(&mem.uint8_values_default)))
-	rosidl_runtime_c.Int16__Sequence_to_Go(&t.Int16ValuesDefault, *(*rosidl_runtime_c.CInt16__Sequence)(unsafe.Pointer(&mem.int16_values_default)))
-	rosidl_runtime_c.Uint16__Sequence_to_Go(&t.Uint16ValuesDefault, *(*rosidl_runtime_c.CUint16__Sequence)(unsafe.Pointer(&mem.uint16_values_default)))
-	rosidl_runtime_c.Int32__Sequence_to_Go(&t.Int32ValuesDefault, *(*rosidl_runtime_c.CInt32__Sequence)(unsafe.Pointer(&mem.int32_values_default)))
-	rosidl_runtime_c.Uint32__Sequence_to_Go(&t.Uint32ValuesDefault, *(*rosidl_runtime_c.CUint32__Sequence)(unsafe.Pointer(&mem.uint32_values_default)))
-	rosidl_runtime_c.Int64__Sequence_to_Go(&t.Int64ValuesDefault, *(*rosidl_runtime_c.CInt64__Sequence)(unsafe.Pointer(&mem.int64_values_default)))
-	rosidl_runtime_c.Uint64__Sequence_to_Go(&t.Uint64ValuesDefault, *(*rosidl_runtime_c.CUint64__Sequence)(unsafe.Pointer(&mem.uint64_values_default)))
-	rosidl_runtime_c.String__Sequence_to_Go(&t.StringValuesDefault, *(*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.string_values_default)))
-	t.AlignmentCheck = int32(mem.alignment_check)
-}
-func (t *BoundedSequences) Clone() ros2types.ROS2Msg {
+func (t *BoundedSequences) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *BoundedSequences) SetDefaults() {
+	t.BoolValuesDefault = []bool{false,true,false}
+	t.ByteValuesDefault = []byte{0,1,255}
+	t.CharValuesDefault = []byte{0,1,127}
+	t.Float32ValuesDefault = []float32{1.125,0.0,-1.125}
+	t.Float64ValuesDefault = []float64{3.1415,0.0,-3.1415}
+	t.Int8ValuesDefault = []int8{0,127,-128}
+	t.Uint8ValuesDefault = []uint8{0,1,255}
+	t.Int16ValuesDefault = []int16{0,32767,-32768}
+	t.Uint16ValuesDefault = []uint16{0,1,65535}
+	t.Int32ValuesDefault = []int32{0,2147483647,-2147483648}
+	t.Uint32ValuesDefault = []uint32{0,1,4294967295}
+	t.Int64ValuesDefault = []int64{0,9223372036854775807,-9223372036854775808}
+	t.Uint64ValuesDefault = []uint64{0,1,18446744073709551615}
+	t.StringValuesDefault = []string{"","max value","min value"}
+	
+}
+
+// Modifying this variable is undefined behavior.
+var BoundedSequencesTypeSupport types.MessageTypeSupport = _BoundedSequencesTypeSupport{}
+
+type _BoundedSequencesTypeSupport struct{}
+
+func (t _BoundedSequencesTypeSupport) New() types.Message {
+	return NewBoundedSequences()
+}
+
+func (t _BoundedSequencesTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__msg__BoundedSequences
+	return (unsafe.Pointer)(C.test_msgs__msg__BoundedSequences__create())
+}
+
+func (t _BoundedSequencesTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.test_msgs__msg__BoundedSequences__destroy((*C.test_msgs__msg__BoundedSequences)(pointer_to_free))
+}
+
+func (t _BoundedSequencesTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*BoundedSequences)
+	mem := (*C.test_msgs__msg__BoundedSequences)(dst)
+	rosidl_runtime_c.Bool__Sequence_to_C((*rosidl_runtime_c.CBool__Sequence)(unsafe.Pointer(&mem.bool_values)), m.BoolValues)
+	rosidl_runtime_c.Byte__Sequence_to_C((*rosidl_runtime_c.CByte__Sequence)(unsafe.Pointer(&mem.byte_values)), m.ByteValues)
+	rosidl_runtime_c.Char__Sequence_to_C((*rosidl_runtime_c.CChar__Sequence)(unsafe.Pointer(&mem.char_values)), m.CharValues)
+	rosidl_runtime_c.Float32__Sequence_to_C((*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.float32_values)), m.Float32Values)
+	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.float64_values)), m.Float64Values)
+	rosidl_runtime_c.Int8__Sequence_to_C((*rosidl_runtime_c.CInt8__Sequence)(unsafe.Pointer(&mem.int8_values)), m.Int8Values)
+	rosidl_runtime_c.Uint8__Sequence_to_C((*rosidl_runtime_c.CUint8__Sequence)(unsafe.Pointer(&mem.uint8_values)), m.Uint8Values)
+	rosidl_runtime_c.Int16__Sequence_to_C((*rosidl_runtime_c.CInt16__Sequence)(unsafe.Pointer(&mem.int16_values)), m.Int16Values)
+	rosidl_runtime_c.Uint16__Sequence_to_C((*rosidl_runtime_c.CUint16__Sequence)(unsafe.Pointer(&mem.uint16_values)), m.Uint16Values)
+	rosidl_runtime_c.Int32__Sequence_to_C((*rosidl_runtime_c.CInt32__Sequence)(unsafe.Pointer(&mem.int32_values)), m.Int32Values)
+	rosidl_runtime_c.Uint32__Sequence_to_C((*rosidl_runtime_c.CUint32__Sequence)(unsafe.Pointer(&mem.uint32_values)), m.Uint32Values)
+	rosidl_runtime_c.Int64__Sequence_to_C((*rosidl_runtime_c.CInt64__Sequence)(unsafe.Pointer(&mem.int64_values)), m.Int64Values)
+	rosidl_runtime_c.Uint64__Sequence_to_C((*rosidl_runtime_c.CUint64__Sequence)(unsafe.Pointer(&mem.uint64_values)), m.Uint64Values)
+	rosidl_runtime_c.String__Sequence_to_C((*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.string_values)), m.StringValues)
+	BasicTypes__Sequence_to_C(&mem.basic_types_values, m.BasicTypesValues)
+	Constants__Sequence_to_C(&mem.constants_values, m.ConstantsValues)
+	Defaults__Sequence_to_C(&mem.defaults_values, m.DefaultsValues)
+	rosidl_runtime_c.Bool__Sequence_to_C((*rosidl_runtime_c.CBool__Sequence)(unsafe.Pointer(&mem.bool_values_default)), m.BoolValuesDefault)
+	rosidl_runtime_c.Byte__Sequence_to_C((*rosidl_runtime_c.CByte__Sequence)(unsafe.Pointer(&mem.byte_values_default)), m.ByteValuesDefault)
+	rosidl_runtime_c.Char__Sequence_to_C((*rosidl_runtime_c.CChar__Sequence)(unsafe.Pointer(&mem.char_values_default)), m.CharValuesDefault)
+	rosidl_runtime_c.Float32__Sequence_to_C((*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.float32_values_default)), m.Float32ValuesDefault)
+	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.float64_values_default)), m.Float64ValuesDefault)
+	rosidl_runtime_c.Int8__Sequence_to_C((*rosidl_runtime_c.CInt8__Sequence)(unsafe.Pointer(&mem.int8_values_default)), m.Int8ValuesDefault)
+	rosidl_runtime_c.Uint8__Sequence_to_C((*rosidl_runtime_c.CUint8__Sequence)(unsafe.Pointer(&mem.uint8_values_default)), m.Uint8ValuesDefault)
+	rosidl_runtime_c.Int16__Sequence_to_C((*rosidl_runtime_c.CInt16__Sequence)(unsafe.Pointer(&mem.int16_values_default)), m.Int16ValuesDefault)
+	rosidl_runtime_c.Uint16__Sequence_to_C((*rosidl_runtime_c.CUint16__Sequence)(unsafe.Pointer(&mem.uint16_values_default)), m.Uint16ValuesDefault)
+	rosidl_runtime_c.Int32__Sequence_to_C((*rosidl_runtime_c.CInt32__Sequence)(unsafe.Pointer(&mem.int32_values_default)), m.Int32ValuesDefault)
+	rosidl_runtime_c.Uint32__Sequence_to_C((*rosidl_runtime_c.CUint32__Sequence)(unsafe.Pointer(&mem.uint32_values_default)), m.Uint32ValuesDefault)
+	rosidl_runtime_c.Int64__Sequence_to_C((*rosidl_runtime_c.CInt64__Sequence)(unsafe.Pointer(&mem.int64_values_default)), m.Int64ValuesDefault)
+	rosidl_runtime_c.Uint64__Sequence_to_C((*rosidl_runtime_c.CUint64__Sequence)(unsafe.Pointer(&mem.uint64_values_default)), m.Uint64ValuesDefault)
+	rosidl_runtime_c.String__Sequence_to_C((*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.string_values_default)), m.StringValuesDefault)
+	mem.alignment_check = C.int32_t(m.AlignmentCheck)
+}
+
+func (t _BoundedSequencesTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*BoundedSequences)
+	mem := (*C.test_msgs__msg__BoundedSequences)(ros2_message_buffer)
+	rosidl_runtime_c.Bool__Sequence_to_Go(&m.BoolValues, *(*rosidl_runtime_c.CBool__Sequence)(unsafe.Pointer(&mem.bool_values)))
+	rosidl_runtime_c.Byte__Sequence_to_Go(&m.ByteValues, *(*rosidl_runtime_c.CByte__Sequence)(unsafe.Pointer(&mem.byte_values)))
+	rosidl_runtime_c.Char__Sequence_to_Go(&m.CharValues, *(*rosidl_runtime_c.CChar__Sequence)(unsafe.Pointer(&mem.char_values)))
+	rosidl_runtime_c.Float32__Sequence_to_Go(&m.Float32Values, *(*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.float32_values)))
+	rosidl_runtime_c.Float64__Sequence_to_Go(&m.Float64Values, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.float64_values)))
+	rosidl_runtime_c.Int8__Sequence_to_Go(&m.Int8Values, *(*rosidl_runtime_c.CInt8__Sequence)(unsafe.Pointer(&mem.int8_values)))
+	rosidl_runtime_c.Uint8__Sequence_to_Go(&m.Uint8Values, *(*rosidl_runtime_c.CUint8__Sequence)(unsafe.Pointer(&mem.uint8_values)))
+	rosidl_runtime_c.Int16__Sequence_to_Go(&m.Int16Values, *(*rosidl_runtime_c.CInt16__Sequence)(unsafe.Pointer(&mem.int16_values)))
+	rosidl_runtime_c.Uint16__Sequence_to_Go(&m.Uint16Values, *(*rosidl_runtime_c.CUint16__Sequence)(unsafe.Pointer(&mem.uint16_values)))
+	rosidl_runtime_c.Int32__Sequence_to_Go(&m.Int32Values, *(*rosidl_runtime_c.CInt32__Sequence)(unsafe.Pointer(&mem.int32_values)))
+	rosidl_runtime_c.Uint32__Sequence_to_Go(&m.Uint32Values, *(*rosidl_runtime_c.CUint32__Sequence)(unsafe.Pointer(&mem.uint32_values)))
+	rosidl_runtime_c.Int64__Sequence_to_Go(&m.Int64Values, *(*rosidl_runtime_c.CInt64__Sequence)(unsafe.Pointer(&mem.int64_values)))
+	rosidl_runtime_c.Uint64__Sequence_to_Go(&m.Uint64Values, *(*rosidl_runtime_c.CUint64__Sequence)(unsafe.Pointer(&mem.uint64_values)))
+	rosidl_runtime_c.String__Sequence_to_Go(&m.StringValues, *(*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.string_values)))
+	BasicTypes__Sequence_to_Go(&m.BasicTypesValues, mem.basic_types_values)
+	Constants__Sequence_to_Go(&m.ConstantsValues, mem.constants_values)
+	Defaults__Sequence_to_Go(&m.DefaultsValues, mem.defaults_values)
+	rosidl_runtime_c.Bool__Sequence_to_Go(&m.BoolValuesDefault, *(*rosidl_runtime_c.CBool__Sequence)(unsafe.Pointer(&mem.bool_values_default)))
+	rosidl_runtime_c.Byte__Sequence_to_Go(&m.ByteValuesDefault, *(*rosidl_runtime_c.CByte__Sequence)(unsafe.Pointer(&mem.byte_values_default)))
+	rosidl_runtime_c.Char__Sequence_to_Go(&m.CharValuesDefault, *(*rosidl_runtime_c.CChar__Sequence)(unsafe.Pointer(&mem.char_values_default)))
+	rosidl_runtime_c.Float32__Sequence_to_Go(&m.Float32ValuesDefault, *(*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.float32_values_default)))
+	rosidl_runtime_c.Float64__Sequence_to_Go(&m.Float64ValuesDefault, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.float64_values_default)))
+	rosidl_runtime_c.Int8__Sequence_to_Go(&m.Int8ValuesDefault, *(*rosidl_runtime_c.CInt8__Sequence)(unsafe.Pointer(&mem.int8_values_default)))
+	rosidl_runtime_c.Uint8__Sequence_to_Go(&m.Uint8ValuesDefault, *(*rosidl_runtime_c.CUint8__Sequence)(unsafe.Pointer(&mem.uint8_values_default)))
+	rosidl_runtime_c.Int16__Sequence_to_Go(&m.Int16ValuesDefault, *(*rosidl_runtime_c.CInt16__Sequence)(unsafe.Pointer(&mem.int16_values_default)))
+	rosidl_runtime_c.Uint16__Sequence_to_Go(&m.Uint16ValuesDefault, *(*rosidl_runtime_c.CUint16__Sequence)(unsafe.Pointer(&mem.uint16_values_default)))
+	rosidl_runtime_c.Int32__Sequence_to_Go(&m.Int32ValuesDefault, *(*rosidl_runtime_c.CInt32__Sequence)(unsafe.Pointer(&mem.int32_values_default)))
+	rosidl_runtime_c.Uint32__Sequence_to_Go(&m.Uint32ValuesDefault, *(*rosidl_runtime_c.CUint32__Sequence)(unsafe.Pointer(&mem.uint32_values_default)))
+	rosidl_runtime_c.Int64__Sequence_to_Go(&m.Int64ValuesDefault, *(*rosidl_runtime_c.CInt64__Sequence)(unsafe.Pointer(&mem.int64_values_default)))
+	rosidl_runtime_c.Uint64__Sequence_to_Go(&m.Uint64ValuesDefault, *(*rosidl_runtime_c.CUint64__Sequence)(unsafe.Pointer(&mem.uint64_values_default)))
+	rosidl_runtime_c.String__Sequence_to_Go(&m.StringValuesDefault, *(*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.string_values_default)))
+	m.AlignmentCheck = int32(mem.alignment_check)
+}
+
+func (t _BoundedSequencesTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__msg__BoundedSequences())
 }
 
 type CBoundedSequences = C.test_msgs__msg__BoundedSequences
@@ -200,8 +211,7 @@ func BoundedSequences__Sequence_to_Go(goSlice *[]BoundedSequences, cSlice CBound
 		cIdx := (*C.test_msgs__msg__BoundedSequences__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__msg__BoundedSequences * uintptr(i)),
 		))
-		(*goSlice)[i] = BoundedSequences{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		BoundedSequencesTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func BoundedSequences__Sequence_to_C(cSlice *CBoundedSequences__Sequence, goSlice []BoundedSequences) {
@@ -216,18 +226,16 @@ func BoundedSequences__Sequence_to_C(cSlice *CBoundedSequences__Sequence, goSlic
 		cIdx := (*C.test_msgs__msg__BoundedSequences)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__msg__BoundedSequences * uintptr(i)),
 		))
-		*cIdx = *(*C.test_msgs__msg__BoundedSequences)(v.AsCStruct())
+		BoundedSequencesTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func BoundedSequences__Array_to_Go(goSlice []BoundedSequences, cSlice []CBoundedSequences) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		BoundedSequencesTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func BoundedSequences__Array_to_C(cSlice []CBoundedSequences, goSlice []BoundedSequences) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.test_msgs__msg__BoundedSequences)(goSlice[i].AsCStruct())
+		BoundedSequencesTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

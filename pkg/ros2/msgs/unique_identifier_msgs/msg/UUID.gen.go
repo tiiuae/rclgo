@@ -15,7 +15,7 @@ package unique_identifier_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("unique_identifier_msgs/UUID", &UUID{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("unique_identifier_msgs/UUID", UUIDTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewUUID
@@ -46,38 +46,52 @@ type UUID struct {
 // NewUUID creates a new UUID with default values.
 func NewUUID() *UUID {
 	self := UUID{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *UUID) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *UUID) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__unique_identifier_msgs__msg__UUID())
-}
-func (t *UUID) PrepareMemory() unsafe.Pointer { //returns *C.unique_identifier_msgs__msg__UUID
-	return (unsafe.Pointer)(C.unique_identifier_msgs__msg__UUID__create())
-}
-func (t *UUID) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.unique_identifier_msgs__msg__UUID__destroy((*C.unique_identifier_msgs__msg__UUID)(pointer_to_free))
-}
-func (t *UUID) AsCStruct() unsafe.Pointer {
-	mem := (*C.unique_identifier_msgs__msg__UUID)(t.PrepareMemory())
-	cSlice_uuid := mem.uuid[:]
-	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_uuid)), t.Uuid[:])
-	return unsafe.Pointer(mem)
-}
-func (t *UUID) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.unique_identifier_msgs__msg__UUID)(ros2_message_buffer)
-	cSlice_uuid := mem.uuid[:]
-	rosidl_runtime_c.Uint8__Array_to_Go(t.Uuid[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_uuid)))
-}
-func (t *UUID) Clone() ros2types.ROS2Msg {
+func (t *UUID) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *UUID) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var UUIDTypeSupport types.MessageTypeSupport = _UUIDTypeSupport{}
+
+type _UUIDTypeSupport struct{}
+
+func (t _UUIDTypeSupport) New() types.Message {
+	return NewUUID()
+}
+
+func (t _UUIDTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.unique_identifier_msgs__msg__UUID
+	return (unsafe.Pointer)(C.unique_identifier_msgs__msg__UUID__create())
+}
+
+func (t _UUIDTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.unique_identifier_msgs__msg__UUID__destroy((*C.unique_identifier_msgs__msg__UUID)(pointer_to_free))
+}
+
+func (t _UUIDTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*UUID)
+	mem := (*C.unique_identifier_msgs__msg__UUID)(dst)
+	cSlice_uuid := mem.uuid[:]
+	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_uuid)), m.Uuid[:])
+}
+
+func (t _UUIDTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*UUID)
+	mem := (*C.unique_identifier_msgs__msg__UUID)(ros2_message_buffer)
+	cSlice_uuid := mem.uuid[:]
+	rosidl_runtime_c.Uint8__Array_to_Go(m.Uuid[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_uuid)))
+}
+
+func (t _UUIDTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__unique_identifier_msgs__msg__UUID())
 }
 
 type CUUID = C.unique_identifier_msgs__msg__UUID
@@ -92,8 +106,7 @@ func UUID__Sequence_to_Go(goSlice *[]UUID, cSlice CUUID__Sequence) {
 		cIdx := (*C.unique_identifier_msgs__msg__UUID__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_unique_identifier_msgs__msg__UUID * uintptr(i)),
 		))
-		(*goSlice)[i] = UUID{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		UUIDTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func UUID__Sequence_to_C(cSlice *CUUID__Sequence, goSlice []UUID) {
@@ -108,18 +121,16 @@ func UUID__Sequence_to_C(cSlice *CUUID__Sequence, goSlice []UUID) {
 		cIdx := (*C.unique_identifier_msgs__msg__UUID)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_unique_identifier_msgs__msg__UUID * uintptr(i)),
 		))
-		*cIdx = *(*C.unique_identifier_msgs__msg__UUID)(v.AsCStruct())
+		UUIDTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func UUID__Array_to_Go(goSlice []UUID, cSlice []CUUID) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		UUIDTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func UUID__Array_to_C(cSlice []CUUID, goSlice []UUID) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.unique_identifier_msgs__msg__UUID)(goSlice[i].AsCStruct())
+		UUIDTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

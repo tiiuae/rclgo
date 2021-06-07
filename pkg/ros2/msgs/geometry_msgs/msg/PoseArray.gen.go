@@ -15,7 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/PoseArray", &PoseArray{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/PoseArray", PoseArrayTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPoseArray
@@ -48,39 +48,53 @@ type PoseArray struct {
 // NewPoseArray creates a new PoseArray with default values.
 func NewPoseArray() *PoseArray {
 	self := PoseArray{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *PoseArray) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *PoseArray) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__PoseArray())
-}
-func (t *PoseArray) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__PoseArray
-	return (unsafe.Pointer)(C.geometry_msgs__msg__PoseArray__create())
-}
-func (t *PoseArray) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.geometry_msgs__msg__PoseArray__destroy((*C.geometry_msgs__msg__PoseArray)(pointer_to_free))
-}
-func (t *PoseArray) AsCStruct() unsafe.Pointer {
-	mem := (*C.geometry_msgs__msg__PoseArray)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	Pose__Sequence_to_C(&mem.poses, t.Poses)
-	return unsafe.Pointer(mem)
-}
-func (t *PoseArray) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.geometry_msgs__msg__PoseArray)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	Pose__Sequence_to_Go(&t.Poses, mem.poses)
-}
-func (t *PoseArray) Clone() ros2types.ROS2Msg {
+func (t *PoseArray) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *PoseArray) SetDefaults() {
+	t.Header.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var PoseArrayTypeSupport types.MessageTypeSupport = _PoseArrayTypeSupport{}
+
+type _PoseArrayTypeSupport struct{}
+
+func (t _PoseArrayTypeSupport) New() types.Message {
+	return NewPoseArray()
+}
+
+func (t _PoseArrayTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__PoseArray
+	return (unsafe.Pointer)(C.geometry_msgs__msg__PoseArray__create())
+}
+
+func (t _PoseArrayTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.geometry_msgs__msg__PoseArray__destroy((*C.geometry_msgs__msg__PoseArray)(pointer_to_free))
+}
+
+func (t _PoseArrayTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*PoseArray)
+	mem := (*C.geometry_msgs__msg__PoseArray)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	Pose__Sequence_to_C(&mem.poses, m.Poses)
+}
+
+func (t _PoseArrayTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*PoseArray)
+	mem := (*C.geometry_msgs__msg__PoseArray)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	Pose__Sequence_to_Go(&m.Poses, mem.poses)
+}
+
+func (t _PoseArrayTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__PoseArray())
 }
 
 type CPoseArray = C.geometry_msgs__msg__PoseArray
@@ -95,8 +109,7 @@ func PoseArray__Sequence_to_Go(goSlice *[]PoseArray, cSlice CPoseArray__Sequence
 		cIdx := (*C.geometry_msgs__msg__PoseArray__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__PoseArray * uintptr(i)),
 		))
-		(*goSlice)[i] = PoseArray{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		PoseArrayTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func PoseArray__Sequence_to_C(cSlice *CPoseArray__Sequence, goSlice []PoseArray) {
@@ -111,18 +124,16 @@ func PoseArray__Sequence_to_C(cSlice *CPoseArray__Sequence, goSlice []PoseArray)
 		cIdx := (*C.geometry_msgs__msg__PoseArray)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__PoseArray * uintptr(i)),
 		))
-		*cIdx = *(*C.geometry_msgs__msg__PoseArray)(v.AsCStruct())
+		PoseArrayTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func PoseArray__Array_to_Go(goSlice []PoseArray, cSlice []CPoseArray) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		PoseArrayTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func PoseArray__Array_to_C(cSlice []CPoseArray, goSlice []PoseArray) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.geometry_msgs__msg__PoseArray)(goSlice[i].AsCStruct())
+		PoseArrayTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

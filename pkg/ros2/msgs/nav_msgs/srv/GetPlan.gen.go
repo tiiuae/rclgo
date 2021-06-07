@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("nav_msgs/GetPlan", GetPlan)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("nav_msgs/GetPlan", GetPlanTypeSupport)
 }
 
-type _GetPlan struct {
-	req,resp ros2types.ROS2Msg
+type _GetPlanTypeSupport struct {}
+
+func (s _GetPlanTypeSupport) Request() types.MessageTypeSupport {
+	return GetPlan_RequestTypeSupport
 }
 
-func (s *_GetPlan) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _GetPlanTypeSupport) Response() types.MessageTypeSupport {
+	return GetPlan_ResponseTypeSupport
 }
 
-func (s *_GetPlan) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_GetPlan) TypeSupport() unsafe.Pointer {
+func (s _GetPlanTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__nav_msgs__srv__GetPlan())
 }
 
 // Modifying this variable is undefined behavior.
-var GetPlan ros2types.Service = &_GetPlan{
-	req: &GetPlan_Request{},
-	resp: &GetPlan_Response{},
-}
+var GetPlanTypeSupport types.ServiceTypeSupport = _GetPlanTypeSupport{}

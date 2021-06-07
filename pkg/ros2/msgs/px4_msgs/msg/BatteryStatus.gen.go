@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/BatteryStatus", &BatteryStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/BatteryStatus", BatteryStatusTypeSupport)
 }
 const (
 	BatteryStatus_BATTERY_SOURCE_POWER_MODULE uint8 = 0
@@ -84,92 +84,106 @@ type BatteryStatus struct {
 // NewBatteryStatus creates a new BatteryStatus with default values.
 func NewBatteryStatus() *BatteryStatus {
 	self := BatteryStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *BatteryStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *BatteryStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__BatteryStatus())
-}
-func (t *BatteryStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__BatteryStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__BatteryStatus__create())
-}
-func (t *BatteryStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__BatteryStatus__destroy((*C.px4_msgs__msg__BatteryStatus)(pointer_to_free))
-}
-func (t *BatteryStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__BatteryStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.voltage_v = C.float(t.VoltageV)
-	mem.voltage_filtered_v = C.float(t.VoltageFilteredV)
-	mem.current_a = C.float(t.CurrentA)
-	mem.current_filtered_a = C.float(t.CurrentFilteredA)
-	mem.average_current_a = C.float(t.AverageCurrentA)
-	mem.discharged_mah = C.float(t.DischargedMah)
-	mem.remaining = C.float(t.Remaining)
-	mem.scale = C.float(t.Scale)
-	mem.temperature = C.float(t.Temperature)
-	mem.cell_count = C.int32_t(t.CellCount)
-	mem.connected = C.bool(t.Connected)
-	mem.source = C.uint8_t(t.Source)
-	mem.priority = C.uint8_t(t.Priority)
-	mem.capacity = C.uint16_t(t.Capacity)
-	mem.cycle_count = C.uint16_t(t.CycleCount)
-	mem.run_time_to_empty = C.uint16_t(t.RunTimeToEmpty)
-	mem.average_time_to_empty = C.uint16_t(t.AverageTimeToEmpty)
-	mem.serial_number = C.uint16_t(t.SerialNumber)
-	mem.manufacture_date = C.uint16_t(t.ManufactureDate)
-	mem.state_of_health = C.uint16_t(t.StateOfHealth)
-	mem.max_error = C.uint16_t(t.MaxError)
-	mem.id = C.uint8_t(t.Id)
-	mem.interface_error = C.uint16_t(t.InterfaceError)
-	cSlice_voltage_cell_v := mem.voltage_cell_v[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_voltage_cell_v)), t.VoltageCellV[:])
-	mem.max_cell_voltage_delta = C.float(t.MaxCellVoltageDelta)
-	mem.is_powering_off = C.bool(t.IsPoweringOff)
-	mem.warning = C.uint8_t(t.Warning)
-	return unsafe.Pointer(mem)
-}
-func (t *BatteryStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__BatteryStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.VoltageV = float32(mem.voltage_v)
-	t.VoltageFilteredV = float32(mem.voltage_filtered_v)
-	t.CurrentA = float32(mem.current_a)
-	t.CurrentFilteredA = float32(mem.current_filtered_a)
-	t.AverageCurrentA = float32(mem.average_current_a)
-	t.DischargedMah = float32(mem.discharged_mah)
-	t.Remaining = float32(mem.remaining)
-	t.Scale = float32(mem.scale)
-	t.Temperature = float32(mem.temperature)
-	t.CellCount = int32(mem.cell_count)
-	t.Connected = bool(mem.connected)
-	t.Source = uint8(mem.source)
-	t.Priority = uint8(mem.priority)
-	t.Capacity = uint16(mem.capacity)
-	t.CycleCount = uint16(mem.cycle_count)
-	t.RunTimeToEmpty = uint16(mem.run_time_to_empty)
-	t.AverageTimeToEmpty = uint16(mem.average_time_to_empty)
-	t.SerialNumber = uint16(mem.serial_number)
-	t.ManufactureDate = uint16(mem.manufacture_date)
-	t.StateOfHealth = uint16(mem.state_of_health)
-	t.MaxError = uint16(mem.max_error)
-	t.Id = uint8(mem.id)
-	t.InterfaceError = uint16(mem.interface_error)
-	cSlice_voltage_cell_v := mem.voltage_cell_v[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.VoltageCellV[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_voltage_cell_v)))
-	t.MaxCellVoltageDelta = float32(mem.max_cell_voltage_delta)
-	t.IsPoweringOff = bool(mem.is_powering_off)
-	t.Warning = uint8(mem.warning)
-}
-func (t *BatteryStatus) Clone() ros2types.ROS2Msg {
+func (t *BatteryStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *BatteryStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var BatteryStatusTypeSupport types.MessageTypeSupport = _BatteryStatusTypeSupport{}
+
+type _BatteryStatusTypeSupport struct{}
+
+func (t _BatteryStatusTypeSupport) New() types.Message {
+	return NewBatteryStatus()
+}
+
+func (t _BatteryStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__BatteryStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__BatteryStatus__create())
+}
+
+func (t _BatteryStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__BatteryStatus__destroy((*C.px4_msgs__msg__BatteryStatus)(pointer_to_free))
+}
+
+func (t _BatteryStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*BatteryStatus)
+	mem := (*C.px4_msgs__msg__BatteryStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.voltage_v = C.float(m.VoltageV)
+	mem.voltage_filtered_v = C.float(m.VoltageFilteredV)
+	mem.current_a = C.float(m.CurrentA)
+	mem.current_filtered_a = C.float(m.CurrentFilteredA)
+	mem.average_current_a = C.float(m.AverageCurrentA)
+	mem.discharged_mah = C.float(m.DischargedMah)
+	mem.remaining = C.float(m.Remaining)
+	mem.scale = C.float(m.Scale)
+	mem.temperature = C.float(m.Temperature)
+	mem.cell_count = C.int32_t(m.CellCount)
+	mem.connected = C.bool(m.Connected)
+	mem.source = C.uint8_t(m.Source)
+	mem.priority = C.uint8_t(m.Priority)
+	mem.capacity = C.uint16_t(m.Capacity)
+	mem.cycle_count = C.uint16_t(m.CycleCount)
+	mem.run_time_to_empty = C.uint16_t(m.RunTimeToEmpty)
+	mem.average_time_to_empty = C.uint16_t(m.AverageTimeToEmpty)
+	mem.serial_number = C.uint16_t(m.SerialNumber)
+	mem.manufacture_date = C.uint16_t(m.ManufactureDate)
+	mem.state_of_health = C.uint16_t(m.StateOfHealth)
+	mem.max_error = C.uint16_t(m.MaxError)
+	mem.id = C.uint8_t(m.Id)
+	mem.interface_error = C.uint16_t(m.InterfaceError)
+	cSlice_voltage_cell_v := mem.voltage_cell_v[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_voltage_cell_v)), m.VoltageCellV[:])
+	mem.max_cell_voltage_delta = C.float(m.MaxCellVoltageDelta)
+	mem.is_powering_off = C.bool(m.IsPoweringOff)
+	mem.warning = C.uint8_t(m.Warning)
+}
+
+func (t _BatteryStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*BatteryStatus)
+	mem := (*C.px4_msgs__msg__BatteryStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.VoltageV = float32(mem.voltage_v)
+	m.VoltageFilteredV = float32(mem.voltage_filtered_v)
+	m.CurrentA = float32(mem.current_a)
+	m.CurrentFilteredA = float32(mem.current_filtered_a)
+	m.AverageCurrentA = float32(mem.average_current_a)
+	m.DischargedMah = float32(mem.discharged_mah)
+	m.Remaining = float32(mem.remaining)
+	m.Scale = float32(mem.scale)
+	m.Temperature = float32(mem.temperature)
+	m.CellCount = int32(mem.cell_count)
+	m.Connected = bool(mem.connected)
+	m.Source = uint8(mem.source)
+	m.Priority = uint8(mem.priority)
+	m.Capacity = uint16(mem.capacity)
+	m.CycleCount = uint16(mem.cycle_count)
+	m.RunTimeToEmpty = uint16(mem.run_time_to_empty)
+	m.AverageTimeToEmpty = uint16(mem.average_time_to_empty)
+	m.SerialNumber = uint16(mem.serial_number)
+	m.ManufactureDate = uint16(mem.manufacture_date)
+	m.StateOfHealth = uint16(mem.state_of_health)
+	m.MaxError = uint16(mem.max_error)
+	m.Id = uint8(mem.id)
+	m.InterfaceError = uint16(mem.interface_error)
+	cSlice_voltage_cell_v := mem.voltage_cell_v[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.VoltageCellV[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_voltage_cell_v)))
+	m.MaxCellVoltageDelta = float32(mem.max_cell_voltage_delta)
+	m.IsPoweringOff = bool(mem.is_powering_off)
+	m.Warning = uint8(mem.warning)
+}
+
+func (t _BatteryStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__BatteryStatus())
 }
 
 type CBatteryStatus = C.px4_msgs__msg__BatteryStatus
@@ -184,8 +198,7 @@ func BatteryStatus__Sequence_to_Go(goSlice *[]BatteryStatus, cSlice CBatteryStat
 		cIdx := (*C.px4_msgs__msg__BatteryStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__BatteryStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = BatteryStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		BatteryStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func BatteryStatus__Sequence_to_C(cSlice *CBatteryStatus__Sequence, goSlice []BatteryStatus) {
@@ -200,18 +213,16 @@ func BatteryStatus__Sequence_to_C(cSlice *CBatteryStatus__Sequence, goSlice []Ba
 		cIdx := (*C.px4_msgs__msg__BatteryStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__BatteryStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__BatteryStatus)(v.AsCStruct())
+		BatteryStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func BatteryStatus__Array_to_Go(goSlice []BatteryStatus, cSlice []CBatteryStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		BatteryStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func BatteryStatus__Array_to_C(cSlice []CBatteryStatus, goSlice []BatteryStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__BatteryStatus)(goSlice[i].AsCStruct())
+		BatteryStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

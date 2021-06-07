@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/OrbTestMediumQueuePoll", &OrbTestMediumQueuePoll{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/OrbTestMediumQueuePoll", OrbTestMediumQueuePollTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewOrbTestMediumQueuePoll
@@ -48,42 +48,56 @@ type OrbTestMediumQueuePoll struct {
 // NewOrbTestMediumQueuePoll creates a new OrbTestMediumQueuePoll with default values.
 func NewOrbTestMediumQueuePoll() *OrbTestMediumQueuePoll {
 	self := OrbTestMediumQueuePoll{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *OrbTestMediumQueuePoll) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *OrbTestMediumQueuePoll) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__OrbTestMediumQueuePoll())
-}
-func (t *OrbTestMediumQueuePoll) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__OrbTestMediumQueuePoll
-	return (unsafe.Pointer)(C.px4_msgs__msg__OrbTestMediumQueuePoll__create())
-}
-func (t *OrbTestMediumQueuePoll) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__OrbTestMediumQueuePoll__destroy((*C.px4_msgs__msg__OrbTestMediumQueuePoll)(pointer_to_free))
-}
-func (t *OrbTestMediumQueuePoll) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__OrbTestMediumQueuePoll)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.val = C.int32_t(t.Val)
-	cSlice_junk := mem.junk[:]
-	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_junk)), t.Junk[:])
-	return unsafe.Pointer(mem)
-}
-func (t *OrbTestMediumQueuePoll) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__OrbTestMediumQueuePoll)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Val = int32(mem.val)
-	cSlice_junk := mem.junk[:]
-	rosidl_runtime_c.Uint8__Array_to_Go(t.Junk[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_junk)))
-}
-func (t *OrbTestMediumQueuePoll) Clone() ros2types.ROS2Msg {
+func (t *OrbTestMediumQueuePoll) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *OrbTestMediumQueuePoll) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var OrbTestMediumQueuePollTypeSupport types.MessageTypeSupport = _OrbTestMediumQueuePollTypeSupport{}
+
+type _OrbTestMediumQueuePollTypeSupport struct{}
+
+func (t _OrbTestMediumQueuePollTypeSupport) New() types.Message {
+	return NewOrbTestMediumQueuePoll()
+}
+
+func (t _OrbTestMediumQueuePollTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__OrbTestMediumQueuePoll
+	return (unsafe.Pointer)(C.px4_msgs__msg__OrbTestMediumQueuePoll__create())
+}
+
+func (t _OrbTestMediumQueuePollTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__OrbTestMediumQueuePoll__destroy((*C.px4_msgs__msg__OrbTestMediumQueuePoll)(pointer_to_free))
+}
+
+func (t _OrbTestMediumQueuePollTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*OrbTestMediumQueuePoll)
+	mem := (*C.px4_msgs__msg__OrbTestMediumQueuePoll)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.val = C.int32_t(m.Val)
+	cSlice_junk := mem.junk[:]
+	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_junk)), m.Junk[:])
+}
+
+func (t _OrbTestMediumQueuePollTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*OrbTestMediumQueuePoll)
+	mem := (*C.px4_msgs__msg__OrbTestMediumQueuePoll)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Val = int32(mem.val)
+	cSlice_junk := mem.junk[:]
+	rosidl_runtime_c.Uint8__Array_to_Go(m.Junk[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_junk)))
+}
+
+func (t _OrbTestMediumQueuePollTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__OrbTestMediumQueuePoll())
 }
 
 type COrbTestMediumQueuePoll = C.px4_msgs__msg__OrbTestMediumQueuePoll
@@ -98,8 +112,7 @@ func OrbTestMediumQueuePoll__Sequence_to_Go(goSlice *[]OrbTestMediumQueuePoll, c
 		cIdx := (*C.px4_msgs__msg__OrbTestMediumQueuePoll__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__OrbTestMediumQueuePoll * uintptr(i)),
 		))
-		(*goSlice)[i] = OrbTestMediumQueuePoll{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		OrbTestMediumQueuePollTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func OrbTestMediumQueuePoll__Sequence_to_C(cSlice *COrbTestMediumQueuePoll__Sequence, goSlice []OrbTestMediumQueuePoll) {
@@ -114,18 +127,16 @@ func OrbTestMediumQueuePoll__Sequence_to_C(cSlice *COrbTestMediumQueuePoll__Sequ
 		cIdx := (*C.px4_msgs__msg__OrbTestMediumQueuePoll)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__OrbTestMediumQueuePoll * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__OrbTestMediumQueuePoll)(v.AsCStruct())
+		OrbTestMediumQueuePollTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func OrbTestMediumQueuePoll__Array_to_Go(goSlice []OrbTestMediumQueuePoll, cSlice []COrbTestMediumQueuePoll) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		OrbTestMediumQueuePollTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func OrbTestMediumQueuePoll__Array_to_C(cSlice []COrbTestMediumQueuePoll, goSlice []OrbTestMediumQueuePoll) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__OrbTestMediumQueuePoll)(goSlice[i].AsCStruct())
+		OrbTestMediumQueuePollTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

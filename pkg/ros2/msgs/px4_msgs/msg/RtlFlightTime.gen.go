@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/RtlFlightTime", &RtlFlightTime{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/RtlFlightTime", RtlFlightTimeTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewRtlFlightTime
@@ -47,40 +47,54 @@ type RtlFlightTime struct {
 // NewRtlFlightTime creates a new RtlFlightTime with default values.
 func NewRtlFlightTime() *RtlFlightTime {
 	self := RtlFlightTime{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *RtlFlightTime) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *RtlFlightTime) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__RtlFlightTime())
-}
-func (t *RtlFlightTime) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__RtlFlightTime
-	return (unsafe.Pointer)(C.px4_msgs__msg__RtlFlightTime__create())
-}
-func (t *RtlFlightTime) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__RtlFlightTime__destroy((*C.px4_msgs__msg__RtlFlightTime)(pointer_to_free))
-}
-func (t *RtlFlightTime) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__RtlFlightTime)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.rtl_time_s = C.float(t.RtlTimeS)
-	mem.rtl_limit_fraction = C.float(t.RtlLimitFraction)
-	return unsafe.Pointer(mem)
-}
-func (t *RtlFlightTime) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__RtlFlightTime)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.RtlTimeS = float32(mem.rtl_time_s)
-	t.RtlLimitFraction = float32(mem.rtl_limit_fraction)
-}
-func (t *RtlFlightTime) Clone() ros2types.ROS2Msg {
+func (t *RtlFlightTime) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *RtlFlightTime) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var RtlFlightTimeTypeSupport types.MessageTypeSupport = _RtlFlightTimeTypeSupport{}
+
+type _RtlFlightTimeTypeSupport struct{}
+
+func (t _RtlFlightTimeTypeSupport) New() types.Message {
+	return NewRtlFlightTime()
+}
+
+func (t _RtlFlightTimeTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__RtlFlightTime
+	return (unsafe.Pointer)(C.px4_msgs__msg__RtlFlightTime__create())
+}
+
+func (t _RtlFlightTimeTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__RtlFlightTime__destroy((*C.px4_msgs__msg__RtlFlightTime)(pointer_to_free))
+}
+
+func (t _RtlFlightTimeTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*RtlFlightTime)
+	mem := (*C.px4_msgs__msg__RtlFlightTime)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.rtl_time_s = C.float(m.RtlTimeS)
+	mem.rtl_limit_fraction = C.float(m.RtlLimitFraction)
+}
+
+func (t _RtlFlightTimeTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*RtlFlightTime)
+	mem := (*C.px4_msgs__msg__RtlFlightTime)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.RtlTimeS = float32(mem.rtl_time_s)
+	m.RtlLimitFraction = float32(mem.rtl_limit_fraction)
+}
+
+func (t _RtlFlightTimeTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__RtlFlightTime())
 }
 
 type CRtlFlightTime = C.px4_msgs__msg__RtlFlightTime
@@ -95,8 +109,7 @@ func RtlFlightTime__Sequence_to_Go(goSlice *[]RtlFlightTime, cSlice CRtlFlightTi
 		cIdx := (*C.px4_msgs__msg__RtlFlightTime__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__RtlFlightTime * uintptr(i)),
 		))
-		(*goSlice)[i] = RtlFlightTime{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		RtlFlightTimeTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func RtlFlightTime__Sequence_to_C(cSlice *CRtlFlightTime__Sequence, goSlice []RtlFlightTime) {
@@ -111,18 +124,16 @@ func RtlFlightTime__Sequence_to_C(cSlice *CRtlFlightTime__Sequence, goSlice []Rt
 		cIdx := (*C.px4_msgs__msg__RtlFlightTime)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__RtlFlightTime * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__RtlFlightTime)(v.AsCStruct())
+		RtlFlightTimeTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func RtlFlightTime__Array_to_Go(goSlice []RtlFlightTime, cSlice []CRtlFlightTime) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		RtlFlightTimeTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func RtlFlightTime__Array_to_C(cSlice []CRtlFlightTime, goSlice []RtlFlightTime) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__RtlFlightTime)(goSlice[i].AsCStruct())
+		RtlFlightTimeTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

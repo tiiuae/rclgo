@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/TransponderReport", &TransponderReport{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/TransponderReport", TransponderReportTypeSupport)
 }
 const (
 	TransponderReport_PX4_ADSB_FLAGS_VALID_COORDS uint16 = 1// ADSB flags
@@ -91,68 +91,82 @@ type TransponderReport struct {
 // NewTransponderReport creates a new TransponderReport with default values.
 func NewTransponderReport() *TransponderReport {
 	self := TransponderReport{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *TransponderReport) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *TransponderReport) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__TransponderReport())
-}
-func (t *TransponderReport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__TransponderReport
-	return (unsafe.Pointer)(C.px4_msgs__msg__TransponderReport__create())
-}
-func (t *TransponderReport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__TransponderReport__destroy((*C.px4_msgs__msg__TransponderReport)(pointer_to_free))
-}
-func (t *TransponderReport) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__TransponderReport)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.icao_address = C.uint32_t(t.IcaoAddress)
-	mem.lat = C.double(t.Lat)
-	mem.lon = C.double(t.Lon)
-	mem.altitude_type = C.uint8_t(t.AltitudeType)
-	mem.altitude = C.float(t.Altitude)
-	mem.heading = C.float(t.Heading)
-	mem.hor_velocity = C.float(t.HorVelocity)
-	mem.ver_velocity = C.float(t.VerVelocity)
-	cSlice_callsign := mem.callsign[:]
-	rosidl_runtime_c.Char__Array_to_C(*(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_callsign)), t.Callsign[:])
-	mem.emitter_type = C.uint8_t(t.EmitterType)
-	mem.tslc = C.uint8_t(t.Tslc)
-	mem.flags = C.uint16_t(t.Flags)
-	mem.squawk = C.uint16_t(t.Squawk)
-	cSlice_uas_id := mem.uas_id[:]
-	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_uas_id)), t.UasId[:])
-	return unsafe.Pointer(mem)
-}
-func (t *TransponderReport) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__TransponderReport)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.IcaoAddress = uint32(mem.icao_address)
-	t.Lat = float64(mem.lat)
-	t.Lon = float64(mem.lon)
-	t.AltitudeType = uint8(mem.altitude_type)
-	t.Altitude = float32(mem.altitude)
-	t.Heading = float32(mem.heading)
-	t.HorVelocity = float32(mem.hor_velocity)
-	t.VerVelocity = float32(mem.ver_velocity)
-	cSlice_callsign := mem.callsign[:]
-	rosidl_runtime_c.Char__Array_to_Go(t.Callsign[:], *(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_callsign)))
-	t.EmitterType = uint8(mem.emitter_type)
-	t.Tslc = uint8(mem.tslc)
-	t.Flags = uint16(mem.flags)
-	t.Squawk = uint16(mem.squawk)
-	cSlice_uas_id := mem.uas_id[:]
-	rosidl_runtime_c.Uint8__Array_to_Go(t.UasId[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_uas_id)))
-}
-func (t *TransponderReport) Clone() ros2types.ROS2Msg {
+func (t *TransponderReport) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *TransponderReport) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TransponderReportTypeSupport types.MessageTypeSupport = _TransponderReportTypeSupport{}
+
+type _TransponderReportTypeSupport struct{}
+
+func (t _TransponderReportTypeSupport) New() types.Message {
+	return NewTransponderReport()
+}
+
+func (t _TransponderReportTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__TransponderReport
+	return (unsafe.Pointer)(C.px4_msgs__msg__TransponderReport__create())
+}
+
+func (t _TransponderReportTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__TransponderReport__destroy((*C.px4_msgs__msg__TransponderReport)(pointer_to_free))
+}
+
+func (t _TransponderReportTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*TransponderReport)
+	mem := (*C.px4_msgs__msg__TransponderReport)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.icao_address = C.uint32_t(m.IcaoAddress)
+	mem.lat = C.double(m.Lat)
+	mem.lon = C.double(m.Lon)
+	mem.altitude_type = C.uint8_t(m.AltitudeType)
+	mem.altitude = C.float(m.Altitude)
+	mem.heading = C.float(m.Heading)
+	mem.hor_velocity = C.float(m.HorVelocity)
+	mem.ver_velocity = C.float(m.VerVelocity)
+	cSlice_callsign := mem.callsign[:]
+	rosidl_runtime_c.Char__Array_to_C(*(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_callsign)), m.Callsign[:])
+	mem.emitter_type = C.uint8_t(m.EmitterType)
+	mem.tslc = C.uint8_t(m.Tslc)
+	mem.flags = C.uint16_t(m.Flags)
+	mem.squawk = C.uint16_t(m.Squawk)
+	cSlice_uas_id := mem.uas_id[:]
+	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_uas_id)), m.UasId[:])
+}
+
+func (t _TransponderReportTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*TransponderReport)
+	mem := (*C.px4_msgs__msg__TransponderReport)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.IcaoAddress = uint32(mem.icao_address)
+	m.Lat = float64(mem.lat)
+	m.Lon = float64(mem.lon)
+	m.AltitudeType = uint8(mem.altitude_type)
+	m.Altitude = float32(mem.altitude)
+	m.Heading = float32(mem.heading)
+	m.HorVelocity = float32(mem.hor_velocity)
+	m.VerVelocity = float32(mem.ver_velocity)
+	cSlice_callsign := mem.callsign[:]
+	rosidl_runtime_c.Char__Array_to_Go(m.Callsign[:], *(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_callsign)))
+	m.EmitterType = uint8(mem.emitter_type)
+	m.Tslc = uint8(mem.tslc)
+	m.Flags = uint16(mem.flags)
+	m.Squawk = uint16(mem.squawk)
+	cSlice_uas_id := mem.uas_id[:]
+	rosidl_runtime_c.Uint8__Array_to_Go(m.UasId[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_uas_id)))
+}
+
+func (t _TransponderReportTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__TransponderReport())
 }
 
 type CTransponderReport = C.px4_msgs__msg__TransponderReport
@@ -167,8 +181,7 @@ func TransponderReport__Sequence_to_Go(goSlice *[]TransponderReport, cSlice CTra
 		cIdx := (*C.px4_msgs__msg__TransponderReport__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__TransponderReport * uintptr(i)),
 		))
-		(*goSlice)[i] = TransponderReport{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TransponderReportTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func TransponderReport__Sequence_to_C(cSlice *CTransponderReport__Sequence, goSlice []TransponderReport) {
@@ -183,18 +196,16 @@ func TransponderReport__Sequence_to_C(cSlice *CTransponderReport__Sequence, goSl
 		cIdx := (*C.px4_msgs__msg__TransponderReport)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__TransponderReport * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__TransponderReport)(v.AsCStruct())
+		TransponderReportTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func TransponderReport__Array_to_Go(goSlice []TransponderReport, cSlice []CTransponderReport) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TransponderReportTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func TransponderReport__Array_to_C(cSlice []CTransponderReport, goSlice []TransponderReport) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__TransponderReport)(goSlice[i].AsCStruct())
+		TransponderReportTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

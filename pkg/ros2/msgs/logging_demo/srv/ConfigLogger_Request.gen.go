@@ -15,7 +15,7 @@ package logging_demo_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,53 +34,65 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("logging_demo/ConfigLogger_Request", &ConfigLogger_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("logging_demo/ConfigLogger_Request", ConfigLogger_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewConfigLogger_Request
 // function instead.
 type ConfigLogger_Request struct {
-	LoggerName rosidl_runtime_c.String `yaml:"logger_name"`
-	Level rosidl_runtime_c.String `yaml:"level"`
+	LoggerName string `yaml:"logger_name"`
+	Level string `yaml:"level"`
 }
 
 // NewConfigLogger_Request creates a new ConfigLogger_Request with default values.
 func NewConfigLogger_Request() *ConfigLogger_Request {
 	self := ConfigLogger_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *ConfigLogger_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.LoggerName.SetDefaults("")
-	t.Level.SetDefaults("")
-	
-	return t
-}
-
-func (t *ConfigLogger_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__logging_demo__srv__ConfigLogger_Request())
-}
-func (t *ConfigLogger_Request) PrepareMemory() unsafe.Pointer { //returns *C.logging_demo__srv__ConfigLogger_Request
-	return (unsafe.Pointer)(C.logging_demo__srv__ConfigLogger_Request__create())
-}
-func (t *ConfigLogger_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.logging_demo__srv__ConfigLogger_Request__destroy((*C.logging_demo__srv__ConfigLogger_Request)(pointer_to_free))
-}
-func (t *ConfigLogger_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.logging_demo__srv__ConfigLogger_Request)(t.PrepareMemory())
-	mem.logger_name = *(*C.rosidl_runtime_c__String)(t.LoggerName.AsCStruct())
-	mem.level = *(*C.rosidl_runtime_c__String)(t.Level.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *ConfigLogger_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.logging_demo__srv__ConfigLogger_Request)(ros2_message_buffer)
-	t.LoggerName.AsGoStruct(unsafe.Pointer(&mem.logger_name))
-	t.Level.AsGoStruct(unsafe.Pointer(&mem.level))
-}
-func (t *ConfigLogger_Request) Clone() ros2types.ROS2Msg {
+func (t *ConfigLogger_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *ConfigLogger_Request) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ConfigLogger_RequestTypeSupport types.MessageTypeSupport = _ConfigLogger_RequestTypeSupport{}
+
+type _ConfigLogger_RequestTypeSupport struct{}
+
+func (t _ConfigLogger_RequestTypeSupport) New() types.Message {
+	return NewConfigLogger_Request()
+}
+
+func (t _ConfigLogger_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.logging_demo__srv__ConfigLogger_Request
+	return (unsafe.Pointer)(C.logging_demo__srv__ConfigLogger_Request__create())
+}
+
+func (t _ConfigLogger_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.logging_demo__srv__ConfigLogger_Request__destroy((*C.logging_demo__srv__ConfigLogger_Request)(pointer_to_free))
+}
+
+func (t _ConfigLogger_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*ConfigLogger_Request)
+	mem := (*C.logging_demo__srv__ConfigLogger_Request)(dst)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.logger_name), m.LoggerName)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.level), m.Level)
+}
+
+func (t _ConfigLogger_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*ConfigLogger_Request)
+	mem := (*C.logging_demo__srv__ConfigLogger_Request)(ros2_message_buffer)
+	rosidl_runtime_c.StringAsGoStruct(&m.LoggerName, unsafe.Pointer(&mem.logger_name))
+	rosidl_runtime_c.StringAsGoStruct(&m.Level, unsafe.Pointer(&mem.level))
+}
+
+func (t _ConfigLogger_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__logging_demo__srv__ConfigLogger_Request())
 }
 
 type CConfigLogger_Request = C.logging_demo__srv__ConfigLogger_Request
@@ -95,8 +107,7 @@ func ConfigLogger_Request__Sequence_to_Go(goSlice *[]ConfigLogger_Request, cSlic
 		cIdx := (*C.logging_demo__srv__ConfigLogger_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_logging_demo__srv__ConfigLogger_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = ConfigLogger_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ConfigLogger_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func ConfigLogger_Request__Sequence_to_C(cSlice *CConfigLogger_Request__Sequence, goSlice []ConfigLogger_Request) {
@@ -111,18 +122,16 @@ func ConfigLogger_Request__Sequence_to_C(cSlice *CConfigLogger_Request__Sequence
 		cIdx := (*C.logging_demo__srv__ConfigLogger_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_logging_demo__srv__ConfigLogger_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.logging_demo__srv__ConfigLogger_Request)(v.AsCStruct())
+		ConfigLogger_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func ConfigLogger_Request__Array_to_Go(goSlice []ConfigLogger_Request, cSlice []CConfigLogger_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ConfigLogger_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func ConfigLogger_Request__Array_to_C(cSlice []CConfigLogger_Request, goSlice []ConfigLogger_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.logging_demo__srv__ConfigLogger_Request)(goSlice[i].AsCStruct())
+		ConfigLogger_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

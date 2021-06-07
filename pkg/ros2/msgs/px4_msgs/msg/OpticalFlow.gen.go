@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/OpticalFlow", &OpticalFlow{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/OpticalFlow", OpticalFlowTypeSupport)
 }
 const (
 	OpticalFlow_MODE_UNKNOWN uint8 = 0
@@ -67,68 +67,82 @@ type OpticalFlow struct {
 // NewOpticalFlow creates a new OpticalFlow with default values.
 func NewOpticalFlow() *OpticalFlow {
 	self := OpticalFlow{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *OpticalFlow) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *OpticalFlow) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__OpticalFlow())
-}
-func (t *OpticalFlow) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__OpticalFlow
-	return (unsafe.Pointer)(C.px4_msgs__msg__OpticalFlow__create())
-}
-func (t *OpticalFlow) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__OpticalFlow__destroy((*C.px4_msgs__msg__OpticalFlow)(pointer_to_free))
-}
-func (t *OpticalFlow) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__OpticalFlow)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.sensor_id = C.uint8_t(t.SensorId)
-	mem.pixel_flow_x_integral = C.float(t.PixelFlowXIntegral)
-	mem.pixel_flow_y_integral = C.float(t.PixelFlowYIntegral)
-	mem.gyro_x_rate_integral = C.float(t.GyroXRateIntegral)
-	mem.gyro_y_rate_integral = C.float(t.GyroYRateIntegral)
-	mem.gyro_z_rate_integral = C.float(t.GyroZRateIntegral)
-	mem.ground_distance_m = C.float(t.GroundDistanceM)
-	mem.integration_timespan = C.uint32_t(t.IntegrationTimespan)
-	mem.time_since_last_sonar_update = C.uint32_t(t.TimeSinceLastSonarUpdate)
-	mem.frame_count_since_last_readout = C.uint16_t(t.FrameCountSinceLastReadout)
-	mem.gyro_temperature = C.int16_t(t.GyroTemperature)
-	mem.quality = C.uint8_t(t.Quality)
-	mem.max_flow_rate = C.float(t.MaxFlowRate)
-	mem.min_ground_distance = C.float(t.MinGroundDistance)
-	mem.max_ground_distance = C.float(t.MaxGroundDistance)
-	mem.mode = C.uint8_t(t.Mode)
-	return unsafe.Pointer(mem)
-}
-func (t *OpticalFlow) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__OpticalFlow)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.SensorId = uint8(mem.sensor_id)
-	t.PixelFlowXIntegral = float32(mem.pixel_flow_x_integral)
-	t.PixelFlowYIntegral = float32(mem.pixel_flow_y_integral)
-	t.GyroXRateIntegral = float32(mem.gyro_x_rate_integral)
-	t.GyroYRateIntegral = float32(mem.gyro_y_rate_integral)
-	t.GyroZRateIntegral = float32(mem.gyro_z_rate_integral)
-	t.GroundDistanceM = float32(mem.ground_distance_m)
-	t.IntegrationTimespan = uint32(mem.integration_timespan)
-	t.TimeSinceLastSonarUpdate = uint32(mem.time_since_last_sonar_update)
-	t.FrameCountSinceLastReadout = uint16(mem.frame_count_since_last_readout)
-	t.GyroTemperature = int16(mem.gyro_temperature)
-	t.Quality = uint8(mem.quality)
-	t.MaxFlowRate = float32(mem.max_flow_rate)
-	t.MinGroundDistance = float32(mem.min_ground_distance)
-	t.MaxGroundDistance = float32(mem.max_ground_distance)
-	t.Mode = uint8(mem.mode)
-}
-func (t *OpticalFlow) Clone() ros2types.ROS2Msg {
+func (t *OpticalFlow) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *OpticalFlow) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var OpticalFlowTypeSupport types.MessageTypeSupport = _OpticalFlowTypeSupport{}
+
+type _OpticalFlowTypeSupport struct{}
+
+func (t _OpticalFlowTypeSupport) New() types.Message {
+	return NewOpticalFlow()
+}
+
+func (t _OpticalFlowTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__OpticalFlow
+	return (unsafe.Pointer)(C.px4_msgs__msg__OpticalFlow__create())
+}
+
+func (t _OpticalFlowTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__OpticalFlow__destroy((*C.px4_msgs__msg__OpticalFlow)(pointer_to_free))
+}
+
+func (t _OpticalFlowTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*OpticalFlow)
+	mem := (*C.px4_msgs__msg__OpticalFlow)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.sensor_id = C.uint8_t(m.SensorId)
+	mem.pixel_flow_x_integral = C.float(m.PixelFlowXIntegral)
+	mem.pixel_flow_y_integral = C.float(m.PixelFlowYIntegral)
+	mem.gyro_x_rate_integral = C.float(m.GyroXRateIntegral)
+	mem.gyro_y_rate_integral = C.float(m.GyroYRateIntegral)
+	mem.gyro_z_rate_integral = C.float(m.GyroZRateIntegral)
+	mem.ground_distance_m = C.float(m.GroundDistanceM)
+	mem.integration_timespan = C.uint32_t(m.IntegrationTimespan)
+	mem.time_since_last_sonar_update = C.uint32_t(m.TimeSinceLastSonarUpdate)
+	mem.frame_count_since_last_readout = C.uint16_t(m.FrameCountSinceLastReadout)
+	mem.gyro_temperature = C.int16_t(m.GyroTemperature)
+	mem.quality = C.uint8_t(m.Quality)
+	mem.max_flow_rate = C.float(m.MaxFlowRate)
+	mem.min_ground_distance = C.float(m.MinGroundDistance)
+	mem.max_ground_distance = C.float(m.MaxGroundDistance)
+	mem.mode = C.uint8_t(m.Mode)
+}
+
+func (t _OpticalFlowTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*OpticalFlow)
+	mem := (*C.px4_msgs__msg__OpticalFlow)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.SensorId = uint8(mem.sensor_id)
+	m.PixelFlowXIntegral = float32(mem.pixel_flow_x_integral)
+	m.PixelFlowYIntegral = float32(mem.pixel_flow_y_integral)
+	m.GyroXRateIntegral = float32(mem.gyro_x_rate_integral)
+	m.GyroYRateIntegral = float32(mem.gyro_y_rate_integral)
+	m.GyroZRateIntegral = float32(mem.gyro_z_rate_integral)
+	m.GroundDistanceM = float32(mem.ground_distance_m)
+	m.IntegrationTimespan = uint32(mem.integration_timespan)
+	m.TimeSinceLastSonarUpdate = uint32(mem.time_since_last_sonar_update)
+	m.FrameCountSinceLastReadout = uint16(mem.frame_count_since_last_readout)
+	m.GyroTemperature = int16(mem.gyro_temperature)
+	m.Quality = uint8(mem.quality)
+	m.MaxFlowRate = float32(mem.max_flow_rate)
+	m.MinGroundDistance = float32(mem.min_ground_distance)
+	m.MaxGroundDistance = float32(mem.max_ground_distance)
+	m.Mode = uint8(mem.mode)
+}
+
+func (t _OpticalFlowTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__OpticalFlow())
 }
 
 type COpticalFlow = C.px4_msgs__msg__OpticalFlow
@@ -143,8 +157,7 @@ func OpticalFlow__Sequence_to_Go(goSlice *[]OpticalFlow, cSlice COpticalFlow__Se
 		cIdx := (*C.px4_msgs__msg__OpticalFlow__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__OpticalFlow * uintptr(i)),
 		))
-		(*goSlice)[i] = OpticalFlow{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		OpticalFlowTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func OpticalFlow__Sequence_to_C(cSlice *COpticalFlow__Sequence, goSlice []OpticalFlow) {
@@ -159,18 +172,16 @@ func OpticalFlow__Sequence_to_C(cSlice *COpticalFlow__Sequence, goSlice []Optica
 		cIdx := (*C.px4_msgs__msg__OpticalFlow)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__OpticalFlow * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__OpticalFlow)(v.AsCStruct())
+		OpticalFlowTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func OpticalFlow__Array_to_Go(goSlice []OpticalFlow, cSlice []COpticalFlow) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		OpticalFlowTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func OpticalFlow__Array_to_C(cSlice []COpticalFlow, goSlice []OpticalFlow) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__OpticalFlow)(goSlice[i].AsCStruct())
+		OpticalFlowTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

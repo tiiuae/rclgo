@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleAirData", &VehicleAirData{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleAirData", VehicleAirDataTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewVehicleAirData
@@ -51,48 +51,62 @@ type VehicleAirData struct {
 // NewVehicleAirData creates a new VehicleAirData with default values.
 func NewVehicleAirData() *VehicleAirData {
 	self := VehicleAirData{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *VehicleAirData) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *VehicleAirData) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleAirData())
-}
-func (t *VehicleAirData) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleAirData
-	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleAirData__create())
-}
-func (t *VehicleAirData) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__VehicleAirData__destroy((*C.px4_msgs__msg__VehicleAirData)(pointer_to_free))
-}
-func (t *VehicleAirData) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__VehicleAirData)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	mem.baro_device_id = C.uint32_t(t.BaroDeviceId)
-	mem.baro_alt_meter = C.float(t.BaroAltMeter)
-	mem.baro_temp_celcius = C.float(t.BaroTempCelcius)
-	mem.baro_pressure_pa = C.float(t.BaroPressurePa)
-	mem.rho = C.float(t.Rho)
-	return unsafe.Pointer(mem)
-}
-func (t *VehicleAirData) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__VehicleAirData)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	t.BaroDeviceId = uint32(mem.baro_device_id)
-	t.BaroAltMeter = float32(mem.baro_alt_meter)
-	t.BaroTempCelcius = float32(mem.baro_temp_celcius)
-	t.BaroPressurePa = float32(mem.baro_pressure_pa)
-	t.Rho = float32(mem.rho)
-}
-func (t *VehicleAirData) Clone() ros2types.ROS2Msg {
+func (t *VehicleAirData) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *VehicleAirData) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VehicleAirDataTypeSupport types.MessageTypeSupport = _VehicleAirDataTypeSupport{}
+
+type _VehicleAirDataTypeSupport struct{}
+
+func (t _VehicleAirDataTypeSupport) New() types.Message {
+	return NewVehicleAirData()
+}
+
+func (t _VehicleAirDataTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleAirData
+	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleAirData__create())
+}
+
+func (t _VehicleAirDataTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__VehicleAirData__destroy((*C.px4_msgs__msg__VehicleAirData)(pointer_to_free))
+}
+
+func (t _VehicleAirDataTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*VehicleAirData)
+	mem := (*C.px4_msgs__msg__VehicleAirData)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	mem.baro_device_id = C.uint32_t(m.BaroDeviceId)
+	mem.baro_alt_meter = C.float(m.BaroAltMeter)
+	mem.baro_temp_celcius = C.float(m.BaroTempCelcius)
+	mem.baro_pressure_pa = C.float(m.BaroPressurePa)
+	mem.rho = C.float(m.Rho)
+}
+
+func (t _VehicleAirDataTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*VehicleAirData)
+	mem := (*C.px4_msgs__msg__VehicleAirData)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	m.BaroDeviceId = uint32(mem.baro_device_id)
+	m.BaroAltMeter = float32(mem.baro_alt_meter)
+	m.BaroTempCelcius = float32(mem.baro_temp_celcius)
+	m.BaroPressurePa = float32(mem.baro_pressure_pa)
+	m.Rho = float32(mem.rho)
+}
+
+func (t _VehicleAirDataTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleAirData())
 }
 
 type CVehicleAirData = C.px4_msgs__msg__VehicleAirData
@@ -107,8 +121,7 @@ func VehicleAirData__Sequence_to_Go(goSlice *[]VehicleAirData, cSlice CVehicleAi
 		cIdx := (*C.px4_msgs__msg__VehicleAirData__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleAirData * uintptr(i)),
 		))
-		(*goSlice)[i] = VehicleAirData{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VehicleAirDataTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func VehicleAirData__Sequence_to_C(cSlice *CVehicleAirData__Sequence, goSlice []VehicleAirData) {
@@ -123,18 +136,16 @@ func VehicleAirData__Sequence_to_C(cSlice *CVehicleAirData__Sequence, goSlice []
 		cIdx := (*C.px4_msgs__msg__VehicleAirData)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleAirData * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__VehicleAirData)(v.AsCStruct())
+		VehicleAirDataTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func VehicleAirData__Array_to_Go(goSlice []VehicleAirData, cSlice []CVehicleAirData) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VehicleAirDataTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func VehicleAirData__Array_to_C(cSlice []CVehicleAirData, goSlice []VehicleAirData) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__VehicleAirData)(goSlice[i].AsCStruct())
+		VehicleAirDataTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

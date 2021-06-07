@@ -15,7 +15,7 @@ package nav_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
@@ -36,7 +36,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("nav_msgs/OccupancyGrid", &OccupancyGrid{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("nav_msgs/OccupancyGrid", OccupancyGridTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewOccupancyGrid
@@ -50,42 +50,56 @@ type OccupancyGrid struct {
 // NewOccupancyGrid creates a new OccupancyGrid with default values.
 func NewOccupancyGrid() *OccupancyGrid {
 	self := OccupancyGrid{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *OccupancyGrid) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.Info.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *OccupancyGrid) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__nav_msgs__msg__OccupancyGrid())
-}
-func (t *OccupancyGrid) PrepareMemory() unsafe.Pointer { //returns *C.nav_msgs__msg__OccupancyGrid
-	return (unsafe.Pointer)(C.nav_msgs__msg__OccupancyGrid__create())
-}
-func (t *OccupancyGrid) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.nav_msgs__msg__OccupancyGrid__destroy((*C.nav_msgs__msg__OccupancyGrid)(pointer_to_free))
-}
-func (t *OccupancyGrid) AsCStruct() unsafe.Pointer {
-	mem := (*C.nav_msgs__msg__OccupancyGrid)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.info = *(*C.nav_msgs__msg__MapMetaData)(t.Info.AsCStruct())
-	rosidl_runtime_c.Int8__Sequence_to_C((*rosidl_runtime_c.CInt8__Sequence)(unsafe.Pointer(&mem.data)), t.Data)
-	return unsafe.Pointer(mem)
-}
-func (t *OccupancyGrid) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.nav_msgs__msg__OccupancyGrid)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.Info.AsGoStruct(unsafe.Pointer(&mem.info))
-	rosidl_runtime_c.Int8__Sequence_to_Go(&t.Data, *(*rosidl_runtime_c.CInt8__Sequence)(unsafe.Pointer(&mem.data)))
-}
-func (t *OccupancyGrid) Clone() ros2types.ROS2Msg {
+func (t *OccupancyGrid) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *OccupancyGrid) SetDefaults() {
+	t.Header.SetDefaults()
+	t.Info.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var OccupancyGridTypeSupport types.MessageTypeSupport = _OccupancyGridTypeSupport{}
+
+type _OccupancyGridTypeSupport struct{}
+
+func (t _OccupancyGridTypeSupport) New() types.Message {
+	return NewOccupancyGrid()
+}
+
+func (t _OccupancyGridTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.nav_msgs__msg__OccupancyGrid
+	return (unsafe.Pointer)(C.nav_msgs__msg__OccupancyGrid__create())
+}
+
+func (t _OccupancyGridTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.nav_msgs__msg__OccupancyGrid__destroy((*C.nav_msgs__msg__OccupancyGrid)(pointer_to_free))
+}
+
+func (t _OccupancyGridTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*OccupancyGrid)
+	mem := (*C.nav_msgs__msg__OccupancyGrid)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	MapMetaDataTypeSupport.AsCStruct(unsafe.Pointer(&mem.info), &m.Info)
+	rosidl_runtime_c.Int8__Sequence_to_C((*rosidl_runtime_c.CInt8__Sequence)(unsafe.Pointer(&mem.data)), m.Data)
+}
+
+func (t _OccupancyGridTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*OccupancyGrid)
+	mem := (*C.nav_msgs__msg__OccupancyGrid)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	MapMetaDataTypeSupport.AsGoStruct(&m.Info, unsafe.Pointer(&mem.info))
+	rosidl_runtime_c.Int8__Sequence_to_Go(&m.Data, *(*rosidl_runtime_c.CInt8__Sequence)(unsafe.Pointer(&mem.data)))
+}
+
+func (t _OccupancyGridTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__nav_msgs__msg__OccupancyGrid())
 }
 
 type COccupancyGrid = C.nav_msgs__msg__OccupancyGrid
@@ -100,8 +114,7 @@ func OccupancyGrid__Sequence_to_Go(goSlice *[]OccupancyGrid, cSlice COccupancyGr
 		cIdx := (*C.nav_msgs__msg__OccupancyGrid__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_nav_msgs__msg__OccupancyGrid * uintptr(i)),
 		))
-		(*goSlice)[i] = OccupancyGrid{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		OccupancyGridTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func OccupancyGrid__Sequence_to_C(cSlice *COccupancyGrid__Sequence, goSlice []OccupancyGrid) {
@@ -116,18 +129,16 @@ func OccupancyGrid__Sequence_to_C(cSlice *COccupancyGrid__Sequence, goSlice []Oc
 		cIdx := (*C.nav_msgs__msg__OccupancyGrid)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_nav_msgs__msg__OccupancyGrid * uintptr(i)),
 		))
-		*cIdx = *(*C.nav_msgs__msg__OccupancyGrid)(v.AsCStruct())
+		OccupancyGridTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func OccupancyGrid__Array_to_Go(goSlice []OccupancyGrid, cSlice []COccupancyGrid) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		OccupancyGridTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func OccupancyGrid__Array_to_C(cSlice []COccupancyGrid, goSlice []OccupancyGrid) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.nav_msgs__msg__OccupancyGrid)(goSlice[i].AsCStruct())
+		OccupancyGridTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

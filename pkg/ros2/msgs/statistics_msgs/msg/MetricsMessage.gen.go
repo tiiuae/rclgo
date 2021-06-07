@@ -15,7 +15,7 @@ package statistics_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	builtin_interfaces_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/builtin_interfaces/msg"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
@@ -36,15 +36,15 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("statistics_msgs/MetricsMessage", &MetricsMessage{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("statistics_msgs/MetricsMessage", MetricsMessageTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewMetricsMessage
 // function instead.
 type MetricsMessage struct {
-	MeasurementSourceName rosidl_runtime_c.String `yaml:"measurement_source_name"`// Name metric measurement source, e.g., node, topic, or process name
-	MetricsSource rosidl_runtime_c.String `yaml:"metrics_source"`// Name of the metric being measured, e.g. cpu_percentage, free_memory_mb, message_age, etc.
-	Unit rosidl_runtime_c.String `yaml:"unit"`// Unit of measure of the metric, e.g. percent, mb, seconds, etc.
+	MeasurementSourceName string `yaml:"measurement_source_name"`// Name metric measurement source, e.g., node, topic, or process name
+	MetricsSource string `yaml:"metrics_source"`// Name of the metric being measured, e.g. cpu_percentage, free_memory_mb, message_age, etc.
+	Unit string `yaml:"unit"`// Unit of measure of the metric, e.g. percent, mb, seconds, etc.
 	WindowStart builtin_interfaces_msg.Time `yaml:"window_start"`// Measurement window start time
 	WindowStop builtin_interfaces_msg.Time `yaml:"window_stop"`// Measurement window end time
 	Statistics []StatisticDataPoint `yaml:"statistics"`// A list of statistics data point, defined in StatisticDataPoint.msg
@@ -53,51 +53,62 @@ type MetricsMessage struct {
 // NewMetricsMessage creates a new MetricsMessage with default values.
 func NewMetricsMessage() *MetricsMessage {
 	self := MetricsMessage{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *MetricsMessage) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.MeasurementSourceName.SetDefaults("")
-	t.MetricsSource.SetDefaults("")
-	t.Unit.SetDefaults("")
-	t.WindowStart.SetDefaults(nil)
-	t.WindowStop.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *MetricsMessage) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__statistics_msgs__msg__MetricsMessage())
-}
-func (t *MetricsMessage) PrepareMemory() unsafe.Pointer { //returns *C.statistics_msgs__msg__MetricsMessage
-	return (unsafe.Pointer)(C.statistics_msgs__msg__MetricsMessage__create())
-}
-func (t *MetricsMessage) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.statistics_msgs__msg__MetricsMessage__destroy((*C.statistics_msgs__msg__MetricsMessage)(pointer_to_free))
-}
-func (t *MetricsMessage) AsCStruct() unsafe.Pointer {
-	mem := (*C.statistics_msgs__msg__MetricsMessage)(t.PrepareMemory())
-	mem.measurement_source_name = *(*C.rosidl_runtime_c__String)(t.MeasurementSourceName.AsCStruct())
-	mem.metrics_source = *(*C.rosidl_runtime_c__String)(t.MetricsSource.AsCStruct())
-	mem.unit = *(*C.rosidl_runtime_c__String)(t.Unit.AsCStruct())
-	mem.window_start = *(*C.builtin_interfaces__msg__Time)(t.WindowStart.AsCStruct())
-	mem.window_stop = *(*C.builtin_interfaces__msg__Time)(t.WindowStop.AsCStruct())
-	StatisticDataPoint__Sequence_to_C(&mem.statistics, t.Statistics)
-	return unsafe.Pointer(mem)
-}
-func (t *MetricsMessage) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.statistics_msgs__msg__MetricsMessage)(ros2_message_buffer)
-	t.MeasurementSourceName.AsGoStruct(unsafe.Pointer(&mem.measurement_source_name))
-	t.MetricsSource.AsGoStruct(unsafe.Pointer(&mem.metrics_source))
-	t.Unit.AsGoStruct(unsafe.Pointer(&mem.unit))
-	t.WindowStart.AsGoStruct(unsafe.Pointer(&mem.window_start))
-	t.WindowStop.AsGoStruct(unsafe.Pointer(&mem.window_stop))
-	StatisticDataPoint__Sequence_to_Go(&t.Statistics, mem.statistics)
-}
-func (t *MetricsMessage) Clone() ros2types.ROS2Msg {
+func (t *MetricsMessage) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *MetricsMessage) SetDefaults() {
+	t.WindowStart.SetDefaults()
+	t.WindowStop.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var MetricsMessageTypeSupport types.MessageTypeSupport = _MetricsMessageTypeSupport{}
+
+type _MetricsMessageTypeSupport struct{}
+
+func (t _MetricsMessageTypeSupport) New() types.Message {
+	return NewMetricsMessage()
+}
+
+func (t _MetricsMessageTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.statistics_msgs__msg__MetricsMessage
+	return (unsafe.Pointer)(C.statistics_msgs__msg__MetricsMessage__create())
+}
+
+func (t _MetricsMessageTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.statistics_msgs__msg__MetricsMessage__destroy((*C.statistics_msgs__msg__MetricsMessage)(pointer_to_free))
+}
+
+func (t _MetricsMessageTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*MetricsMessage)
+	mem := (*C.statistics_msgs__msg__MetricsMessage)(dst)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.measurement_source_name), m.MeasurementSourceName)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.metrics_source), m.MetricsSource)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.unit), m.Unit)
+	builtin_interfaces_msg.TimeTypeSupport.AsCStruct(unsafe.Pointer(&mem.window_start), &m.WindowStart)
+	builtin_interfaces_msg.TimeTypeSupport.AsCStruct(unsafe.Pointer(&mem.window_stop), &m.WindowStop)
+	StatisticDataPoint__Sequence_to_C(&mem.statistics, m.Statistics)
+}
+
+func (t _MetricsMessageTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*MetricsMessage)
+	mem := (*C.statistics_msgs__msg__MetricsMessage)(ros2_message_buffer)
+	rosidl_runtime_c.StringAsGoStruct(&m.MeasurementSourceName, unsafe.Pointer(&mem.measurement_source_name))
+	rosidl_runtime_c.StringAsGoStruct(&m.MetricsSource, unsafe.Pointer(&mem.metrics_source))
+	rosidl_runtime_c.StringAsGoStruct(&m.Unit, unsafe.Pointer(&mem.unit))
+	builtin_interfaces_msg.TimeTypeSupport.AsGoStruct(&m.WindowStart, unsafe.Pointer(&mem.window_start))
+	builtin_interfaces_msg.TimeTypeSupport.AsGoStruct(&m.WindowStop, unsafe.Pointer(&mem.window_stop))
+	StatisticDataPoint__Sequence_to_Go(&m.Statistics, mem.statistics)
+}
+
+func (t _MetricsMessageTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__statistics_msgs__msg__MetricsMessage())
 }
 
 type CMetricsMessage = C.statistics_msgs__msg__MetricsMessage
@@ -112,8 +123,7 @@ func MetricsMessage__Sequence_to_Go(goSlice *[]MetricsMessage, cSlice CMetricsMe
 		cIdx := (*C.statistics_msgs__msg__MetricsMessage__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_statistics_msgs__msg__MetricsMessage * uintptr(i)),
 		))
-		(*goSlice)[i] = MetricsMessage{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		MetricsMessageTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func MetricsMessage__Sequence_to_C(cSlice *CMetricsMessage__Sequence, goSlice []MetricsMessage) {
@@ -128,18 +138,16 @@ func MetricsMessage__Sequence_to_C(cSlice *CMetricsMessage__Sequence, goSlice []
 		cIdx := (*C.statistics_msgs__msg__MetricsMessage)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_statistics_msgs__msg__MetricsMessage * uintptr(i)),
 		))
-		*cIdx = *(*C.statistics_msgs__msg__MetricsMessage)(v.AsCStruct())
+		MetricsMessageTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func MetricsMessage__Array_to_Go(goSlice []MetricsMessage, cSlice []CMetricsMessage) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		MetricsMessageTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func MetricsMessage__Array_to_C(cSlice []CMetricsMessage, goSlice []MetricsMessage) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.statistics_msgs__msg__MetricsMessage)(goSlice[i].AsCStruct())
+		MetricsMessageTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

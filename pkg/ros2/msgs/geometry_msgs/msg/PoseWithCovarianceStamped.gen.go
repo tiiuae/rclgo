@@ -15,7 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/PoseWithCovarianceStamped", &PoseWithCovarianceStamped{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/PoseWithCovarianceStamped", PoseWithCovarianceStampedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPoseWithCovarianceStamped
@@ -48,40 +48,54 @@ type PoseWithCovarianceStamped struct {
 // NewPoseWithCovarianceStamped creates a new PoseWithCovarianceStamped with default values.
 func NewPoseWithCovarianceStamped() *PoseWithCovarianceStamped {
 	self := PoseWithCovarianceStamped{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *PoseWithCovarianceStamped) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.Pose.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *PoseWithCovarianceStamped) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__PoseWithCovarianceStamped())
-}
-func (t *PoseWithCovarianceStamped) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__PoseWithCovarianceStamped
-	return (unsafe.Pointer)(C.geometry_msgs__msg__PoseWithCovarianceStamped__create())
-}
-func (t *PoseWithCovarianceStamped) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.geometry_msgs__msg__PoseWithCovarianceStamped__destroy((*C.geometry_msgs__msg__PoseWithCovarianceStamped)(pointer_to_free))
-}
-func (t *PoseWithCovarianceStamped) AsCStruct() unsafe.Pointer {
-	mem := (*C.geometry_msgs__msg__PoseWithCovarianceStamped)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.pose = *(*C.geometry_msgs__msg__PoseWithCovariance)(t.Pose.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *PoseWithCovarianceStamped) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.geometry_msgs__msg__PoseWithCovarianceStamped)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.Pose.AsGoStruct(unsafe.Pointer(&mem.pose))
-}
-func (t *PoseWithCovarianceStamped) Clone() ros2types.ROS2Msg {
+func (t *PoseWithCovarianceStamped) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *PoseWithCovarianceStamped) SetDefaults() {
+	t.Header.SetDefaults()
+	t.Pose.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var PoseWithCovarianceStampedTypeSupport types.MessageTypeSupport = _PoseWithCovarianceStampedTypeSupport{}
+
+type _PoseWithCovarianceStampedTypeSupport struct{}
+
+func (t _PoseWithCovarianceStampedTypeSupport) New() types.Message {
+	return NewPoseWithCovarianceStamped()
+}
+
+func (t _PoseWithCovarianceStampedTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__PoseWithCovarianceStamped
+	return (unsafe.Pointer)(C.geometry_msgs__msg__PoseWithCovarianceStamped__create())
+}
+
+func (t _PoseWithCovarianceStampedTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.geometry_msgs__msg__PoseWithCovarianceStamped__destroy((*C.geometry_msgs__msg__PoseWithCovarianceStamped)(pointer_to_free))
+}
+
+func (t _PoseWithCovarianceStampedTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*PoseWithCovarianceStamped)
+	mem := (*C.geometry_msgs__msg__PoseWithCovarianceStamped)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	PoseWithCovarianceTypeSupport.AsCStruct(unsafe.Pointer(&mem.pose), &m.Pose)
+}
+
+func (t _PoseWithCovarianceStampedTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*PoseWithCovarianceStamped)
+	mem := (*C.geometry_msgs__msg__PoseWithCovarianceStamped)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	PoseWithCovarianceTypeSupport.AsGoStruct(&m.Pose, unsafe.Pointer(&mem.pose))
+}
+
+func (t _PoseWithCovarianceStampedTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__PoseWithCovarianceStamped())
 }
 
 type CPoseWithCovarianceStamped = C.geometry_msgs__msg__PoseWithCovarianceStamped
@@ -96,8 +110,7 @@ func PoseWithCovarianceStamped__Sequence_to_Go(goSlice *[]PoseWithCovarianceStam
 		cIdx := (*C.geometry_msgs__msg__PoseWithCovarianceStamped__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__PoseWithCovarianceStamped * uintptr(i)),
 		))
-		(*goSlice)[i] = PoseWithCovarianceStamped{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		PoseWithCovarianceStampedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func PoseWithCovarianceStamped__Sequence_to_C(cSlice *CPoseWithCovarianceStamped__Sequence, goSlice []PoseWithCovarianceStamped) {
@@ -112,18 +125,16 @@ func PoseWithCovarianceStamped__Sequence_to_C(cSlice *CPoseWithCovarianceStamped
 		cIdx := (*C.geometry_msgs__msg__PoseWithCovarianceStamped)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__PoseWithCovarianceStamped * uintptr(i)),
 		))
-		*cIdx = *(*C.geometry_msgs__msg__PoseWithCovarianceStamped)(v.AsCStruct())
+		PoseWithCovarianceStampedTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func PoseWithCovarianceStamped__Array_to_Go(goSlice []PoseWithCovarianceStamped, cSlice []CPoseWithCovarianceStamped) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		PoseWithCovarianceStampedTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func PoseWithCovarianceStamped__Array_to_C(cSlice []CPoseWithCovarianceStamped, goSlice []PoseWithCovarianceStamped) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.geometry_msgs__msg__PoseWithCovarianceStamped)(goSlice[i].AsCStruct())
+		PoseWithCovarianceStampedTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

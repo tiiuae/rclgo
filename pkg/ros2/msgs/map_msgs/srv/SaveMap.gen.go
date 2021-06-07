@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("map_msgs/SaveMap", SaveMap)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("map_msgs/SaveMap", SaveMapTypeSupport)
 }
 
-type _SaveMap struct {
-	req,resp ros2types.ROS2Msg
+type _SaveMapTypeSupport struct {}
+
+func (s _SaveMapTypeSupport) Request() types.MessageTypeSupport {
+	return SaveMap_RequestTypeSupport
 }
 
-func (s *_SaveMap) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _SaveMapTypeSupport) Response() types.MessageTypeSupport {
+	return SaveMap_ResponseTypeSupport
 }
 
-func (s *_SaveMap) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_SaveMap) TypeSupport() unsafe.Pointer {
+func (s _SaveMapTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__map_msgs__srv__SaveMap())
 }
 
 // Modifying this variable is undefined behavior.
-var SaveMap ros2types.Service = &_SaveMap{
-	req: &SaveMap_Request{},
-	resp: &SaveMap_Response{},
-}
+var SaveMapTypeSupport types.ServiceTypeSupport = _SaveMapTypeSupport{}

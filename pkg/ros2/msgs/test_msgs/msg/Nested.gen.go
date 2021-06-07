@@ -15,7 +15,7 @@ package test_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("test_msgs/Nested", &Nested{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("test_msgs/Nested", NestedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewNested
@@ -45,37 +45,51 @@ type Nested struct {
 // NewNested creates a new Nested with default values.
 func NewNested() *Nested {
 	self := Nested{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Nested) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.BasicTypesValue.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *Nested) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__msg__Nested())
-}
-func (t *Nested) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__msg__Nested
-	return (unsafe.Pointer)(C.test_msgs__msg__Nested__create())
-}
-func (t *Nested) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.test_msgs__msg__Nested__destroy((*C.test_msgs__msg__Nested)(pointer_to_free))
-}
-func (t *Nested) AsCStruct() unsafe.Pointer {
-	mem := (*C.test_msgs__msg__Nested)(t.PrepareMemory())
-	mem.basic_types_value = *(*C.test_msgs__msg__BasicTypes)(t.BasicTypesValue.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *Nested) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.test_msgs__msg__Nested)(ros2_message_buffer)
-	t.BasicTypesValue.AsGoStruct(unsafe.Pointer(&mem.basic_types_value))
-}
-func (t *Nested) Clone() ros2types.ROS2Msg {
+func (t *Nested) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Nested) SetDefaults() {
+	t.BasicTypesValue.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var NestedTypeSupport types.MessageTypeSupport = _NestedTypeSupport{}
+
+type _NestedTypeSupport struct{}
+
+func (t _NestedTypeSupport) New() types.Message {
+	return NewNested()
+}
+
+func (t _NestedTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__msg__Nested
+	return (unsafe.Pointer)(C.test_msgs__msg__Nested__create())
+}
+
+func (t _NestedTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.test_msgs__msg__Nested__destroy((*C.test_msgs__msg__Nested)(pointer_to_free))
+}
+
+func (t _NestedTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Nested)
+	mem := (*C.test_msgs__msg__Nested)(dst)
+	BasicTypesTypeSupport.AsCStruct(unsafe.Pointer(&mem.basic_types_value), &m.BasicTypesValue)
+}
+
+func (t _NestedTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Nested)
+	mem := (*C.test_msgs__msg__Nested)(ros2_message_buffer)
+	BasicTypesTypeSupport.AsGoStruct(&m.BasicTypesValue, unsafe.Pointer(&mem.basic_types_value))
+}
+
+func (t _NestedTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__msg__Nested())
 }
 
 type CNested = C.test_msgs__msg__Nested
@@ -90,8 +104,7 @@ func Nested__Sequence_to_Go(goSlice *[]Nested, cSlice CNested__Sequence) {
 		cIdx := (*C.test_msgs__msg__Nested__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__msg__Nested * uintptr(i)),
 		))
-		(*goSlice)[i] = Nested{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		NestedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Nested__Sequence_to_C(cSlice *CNested__Sequence, goSlice []Nested) {
@@ -106,18 +119,16 @@ func Nested__Sequence_to_C(cSlice *CNested__Sequence, goSlice []Nested) {
 		cIdx := (*C.test_msgs__msg__Nested)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__msg__Nested * uintptr(i)),
 		))
-		*cIdx = *(*C.test_msgs__msg__Nested)(v.AsCStruct())
+		NestedTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Nested__Array_to_Go(goSlice []Nested, cSlice []CNested) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		NestedTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Nested__Array_to_C(cSlice []CNested, goSlice []Nested) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.test_msgs__msg__Nested)(goSlice[i].AsCStruct())
+		NestedTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

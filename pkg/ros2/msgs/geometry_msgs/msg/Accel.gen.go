@@ -15,7 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/Accel", &Accel{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/Accel", AccelTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewAccel
@@ -46,40 +46,54 @@ type Accel struct {
 // NewAccel creates a new Accel with default values.
 func NewAccel() *Accel {
 	self := Accel{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Accel) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Linear.SetDefaults(nil)
-	t.Angular.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *Accel) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__Accel())
-}
-func (t *Accel) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__Accel
-	return (unsafe.Pointer)(C.geometry_msgs__msg__Accel__create())
-}
-func (t *Accel) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.geometry_msgs__msg__Accel__destroy((*C.geometry_msgs__msg__Accel)(pointer_to_free))
-}
-func (t *Accel) AsCStruct() unsafe.Pointer {
-	mem := (*C.geometry_msgs__msg__Accel)(t.PrepareMemory())
-	mem.linear = *(*C.geometry_msgs__msg__Vector3)(t.Linear.AsCStruct())
-	mem.angular = *(*C.geometry_msgs__msg__Vector3)(t.Angular.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *Accel) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.geometry_msgs__msg__Accel)(ros2_message_buffer)
-	t.Linear.AsGoStruct(unsafe.Pointer(&mem.linear))
-	t.Angular.AsGoStruct(unsafe.Pointer(&mem.angular))
-}
-func (t *Accel) Clone() ros2types.ROS2Msg {
+func (t *Accel) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Accel) SetDefaults() {
+	t.Linear.SetDefaults()
+	t.Angular.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var AccelTypeSupport types.MessageTypeSupport = _AccelTypeSupport{}
+
+type _AccelTypeSupport struct{}
+
+func (t _AccelTypeSupport) New() types.Message {
+	return NewAccel()
+}
+
+func (t _AccelTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__Accel
+	return (unsafe.Pointer)(C.geometry_msgs__msg__Accel__create())
+}
+
+func (t _AccelTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.geometry_msgs__msg__Accel__destroy((*C.geometry_msgs__msg__Accel)(pointer_to_free))
+}
+
+func (t _AccelTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Accel)
+	mem := (*C.geometry_msgs__msg__Accel)(dst)
+	Vector3TypeSupport.AsCStruct(unsafe.Pointer(&mem.linear), &m.Linear)
+	Vector3TypeSupport.AsCStruct(unsafe.Pointer(&mem.angular), &m.Angular)
+}
+
+func (t _AccelTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Accel)
+	mem := (*C.geometry_msgs__msg__Accel)(ros2_message_buffer)
+	Vector3TypeSupport.AsGoStruct(&m.Linear, unsafe.Pointer(&mem.linear))
+	Vector3TypeSupport.AsGoStruct(&m.Angular, unsafe.Pointer(&mem.angular))
+}
+
+func (t _AccelTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__Accel())
 }
 
 type CAccel = C.geometry_msgs__msg__Accel
@@ -94,8 +108,7 @@ func Accel__Sequence_to_Go(goSlice *[]Accel, cSlice CAccel__Sequence) {
 		cIdx := (*C.geometry_msgs__msg__Accel__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Accel * uintptr(i)),
 		))
-		(*goSlice)[i] = Accel{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		AccelTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Accel__Sequence_to_C(cSlice *CAccel__Sequence, goSlice []Accel) {
@@ -110,18 +123,16 @@ func Accel__Sequence_to_C(cSlice *CAccel__Sequence, goSlice []Accel) {
 		cIdx := (*C.geometry_msgs__msg__Accel)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Accel * uintptr(i)),
 		))
-		*cIdx = *(*C.geometry_msgs__msg__Accel)(v.AsCStruct())
+		AccelTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Accel__Array_to_Go(goSlice []Accel, cSlice []CAccel) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		AccelTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Accel__Array_to_C(cSlice []CAccel, goSlice []Accel) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.geometry_msgs__msg__Accel)(goSlice[i].AsCStruct())
+		AccelTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

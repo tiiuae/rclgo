@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/UlogStream", &UlogStream{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/UlogStream", UlogStreamTypeSupport)
 }
 const (
 	UlogStream_FLAGS_NEED_ACK uint8 = 1// if set, this message requires to be acked.. flags bitmasks
@@ -55,48 +55,62 @@ type UlogStream struct {
 // NewUlogStream creates a new UlogStream with default values.
 func NewUlogStream() *UlogStream {
 	self := UlogStream{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *UlogStream) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *UlogStream) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__UlogStream())
-}
-func (t *UlogStream) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__UlogStream
-	return (unsafe.Pointer)(C.px4_msgs__msg__UlogStream__create())
-}
-func (t *UlogStream) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__UlogStream__destroy((*C.px4_msgs__msg__UlogStream)(pointer_to_free))
-}
-func (t *UlogStream) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__UlogStream)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.length = C.uint8_t(t.Length)
-	mem.first_message_offset = C.uint8_t(t.FirstMessageOffset)
-	mem.msg_sequence = C.uint16_t(t.MsgSequence)
-	mem.flags = C.uint8_t(t.Flags)
-	cSlice_data := mem.data[:]
-	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_data)), t.Data[:])
-	return unsafe.Pointer(mem)
-}
-func (t *UlogStream) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__UlogStream)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Length = uint8(mem.length)
-	t.FirstMessageOffset = uint8(mem.first_message_offset)
-	t.MsgSequence = uint16(mem.msg_sequence)
-	t.Flags = uint8(mem.flags)
-	cSlice_data := mem.data[:]
-	rosidl_runtime_c.Uint8__Array_to_Go(t.Data[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_data)))
-}
-func (t *UlogStream) Clone() ros2types.ROS2Msg {
+func (t *UlogStream) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *UlogStream) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var UlogStreamTypeSupport types.MessageTypeSupport = _UlogStreamTypeSupport{}
+
+type _UlogStreamTypeSupport struct{}
+
+func (t _UlogStreamTypeSupport) New() types.Message {
+	return NewUlogStream()
+}
+
+func (t _UlogStreamTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__UlogStream
+	return (unsafe.Pointer)(C.px4_msgs__msg__UlogStream__create())
+}
+
+func (t _UlogStreamTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__UlogStream__destroy((*C.px4_msgs__msg__UlogStream)(pointer_to_free))
+}
+
+func (t _UlogStreamTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*UlogStream)
+	mem := (*C.px4_msgs__msg__UlogStream)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.length = C.uint8_t(m.Length)
+	mem.first_message_offset = C.uint8_t(m.FirstMessageOffset)
+	mem.msg_sequence = C.uint16_t(m.MsgSequence)
+	mem.flags = C.uint8_t(m.Flags)
+	cSlice_data := mem.data[:]
+	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_data)), m.Data[:])
+}
+
+func (t _UlogStreamTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*UlogStream)
+	mem := (*C.px4_msgs__msg__UlogStream)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Length = uint8(mem.length)
+	m.FirstMessageOffset = uint8(mem.first_message_offset)
+	m.MsgSequence = uint16(mem.msg_sequence)
+	m.Flags = uint8(mem.flags)
+	cSlice_data := mem.data[:]
+	rosidl_runtime_c.Uint8__Array_to_Go(m.Data[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_data)))
+}
+
+func (t _UlogStreamTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__UlogStream())
 }
 
 type CUlogStream = C.px4_msgs__msg__UlogStream
@@ -111,8 +125,7 @@ func UlogStream__Sequence_to_Go(goSlice *[]UlogStream, cSlice CUlogStream__Seque
 		cIdx := (*C.px4_msgs__msg__UlogStream__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__UlogStream * uintptr(i)),
 		))
-		(*goSlice)[i] = UlogStream{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		UlogStreamTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func UlogStream__Sequence_to_C(cSlice *CUlogStream__Sequence, goSlice []UlogStream) {
@@ -127,18 +140,16 @@ func UlogStream__Sequence_to_C(cSlice *CUlogStream__Sequence, goSlice []UlogStre
 		cIdx := (*C.px4_msgs__msg__UlogStream)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__UlogStream * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__UlogStream)(v.AsCStruct())
+		UlogStreamTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func UlogStream__Array_to_Go(goSlice []UlogStream, cSlice []CUlogStream) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		UlogStreamTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func UlogStream__Array_to_C(cSlice []CUlogStream, goSlice []UlogStream) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__UlogStream)(goSlice[i].AsCStruct())
+		UlogStreamTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/RelativeHumidity", &RelativeHumidity{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/RelativeHumidity", RelativeHumidityTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewRelativeHumidity
@@ -49,41 +49,55 @@ type RelativeHumidity struct {
 // NewRelativeHumidity creates a new RelativeHumidity with default values.
 func NewRelativeHumidity() *RelativeHumidity {
 	self := RelativeHumidity{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *RelativeHumidity) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *RelativeHumidity) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__RelativeHumidity())
-}
-func (t *RelativeHumidity) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__RelativeHumidity
-	return (unsafe.Pointer)(C.sensor_msgs__msg__RelativeHumidity__create())
-}
-func (t *RelativeHumidity) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__msg__RelativeHumidity__destroy((*C.sensor_msgs__msg__RelativeHumidity)(pointer_to_free))
-}
-func (t *RelativeHumidity) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__msg__RelativeHumidity)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.relative_humidity = C.double(t.RelativeHumidity)
-	mem.variance = C.double(t.Variance)
-	return unsafe.Pointer(mem)
-}
-func (t *RelativeHumidity) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__msg__RelativeHumidity)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.RelativeHumidity = float64(mem.relative_humidity)
-	t.Variance = float64(mem.variance)
-}
-func (t *RelativeHumidity) Clone() ros2types.ROS2Msg {
+func (t *RelativeHumidity) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *RelativeHumidity) SetDefaults() {
+	t.Header.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var RelativeHumidityTypeSupport types.MessageTypeSupport = _RelativeHumidityTypeSupport{}
+
+type _RelativeHumidityTypeSupport struct{}
+
+func (t _RelativeHumidityTypeSupport) New() types.Message {
+	return NewRelativeHumidity()
+}
+
+func (t _RelativeHumidityTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__RelativeHumidity
+	return (unsafe.Pointer)(C.sensor_msgs__msg__RelativeHumidity__create())
+}
+
+func (t _RelativeHumidityTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__msg__RelativeHumidity__destroy((*C.sensor_msgs__msg__RelativeHumidity)(pointer_to_free))
+}
+
+func (t _RelativeHumidityTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*RelativeHumidity)
+	mem := (*C.sensor_msgs__msg__RelativeHumidity)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	mem.relative_humidity = C.double(m.RelativeHumidity)
+	mem.variance = C.double(m.Variance)
+}
+
+func (t _RelativeHumidityTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*RelativeHumidity)
+	mem := (*C.sensor_msgs__msg__RelativeHumidity)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	m.RelativeHumidity = float64(mem.relative_humidity)
+	m.Variance = float64(mem.variance)
+}
+
+func (t _RelativeHumidityTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__RelativeHumidity())
 }
 
 type CRelativeHumidity = C.sensor_msgs__msg__RelativeHumidity
@@ -98,8 +112,7 @@ func RelativeHumidity__Sequence_to_Go(goSlice *[]RelativeHumidity, cSlice CRelat
 		cIdx := (*C.sensor_msgs__msg__RelativeHumidity__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__RelativeHumidity * uintptr(i)),
 		))
-		(*goSlice)[i] = RelativeHumidity{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		RelativeHumidityTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func RelativeHumidity__Sequence_to_C(cSlice *CRelativeHumidity__Sequence, goSlice []RelativeHumidity) {
@@ -114,18 +127,16 @@ func RelativeHumidity__Sequence_to_C(cSlice *CRelativeHumidity__Sequence, goSlic
 		cIdx := (*C.sensor_msgs__msg__RelativeHumidity)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__RelativeHumidity * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__msg__RelativeHumidity)(v.AsCStruct())
+		RelativeHumidityTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func RelativeHumidity__Array_to_Go(goSlice []RelativeHumidity, cSlice []CRelativeHumidity) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		RelativeHumidityTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func RelativeHumidity__Array_to_C(cSlice []CRelativeHumidity, goSlice []RelativeHumidity) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__msg__RelativeHumidity)(goSlice[i].AsCStruct())
+		RelativeHumidityTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

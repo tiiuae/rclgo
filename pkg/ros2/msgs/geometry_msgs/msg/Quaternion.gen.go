@@ -15,7 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/Quaternion", &Quaternion{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/Quaternion", QuaternionTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewQuaternion
@@ -48,46 +48,60 @@ type Quaternion struct {
 // NewQuaternion creates a new Quaternion with default values.
 func NewQuaternion() *Quaternion {
 	self := Quaternion{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Quaternion) SetDefaults(d interface{}) ros2types.ROS2Msg {
+func (t *Quaternion) Clone() types.Message {
+	clone := *t
+	return &clone
+}
+
+func (t *Quaternion) SetDefaults() {
 	t.X = 0
 	t.Y = 0
 	t.Z = 0
 	t.W = 1
 	
-	return t
 }
 
-func (t *Quaternion) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__Quaternion())
+// Modifying this variable is undefined behavior.
+var QuaternionTypeSupport types.MessageTypeSupport = _QuaternionTypeSupport{}
+
+type _QuaternionTypeSupport struct{}
+
+func (t _QuaternionTypeSupport) New() types.Message {
+	return NewQuaternion()
 }
-func (t *Quaternion) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__Quaternion
+
+func (t _QuaternionTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__Quaternion
 	return (unsafe.Pointer)(C.geometry_msgs__msg__Quaternion__create())
 }
-func (t *Quaternion) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+
+func (t _QuaternionTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
 	C.geometry_msgs__msg__Quaternion__destroy((*C.geometry_msgs__msg__Quaternion)(pointer_to_free))
 }
-func (t *Quaternion) AsCStruct() unsafe.Pointer {
-	mem := (*C.geometry_msgs__msg__Quaternion)(t.PrepareMemory())
-	mem.x = C.double(t.X)
-	mem.y = C.double(t.Y)
-	mem.z = C.double(t.Z)
-	mem.w = C.double(t.W)
-	return unsafe.Pointer(mem)
+
+func (t _QuaternionTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Quaternion)
+	mem := (*C.geometry_msgs__msg__Quaternion)(dst)
+	mem.x = C.double(m.X)
+	mem.y = C.double(m.Y)
+	mem.z = C.double(m.Z)
+	mem.w = C.double(m.W)
 }
-func (t *Quaternion) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
+
+func (t _QuaternionTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Quaternion)
 	mem := (*C.geometry_msgs__msg__Quaternion)(ros2_message_buffer)
-	t.X = float64(mem.x)
-	t.Y = float64(mem.y)
-	t.Z = float64(mem.z)
-	t.W = float64(mem.w)
+	m.X = float64(mem.x)
+	m.Y = float64(mem.y)
+	m.Z = float64(mem.z)
+	m.W = float64(mem.w)
 }
-func (t *Quaternion) Clone() ros2types.ROS2Msg {
-	clone := *t
-	return &clone
+
+func (t _QuaternionTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__Quaternion())
 }
 
 type CQuaternion = C.geometry_msgs__msg__Quaternion
@@ -102,8 +116,7 @@ func Quaternion__Sequence_to_Go(goSlice *[]Quaternion, cSlice CQuaternion__Seque
 		cIdx := (*C.geometry_msgs__msg__Quaternion__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Quaternion * uintptr(i)),
 		))
-		(*goSlice)[i] = Quaternion{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		QuaternionTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Quaternion__Sequence_to_C(cSlice *CQuaternion__Sequence, goSlice []Quaternion) {
@@ -118,18 +131,16 @@ func Quaternion__Sequence_to_C(cSlice *CQuaternion__Sequence, goSlice []Quaterni
 		cIdx := (*C.geometry_msgs__msg__Quaternion)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Quaternion * uintptr(i)),
 		))
-		*cIdx = *(*C.geometry_msgs__msg__Quaternion)(v.AsCStruct())
+		QuaternionTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Quaternion__Array_to_Go(goSlice []Quaternion, cSlice []CQuaternion) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		QuaternionTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Quaternion__Array_to_C(cSlice []CQuaternion, goSlice []Quaternion) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.geometry_msgs__msg__Quaternion)(goSlice[i].AsCStruct())
+		QuaternionTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

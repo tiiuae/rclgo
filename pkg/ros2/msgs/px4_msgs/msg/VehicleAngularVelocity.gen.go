@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleAngularVelocity", &VehicleAngularVelocity{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleAngularVelocity", VehicleAngularVelocityTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewVehicleAngularVelocity
@@ -48,42 +48,56 @@ type VehicleAngularVelocity struct {
 // NewVehicleAngularVelocity creates a new VehicleAngularVelocity with default values.
 func NewVehicleAngularVelocity() *VehicleAngularVelocity {
 	self := VehicleAngularVelocity{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *VehicleAngularVelocity) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *VehicleAngularVelocity) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleAngularVelocity())
-}
-func (t *VehicleAngularVelocity) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleAngularVelocity
-	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleAngularVelocity__create())
-}
-func (t *VehicleAngularVelocity) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__VehicleAngularVelocity__destroy((*C.px4_msgs__msg__VehicleAngularVelocity)(pointer_to_free))
-}
-func (t *VehicleAngularVelocity) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__VehicleAngularVelocity)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	cSlice_xyz := mem.xyz[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_xyz)), t.Xyz[:])
-	return unsafe.Pointer(mem)
-}
-func (t *VehicleAngularVelocity) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__VehicleAngularVelocity)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	cSlice_xyz := mem.xyz[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Xyz[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_xyz)))
-}
-func (t *VehicleAngularVelocity) Clone() ros2types.ROS2Msg {
+func (t *VehicleAngularVelocity) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *VehicleAngularVelocity) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VehicleAngularVelocityTypeSupport types.MessageTypeSupport = _VehicleAngularVelocityTypeSupport{}
+
+type _VehicleAngularVelocityTypeSupport struct{}
+
+func (t _VehicleAngularVelocityTypeSupport) New() types.Message {
+	return NewVehicleAngularVelocity()
+}
+
+func (t _VehicleAngularVelocityTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleAngularVelocity
+	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleAngularVelocity__create())
+}
+
+func (t _VehicleAngularVelocityTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__VehicleAngularVelocity__destroy((*C.px4_msgs__msg__VehicleAngularVelocity)(pointer_to_free))
+}
+
+func (t _VehicleAngularVelocityTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*VehicleAngularVelocity)
+	mem := (*C.px4_msgs__msg__VehicleAngularVelocity)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	cSlice_xyz := mem.xyz[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_xyz)), m.Xyz[:])
+}
+
+func (t _VehicleAngularVelocityTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*VehicleAngularVelocity)
+	mem := (*C.px4_msgs__msg__VehicleAngularVelocity)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	cSlice_xyz := mem.xyz[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Xyz[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_xyz)))
+}
+
+func (t _VehicleAngularVelocityTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleAngularVelocity())
 }
 
 type CVehicleAngularVelocity = C.px4_msgs__msg__VehicleAngularVelocity
@@ -98,8 +112,7 @@ func VehicleAngularVelocity__Sequence_to_Go(goSlice *[]VehicleAngularVelocity, c
 		cIdx := (*C.px4_msgs__msg__VehicleAngularVelocity__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleAngularVelocity * uintptr(i)),
 		))
-		(*goSlice)[i] = VehicleAngularVelocity{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VehicleAngularVelocityTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func VehicleAngularVelocity__Sequence_to_C(cSlice *CVehicleAngularVelocity__Sequence, goSlice []VehicleAngularVelocity) {
@@ -114,18 +127,16 @@ func VehicleAngularVelocity__Sequence_to_C(cSlice *CVehicleAngularVelocity__Sequ
 		cIdx := (*C.px4_msgs__msg__VehicleAngularVelocity)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleAngularVelocity * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__VehicleAngularVelocity)(v.AsCStruct())
+		VehicleAngularVelocityTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func VehicleAngularVelocity__Array_to_Go(goSlice []VehicleAngularVelocity, cSlice []CVehicleAngularVelocity) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VehicleAngularVelocityTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func VehicleAngularVelocity__Array_to_C(cSlice []CVehicleAngularVelocity, goSlice []VehicleAngularVelocity) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__VehicleAngularVelocity)(goSlice[i].AsCStruct())
+		VehicleAngularVelocityTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

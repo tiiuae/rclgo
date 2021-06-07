@@ -15,7 +15,7 @@ package rcl_interfaces_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,48 +34,62 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("rcl_interfaces/GetParameters_Request", &GetParameters_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("rcl_interfaces/GetParameters_Request", GetParameters_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewGetParameters_Request
 // function instead.
 type GetParameters_Request struct {
-	Names []rosidl_runtime_c.String `yaml:"names"`// A list of parameter names to get.
+	Names []string `yaml:"names"`// A list of parameter names to get.
 }
 
 // NewGetParameters_Request creates a new GetParameters_Request with default values.
 func NewGetParameters_Request() *GetParameters_Request {
 	self := GetParameters_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *GetParameters_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *GetParameters_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__rcl_interfaces__srv__GetParameters_Request())
-}
-func (t *GetParameters_Request) PrepareMemory() unsafe.Pointer { //returns *C.rcl_interfaces__srv__GetParameters_Request
-	return (unsafe.Pointer)(C.rcl_interfaces__srv__GetParameters_Request__create())
-}
-func (t *GetParameters_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.rcl_interfaces__srv__GetParameters_Request__destroy((*C.rcl_interfaces__srv__GetParameters_Request)(pointer_to_free))
-}
-func (t *GetParameters_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.rcl_interfaces__srv__GetParameters_Request)(t.PrepareMemory())
-	rosidl_runtime_c.String__Sequence_to_C((*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.names)), t.Names)
-	return unsafe.Pointer(mem)
-}
-func (t *GetParameters_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.rcl_interfaces__srv__GetParameters_Request)(ros2_message_buffer)
-	rosidl_runtime_c.String__Sequence_to_Go(&t.Names, *(*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.names)))
-}
-func (t *GetParameters_Request) Clone() ros2types.ROS2Msg {
+func (t *GetParameters_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *GetParameters_Request) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var GetParameters_RequestTypeSupport types.MessageTypeSupport = _GetParameters_RequestTypeSupport{}
+
+type _GetParameters_RequestTypeSupport struct{}
+
+func (t _GetParameters_RequestTypeSupport) New() types.Message {
+	return NewGetParameters_Request()
+}
+
+func (t _GetParameters_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.rcl_interfaces__srv__GetParameters_Request
+	return (unsafe.Pointer)(C.rcl_interfaces__srv__GetParameters_Request__create())
+}
+
+func (t _GetParameters_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.rcl_interfaces__srv__GetParameters_Request__destroy((*C.rcl_interfaces__srv__GetParameters_Request)(pointer_to_free))
+}
+
+func (t _GetParameters_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*GetParameters_Request)
+	mem := (*C.rcl_interfaces__srv__GetParameters_Request)(dst)
+	rosidl_runtime_c.String__Sequence_to_C((*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.names)), m.Names)
+}
+
+func (t _GetParameters_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*GetParameters_Request)
+	mem := (*C.rcl_interfaces__srv__GetParameters_Request)(ros2_message_buffer)
+	rosidl_runtime_c.String__Sequence_to_Go(&m.Names, *(*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.names)))
+}
+
+func (t _GetParameters_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__rcl_interfaces__srv__GetParameters_Request())
 }
 
 type CGetParameters_Request = C.rcl_interfaces__srv__GetParameters_Request
@@ -90,8 +104,7 @@ func GetParameters_Request__Sequence_to_Go(goSlice *[]GetParameters_Request, cSl
 		cIdx := (*C.rcl_interfaces__srv__GetParameters_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rcl_interfaces__srv__GetParameters_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = GetParameters_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		GetParameters_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func GetParameters_Request__Sequence_to_C(cSlice *CGetParameters_Request__Sequence, goSlice []GetParameters_Request) {
@@ -106,18 +119,16 @@ func GetParameters_Request__Sequence_to_C(cSlice *CGetParameters_Request__Sequen
 		cIdx := (*C.rcl_interfaces__srv__GetParameters_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rcl_interfaces__srv__GetParameters_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.rcl_interfaces__srv__GetParameters_Request)(v.AsCStruct())
+		GetParameters_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func GetParameters_Request__Array_to_Go(goSlice []GetParameters_Request, cSlice []CGetParameters_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		GetParameters_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func GetParameters_Request__Array_to_C(cSlice []CGetParameters_Request, goSlice []GetParameters_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.rcl_interfaces__srv__GetParameters_Request)(goSlice[i].AsCStruct())
+		GetParameters_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

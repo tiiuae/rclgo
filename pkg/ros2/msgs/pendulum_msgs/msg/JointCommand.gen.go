@@ -15,7 +15,7 @@ package pendulum_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("pendulum_msgs/JointCommand", &JointCommand{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("pendulum_msgs/JointCommand", JointCommandTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewJointCommand
@@ -45,36 +45,50 @@ type JointCommand struct {
 // NewJointCommand creates a new JointCommand with default values.
 func NewJointCommand() *JointCommand {
 	self := JointCommand{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *JointCommand) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *JointCommand) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__pendulum_msgs__msg__JointCommand())
-}
-func (t *JointCommand) PrepareMemory() unsafe.Pointer { //returns *C.pendulum_msgs__msg__JointCommand
-	return (unsafe.Pointer)(C.pendulum_msgs__msg__JointCommand__create())
-}
-func (t *JointCommand) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.pendulum_msgs__msg__JointCommand__destroy((*C.pendulum_msgs__msg__JointCommand)(pointer_to_free))
-}
-func (t *JointCommand) AsCStruct() unsafe.Pointer {
-	mem := (*C.pendulum_msgs__msg__JointCommand)(t.PrepareMemory())
-	mem.position = C.double(t.Position)
-	return unsafe.Pointer(mem)
-}
-func (t *JointCommand) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.pendulum_msgs__msg__JointCommand)(ros2_message_buffer)
-	t.Position = float64(mem.position)
-}
-func (t *JointCommand) Clone() ros2types.ROS2Msg {
+func (t *JointCommand) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *JointCommand) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var JointCommandTypeSupport types.MessageTypeSupport = _JointCommandTypeSupport{}
+
+type _JointCommandTypeSupport struct{}
+
+func (t _JointCommandTypeSupport) New() types.Message {
+	return NewJointCommand()
+}
+
+func (t _JointCommandTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.pendulum_msgs__msg__JointCommand
+	return (unsafe.Pointer)(C.pendulum_msgs__msg__JointCommand__create())
+}
+
+func (t _JointCommandTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.pendulum_msgs__msg__JointCommand__destroy((*C.pendulum_msgs__msg__JointCommand)(pointer_to_free))
+}
+
+func (t _JointCommandTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*JointCommand)
+	mem := (*C.pendulum_msgs__msg__JointCommand)(dst)
+	mem.position = C.double(m.Position)
+}
+
+func (t _JointCommandTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*JointCommand)
+	mem := (*C.pendulum_msgs__msg__JointCommand)(ros2_message_buffer)
+	m.Position = float64(mem.position)
+}
+
+func (t _JointCommandTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__pendulum_msgs__msg__JointCommand())
 }
 
 type CJointCommand = C.pendulum_msgs__msg__JointCommand
@@ -89,8 +103,7 @@ func JointCommand__Sequence_to_Go(goSlice *[]JointCommand, cSlice CJointCommand_
 		cIdx := (*C.pendulum_msgs__msg__JointCommand__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_pendulum_msgs__msg__JointCommand * uintptr(i)),
 		))
-		(*goSlice)[i] = JointCommand{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		JointCommandTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func JointCommand__Sequence_to_C(cSlice *CJointCommand__Sequence, goSlice []JointCommand) {
@@ -105,18 +118,16 @@ func JointCommand__Sequence_to_C(cSlice *CJointCommand__Sequence, goSlice []Join
 		cIdx := (*C.pendulum_msgs__msg__JointCommand)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_pendulum_msgs__msg__JointCommand * uintptr(i)),
 		))
-		*cIdx = *(*C.pendulum_msgs__msg__JointCommand)(v.AsCStruct())
+		JointCommandTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func JointCommand__Array_to_Go(goSlice []JointCommand, cSlice []CJointCommand) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		JointCommandTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func JointCommand__Array_to_C(cSlice []CJointCommand, goSlice []JointCommand) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.pendulum_msgs__msg__JointCommand)(goSlice[i].AsCStruct())
+		JointCommandTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

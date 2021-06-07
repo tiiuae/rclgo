@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/FwVirtualAttitudeSetpoint", &FwVirtualAttitudeSetpoint{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/FwVirtualAttitudeSetpoint", FwVirtualAttitudeSetpointTypeSupport)
 }
 const (
 	FwVirtualAttitudeSetpoint_FLAPS_OFF uint8 = 0// no flaps
@@ -62,62 +62,76 @@ type FwVirtualAttitudeSetpoint struct {
 // NewFwVirtualAttitudeSetpoint creates a new FwVirtualAttitudeSetpoint with default values.
 func NewFwVirtualAttitudeSetpoint() *FwVirtualAttitudeSetpoint {
 	self := FwVirtualAttitudeSetpoint{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *FwVirtualAttitudeSetpoint) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *FwVirtualAttitudeSetpoint) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__FwVirtualAttitudeSetpoint())
-}
-func (t *FwVirtualAttitudeSetpoint) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__FwVirtualAttitudeSetpoint
-	return (unsafe.Pointer)(C.px4_msgs__msg__FwVirtualAttitudeSetpoint__create())
-}
-func (t *FwVirtualAttitudeSetpoint) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__FwVirtualAttitudeSetpoint__destroy((*C.px4_msgs__msg__FwVirtualAttitudeSetpoint)(pointer_to_free))
-}
-func (t *FwVirtualAttitudeSetpoint) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__FwVirtualAttitudeSetpoint)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.roll_body = C.float(t.RollBody)
-	mem.pitch_body = C.float(t.PitchBody)
-	mem.yaw_body = C.float(t.YawBody)
-	mem.yaw_sp_move_rate = C.float(t.YawSpMoveRate)
-	cSlice_q_d := mem.q_d[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q_d)), t.QD[:])
-	cSlice_thrust_body := mem.thrust_body[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_thrust_body)), t.ThrustBody[:])
-	mem.roll_reset_integral = C.bool(t.RollResetIntegral)
-	mem.pitch_reset_integral = C.bool(t.PitchResetIntegral)
-	mem.yaw_reset_integral = C.bool(t.YawResetIntegral)
-	mem.fw_control_yaw = C.bool(t.FwControlYaw)
-	mem.apply_flaps = C.uint8_t(t.ApplyFlaps)
-	return unsafe.Pointer(mem)
-}
-func (t *FwVirtualAttitudeSetpoint) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__FwVirtualAttitudeSetpoint)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.RollBody = float32(mem.roll_body)
-	t.PitchBody = float32(mem.pitch_body)
-	t.YawBody = float32(mem.yaw_body)
-	t.YawSpMoveRate = float32(mem.yaw_sp_move_rate)
-	cSlice_q_d := mem.q_d[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.QD[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q_d)))
-	cSlice_thrust_body := mem.thrust_body[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.ThrustBody[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_thrust_body)))
-	t.RollResetIntegral = bool(mem.roll_reset_integral)
-	t.PitchResetIntegral = bool(mem.pitch_reset_integral)
-	t.YawResetIntegral = bool(mem.yaw_reset_integral)
-	t.FwControlYaw = bool(mem.fw_control_yaw)
-	t.ApplyFlaps = uint8(mem.apply_flaps)
-}
-func (t *FwVirtualAttitudeSetpoint) Clone() ros2types.ROS2Msg {
+func (t *FwVirtualAttitudeSetpoint) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *FwVirtualAttitudeSetpoint) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var FwVirtualAttitudeSetpointTypeSupport types.MessageTypeSupport = _FwVirtualAttitudeSetpointTypeSupport{}
+
+type _FwVirtualAttitudeSetpointTypeSupport struct{}
+
+func (t _FwVirtualAttitudeSetpointTypeSupport) New() types.Message {
+	return NewFwVirtualAttitudeSetpoint()
+}
+
+func (t _FwVirtualAttitudeSetpointTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__FwVirtualAttitudeSetpoint
+	return (unsafe.Pointer)(C.px4_msgs__msg__FwVirtualAttitudeSetpoint__create())
+}
+
+func (t _FwVirtualAttitudeSetpointTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__FwVirtualAttitudeSetpoint__destroy((*C.px4_msgs__msg__FwVirtualAttitudeSetpoint)(pointer_to_free))
+}
+
+func (t _FwVirtualAttitudeSetpointTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*FwVirtualAttitudeSetpoint)
+	mem := (*C.px4_msgs__msg__FwVirtualAttitudeSetpoint)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.roll_body = C.float(m.RollBody)
+	mem.pitch_body = C.float(m.PitchBody)
+	mem.yaw_body = C.float(m.YawBody)
+	mem.yaw_sp_move_rate = C.float(m.YawSpMoveRate)
+	cSlice_q_d := mem.q_d[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q_d)), m.QD[:])
+	cSlice_thrust_body := mem.thrust_body[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_thrust_body)), m.ThrustBody[:])
+	mem.roll_reset_integral = C.bool(m.RollResetIntegral)
+	mem.pitch_reset_integral = C.bool(m.PitchResetIntegral)
+	mem.yaw_reset_integral = C.bool(m.YawResetIntegral)
+	mem.fw_control_yaw = C.bool(m.FwControlYaw)
+	mem.apply_flaps = C.uint8_t(m.ApplyFlaps)
+}
+
+func (t _FwVirtualAttitudeSetpointTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*FwVirtualAttitudeSetpoint)
+	mem := (*C.px4_msgs__msg__FwVirtualAttitudeSetpoint)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.RollBody = float32(mem.roll_body)
+	m.PitchBody = float32(mem.pitch_body)
+	m.YawBody = float32(mem.yaw_body)
+	m.YawSpMoveRate = float32(mem.yaw_sp_move_rate)
+	cSlice_q_d := mem.q_d[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.QD[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q_d)))
+	cSlice_thrust_body := mem.thrust_body[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.ThrustBody[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_thrust_body)))
+	m.RollResetIntegral = bool(mem.roll_reset_integral)
+	m.PitchResetIntegral = bool(mem.pitch_reset_integral)
+	m.YawResetIntegral = bool(mem.yaw_reset_integral)
+	m.FwControlYaw = bool(mem.fw_control_yaw)
+	m.ApplyFlaps = uint8(mem.apply_flaps)
+}
+
+func (t _FwVirtualAttitudeSetpointTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__FwVirtualAttitudeSetpoint())
 }
 
 type CFwVirtualAttitudeSetpoint = C.px4_msgs__msg__FwVirtualAttitudeSetpoint
@@ -132,8 +146,7 @@ func FwVirtualAttitudeSetpoint__Sequence_to_Go(goSlice *[]FwVirtualAttitudeSetpo
 		cIdx := (*C.px4_msgs__msg__FwVirtualAttitudeSetpoint__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__FwVirtualAttitudeSetpoint * uintptr(i)),
 		))
-		(*goSlice)[i] = FwVirtualAttitudeSetpoint{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		FwVirtualAttitudeSetpointTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func FwVirtualAttitudeSetpoint__Sequence_to_C(cSlice *CFwVirtualAttitudeSetpoint__Sequence, goSlice []FwVirtualAttitudeSetpoint) {
@@ -148,18 +161,16 @@ func FwVirtualAttitudeSetpoint__Sequence_to_C(cSlice *CFwVirtualAttitudeSetpoint
 		cIdx := (*C.px4_msgs__msg__FwVirtualAttitudeSetpoint)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__FwVirtualAttitudeSetpoint * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__FwVirtualAttitudeSetpoint)(v.AsCStruct())
+		FwVirtualAttitudeSetpointTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func FwVirtualAttitudeSetpoint__Array_to_Go(goSlice []FwVirtualAttitudeSetpoint, cSlice []CFwVirtualAttitudeSetpoint) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		FwVirtualAttitudeSetpointTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func FwVirtualAttitudeSetpoint__Array_to_C(cSlice []CFwVirtualAttitudeSetpoint, goSlice []FwVirtualAttitudeSetpoint) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__FwVirtualAttitudeSetpoint)(goSlice[i].AsCStruct())
+		FwVirtualAttitudeSetpointTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

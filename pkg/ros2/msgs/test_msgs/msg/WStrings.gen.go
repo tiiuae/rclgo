@@ -15,7 +15,7 @@ package test_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,75 +34,85 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("test_msgs/WStrings", &WStrings{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("test_msgs/WStrings", WStringsTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewWStrings
 // function instead.
 type WStrings struct {
-	WstringValue rosidl_runtime_c.U16String `yaml:"wstring_value"`
-	WstringValueDefault1 rosidl_runtime_c.U16String `yaml:"wstring_value_default1"`
-	WstringValueDefault2 rosidl_runtime_c.U16String `yaml:"wstring_value_default2"`
-	WstringValueDefault3 rosidl_runtime_c.U16String `yaml:"wstring_value_default3"`
-	ArrayOfWstrings [3]rosidl_runtime_c.U16String `yaml:"array_of_wstrings"`// wstring WSTRING_CONST="Hello world!"wstring<=22 bounded_wstring_valuewstring<=22 bounded_wstring_value_default1 "Hello world!"
-	BoundedSequenceOfWstrings []rosidl_runtime_c.U16String `yaml:"bounded_sequence_of_wstrings"`// wstring WSTRING_CONST="Hello world!"wstring<=22 bounded_wstring_valuewstring<=22 bounded_wstring_value_default1 "Hello world!"
-	UnboundedSequenceOfWstrings []rosidl_runtime_c.U16String `yaml:"unbounded_sequence_of_wstrings"`// wstring WSTRING_CONST="Hello world!"wstring<=22 bounded_wstring_valuewstring<=22 bounded_wstring_value_default1 "Hello world!"
+	WstringValue string `yaml:"wstring_value"`
+	WstringValueDefault1 string `yaml:"wstring_value_default1"`
+	WstringValueDefault2 string `yaml:"wstring_value_default2"`
+	WstringValueDefault3 string `yaml:"wstring_value_default3"`
+	ArrayOfWstrings [3]string `yaml:"array_of_wstrings"`// wstring WSTRING_CONST="Hello world!"wstring<=22 bounded_wstring_valuewstring<=22 bounded_wstring_value_default1 "Hello world!"
+	BoundedSequenceOfWstrings []string `yaml:"bounded_sequence_of_wstrings"`// wstring WSTRING_CONST="Hello world!"wstring<=22 bounded_wstring_valuewstring<=22 bounded_wstring_value_default1 "Hello world!"
+	UnboundedSequenceOfWstrings []string `yaml:"unbounded_sequence_of_wstrings"`// wstring WSTRING_CONST="Hello world!"wstring<=22 bounded_wstring_valuewstring<=22 bounded_wstring_value_default1 "Hello world!"
 }
 
 // NewWStrings creates a new WStrings with default values.
 func NewWStrings() *WStrings {
 	self := WStrings{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *WStrings) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.WstringValue.SetDefaults("")
-	t.WstringValueDefault1.SetDefaults("Hello world!")
-	t.WstringValueDefault2.SetDefaults("Hellö wörld!")
-	t.WstringValueDefault3.SetDefaults("ハローワールド")
-	t.ArrayOfWstrings[0].SetDefaults(nil)
-	t.ArrayOfWstrings[1].SetDefaults(nil)
-	t.ArrayOfWstrings[2].SetDefaults(nil)
-	
-	return t
-}
-
-func (t *WStrings) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__msg__WStrings())
-}
-func (t *WStrings) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__msg__WStrings
-	return (unsafe.Pointer)(C.test_msgs__msg__WStrings__create())
-}
-func (t *WStrings) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.test_msgs__msg__WStrings__destroy((*C.test_msgs__msg__WStrings)(pointer_to_free))
-}
-func (t *WStrings) AsCStruct() unsafe.Pointer {
-	mem := (*C.test_msgs__msg__WStrings)(t.PrepareMemory())
-	mem.wstring_value = *(*C.rosidl_runtime_c__U16String)(t.WstringValue.AsCStruct())
-	mem.wstring_value_default1 = *(*C.rosidl_runtime_c__U16String)(t.WstringValueDefault1.AsCStruct())
-	mem.wstring_value_default2 = *(*C.rosidl_runtime_c__U16String)(t.WstringValueDefault2.AsCStruct())
-	mem.wstring_value_default3 = *(*C.rosidl_runtime_c__U16String)(t.WstringValueDefault3.AsCStruct())
-	cSlice_array_of_wstrings := mem.array_of_wstrings[:]
-	rosidl_runtime_c.U16String__Array_to_C(*(*[]rosidl_runtime_c.CU16String)(unsafe.Pointer(&cSlice_array_of_wstrings)), t.ArrayOfWstrings[:])
-	rosidl_runtime_c.U16String__Sequence_to_C((*rosidl_runtime_c.CU16String__Sequence)(unsafe.Pointer(&mem.bounded_sequence_of_wstrings)), t.BoundedSequenceOfWstrings)
-	rosidl_runtime_c.U16String__Sequence_to_C((*rosidl_runtime_c.CU16String__Sequence)(unsafe.Pointer(&mem.unbounded_sequence_of_wstrings)), t.UnboundedSequenceOfWstrings)
-	return unsafe.Pointer(mem)
-}
-func (t *WStrings) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.test_msgs__msg__WStrings)(ros2_message_buffer)
-	t.WstringValue.AsGoStruct(unsafe.Pointer(&mem.wstring_value))
-	t.WstringValueDefault1.AsGoStruct(unsafe.Pointer(&mem.wstring_value_default1))
-	t.WstringValueDefault2.AsGoStruct(unsafe.Pointer(&mem.wstring_value_default2))
-	t.WstringValueDefault3.AsGoStruct(unsafe.Pointer(&mem.wstring_value_default3))
-	cSlice_array_of_wstrings := mem.array_of_wstrings[:]
-	rosidl_runtime_c.U16String__Array_to_Go(t.ArrayOfWstrings[:], *(*[]rosidl_runtime_c.CU16String)(unsafe.Pointer(&cSlice_array_of_wstrings)))
-	rosidl_runtime_c.U16String__Sequence_to_Go(&t.BoundedSequenceOfWstrings, *(*rosidl_runtime_c.CU16String__Sequence)(unsafe.Pointer(&mem.bounded_sequence_of_wstrings)))
-	rosidl_runtime_c.U16String__Sequence_to_Go(&t.UnboundedSequenceOfWstrings, *(*rosidl_runtime_c.CU16String__Sequence)(unsafe.Pointer(&mem.unbounded_sequence_of_wstrings)))
-}
-func (t *WStrings) Clone() ros2types.ROS2Msg {
+func (t *WStrings) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *WStrings) SetDefaults() {
+	t.WstringValueDefault1 = "Hello world!"
+	t.WstringValueDefault2 = "Hellö wörld!"
+	t.WstringValueDefault3 = "ハローワールド"
+	
+}
+
+// Modifying this variable is undefined behavior.
+var WStringsTypeSupport types.MessageTypeSupport = _WStringsTypeSupport{}
+
+type _WStringsTypeSupport struct{}
+
+func (t _WStringsTypeSupport) New() types.Message {
+	return NewWStrings()
+}
+
+func (t _WStringsTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__msg__WStrings
+	return (unsafe.Pointer)(C.test_msgs__msg__WStrings__create())
+}
+
+func (t _WStringsTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.test_msgs__msg__WStrings__destroy((*C.test_msgs__msg__WStrings)(pointer_to_free))
+}
+
+func (t _WStringsTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*WStrings)
+	mem := (*C.test_msgs__msg__WStrings)(dst)
+	rosidl_runtime_c.U16StringAsCStruct(unsafe.Pointer(&mem.wstring_value), m.WstringValue)
+	rosidl_runtime_c.U16StringAsCStruct(unsafe.Pointer(&mem.wstring_value_default1), m.WstringValueDefault1)
+	rosidl_runtime_c.U16StringAsCStruct(unsafe.Pointer(&mem.wstring_value_default2), m.WstringValueDefault2)
+	rosidl_runtime_c.U16StringAsCStruct(unsafe.Pointer(&mem.wstring_value_default3), m.WstringValueDefault3)
+	cSlice_array_of_wstrings := mem.array_of_wstrings[:]
+	rosidl_runtime_c.U16String__Array_to_C(*(*[]rosidl_runtime_c.CU16String)(unsafe.Pointer(&cSlice_array_of_wstrings)), m.ArrayOfWstrings[:])
+	rosidl_runtime_c.U16String__Sequence_to_C((*rosidl_runtime_c.CU16String__Sequence)(unsafe.Pointer(&mem.bounded_sequence_of_wstrings)), m.BoundedSequenceOfWstrings)
+	rosidl_runtime_c.U16String__Sequence_to_C((*rosidl_runtime_c.CU16String__Sequence)(unsafe.Pointer(&mem.unbounded_sequence_of_wstrings)), m.UnboundedSequenceOfWstrings)
+}
+
+func (t _WStringsTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*WStrings)
+	mem := (*C.test_msgs__msg__WStrings)(ros2_message_buffer)
+	rosidl_runtime_c.U16StringAsGoStruct(&m.WstringValue, unsafe.Pointer(&mem.wstring_value))
+	rosidl_runtime_c.U16StringAsGoStruct(&m.WstringValueDefault1, unsafe.Pointer(&mem.wstring_value_default1))
+	rosidl_runtime_c.U16StringAsGoStruct(&m.WstringValueDefault2, unsafe.Pointer(&mem.wstring_value_default2))
+	rosidl_runtime_c.U16StringAsGoStruct(&m.WstringValueDefault3, unsafe.Pointer(&mem.wstring_value_default3))
+	cSlice_array_of_wstrings := mem.array_of_wstrings[:]
+	rosidl_runtime_c.U16String__Array_to_Go(m.ArrayOfWstrings[:], *(*[]rosidl_runtime_c.CU16String)(unsafe.Pointer(&cSlice_array_of_wstrings)))
+	rosidl_runtime_c.U16String__Sequence_to_Go(&m.BoundedSequenceOfWstrings, *(*rosidl_runtime_c.CU16String__Sequence)(unsafe.Pointer(&mem.bounded_sequence_of_wstrings)))
+	rosidl_runtime_c.U16String__Sequence_to_Go(&m.UnboundedSequenceOfWstrings, *(*rosidl_runtime_c.CU16String__Sequence)(unsafe.Pointer(&mem.unbounded_sequence_of_wstrings)))
+}
+
+func (t _WStringsTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__msg__WStrings())
 }
 
 type CWStrings = C.test_msgs__msg__WStrings
@@ -117,8 +127,7 @@ func WStrings__Sequence_to_Go(goSlice *[]WStrings, cSlice CWStrings__Sequence) {
 		cIdx := (*C.test_msgs__msg__WStrings__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__msg__WStrings * uintptr(i)),
 		))
-		(*goSlice)[i] = WStrings{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		WStringsTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func WStrings__Sequence_to_C(cSlice *CWStrings__Sequence, goSlice []WStrings) {
@@ -133,18 +142,16 @@ func WStrings__Sequence_to_C(cSlice *CWStrings__Sequence, goSlice []WStrings) {
 		cIdx := (*C.test_msgs__msg__WStrings)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__msg__WStrings * uintptr(i)),
 		))
-		*cIdx = *(*C.test_msgs__msg__WStrings)(v.AsCStruct())
+		WStringsTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func WStrings__Array_to_Go(goSlice []WStrings, cSlice []CWStrings) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		WStringsTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func WStrings__Array_to_C(cSlice []CWStrings, goSlice []WStrings) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.test_msgs__msg__WStrings)(goSlice[i].AsCStruct())
+		WStringsTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

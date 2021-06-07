@@ -15,7 +15,7 @@ package pcl_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,49 +34,62 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("pcl_msgs/UpdateFilename_Request", &UpdateFilename_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("pcl_msgs/UpdateFilename_Request", UpdateFilename_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewUpdateFilename_Request
 // function instead.
 type UpdateFilename_Request struct {
-	Filename rosidl_runtime_c.String `yaml:"filename"`
+	Filename string `yaml:"filename"`
 }
 
 // NewUpdateFilename_Request creates a new UpdateFilename_Request with default values.
 func NewUpdateFilename_Request() *UpdateFilename_Request {
 	self := UpdateFilename_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *UpdateFilename_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Filename.SetDefaults("")
-	
-	return t
-}
-
-func (t *UpdateFilename_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__pcl_msgs__srv__UpdateFilename_Request())
-}
-func (t *UpdateFilename_Request) PrepareMemory() unsafe.Pointer { //returns *C.pcl_msgs__srv__UpdateFilename_Request
-	return (unsafe.Pointer)(C.pcl_msgs__srv__UpdateFilename_Request__create())
-}
-func (t *UpdateFilename_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.pcl_msgs__srv__UpdateFilename_Request__destroy((*C.pcl_msgs__srv__UpdateFilename_Request)(pointer_to_free))
-}
-func (t *UpdateFilename_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.pcl_msgs__srv__UpdateFilename_Request)(t.PrepareMemory())
-	mem.filename = *(*C.rosidl_runtime_c__String)(t.Filename.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *UpdateFilename_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.pcl_msgs__srv__UpdateFilename_Request)(ros2_message_buffer)
-	t.Filename.AsGoStruct(unsafe.Pointer(&mem.filename))
-}
-func (t *UpdateFilename_Request) Clone() ros2types.ROS2Msg {
+func (t *UpdateFilename_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *UpdateFilename_Request) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var UpdateFilename_RequestTypeSupport types.MessageTypeSupport = _UpdateFilename_RequestTypeSupport{}
+
+type _UpdateFilename_RequestTypeSupport struct{}
+
+func (t _UpdateFilename_RequestTypeSupport) New() types.Message {
+	return NewUpdateFilename_Request()
+}
+
+func (t _UpdateFilename_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.pcl_msgs__srv__UpdateFilename_Request
+	return (unsafe.Pointer)(C.pcl_msgs__srv__UpdateFilename_Request__create())
+}
+
+func (t _UpdateFilename_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.pcl_msgs__srv__UpdateFilename_Request__destroy((*C.pcl_msgs__srv__UpdateFilename_Request)(pointer_to_free))
+}
+
+func (t _UpdateFilename_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*UpdateFilename_Request)
+	mem := (*C.pcl_msgs__srv__UpdateFilename_Request)(dst)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.filename), m.Filename)
+}
+
+func (t _UpdateFilename_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*UpdateFilename_Request)
+	mem := (*C.pcl_msgs__srv__UpdateFilename_Request)(ros2_message_buffer)
+	rosidl_runtime_c.StringAsGoStruct(&m.Filename, unsafe.Pointer(&mem.filename))
+}
+
+func (t _UpdateFilename_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__pcl_msgs__srv__UpdateFilename_Request())
 }
 
 type CUpdateFilename_Request = C.pcl_msgs__srv__UpdateFilename_Request
@@ -91,8 +104,7 @@ func UpdateFilename_Request__Sequence_to_Go(goSlice *[]UpdateFilename_Request, c
 		cIdx := (*C.pcl_msgs__srv__UpdateFilename_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_pcl_msgs__srv__UpdateFilename_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = UpdateFilename_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		UpdateFilename_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func UpdateFilename_Request__Sequence_to_C(cSlice *CUpdateFilename_Request__Sequence, goSlice []UpdateFilename_Request) {
@@ -107,18 +119,16 @@ func UpdateFilename_Request__Sequence_to_C(cSlice *CUpdateFilename_Request__Sequ
 		cIdx := (*C.pcl_msgs__srv__UpdateFilename_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_pcl_msgs__srv__UpdateFilename_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.pcl_msgs__srv__UpdateFilename_Request)(v.AsCStruct())
+		UpdateFilename_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func UpdateFilename_Request__Array_to_Go(goSlice []UpdateFilename_Request, cSlice []CUpdateFilename_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		UpdateFilename_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func UpdateFilename_Request__Array_to_C(cSlice []CUpdateFilename_Request, goSlice []UpdateFilename_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.pcl_msgs__srv__UpdateFilename_Request)(goSlice[i].AsCStruct())
+		UpdateFilename_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

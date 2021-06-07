@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/InputRc", &InputRc{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/InputRc", InputRcTypeSupport)
 }
 const (
 	InputRc_RC_INPUT_SOURCE_UNKNOWN uint8 = 0
@@ -75,58 +75,72 @@ type InputRc struct {
 // NewInputRc creates a new InputRc with default values.
 func NewInputRc() *InputRc {
 	self := InputRc{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *InputRc) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *InputRc) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__InputRc())
-}
-func (t *InputRc) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__InputRc
-	return (unsafe.Pointer)(C.px4_msgs__msg__InputRc__create())
-}
-func (t *InputRc) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__InputRc__destroy((*C.px4_msgs__msg__InputRc)(pointer_to_free))
-}
-func (t *InputRc) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__InputRc)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_last_signal = C.uint64_t(t.TimestampLastSignal)
-	mem.channel_count = C.uint8_t(t.ChannelCount)
-	mem.rssi = C.int32_t(t.Rssi)
-	mem.rc_failsafe = C.bool(t.RcFailsafe)
-	mem.rc_lost = C.bool(t.RcLost)
-	mem.rc_lost_frame_count = C.uint16_t(t.RcLostFrameCount)
-	mem.rc_total_frame_count = C.uint16_t(t.RcTotalFrameCount)
-	mem.rc_ppm_frame_length = C.uint16_t(t.RcPpmFrameLength)
-	mem.input_source = C.uint8_t(t.InputSource)
-	cSlice_values := mem.values[:]
-	rosidl_runtime_c.Uint16__Array_to_C(*(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_values)), t.Values[:])
-	return unsafe.Pointer(mem)
-}
-func (t *InputRc) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__InputRc)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampLastSignal = uint64(mem.timestamp_last_signal)
-	t.ChannelCount = uint8(mem.channel_count)
-	t.Rssi = int32(mem.rssi)
-	t.RcFailsafe = bool(mem.rc_failsafe)
-	t.RcLost = bool(mem.rc_lost)
-	t.RcLostFrameCount = uint16(mem.rc_lost_frame_count)
-	t.RcTotalFrameCount = uint16(mem.rc_total_frame_count)
-	t.RcPpmFrameLength = uint16(mem.rc_ppm_frame_length)
-	t.InputSource = uint8(mem.input_source)
-	cSlice_values := mem.values[:]
-	rosidl_runtime_c.Uint16__Array_to_Go(t.Values[:], *(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_values)))
-}
-func (t *InputRc) Clone() ros2types.ROS2Msg {
+func (t *InputRc) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *InputRc) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var InputRcTypeSupport types.MessageTypeSupport = _InputRcTypeSupport{}
+
+type _InputRcTypeSupport struct{}
+
+func (t _InputRcTypeSupport) New() types.Message {
+	return NewInputRc()
+}
+
+func (t _InputRcTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__InputRc
+	return (unsafe.Pointer)(C.px4_msgs__msg__InputRc__create())
+}
+
+func (t _InputRcTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__InputRc__destroy((*C.px4_msgs__msg__InputRc)(pointer_to_free))
+}
+
+func (t _InputRcTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*InputRc)
+	mem := (*C.px4_msgs__msg__InputRc)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_last_signal = C.uint64_t(m.TimestampLastSignal)
+	mem.channel_count = C.uint8_t(m.ChannelCount)
+	mem.rssi = C.int32_t(m.Rssi)
+	mem.rc_failsafe = C.bool(m.RcFailsafe)
+	mem.rc_lost = C.bool(m.RcLost)
+	mem.rc_lost_frame_count = C.uint16_t(m.RcLostFrameCount)
+	mem.rc_total_frame_count = C.uint16_t(m.RcTotalFrameCount)
+	mem.rc_ppm_frame_length = C.uint16_t(m.RcPpmFrameLength)
+	mem.input_source = C.uint8_t(m.InputSource)
+	cSlice_values := mem.values[:]
+	rosidl_runtime_c.Uint16__Array_to_C(*(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_values)), m.Values[:])
+}
+
+func (t _InputRcTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*InputRc)
+	mem := (*C.px4_msgs__msg__InputRc)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampLastSignal = uint64(mem.timestamp_last_signal)
+	m.ChannelCount = uint8(mem.channel_count)
+	m.Rssi = int32(mem.rssi)
+	m.RcFailsafe = bool(mem.rc_failsafe)
+	m.RcLost = bool(mem.rc_lost)
+	m.RcLostFrameCount = uint16(mem.rc_lost_frame_count)
+	m.RcTotalFrameCount = uint16(mem.rc_total_frame_count)
+	m.RcPpmFrameLength = uint16(mem.rc_ppm_frame_length)
+	m.InputSource = uint8(mem.input_source)
+	cSlice_values := mem.values[:]
+	rosidl_runtime_c.Uint16__Array_to_Go(m.Values[:], *(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_values)))
+}
+
+func (t _InputRcTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__InputRc())
 }
 
 type CInputRc = C.px4_msgs__msg__InputRc
@@ -141,8 +155,7 @@ func InputRc__Sequence_to_Go(goSlice *[]InputRc, cSlice CInputRc__Sequence) {
 		cIdx := (*C.px4_msgs__msg__InputRc__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__InputRc * uintptr(i)),
 		))
-		(*goSlice)[i] = InputRc{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		InputRcTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func InputRc__Sequence_to_C(cSlice *CInputRc__Sequence, goSlice []InputRc) {
@@ -157,18 +170,16 @@ func InputRc__Sequence_to_C(cSlice *CInputRc__Sequence, goSlice []InputRc) {
 		cIdx := (*C.px4_msgs__msg__InputRc)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__InputRc * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__InputRc)(v.AsCStruct())
+		InputRcTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func InputRc__Array_to_Go(goSlice []InputRc, cSlice []CInputRc) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		InputRcTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func InputRc__Array_to_C(cSlice []CInputRc, goSlice []InputRc) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__InputRc)(goSlice[i].AsCStruct())
+		InputRcTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

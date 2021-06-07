@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/Mission", &Mission{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/Mission", MissionTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewMission
@@ -48,42 +48,56 @@ type Mission struct {
 // NewMission creates a new Mission with default values.
 func NewMission() *Mission {
 	self := Mission{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Mission) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Mission) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__Mission())
-}
-func (t *Mission) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__Mission
-	return (unsafe.Pointer)(C.px4_msgs__msg__Mission__create())
-}
-func (t *Mission) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__Mission__destroy((*C.px4_msgs__msg__Mission)(pointer_to_free))
-}
-func (t *Mission) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__Mission)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.dataman_id = C.uint8_t(t.DatamanId)
-	mem.count = C.uint16_t(t.Count)
-	mem.current_seq = C.int32_t(t.CurrentSeq)
-	return unsafe.Pointer(mem)
-}
-func (t *Mission) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__Mission)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.DatamanId = uint8(mem.dataman_id)
-	t.Count = uint16(mem.count)
-	t.CurrentSeq = int32(mem.current_seq)
-}
-func (t *Mission) Clone() ros2types.ROS2Msg {
+func (t *Mission) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Mission) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var MissionTypeSupport types.MessageTypeSupport = _MissionTypeSupport{}
+
+type _MissionTypeSupport struct{}
+
+func (t _MissionTypeSupport) New() types.Message {
+	return NewMission()
+}
+
+func (t _MissionTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__Mission
+	return (unsafe.Pointer)(C.px4_msgs__msg__Mission__create())
+}
+
+func (t _MissionTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__Mission__destroy((*C.px4_msgs__msg__Mission)(pointer_to_free))
+}
+
+func (t _MissionTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Mission)
+	mem := (*C.px4_msgs__msg__Mission)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.dataman_id = C.uint8_t(m.DatamanId)
+	mem.count = C.uint16_t(m.Count)
+	mem.current_seq = C.int32_t(m.CurrentSeq)
+}
+
+func (t _MissionTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Mission)
+	mem := (*C.px4_msgs__msg__Mission)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.DatamanId = uint8(mem.dataman_id)
+	m.Count = uint16(mem.count)
+	m.CurrentSeq = int32(mem.current_seq)
+}
+
+func (t _MissionTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__Mission())
 }
 
 type CMission = C.px4_msgs__msg__Mission
@@ -98,8 +112,7 @@ func Mission__Sequence_to_Go(goSlice *[]Mission, cSlice CMission__Sequence) {
 		cIdx := (*C.px4_msgs__msg__Mission__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__Mission * uintptr(i)),
 		))
-		(*goSlice)[i] = Mission{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		MissionTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Mission__Sequence_to_C(cSlice *CMission__Sequence, goSlice []Mission) {
@@ -114,18 +127,16 @@ func Mission__Sequence_to_C(cSlice *CMission__Sequence, goSlice []Mission) {
 		cIdx := (*C.px4_msgs__msg__Mission)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__Mission * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__Mission)(v.AsCStruct())
+		MissionTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Mission__Array_to_Go(goSlice []Mission, cSlice []CMission) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		MissionTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Mission__Array_to_C(cSlice []CMission, goSlice []Mission) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__Mission)(goSlice[i].AsCStruct())
+		MissionTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

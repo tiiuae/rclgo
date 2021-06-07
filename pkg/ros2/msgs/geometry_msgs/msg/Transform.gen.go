@@ -15,7 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/Transform", &Transform{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/Transform", TransformTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTransform
@@ -46,40 +46,54 @@ type Transform struct {
 // NewTransform creates a new Transform with default values.
 func NewTransform() *Transform {
 	self := Transform{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Transform) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Translation.SetDefaults(nil)
-	t.Rotation.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *Transform) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__Transform())
-}
-func (t *Transform) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__Transform
-	return (unsafe.Pointer)(C.geometry_msgs__msg__Transform__create())
-}
-func (t *Transform) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.geometry_msgs__msg__Transform__destroy((*C.geometry_msgs__msg__Transform)(pointer_to_free))
-}
-func (t *Transform) AsCStruct() unsafe.Pointer {
-	mem := (*C.geometry_msgs__msg__Transform)(t.PrepareMemory())
-	mem.translation = *(*C.geometry_msgs__msg__Vector3)(t.Translation.AsCStruct())
-	mem.rotation = *(*C.geometry_msgs__msg__Quaternion)(t.Rotation.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *Transform) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.geometry_msgs__msg__Transform)(ros2_message_buffer)
-	t.Translation.AsGoStruct(unsafe.Pointer(&mem.translation))
-	t.Rotation.AsGoStruct(unsafe.Pointer(&mem.rotation))
-}
-func (t *Transform) Clone() ros2types.ROS2Msg {
+func (t *Transform) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Transform) SetDefaults() {
+	t.Translation.SetDefaults()
+	t.Rotation.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TransformTypeSupport types.MessageTypeSupport = _TransformTypeSupport{}
+
+type _TransformTypeSupport struct{}
+
+func (t _TransformTypeSupport) New() types.Message {
+	return NewTransform()
+}
+
+func (t _TransformTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__Transform
+	return (unsafe.Pointer)(C.geometry_msgs__msg__Transform__create())
+}
+
+func (t _TransformTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.geometry_msgs__msg__Transform__destroy((*C.geometry_msgs__msg__Transform)(pointer_to_free))
+}
+
+func (t _TransformTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Transform)
+	mem := (*C.geometry_msgs__msg__Transform)(dst)
+	Vector3TypeSupport.AsCStruct(unsafe.Pointer(&mem.translation), &m.Translation)
+	QuaternionTypeSupport.AsCStruct(unsafe.Pointer(&mem.rotation), &m.Rotation)
+}
+
+func (t _TransformTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Transform)
+	mem := (*C.geometry_msgs__msg__Transform)(ros2_message_buffer)
+	Vector3TypeSupport.AsGoStruct(&m.Translation, unsafe.Pointer(&mem.translation))
+	QuaternionTypeSupport.AsGoStruct(&m.Rotation, unsafe.Pointer(&mem.rotation))
+}
+
+func (t _TransformTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__Transform())
 }
 
 type CTransform = C.geometry_msgs__msg__Transform
@@ -94,8 +108,7 @@ func Transform__Sequence_to_Go(goSlice *[]Transform, cSlice CTransform__Sequence
 		cIdx := (*C.geometry_msgs__msg__Transform__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Transform * uintptr(i)),
 		))
-		(*goSlice)[i] = Transform{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TransformTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Transform__Sequence_to_C(cSlice *CTransform__Sequence, goSlice []Transform) {
@@ -110,18 +123,16 @@ func Transform__Sequence_to_C(cSlice *CTransform__Sequence, goSlice []Transform)
 		cIdx := (*C.geometry_msgs__msg__Transform)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Transform * uintptr(i)),
 		))
-		*cIdx = *(*C.geometry_msgs__msg__Transform)(v.AsCStruct())
+		TransformTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Transform__Array_to_Go(goSlice []Transform, cSlice []CTransform) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TransformTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Transform__Array_to_C(cSlice []CTransform, goSlice []Transform) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.geometry_msgs__msg__Transform)(goSlice[i].AsCStruct())
+		TransformTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

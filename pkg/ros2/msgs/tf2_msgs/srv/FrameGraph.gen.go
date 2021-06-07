@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("tf2_msgs/FrameGraph", FrameGraph)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("tf2_msgs/FrameGraph", FrameGraphTypeSupport)
 }
 
-type _FrameGraph struct {
-	req,resp ros2types.ROS2Msg
+type _FrameGraphTypeSupport struct {}
+
+func (s _FrameGraphTypeSupport) Request() types.MessageTypeSupport {
+	return FrameGraph_RequestTypeSupport
 }
 
-func (s *_FrameGraph) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _FrameGraphTypeSupport) Response() types.MessageTypeSupport {
+	return FrameGraph_ResponseTypeSupport
 }
 
-func (s *_FrameGraph) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_FrameGraph) TypeSupport() unsafe.Pointer {
+func (s _FrameGraphTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__tf2_msgs__srv__FrameGraph())
 }
 
 // Modifying this variable is undefined behavior.
-var FrameGraph ros2types.Service = &_FrameGraph{
-	req: &FrameGraph_Request{},
-	resp: &FrameGraph_Response{},
-}
+var FrameGraphTypeSupport types.ServiceTypeSupport = _FrameGraphTypeSupport{}

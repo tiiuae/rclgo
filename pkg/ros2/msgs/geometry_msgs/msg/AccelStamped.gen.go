@@ -15,7 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/AccelStamped", &AccelStamped{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/AccelStamped", AccelStampedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewAccelStamped
@@ -48,40 +48,54 @@ type AccelStamped struct {
 // NewAccelStamped creates a new AccelStamped with default values.
 func NewAccelStamped() *AccelStamped {
 	self := AccelStamped{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *AccelStamped) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.Accel.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *AccelStamped) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__AccelStamped())
-}
-func (t *AccelStamped) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__AccelStamped
-	return (unsafe.Pointer)(C.geometry_msgs__msg__AccelStamped__create())
-}
-func (t *AccelStamped) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.geometry_msgs__msg__AccelStamped__destroy((*C.geometry_msgs__msg__AccelStamped)(pointer_to_free))
-}
-func (t *AccelStamped) AsCStruct() unsafe.Pointer {
-	mem := (*C.geometry_msgs__msg__AccelStamped)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.accel = *(*C.geometry_msgs__msg__Accel)(t.Accel.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *AccelStamped) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.geometry_msgs__msg__AccelStamped)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.Accel.AsGoStruct(unsafe.Pointer(&mem.accel))
-}
-func (t *AccelStamped) Clone() ros2types.ROS2Msg {
+func (t *AccelStamped) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *AccelStamped) SetDefaults() {
+	t.Header.SetDefaults()
+	t.Accel.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var AccelStampedTypeSupport types.MessageTypeSupport = _AccelStampedTypeSupport{}
+
+type _AccelStampedTypeSupport struct{}
+
+func (t _AccelStampedTypeSupport) New() types.Message {
+	return NewAccelStamped()
+}
+
+func (t _AccelStampedTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__AccelStamped
+	return (unsafe.Pointer)(C.geometry_msgs__msg__AccelStamped__create())
+}
+
+func (t _AccelStampedTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.geometry_msgs__msg__AccelStamped__destroy((*C.geometry_msgs__msg__AccelStamped)(pointer_to_free))
+}
+
+func (t _AccelStampedTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*AccelStamped)
+	mem := (*C.geometry_msgs__msg__AccelStamped)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	AccelTypeSupport.AsCStruct(unsafe.Pointer(&mem.accel), &m.Accel)
+}
+
+func (t _AccelStampedTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*AccelStamped)
+	mem := (*C.geometry_msgs__msg__AccelStamped)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	AccelTypeSupport.AsGoStruct(&m.Accel, unsafe.Pointer(&mem.accel))
+}
+
+func (t _AccelStampedTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__AccelStamped())
 }
 
 type CAccelStamped = C.geometry_msgs__msg__AccelStamped
@@ -96,8 +110,7 @@ func AccelStamped__Sequence_to_Go(goSlice *[]AccelStamped, cSlice CAccelStamped_
 		cIdx := (*C.geometry_msgs__msg__AccelStamped__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__AccelStamped * uintptr(i)),
 		))
-		(*goSlice)[i] = AccelStamped{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		AccelStampedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func AccelStamped__Sequence_to_C(cSlice *CAccelStamped__Sequence, goSlice []AccelStamped) {
@@ -112,18 +125,16 @@ func AccelStamped__Sequence_to_C(cSlice *CAccelStamped__Sequence, goSlice []Acce
 		cIdx := (*C.geometry_msgs__msg__AccelStamped)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__AccelStamped * uintptr(i)),
 		))
-		*cIdx = *(*C.geometry_msgs__msg__AccelStamped)(v.AsCStruct())
+		AccelStampedTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func AccelStamped__Array_to_Go(goSlice []AccelStamped, cSlice []CAccelStamped) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		AccelStampedTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func AccelStamped__Array_to_C(cSlice []CAccelStamped, goSlice []AccelStamped) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.geometry_msgs__msg__AccelStamped)(goSlice[i].AsCStruct())
+		AccelStampedTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

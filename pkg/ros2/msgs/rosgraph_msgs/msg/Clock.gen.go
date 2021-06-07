@@ -15,7 +15,7 @@ package rosgraph_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	builtin_interfaces_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/builtin_interfaces/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("rosgraph_msgs/Clock", &Clock{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("rosgraph_msgs/Clock", ClockTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewClock
@@ -47,37 +47,51 @@ type Clock struct {
 // NewClock creates a new Clock with default values.
 func NewClock() *Clock {
 	self := Clock{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Clock) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Clock.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *Clock) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__rosgraph_msgs__msg__Clock())
-}
-func (t *Clock) PrepareMemory() unsafe.Pointer { //returns *C.rosgraph_msgs__msg__Clock
-	return (unsafe.Pointer)(C.rosgraph_msgs__msg__Clock__create())
-}
-func (t *Clock) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.rosgraph_msgs__msg__Clock__destroy((*C.rosgraph_msgs__msg__Clock)(pointer_to_free))
-}
-func (t *Clock) AsCStruct() unsafe.Pointer {
-	mem := (*C.rosgraph_msgs__msg__Clock)(t.PrepareMemory())
-	mem.clock = *(*C.builtin_interfaces__msg__Time)(t.Clock.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *Clock) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.rosgraph_msgs__msg__Clock)(ros2_message_buffer)
-	t.Clock.AsGoStruct(unsafe.Pointer(&mem.clock))
-}
-func (t *Clock) Clone() ros2types.ROS2Msg {
+func (t *Clock) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Clock) SetDefaults() {
+	t.Clock.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ClockTypeSupport types.MessageTypeSupport = _ClockTypeSupport{}
+
+type _ClockTypeSupport struct{}
+
+func (t _ClockTypeSupport) New() types.Message {
+	return NewClock()
+}
+
+func (t _ClockTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.rosgraph_msgs__msg__Clock
+	return (unsafe.Pointer)(C.rosgraph_msgs__msg__Clock__create())
+}
+
+func (t _ClockTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.rosgraph_msgs__msg__Clock__destroy((*C.rosgraph_msgs__msg__Clock)(pointer_to_free))
+}
+
+func (t _ClockTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Clock)
+	mem := (*C.rosgraph_msgs__msg__Clock)(dst)
+	builtin_interfaces_msg.TimeTypeSupport.AsCStruct(unsafe.Pointer(&mem.clock), &m.Clock)
+}
+
+func (t _ClockTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Clock)
+	mem := (*C.rosgraph_msgs__msg__Clock)(ros2_message_buffer)
+	builtin_interfaces_msg.TimeTypeSupport.AsGoStruct(&m.Clock, unsafe.Pointer(&mem.clock))
+}
+
+func (t _ClockTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__rosgraph_msgs__msg__Clock())
 }
 
 type CClock = C.rosgraph_msgs__msg__Clock
@@ -92,8 +106,7 @@ func Clock__Sequence_to_Go(goSlice *[]Clock, cSlice CClock__Sequence) {
 		cIdx := (*C.rosgraph_msgs__msg__Clock__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rosgraph_msgs__msg__Clock * uintptr(i)),
 		))
-		(*goSlice)[i] = Clock{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ClockTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Clock__Sequence_to_C(cSlice *CClock__Sequence, goSlice []Clock) {
@@ -108,18 +121,16 @@ func Clock__Sequence_to_C(cSlice *CClock__Sequence, goSlice []Clock) {
 		cIdx := (*C.rosgraph_msgs__msg__Clock)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rosgraph_msgs__msg__Clock * uintptr(i)),
 		))
-		*cIdx = *(*C.rosgraph_msgs__msg__Clock)(v.AsCStruct())
+		ClockTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Clock__Array_to_Go(goSlice []Clock, cSlice []CClock) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ClockTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Clock__Array_to_C(cSlice []CClock, goSlice []Clock) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.rosgraph_msgs__msg__Clock)(goSlice[i].AsCStruct())
+		ClockTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

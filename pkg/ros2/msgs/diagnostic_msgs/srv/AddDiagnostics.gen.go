@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("diagnostic_msgs/AddDiagnostics", AddDiagnostics)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("diagnostic_msgs/AddDiagnostics", AddDiagnosticsTypeSupport)
 }
 
-type _AddDiagnostics struct {
-	req,resp ros2types.ROS2Msg
+type _AddDiagnosticsTypeSupport struct {}
+
+func (s _AddDiagnosticsTypeSupport) Request() types.MessageTypeSupport {
+	return AddDiagnostics_RequestTypeSupport
 }
 
-func (s *_AddDiagnostics) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _AddDiagnosticsTypeSupport) Response() types.MessageTypeSupport {
+	return AddDiagnostics_ResponseTypeSupport
 }
 
-func (s *_AddDiagnostics) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_AddDiagnostics) TypeSupport() unsafe.Pointer {
+func (s _AddDiagnosticsTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__diagnostic_msgs__srv__AddDiagnostics())
 }
 
 // Modifying this variable is undefined behavior.
-var AddDiagnostics ros2types.Service = &_AddDiagnostics{
-	req: &AddDiagnostics_Request{},
-	resp: &AddDiagnostics_Response{},
-}
+var AddDiagnosticsTypeSupport types.ServiceTypeSupport = _AddDiagnosticsTypeSupport{}

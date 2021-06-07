@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/CellularStatus", &CellularStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/CellularStatus", CellularStatusTypeSupport)
 }
 const (
 	CellularStatus_CELLULAR_STATUS_FLAG_UNKNOWN uint8 = 0// State unknown or not reportable
@@ -71,50 +71,64 @@ type CellularStatus struct {
 // NewCellularStatus creates a new CellularStatus with default values.
 func NewCellularStatus() *CellularStatus {
 	self := CellularStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *CellularStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *CellularStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__CellularStatus())
-}
-func (t *CellularStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__CellularStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__CellularStatus__create())
-}
-func (t *CellularStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__CellularStatus__destroy((*C.px4_msgs__msg__CellularStatus)(pointer_to_free))
-}
-func (t *CellularStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__CellularStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.status = C.uint16_t(t.Status)
-	mem.failure_reason = C.uint8_t(t.FailureReason)
-	mem._type = C.uint8_t(t.Type)
-	mem.quality = C.uint8_t(t.Quality)
-	mem.mcc = C.uint16_t(t.Mcc)
-	mem.mnc = C.uint16_t(t.Mnc)
-	mem.lac = C.uint16_t(t.Lac)
-	return unsafe.Pointer(mem)
-}
-func (t *CellularStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__CellularStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Status = uint16(mem.status)
-	t.FailureReason = uint8(mem.failure_reason)
-	t.Type = uint8(mem._type)
-	t.Quality = uint8(mem.quality)
-	t.Mcc = uint16(mem.mcc)
-	t.Mnc = uint16(mem.mnc)
-	t.Lac = uint16(mem.lac)
-}
-func (t *CellularStatus) Clone() ros2types.ROS2Msg {
+func (t *CellularStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *CellularStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var CellularStatusTypeSupport types.MessageTypeSupport = _CellularStatusTypeSupport{}
+
+type _CellularStatusTypeSupport struct{}
+
+func (t _CellularStatusTypeSupport) New() types.Message {
+	return NewCellularStatus()
+}
+
+func (t _CellularStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__CellularStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__CellularStatus__create())
+}
+
+func (t _CellularStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__CellularStatus__destroy((*C.px4_msgs__msg__CellularStatus)(pointer_to_free))
+}
+
+func (t _CellularStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*CellularStatus)
+	mem := (*C.px4_msgs__msg__CellularStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.status = C.uint16_t(m.Status)
+	mem.failure_reason = C.uint8_t(m.FailureReason)
+	mem._type = C.uint8_t(m.Type)
+	mem.quality = C.uint8_t(m.Quality)
+	mem.mcc = C.uint16_t(m.Mcc)
+	mem.mnc = C.uint16_t(m.Mnc)
+	mem.lac = C.uint16_t(m.Lac)
+}
+
+func (t _CellularStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*CellularStatus)
+	mem := (*C.px4_msgs__msg__CellularStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Status = uint16(mem.status)
+	m.FailureReason = uint8(mem.failure_reason)
+	m.Type = uint8(mem._type)
+	m.Quality = uint8(mem.quality)
+	m.Mcc = uint16(mem.mcc)
+	m.Mnc = uint16(mem.mnc)
+	m.Lac = uint16(mem.lac)
+}
+
+func (t _CellularStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__CellularStatus())
 }
 
 type CCellularStatus = C.px4_msgs__msg__CellularStatus
@@ -129,8 +143,7 @@ func CellularStatus__Sequence_to_Go(goSlice *[]CellularStatus, cSlice CCellularS
 		cIdx := (*C.px4_msgs__msg__CellularStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__CellularStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = CellularStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		CellularStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func CellularStatus__Sequence_to_C(cSlice *CCellularStatus__Sequence, goSlice []CellularStatus) {
@@ -145,18 +158,16 @@ func CellularStatus__Sequence_to_C(cSlice *CCellularStatus__Sequence, goSlice []
 		cIdx := (*C.px4_msgs__msg__CellularStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__CellularStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__CellularStatus)(v.AsCStruct())
+		CellularStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func CellularStatus__Array_to_Go(goSlice []CellularStatus, cSlice []CCellularStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		CellularStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func CellularStatus__Array_to_C(cSlice []CCellularStatus, goSlice []CellularStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__CellularStatus)(goSlice[i].AsCStruct())
+		CellularStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

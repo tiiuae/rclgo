@@ -42,7 +42,7 @@ package {{ $Md.GoPackage }}
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	{{range $path, $name := $Md.GoImports -}}
 	{{$name}} "{{$path}}"
@@ -67,7 +67,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("{{.Package}}/{{.Name}}", &{{.Name}}{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("{{.Package}}/{{.Name}}", {{.Name}}TypeSupport)
 }
 
 {{- if $Md.Constants }}
@@ -90,46 +90,60 @@ type {{.Name}} struct {
 // New{{.Name}} creates a new {{.Name}} with default values.
 func New{{.Name}}() *{{.Name}} {
 	self := {{.Name}}{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *{{.Name}}) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	{{""}}
-	{{- range $k, $v := .Fields -}}
-	{{defaultCode $v}}
-	{{- end -}}
-	{{""}}
-	return t
-{{"}"}}
-
-func (t *{{.Name}}) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__{{.Package}}__{{.Type}}__{{.Name}}())
+func (t *{{.Name}}) Clone() types.Message {
+	clone := *t
+	return &clone
 }
-func (t *{{.Name}}) PrepareMemory() unsafe.Pointer { //returns *C.{{.Package}}__{{.Type}}__{{.Name}}
+
+func (t *{{.Name}}) SetDefaults() {
+	{{ range $k, $v := .Fields -}}
+	{{defaultCode $v}}
+	{{- end }}
+}
+
+// Modifying this variable is undefined behavior.
+var {{.Name}}TypeSupport types.MessageTypeSupport = _{{.Name}}TypeSupport{}
+
+type _{{.Name}}TypeSupport struct{}
+
+func (t _{{.Name}}TypeSupport) New() types.Message {
+	return New{{.Name}}()
+}
+
+func (t _{{.Name}}TypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.{{.Package}}__{{.Type}}__{{.Name}}
 	return (unsafe.Pointer)(C.{{.Package}}__{{.Type}}__{{.Name}}__create())
 }
-func (t *{{.Name}}) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+
+func (t _{{.Name}}TypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
 	C.{{.Package}}__{{.Type}}__{{.Name}}__destroy((*C.{{.Package}}__{{.Type}}__{{.Name}})(pointer_to_free))
 }
-func (t *{{.Name}}) AsCStruct() unsafe.Pointer {
-	mem := (*C.{{.Package}}__{{.Type}}__{{.Name}})(t.PrepareMemory())
+
+func (t _{{.Name}}TypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	{{ if .Fields -}}
+	m := msg.(*{{.Name}})
+	mem := (*C.{{.Package}}__{{.Type}}__{{.Name}})(dst)
 	{{- range .Fields }}
 	{{cSerializationCode . $Md}}
 	{{- end }}
-	return unsafe.Pointer(mem)
+	{{- end }}
 }
-func (t *{{.Name}}) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
+
+func (t _{{.Name}}TypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
 	{{if .Fields -}}
+	m := msg.(*{{.Name}})
 	mem := (*C.{{.Package}}__{{.Type}}__{{.Name}})(ros2_message_buffer)
 	{{- range .Fields }}
 	{{goSerializationCode . $Md}}
 	{{- end }}
 	{{- end }}
 }
-func (t *{{.Name}}) Clone() ros2types.ROS2Msg {
-	clone := *t
-	return &clone
+
+func (t _{{.Name}}TypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__{{.Package}}__{{.Type}}__{{.Name}}())
 }
 
 type C{{.Name}} = C.{{.Package}}__{{.Type}}__{{.Name}}
@@ -144,8 +158,7 @@ func {{.Name}}__Sequence_to_Go(goSlice *[]{{.Name}}, cSlice C{{.Name}}__Sequence
 		cIdx := (*C.{{.Package}}__{{.Type}}__{{.Name}}__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_{{.Package}}__{{.Type}}__{{.Name}} * uintptr(i)),
 		))
-		(*goSlice)[i] = {{.Name}}{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		{{.Name}}TypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func {{.Name}}__Sequence_to_C(cSlice *C{{.Name}}__Sequence, goSlice []{{.Name}}) {
@@ -160,21 +173,19 @@ func {{.Name}}__Sequence_to_C(cSlice *C{{.Name}}__Sequence, goSlice []{{.Name}})
 		cIdx := (*C.{{.Package}}__{{.Type}}__{{.Name}})(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_{{.Package}}__{{.Type}}__{{.Name}} * uintptr(i)),
 		))
-		*cIdx = *(*C.{{.Package}}__{{.Type}}__{{.Name}})(v.AsCStruct())
+		{{.Name}}TypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func {{.Name}}__Array_to_Go(goSlice []{{.Name}}, cSlice []C{{.Name}}) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		{{.Name}}TypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func {{.Name}}__Array_to_C(cSlice []C{{.Name}}, goSlice []{{.Name}}) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.{{.Package}}__{{.Type}}__{{.Name}})(goSlice[i].AsCStruct())
+		{{.Name}}TypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-
 `))
 
 var ros2ServiceToGolangTypeTemplate = template.Must(template.New("ros2ServiceToGolangTypeTemplate").Funcs(templateFuncMap).Parse(
@@ -205,36 +216,31 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("{{.Package}}/{{.Name}}", {{ .Name }})
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("{{.Package}}/{{.Name}}", {{ .Name }}TypeSupport)
 }
 
-type _{{.Name}} struct {
-	req,resp ros2types.ROS2Msg
+type _{{.Name}}TypeSupport struct {}
+
+func (s _{{.Name}}TypeSupport) Request() types.MessageTypeSupport {
+	return {{.Request.Name}}TypeSupport
 }
 
-func (s *_{{.Name}}) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _{{.Name}}TypeSupport) Response() types.MessageTypeSupport {
+	return {{.Response.Name}}TypeSupport
 }
 
-func (s *_{{.Name}}) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_{{.Name}}) TypeSupport() unsafe.Pointer {
+func (s _{{.Name}}TypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__{{.Package}}__{{.Type}}__{{.Name}}())
 }
 
 // Modifying this variable is undefined behavior.
-var {{ .Name }} ros2types.Service = &_{{.Name}}{
-	req: &{{ .Request.Name }}{},
-	resp: &{{ .Response.Name }}{},
-}
+var {{ .Name }}TypeSupport types.ServiceTypeSupport = _{{.Name}}TypeSupport{}
 `))
 
 var ros2rosidl_runtime_c_handlers = template.Must(template.New("ros2-rosidl-runtime-c-handlers-template").Funcs(templateFuncMap).Parse(

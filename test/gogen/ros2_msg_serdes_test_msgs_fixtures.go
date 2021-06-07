@@ -226,7 +226,6 @@ test_msgs__msg__WStrings * test_msgs__msg__WStrings__fixture() {
 import "C"
 import (
 	test_msgs "github.com/tiiuae/rclgo/pkg/ros2/msgs/test_msgs/msg"
-	"github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 )
 
 func Fixture_C_test_msgs__Arrays() *C.test_msgs__msg__Arrays {
@@ -269,7 +268,7 @@ func Fixture_Go_test_msgs__BoundedSequences() *test_msgs.BoundedSequences {
 	obj.BoolValues[2] = true // Message definition declares bool_values as a bounded sequence of <=3.
 	obj.BoolValues[3] = true // There doesn't seem to be any limit on ROS2's side on allocating more indexes than "allowed".
 	obj.BoolValues[4] = true // We can leave this trap here in case such limits are enforced in the future.
-	obj.StringValues = make([]rosidl_runtime_c.String, 4)
+	obj.StringValues = make([]string, 4)
 	obj.StringValues[0] = "Bared on your tomb"
 	obj.StringValues[1] = "I'm a prayer for your loneliness"
 	obj.StringValues[2] = "And would you ever soon"
@@ -385,17 +384,17 @@ func Fixture_C_test_msgs__WStrings() *C.test_msgs__msg__WStrings {
 	return C.test_msgs__msg__WStrings__fixture()
 }
 func Fixture_Go_test_msgs__WStrings() *test_msgs.WStrings {
-	//str := rosidl_runtime_c.U16String("⚡H✈️H☢️H♐H") // This UTF16 string instantiator adds some strange Private Use Area bytes between emojis?
+	//str := string("⚡H✈️H☢️H♐H") // This UTF16 string instantiator adds some strange Private Use Area bytes between emojis?
 	strUTF16 := []rune{
 		0x26A1, 0x0048, 0x2708, 0x0048, 0x2622, 0x0048, 0x2650, 0x0048, // So to make the equally rendering strings comparable, we need to do it the hard way.
 	}
-	str := rosidl_runtime_c.U16String(string(strUTF16))
+	str := string(strUTF16)
 	obj := test_msgs.NewWStrings()
 	obj.WstringValue = str
 	obj.ArrayOfWstrings[0] = str
-	obj.BoundedSequenceOfWstrings = make([]rosidl_runtime_c.U16String, 1)
+	obj.BoundedSequenceOfWstrings = make([]string, 1)
 	obj.BoundedSequenceOfWstrings[0] = str
-	obj.UnboundedSequenceOfWstrings = make([]rosidl_runtime_c.U16String, 1)
+	obj.UnboundedSequenceOfWstrings = make([]string, 1)
 	obj.UnboundedSequenceOfWstrings[0] = str
 	return obj
 }

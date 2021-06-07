@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/SensorAccelFifo", &SensorAccelFifo{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/SensorAccelFifo", SensorAccelFifoTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSensorAccelFifo
@@ -54,58 +54,72 @@ type SensorAccelFifo struct {
 // NewSensorAccelFifo creates a new SensorAccelFifo with default values.
 func NewSensorAccelFifo() *SensorAccelFifo {
 	self := SensorAccelFifo{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SensorAccelFifo) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *SensorAccelFifo) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__SensorAccelFifo())
-}
-func (t *SensorAccelFifo) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__SensorAccelFifo
-	return (unsafe.Pointer)(C.px4_msgs__msg__SensorAccelFifo__create())
-}
-func (t *SensorAccelFifo) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__SensorAccelFifo__destroy((*C.px4_msgs__msg__SensorAccelFifo)(pointer_to_free))
-}
-func (t *SensorAccelFifo) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__SensorAccelFifo)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	mem.device_id = C.uint32_t(t.DeviceId)
-	mem.dt = C.float(t.Dt)
-	mem.scale = C.float(t.Scale)
-	mem.samples = C.uint8_t(t.Samples)
-	cSlice_x := mem.x[:]
-	rosidl_runtime_c.Int16__Array_to_C(*(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_x)), t.X[:])
-	cSlice_y := mem.y[:]
-	rosidl_runtime_c.Int16__Array_to_C(*(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_y)), t.Y[:])
-	cSlice_z := mem.z[:]
-	rosidl_runtime_c.Int16__Array_to_C(*(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_z)), t.Z[:])
-	return unsafe.Pointer(mem)
-}
-func (t *SensorAccelFifo) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__SensorAccelFifo)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	t.DeviceId = uint32(mem.device_id)
-	t.Dt = float32(mem.dt)
-	t.Scale = float32(mem.scale)
-	t.Samples = uint8(mem.samples)
-	cSlice_x := mem.x[:]
-	rosidl_runtime_c.Int16__Array_to_Go(t.X[:], *(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_x)))
-	cSlice_y := mem.y[:]
-	rosidl_runtime_c.Int16__Array_to_Go(t.Y[:], *(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_y)))
-	cSlice_z := mem.z[:]
-	rosidl_runtime_c.Int16__Array_to_Go(t.Z[:], *(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_z)))
-}
-func (t *SensorAccelFifo) Clone() ros2types.ROS2Msg {
+func (t *SensorAccelFifo) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SensorAccelFifo) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SensorAccelFifoTypeSupport types.MessageTypeSupport = _SensorAccelFifoTypeSupport{}
+
+type _SensorAccelFifoTypeSupport struct{}
+
+func (t _SensorAccelFifoTypeSupport) New() types.Message {
+	return NewSensorAccelFifo()
+}
+
+func (t _SensorAccelFifoTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__SensorAccelFifo
+	return (unsafe.Pointer)(C.px4_msgs__msg__SensorAccelFifo__create())
+}
+
+func (t _SensorAccelFifoTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__SensorAccelFifo__destroy((*C.px4_msgs__msg__SensorAccelFifo)(pointer_to_free))
+}
+
+func (t _SensorAccelFifoTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*SensorAccelFifo)
+	mem := (*C.px4_msgs__msg__SensorAccelFifo)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	mem.device_id = C.uint32_t(m.DeviceId)
+	mem.dt = C.float(m.Dt)
+	mem.scale = C.float(m.Scale)
+	mem.samples = C.uint8_t(m.Samples)
+	cSlice_x := mem.x[:]
+	rosidl_runtime_c.Int16__Array_to_C(*(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_x)), m.X[:])
+	cSlice_y := mem.y[:]
+	rosidl_runtime_c.Int16__Array_to_C(*(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_y)), m.Y[:])
+	cSlice_z := mem.z[:]
+	rosidl_runtime_c.Int16__Array_to_C(*(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_z)), m.Z[:])
+}
+
+func (t _SensorAccelFifoTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*SensorAccelFifo)
+	mem := (*C.px4_msgs__msg__SensorAccelFifo)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	m.DeviceId = uint32(mem.device_id)
+	m.Dt = float32(mem.dt)
+	m.Scale = float32(mem.scale)
+	m.Samples = uint8(mem.samples)
+	cSlice_x := mem.x[:]
+	rosidl_runtime_c.Int16__Array_to_Go(m.X[:], *(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_x)))
+	cSlice_y := mem.y[:]
+	rosidl_runtime_c.Int16__Array_to_Go(m.Y[:], *(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_y)))
+	cSlice_z := mem.z[:]
+	rosidl_runtime_c.Int16__Array_to_Go(m.Z[:], *(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_z)))
+}
+
+func (t _SensorAccelFifoTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__SensorAccelFifo())
 }
 
 type CSensorAccelFifo = C.px4_msgs__msg__SensorAccelFifo
@@ -120,8 +134,7 @@ func SensorAccelFifo__Sequence_to_Go(goSlice *[]SensorAccelFifo, cSlice CSensorA
 		cIdx := (*C.px4_msgs__msg__SensorAccelFifo__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__SensorAccelFifo * uintptr(i)),
 		))
-		(*goSlice)[i] = SensorAccelFifo{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SensorAccelFifoTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SensorAccelFifo__Sequence_to_C(cSlice *CSensorAccelFifo__Sequence, goSlice []SensorAccelFifo) {
@@ -136,18 +149,16 @@ func SensorAccelFifo__Sequence_to_C(cSlice *CSensorAccelFifo__Sequence, goSlice 
 		cIdx := (*C.px4_msgs__msg__SensorAccelFifo)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__SensorAccelFifo * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__SensorAccelFifo)(v.AsCStruct())
+		SensorAccelFifoTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SensorAccelFifo__Array_to_Go(goSlice []SensorAccelFifo, cSlice []CSensorAccelFifo) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SensorAccelFifoTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SensorAccelFifo__Array_to_C(cSlice []CSensorAccelFifo, goSlice []SensorAccelFifo) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__SensorAccelFifo)(goSlice[i].AsCStruct())
+		SensorAccelFifoTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

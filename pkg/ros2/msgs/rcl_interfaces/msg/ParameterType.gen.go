@@ -15,7 +15,7 @@ package rcl_interfaces_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("rcl_interfaces/ParameterType", &ParameterType{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("rcl_interfaces/ParameterType", ParameterTypeTypeSupport)
 }
 const (
 	ParameterType_PARAMETER_NOT_SET uint8 = 0// Default value, which implies this is not a valid parameter.
@@ -56,34 +56,46 @@ type ParameterType struct {
 // NewParameterType creates a new ParameterType with default values.
 func NewParameterType() *ParameterType {
 	self := ParameterType{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *ParameterType) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *ParameterType) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__rcl_interfaces__msg__ParameterType())
-}
-func (t *ParameterType) PrepareMemory() unsafe.Pointer { //returns *C.rcl_interfaces__msg__ParameterType
-	return (unsafe.Pointer)(C.rcl_interfaces__msg__ParameterType__create())
-}
-func (t *ParameterType) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.rcl_interfaces__msg__ParameterType__destroy((*C.rcl_interfaces__msg__ParameterType)(pointer_to_free))
-}
-func (t *ParameterType) AsCStruct() unsafe.Pointer {
-	mem := (*C.rcl_interfaces__msg__ParameterType)(t.PrepareMemory())
-	return unsafe.Pointer(mem)
-}
-func (t *ParameterType) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	
-}
-func (t *ParameterType) Clone() ros2types.ROS2Msg {
+func (t *ParameterType) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *ParameterType) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ParameterTypeTypeSupport types.MessageTypeSupport = _ParameterTypeTypeSupport{}
+
+type _ParameterTypeTypeSupport struct{}
+
+func (t _ParameterTypeTypeSupport) New() types.Message {
+	return NewParameterType()
+}
+
+func (t _ParameterTypeTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.rcl_interfaces__msg__ParameterType
+	return (unsafe.Pointer)(C.rcl_interfaces__msg__ParameterType__create())
+}
+
+func (t _ParameterTypeTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.rcl_interfaces__msg__ParameterType__destroy((*C.rcl_interfaces__msg__ParameterType)(pointer_to_free))
+}
+
+func (t _ParameterTypeTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	
+}
+
+func (t _ParameterTypeTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	
+}
+
+func (t _ParameterTypeTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__rcl_interfaces__msg__ParameterType())
 }
 
 type CParameterType = C.rcl_interfaces__msg__ParameterType
@@ -98,8 +110,7 @@ func ParameterType__Sequence_to_Go(goSlice *[]ParameterType, cSlice CParameterTy
 		cIdx := (*C.rcl_interfaces__msg__ParameterType__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rcl_interfaces__msg__ParameterType * uintptr(i)),
 		))
-		(*goSlice)[i] = ParameterType{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ParameterTypeTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func ParameterType__Sequence_to_C(cSlice *CParameterType__Sequence, goSlice []ParameterType) {
@@ -114,18 +125,16 @@ func ParameterType__Sequence_to_C(cSlice *CParameterType__Sequence, goSlice []Pa
 		cIdx := (*C.rcl_interfaces__msg__ParameterType)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rcl_interfaces__msg__ParameterType * uintptr(i)),
 		))
-		*cIdx = *(*C.rcl_interfaces__msg__ParameterType)(v.AsCStruct())
+		ParameterTypeTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func ParameterType__Array_to_Go(goSlice []ParameterType, cSlice []CParameterType) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ParameterTypeTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func ParameterType__Array_to_C(cSlice []CParameterType, goSlice []ParameterType) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.rcl_interfaces__msg__ParameterType)(goSlice[i].AsCStruct())
+		ParameterTypeTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

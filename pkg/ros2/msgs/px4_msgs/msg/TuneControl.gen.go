@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/TuneControl", &TuneControl{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/TuneControl", TuneControlTypeSupport)
 }
 const (
 	TuneControl_TUNE_ID_STOP uint8 = 0
@@ -77,48 +77,62 @@ type TuneControl struct {
 // NewTuneControl creates a new TuneControl with default values.
 func NewTuneControl() *TuneControl {
 	self := TuneControl{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *TuneControl) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *TuneControl) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__TuneControl())
-}
-func (t *TuneControl) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__TuneControl
-	return (unsafe.Pointer)(C.px4_msgs__msg__TuneControl__create())
-}
-func (t *TuneControl) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__TuneControl__destroy((*C.px4_msgs__msg__TuneControl)(pointer_to_free))
-}
-func (t *TuneControl) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__TuneControl)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.tune_id = C.uint8_t(t.TuneId)
-	mem.tune_override = C.bool(t.TuneOverride)
-	mem.frequency = C.uint16_t(t.Frequency)
-	mem.duration = C.uint32_t(t.Duration)
-	mem.silence = C.uint32_t(t.Silence)
-	mem.volume = C.uint8_t(t.Volume)
-	return unsafe.Pointer(mem)
-}
-func (t *TuneControl) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__TuneControl)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TuneId = uint8(mem.tune_id)
-	t.TuneOverride = bool(mem.tune_override)
-	t.Frequency = uint16(mem.frequency)
-	t.Duration = uint32(mem.duration)
-	t.Silence = uint32(mem.silence)
-	t.Volume = uint8(mem.volume)
-}
-func (t *TuneControl) Clone() ros2types.ROS2Msg {
+func (t *TuneControl) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *TuneControl) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TuneControlTypeSupport types.MessageTypeSupport = _TuneControlTypeSupport{}
+
+type _TuneControlTypeSupport struct{}
+
+func (t _TuneControlTypeSupport) New() types.Message {
+	return NewTuneControl()
+}
+
+func (t _TuneControlTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__TuneControl
+	return (unsafe.Pointer)(C.px4_msgs__msg__TuneControl__create())
+}
+
+func (t _TuneControlTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__TuneControl__destroy((*C.px4_msgs__msg__TuneControl)(pointer_to_free))
+}
+
+func (t _TuneControlTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*TuneControl)
+	mem := (*C.px4_msgs__msg__TuneControl)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.tune_id = C.uint8_t(m.TuneId)
+	mem.tune_override = C.bool(m.TuneOverride)
+	mem.frequency = C.uint16_t(m.Frequency)
+	mem.duration = C.uint32_t(m.Duration)
+	mem.silence = C.uint32_t(m.Silence)
+	mem.volume = C.uint8_t(m.Volume)
+}
+
+func (t _TuneControlTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*TuneControl)
+	mem := (*C.px4_msgs__msg__TuneControl)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TuneId = uint8(mem.tune_id)
+	m.TuneOverride = bool(mem.tune_override)
+	m.Frequency = uint16(mem.frequency)
+	m.Duration = uint32(mem.duration)
+	m.Silence = uint32(mem.silence)
+	m.Volume = uint8(mem.volume)
+}
+
+func (t _TuneControlTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__TuneControl())
 }
 
 type CTuneControl = C.px4_msgs__msg__TuneControl
@@ -133,8 +147,7 @@ func TuneControl__Sequence_to_Go(goSlice *[]TuneControl, cSlice CTuneControl__Se
 		cIdx := (*C.px4_msgs__msg__TuneControl__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__TuneControl * uintptr(i)),
 		))
-		(*goSlice)[i] = TuneControl{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TuneControlTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func TuneControl__Sequence_to_C(cSlice *CTuneControl__Sequence, goSlice []TuneControl) {
@@ -149,18 +162,16 @@ func TuneControl__Sequence_to_C(cSlice *CTuneControl__Sequence, goSlice []TuneCo
 		cIdx := (*C.px4_msgs__msg__TuneControl)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__TuneControl * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__TuneControl)(v.AsCStruct())
+		TuneControlTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func TuneControl__Array_to_Go(goSlice []TuneControl, cSlice []CTuneControl) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TuneControlTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func TuneControl__Array_to_C(cSlice []CTuneControl, goSlice []TuneControl) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__TuneControl)(goSlice[i].AsCStruct())
+		TuneControlTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

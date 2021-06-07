@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/Safety", &Safety{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/Safety", SafetyTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSafety
@@ -49,44 +49,58 @@ type Safety struct {
 // NewSafety creates a new Safety with default values.
 func NewSafety() *Safety {
 	self := Safety{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Safety) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Safety) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__Safety())
-}
-func (t *Safety) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__Safety
-	return (unsafe.Pointer)(C.px4_msgs__msg__Safety__create())
-}
-func (t *Safety) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__Safety__destroy((*C.px4_msgs__msg__Safety)(pointer_to_free))
-}
-func (t *Safety) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__Safety)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.safety_switch_available = C.bool(t.SafetySwitchAvailable)
-	mem.safety_off = C.bool(t.SafetyOff)
-	mem.override_available = C.bool(t.OverrideAvailable)
-	mem.override_enabled = C.bool(t.OverrideEnabled)
-	return unsafe.Pointer(mem)
-}
-func (t *Safety) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__Safety)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.SafetySwitchAvailable = bool(mem.safety_switch_available)
-	t.SafetyOff = bool(mem.safety_off)
-	t.OverrideAvailable = bool(mem.override_available)
-	t.OverrideEnabled = bool(mem.override_enabled)
-}
-func (t *Safety) Clone() ros2types.ROS2Msg {
+func (t *Safety) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Safety) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SafetyTypeSupport types.MessageTypeSupport = _SafetyTypeSupport{}
+
+type _SafetyTypeSupport struct{}
+
+func (t _SafetyTypeSupport) New() types.Message {
+	return NewSafety()
+}
+
+func (t _SafetyTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__Safety
+	return (unsafe.Pointer)(C.px4_msgs__msg__Safety__create())
+}
+
+func (t _SafetyTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__Safety__destroy((*C.px4_msgs__msg__Safety)(pointer_to_free))
+}
+
+func (t _SafetyTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Safety)
+	mem := (*C.px4_msgs__msg__Safety)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.safety_switch_available = C.bool(m.SafetySwitchAvailable)
+	mem.safety_off = C.bool(m.SafetyOff)
+	mem.override_available = C.bool(m.OverrideAvailable)
+	mem.override_enabled = C.bool(m.OverrideEnabled)
+}
+
+func (t _SafetyTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Safety)
+	mem := (*C.px4_msgs__msg__Safety)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.SafetySwitchAvailable = bool(mem.safety_switch_available)
+	m.SafetyOff = bool(mem.safety_off)
+	m.OverrideAvailable = bool(mem.override_available)
+	m.OverrideEnabled = bool(mem.override_enabled)
+}
+
+func (t _SafetyTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__Safety())
 }
 
 type CSafety = C.px4_msgs__msg__Safety
@@ -101,8 +115,7 @@ func Safety__Sequence_to_Go(goSlice *[]Safety, cSlice CSafety__Sequence) {
 		cIdx := (*C.px4_msgs__msg__Safety__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__Safety * uintptr(i)),
 		))
-		(*goSlice)[i] = Safety{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SafetyTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Safety__Sequence_to_C(cSlice *CSafety__Sequence, goSlice []Safety) {
@@ -117,18 +130,16 @@ func Safety__Sequence_to_C(cSlice *CSafety__Sequence, goSlice []Safety) {
 		cIdx := (*C.px4_msgs__msg__Safety)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__Safety * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__Safety)(v.AsCStruct())
+		SafetyTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Safety__Array_to_Go(goSlice []Safety, cSlice []CSafety) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SafetyTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Safety__Array_to_C(cSlice []CSafety, goSlice []Safety) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__Safety)(goSlice[i].AsCStruct())
+		SafetyTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

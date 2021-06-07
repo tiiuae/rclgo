@@ -15,7 +15,7 @@ package turtlesim_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("turtlesim/Color", &Color{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("turtlesim/Color", ColorTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewColor
@@ -47,40 +47,54 @@ type Color struct {
 // NewColor creates a new Color with default values.
 func NewColor() *Color {
 	self := Color{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Color) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Color) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__turtlesim__msg__Color())
-}
-func (t *Color) PrepareMemory() unsafe.Pointer { //returns *C.turtlesim__msg__Color
-	return (unsafe.Pointer)(C.turtlesim__msg__Color__create())
-}
-func (t *Color) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.turtlesim__msg__Color__destroy((*C.turtlesim__msg__Color)(pointer_to_free))
-}
-func (t *Color) AsCStruct() unsafe.Pointer {
-	mem := (*C.turtlesim__msg__Color)(t.PrepareMemory())
-	mem.r = C.uint8_t(t.R)
-	mem.g = C.uint8_t(t.G)
-	mem.b = C.uint8_t(t.B)
-	return unsafe.Pointer(mem)
-}
-func (t *Color) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.turtlesim__msg__Color)(ros2_message_buffer)
-	t.R = uint8(mem.r)
-	t.G = uint8(mem.g)
-	t.B = uint8(mem.b)
-}
-func (t *Color) Clone() ros2types.ROS2Msg {
+func (t *Color) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Color) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ColorTypeSupport types.MessageTypeSupport = _ColorTypeSupport{}
+
+type _ColorTypeSupport struct{}
+
+func (t _ColorTypeSupport) New() types.Message {
+	return NewColor()
+}
+
+func (t _ColorTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.turtlesim__msg__Color
+	return (unsafe.Pointer)(C.turtlesim__msg__Color__create())
+}
+
+func (t _ColorTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.turtlesim__msg__Color__destroy((*C.turtlesim__msg__Color)(pointer_to_free))
+}
+
+func (t _ColorTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Color)
+	mem := (*C.turtlesim__msg__Color)(dst)
+	mem.r = C.uint8_t(m.R)
+	mem.g = C.uint8_t(m.G)
+	mem.b = C.uint8_t(m.B)
+}
+
+func (t _ColorTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Color)
+	mem := (*C.turtlesim__msg__Color)(ros2_message_buffer)
+	m.R = uint8(mem.r)
+	m.G = uint8(mem.g)
+	m.B = uint8(mem.b)
+}
+
+func (t _ColorTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__turtlesim__msg__Color())
 }
 
 type CColor = C.turtlesim__msg__Color
@@ -95,8 +109,7 @@ func Color__Sequence_to_Go(goSlice *[]Color, cSlice CColor__Sequence) {
 		cIdx := (*C.turtlesim__msg__Color__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_turtlesim__msg__Color * uintptr(i)),
 		))
-		(*goSlice)[i] = Color{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ColorTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Color__Sequence_to_C(cSlice *CColor__Sequence, goSlice []Color) {
@@ -111,18 +124,16 @@ func Color__Sequence_to_C(cSlice *CColor__Sequence, goSlice []Color) {
 		cIdx := (*C.turtlesim__msg__Color)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_turtlesim__msg__Color * uintptr(i)),
 		))
-		*cIdx = *(*C.turtlesim__msg__Color)(v.AsCStruct())
+		ColorTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Color__Array_to_Go(goSlice []Color, cSlice []CColor) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ColorTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Color__Array_to_C(cSlice []CColor, goSlice []Color) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.turtlesim__msg__Color)(goSlice[i].AsCStruct())
+		ColorTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

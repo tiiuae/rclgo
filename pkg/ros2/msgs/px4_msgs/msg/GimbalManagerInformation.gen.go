@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/GimbalManagerInformation", &GimbalManagerInformation{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/GimbalManagerInformation", GimbalManagerInformationTypeSupport)
 }
 const (
 	GimbalManagerInformation_GIMBAL_MANAGER_CAP_FLAGS_HAS_RETRACT uint32 = 1
@@ -69,52 +69,66 @@ type GimbalManagerInformation struct {
 // NewGimbalManagerInformation creates a new GimbalManagerInformation with default values.
 func NewGimbalManagerInformation() *GimbalManagerInformation {
 	self := GimbalManagerInformation{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *GimbalManagerInformation) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *GimbalManagerInformation) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__GimbalManagerInformation())
-}
-func (t *GimbalManagerInformation) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__GimbalManagerInformation
-	return (unsafe.Pointer)(C.px4_msgs__msg__GimbalManagerInformation__create())
-}
-func (t *GimbalManagerInformation) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__GimbalManagerInformation__destroy((*C.px4_msgs__msg__GimbalManagerInformation)(pointer_to_free))
-}
-func (t *GimbalManagerInformation) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__GimbalManagerInformation)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.cap_flags = C.uint32_t(t.CapFlags)
-	mem.gimbal_device_id = C.uint8_t(t.GimbalDeviceId)
-	mem.roll_min = C.float(t.RollMin)
-	mem.roll_max = C.float(t.RollMax)
-	mem.pitch_min = C.float(t.PitchMin)
-	mem.pitch_max = C.float(t.PitchMax)
-	mem.yaw_min = C.float(t.YawMin)
-	mem.yaw_max = C.float(t.YawMax)
-	return unsafe.Pointer(mem)
-}
-func (t *GimbalManagerInformation) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__GimbalManagerInformation)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.CapFlags = uint32(mem.cap_flags)
-	t.GimbalDeviceId = uint8(mem.gimbal_device_id)
-	t.RollMin = float32(mem.roll_min)
-	t.RollMax = float32(mem.roll_max)
-	t.PitchMin = float32(mem.pitch_min)
-	t.PitchMax = float32(mem.pitch_max)
-	t.YawMin = float32(mem.yaw_min)
-	t.YawMax = float32(mem.yaw_max)
-}
-func (t *GimbalManagerInformation) Clone() ros2types.ROS2Msg {
+func (t *GimbalManagerInformation) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *GimbalManagerInformation) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var GimbalManagerInformationTypeSupport types.MessageTypeSupport = _GimbalManagerInformationTypeSupport{}
+
+type _GimbalManagerInformationTypeSupport struct{}
+
+func (t _GimbalManagerInformationTypeSupport) New() types.Message {
+	return NewGimbalManagerInformation()
+}
+
+func (t _GimbalManagerInformationTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__GimbalManagerInformation
+	return (unsafe.Pointer)(C.px4_msgs__msg__GimbalManagerInformation__create())
+}
+
+func (t _GimbalManagerInformationTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__GimbalManagerInformation__destroy((*C.px4_msgs__msg__GimbalManagerInformation)(pointer_to_free))
+}
+
+func (t _GimbalManagerInformationTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*GimbalManagerInformation)
+	mem := (*C.px4_msgs__msg__GimbalManagerInformation)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.cap_flags = C.uint32_t(m.CapFlags)
+	mem.gimbal_device_id = C.uint8_t(m.GimbalDeviceId)
+	mem.roll_min = C.float(m.RollMin)
+	mem.roll_max = C.float(m.RollMax)
+	mem.pitch_min = C.float(m.PitchMin)
+	mem.pitch_max = C.float(m.PitchMax)
+	mem.yaw_min = C.float(m.YawMin)
+	mem.yaw_max = C.float(m.YawMax)
+}
+
+func (t _GimbalManagerInformationTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*GimbalManagerInformation)
+	mem := (*C.px4_msgs__msg__GimbalManagerInformation)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.CapFlags = uint32(mem.cap_flags)
+	m.GimbalDeviceId = uint8(mem.gimbal_device_id)
+	m.RollMin = float32(mem.roll_min)
+	m.RollMax = float32(mem.roll_max)
+	m.PitchMin = float32(mem.pitch_min)
+	m.PitchMax = float32(mem.pitch_max)
+	m.YawMin = float32(mem.yaw_min)
+	m.YawMax = float32(mem.yaw_max)
+}
+
+func (t _GimbalManagerInformationTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__GimbalManagerInformation())
 }
 
 type CGimbalManagerInformation = C.px4_msgs__msg__GimbalManagerInformation
@@ -129,8 +143,7 @@ func GimbalManagerInformation__Sequence_to_Go(goSlice *[]GimbalManagerInformatio
 		cIdx := (*C.px4_msgs__msg__GimbalManagerInformation__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__GimbalManagerInformation * uintptr(i)),
 		))
-		(*goSlice)[i] = GimbalManagerInformation{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		GimbalManagerInformationTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func GimbalManagerInformation__Sequence_to_C(cSlice *CGimbalManagerInformation__Sequence, goSlice []GimbalManagerInformation) {
@@ -145,18 +158,16 @@ func GimbalManagerInformation__Sequence_to_C(cSlice *CGimbalManagerInformation__
 		cIdx := (*C.px4_msgs__msg__GimbalManagerInformation)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__GimbalManagerInformation * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__GimbalManagerInformation)(v.AsCStruct())
+		GimbalManagerInformationTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func GimbalManagerInformation__Array_to_Go(goSlice []GimbalManagerInformation, cSlice []CGimbalManagerInformation) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		GimbalManagerInformationTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func GimbalManagerInformation__Array_to_C(cSlice []CGimbalManagerInformation, goSlice []GimbalManagerInformation) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__GimbalManagerInformation)(goSlice[i].AsCStruct())
+		GimbalManagerInformationTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

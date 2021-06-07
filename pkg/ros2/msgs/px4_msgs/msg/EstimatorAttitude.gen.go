@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EstimatorAttitude", &EstimatorAttitude{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EstimatorAttitude", EstimatorAttitudeTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewEstimatorAttitude
@@ -50,48 +50,62 @@ type EstimatorAttitude struct {
 // NewEstimatorAttitude creates a new EstimatorAttitude with default values.
 func NewEstimatorAttitude() *EstimatorAttitude {
 	self := EstimatorAttitude{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *EstimatorAttitude) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *EstimatorAttitude) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EstimatorAttitude())
-}
-func (t *EstimatorAttitude) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EstimatorAttitude
-	return (unsafe.Pointer)(C.px4_msgs__msg__EstimatorAttitude__create())
-}
-func (t *EstimatorAttitude) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__EstimatorAttitude__destroy((*C.px4_msgs__msg__EstimatorAttitude)(pointer_to_free))
-}
-func (t *EstimatorAttitude) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__EstimatorAttitude)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	cSlice_q := mem.q[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)), t.Q[:])
-	cSlice_delta_q_reset := mem.delta_q_reset[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_q_reset)), t.DeltaQReset[:])
-	mem.quat_reset_counter = C.uint8_t(t.QuatResetCounter)
-	return unsafe.Pointer(mem)
-}
-func (t *EstimatorAttitude) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__EstimatorAttitude)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	cSlice_q := mem.q[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Q[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)))
-	cSlice_delta_q_reset := mem.delta_q_reset[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.DeltaQReset[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_q_reset)))
-	t.QuatResetCounter = uint8(mem.quat_reset_counter)
-}
-func (t *EstimatorAttitude) Clone() ros2types.ROS2Msg {
+func (t *EstimatorAttitude) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *EstimatorAttitude) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var EstimatorAttitudeTypeSupport types.MessageTypeSupport = _EstimatorAttitudeTypeSupport{}
+
+type _EstimatorAttitudeTypeSupport struct{}
+
+func (t _EstimatorAttitudeTypeSupport) New() types.Message {
+	return NewEstimatorAttitude()
+}
+
+func (t _EstimatorAttitudeTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EstimatorAttitude
+	return (unsafe.Pointer)(C.px4_msgs__msg__EstimatorAttitude__create())
+}
+
+func (t _EstimatorAttitudeTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__EstimatorAttitude__destroy((*C.px4_msgs__msg__EstimatorAttitude)(pointer_to_free))
+}
+
+func (t _EstimatorAttitudeTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*EstimatorAttitude)
+	mem := (*C.px4_msgs__msg__EstimatorAttitude)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	cSlice_q := mem.q[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)), m.Q[:])
+	cSlice_delta_q_reset := mem.delta_q_reset[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_q_reset)), m.DeltaQReset[:])
+	mem.quat_reset_counter = C.uint8_t(m.QuatResetCounter)
+}
+
+func (t _EstimatorAttitudeTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*EstimatorAttitude)
+	mem := (*C.px4_msgs__msg__EstimatorAttitude)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	cSlice_q := mem.q[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Q[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)))
+	cSlice_delta_q_reset := mem.delta_q_reset[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.DeltaQReset[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_q_reset)))
+	m.QuatResetCounter = uint8(mem.quat_reset_counter)
+}
+
+func (t _EstimatorAttitudeTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EstimatorAttitude())
 }
 
 type CEstimatorAttitude = C.px4_msgs__msg__EstimatorAttitude
@@ -106,8 +120,7 @@ func EstimatorAttitude__Sequence_to_Go(goSlice *[]EstimatorAttitude, cSlice CEst
 		cIdx := (*C.px4_msgs__msg__EstimatorAttitude__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EstimatorAttitude * uintptr(i)),
 		))
-		(*goSlice)[i] = EstimatorAttitude{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		EstimatorAttitudeTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func EstimatorAttitude__Sequence_to_C(cSlice *CEstimatorAttitude__Sequence, goSlice []EstimatorAttitude) {
@@ -122,18 +135,16 @@ func EstimatorAttitude__Sequence_to_C(cSlice *CEstimatorAttitude__Sequence, goSl
 		cIdx := (*C.px4_msgs__msg__EstimatorAttitude)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EstimatorAttitude * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__EstimatorAttitude)(v.AsCStruct())
+		EstimatorAttitudeTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func EstimatorAttitude__Array_to_Go(goSlice []EstimatorAttitude, cSlice []CEstimatorAttitude) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		EstimatorAttitudeTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func EstimatorAttitude__Array_to_C(cSlice []CEstimatorAttitude, goSlice []EstimatorAttitude) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__EstimatorAttitude)(goSlice[i].AsCStruct())
+		EstimatorAttitudeTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

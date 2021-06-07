@@ -15,7 +15,7 @@ package visualization_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	visualization_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/visualization_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("visualization_msgs/GetInteractiveMarkers_Response", &GetInteractiveMarkers_Response{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("visualization_msgs/GetInteractiveMarkers_Response", GetInteractiveMarkers_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewGetInteractiveMarkers_Response
@@ -48,38 +48,52 @@ type GetInteractiveMarkers_Response struct {
 // NewGetInteractiveMarkers_Response creates a new GetInteractiveMarkers_Response with default values.
 func NewGetInteractiveMarkers_Response() *GetInteractiveMarkers_Response {
 	self := GetInteractiveMarkers_Response{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *GetInteractiveMarkers_Response) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *GetInteractiveMarkers_Response) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__visualization_msgs__srv__GetInteractiveMarkers_Response())
-}
-func (t *GetInteractiveMarkers_Response) PrepareMemory() unsafe.Pointer { //returns *C.visualization_msgs__srv__GetInteractiveMarkers_Response
-	return (unsafe.Pointer)(C.visualization_msgs__srv__GetInteractiveMarkers_Response__create())
-}
-func (t *GetInteractiveMarkers_Response) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.visualization_msgs__srv__GetInteractiveMarkers_Response__destroy((*C.visualization_msgs__srv__GetInteractiveMarkers_Response)(pointer_to_free))
-}
-func (t *GetInteractiveMarkers_Response) AsCStruct() unsafe.Pointer {
-	mem := (*C.visualization_msgs__srv__GetInteractiveMarkers_Response)(t.PrepareMemory())
-	mem.sequence_number = C.uint64_t(t.SequenceNumber)
-	visualization_msgs_msg.InteractiveMarker__Sequence_to_C((*visualization_msgs_msg.CInteractiveMarker__Sequence)(unsafe.Pointer(&mem.markers)), t.Markers)
-	return unsafe.Pointer(mem)
-}
-func (t *GetInteractiveMarkers_Response) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.visualization_msgs__srv__GetInteractiveMarkers_Response)(ros2_message_buffer)
-	t.SequenceNumber = uint64(mem.sequence_number)
-	visualization_msgs_msg.InteractiveMarker__Sequence_to_Go(&t.Markers, *(*visualization_msgs_msg.CInteractiveMarker__Sequence)(unsafe.Pointer(&mem.markers)))
-}
-func (t *GetInteractiveMarkers_Response) Clone() ros2types.ROS2Msg {
+func (t *GetInteractiveMarkers_Response) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *GetInteractiveMarkers_Response) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var GetInteractiveMarkers_ResponseTypeSupport types.MessageTypeSupport = _GetInteractiveMarkers_ResponseTypeSupport{}
+
+type _GetInteractiveMarkers_ResponseTypeSupport struct{}
+
+func (t _GetInteractiveMarkers_ResponseTypeSupport) New() types.Message {
+	return NewGetInteractiveMarkers_Response()
+}
+
+func (t _GetInteractiveMarkers_ResponseTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.visualization_msgs__srv__GetInteractiveMarkers_Response
+	return (unsafe.Pointer)(C.visualization_msgs__srv__GetInteractiveMarkers_Response__create())
+}
+
+func (t _GetInteractiveMarkers_ResponseTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.visualization_msgs__srv__GetInteractiveMarkers_Response__destroy((*C.visualization_msgs__srv__GetInteractiveMarkers_Response)(pointer_to_free))
+}
+
+func (t _GetInteractiveMarkers_ResponseTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*GetInteractiveMarkers_Response)
+	mem := (*C.visualization_msgs__srv__GetInteractiveMarkers_Response)(dst)
+	mem.sequence_number = C.uint64_t(m.SequenceNumber)
+	visualization_msgs_msg.InteractiveMarker__Sequence_to_C((*visualization_msgs_msg.CInteractiveMarker__Sequence)(unsafe.Pointer(&mem.markers)), m.Markers)
+}
+
+func (t _GetInteractiveMarkers_ResponseTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*GetInteractiveMarkers_Response)
+	mem := (*C.visualization_msgs__srv__GetInteractiveMarkers_Response)(ros2_message_buffer)
+	m.SequenceNumber = uint64(mem.sequence_number)
+	visualization_msgs_msg.InteractiveMarker__Sequence_to_Go(&m.Markers, *(*visualization_msgs_msg.CInteractiveMarker__Sequence)(unsafe.Pointer(&mem.markers)))
+}
+
+func (t _GetInteractiveMarkers_ResponseTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__visualization_msgs__srv__GetInteractiveMarkers_Response())
 }
 
 type CGetInteractiveMarkers_Response = C.visualization_msgs__srv__GetInteractiveMarkers_Response
@@ -94,8 +108,7 @@ func GetInteractiveMarkers_Response__Sequence_to_Go(goSlice *[]GetInteractiveMar
 		cIdx := (*C.visualization_msgs__srv__GetInteractiveMarkers_Response__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_visualization_msgs__srv__GetInteractiveMarkers_Response * uintptr(i)),
 		))
-		(*goSlice)[i] = GetInteractiveMarkers_Response{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		GetInteractiveMarkers_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func GetInteractiveMarkers_Response__Sequence_to_C(cSlice *CGetInteractiveMarkers_Response__Sequence, goSlice []GetInteractiveMarkers_Response) {
@@ -110,18 +123,16 @@ func GetInteractiveMarkers_Response__Sequence_to_C(cSlice *CGetInteractiveMarker
 		cIdx := (*C.visualization_msgs__srv__GetInteractiveMarkers_Response)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_visualization_msgs__srv__GetInteractiveMarkers_Response * uintptr(i)),
 		))
-		*cIdx = *(*C.visualization_msgs__srv__GetInteractiveMarkers_Response)(v.AsCStruct())
+		GetInteractiveMarkers_ResponseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func GetInteractiveMarkers_Response__Array_to_Go(goSlice []GetInteractiveMarkers_Response, cSlice []CGetInteractiveMarkers_Response) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		GetInteractiveMarkers_ResponseTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func GetInteractiveMarkers_Response__Array_to_C(cSlice []CGetInteractiveMarkers_Response, goSlice []GetInteractiveMarkers_Response) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.visualization_msgs__srv__GetInteractiveMarkers_Response)(goSlice[i].AsCStruct())
+		GetInteractiveMarkers_ResponseTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

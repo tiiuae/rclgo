@@ -15,7 +15,7 @@ package turtlesim_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("turtlesim/TeleportAbsolute_Response", &TeleportAbsolute_Response{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("turtlesim/TeleportAbsolute_Response", TeleportAbsolute_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTeleportAbsolute_Response
@@ -44,34 +44,46 @@ type TeleportAbsolute_Response struct {
 // NewTeleportAbsolute_Response creates a new TeleportAbsolute_Response with default values.
 func NewTeleportAbsolute_Response() *TeleportAbsolute_Response {
 	self := TeleportAbsolute_Response{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *TeleportAbsolute_Response) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *TeleportAbsolute_Response) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__turtlesim__srv__TeleportAbsolute_Response())
-}
-func (t *TeleportAbsolute_Response) PrepareMemory() unsafe.Pointer { //returns *C.turtlesim__srv__TeleportAbsolute_Response
-	return (unsafe.Pointer)(C.turtlesim__srv__TeleportAbsolute_Response__create())
-}
-func (t *TeleportAbsolute_Response) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.turtlesim__srv__TeleportAbsolute_Response__destroy((*C.turtlesim__srv__TeleportAbsolute_Response)(pointer_to_free))
-}
-func (t *TeleportAbsolute_Response) AsCStruct() unsafe.Pointer {
-	mem := (*C.turtlesim__srv__TeleportAbsolute_Response)(t.PrepareMemory())
-	return unsafe.Pointer(mem)
-}
-func (t *TeleportAbsolute_Response) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	
-}
-func (t *TeleportAbsolute_Response) Clone() ros2types.ROS2Msg {
+func (t *TeleportAbsolute_Response) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *TeleportAbsolute_Response) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TeleportAbsolute_ResponseTypeSupport types.MessageTypeSupport = _TeleportAbsolute_ResponseTypeSupport{}
+
+type _TeleportAbsolute_ResponseTypeSupport struct{}
+
+func (t _TeleportAbsolute_ResponseTypeSupport) New() types.Message {
+	return NewTeleportAbsolute_Response()
+}
+
+func (t _TeleportAbsolute_ResponseTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.turtlesim__srv__TeleportAbsolute_Response
+	return (unsafe.Pointer)(C.turtlesim__srv__TeleportAbsolute_Response__create())
+}
+
+func (t _TeleportAbsolute_ResponseTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.turtlesim__srv__TeleportAbsolute_Response__destroy((*C.turtlesim__srv__TeleportAbsolute_Response)(pointer_to_free))
+}
+
+func (t _TeleportAbsolute_ResponseTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	
+}
+
+func (t _TeleportAbsolute_ResponseTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	
+}
+
+func (t _TeleportAbsolute_ResponseTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__turtlesim__srv__TeleportAbsolute_Response())
 }
 
 type CTeleportAbsolute_Response = C.turtlesim__srv__TeleportAbsolute_Response
@@ -86,8 +98,7 @@ func TeleportAbsolute_Response__Sequence_to_Go(goSlice *[]TeleportAbsolute_Respo
 		cIdx := (*C.turtlesim__srv__TeleportAbsolute_Response__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_turtlesim__srv__TeleportAbsolute_Response * uintptr(i)),
 		))
-		(*goSlice)[i] = TeleportAbsolute_Response{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TeleportAbsolute_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func TeleportAbsolute_Response__Sequence_to_C(cSlice *CTeleportAbsolute_Response__Sequence, goSlice []TeleportAbsolute_Response) {
@@ -102,18 +113,16 @@ func TeleportAbsolute_Response__Sequence_to_C(cSlice *CTeleportAbsolute_Response
 		cIdx := (*C.turtlesim__srv__TeleportAbsolute_Response)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_turtlesim__srv__TeleportAbsolute_Response * uintptr(i)),
 		))
-		*cIdx = *(*C.turtlesim__srv__TeleportAbsolute_Response)(v.AsCStruct())
+		TeleportAbsolute_ResponseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func TeleportAbsolute_Response__Array_to_Go(goSlice []TeleportAbsolute_Response, cSlice []CTeleportAbsolute_Response) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TeleportAbsolute_ResponseTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func TeleportAbsolute_Response__Array_to_C(cSlice []CTeleportAbsolute_Response, goSlice []TeleportAbsolute_Response) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.turtlesim__srv__TeleportAbsolute_Response)(goSlice[i].AsCStruct())
+		TeleportAbsolute_ResponseTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

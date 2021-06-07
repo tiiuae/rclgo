@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("test_msgs/BasicTypes", BasicTypes)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("test_msgs/BasicTypes", BasicTypesTypeSupport)
 }
 
-type _BasicTypes struct {
-	req,resp ros2types.ROS2Msg
+type _BasicTypesTypeSupport struct {}
+
+func (s _BasicTypesTypeSupport) Request() types.MessageTypeSupport {
+	return BasicTypes_RequestTypeSupport
 }
 
-func (s *_BasicTypes) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _BasicTypesTypeSupport) Response() types.MessageTypeSupport {
+	return BasicTypes_ResponseTypeSupport
 }
 
-func (s *_BasicTypes) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_BasicTypes) TypeSupport() unsafe.Pointer {
+func (s _BasicTypesTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__test_msgs__srv__BasicTypes())
 }
 
 // Modifying this variable is undefined behavior.
-var BasicTypes ros2types.Service = &_BasicTypes{
-	req: &BasicTypes_Request{},
-	resp: &BasicTypes_Response{},
-}
+var BasicTypesTypeSupport types.ServiceTypeSupport = _BasicTypesTypeSupport{}

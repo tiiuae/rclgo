@@ -20,7 +20,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/tiiuae/rclgo/pkg/ros2"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	_ "github.com/tiiuae/rclgo/pkg/ros2/msgs" // Load all the available ROS2 Message types. In Go one cannot dynamically import.
 )
@@ -37,7 +37,7 @@ var pubCmd = &cobra.Command{
 		signal.Notify(terminationSignals, syscall.SIGINT, syscall.SIGTERM)
 
 		rclContext, errs := ros2.PublisherBundleTimer(context.Background(), nil, nil, viper.GetString("namespace"), viper.GetString("node-name"), viper.GetString("topic-name"), viper.GetString("msg-type"), ros2.NewRCLArgsMust(viper.GetString("ros-args")), 1000*time.Millisecond, viper.GetString("payload"),
-			func(p *ros2.Publisher, m ros2types.ROS2Msg) bool {
+			func(p *ros2.Publisher, m types.Message) bool {
 				fmt.Printf("%+v\n", m)
 				return true
 			})

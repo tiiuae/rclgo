@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/DebugVect", &DebugVect{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/DebugVect", DebugVectTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewDebugVect
@@ -50,46 +50,60 @@ type DebugVect struct {
 // NewDebugVect creates a new DebugVect with default values.
 func NewDebugVect() *DebugVect {
 	self := DebugVect{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *DebugVect) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *DebugVect) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__DebugVect())
-}
-func (t *DebugVect) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__DebugVect
-	return (unsafe.Pointer)(C.px4_msgs__msg__DebugVect__create())
-}
-func (t *DebugVect) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__DebugVect__destroy((*C.px4_msgs__msg__DebugVect)(pointer_to_free))
-}
-func (t *DebugVect) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__DebugVect)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	cSlice_name := mem.name[:]
-	rosidl_runtime_c.Char__Array_to_C(*(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_name)), t.Name[:])
-	mem.x = C.float(t.X)
-	mem.y = C.float(t.Y)
-	mem.z = C.float(t.Z)
-	return unsafe.Pointer(mem)
-}
-func (t *DebugVect) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__DebugVect)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	cSlice_name := mem.name[:]
-	rosidl_runtime_c.Char__Array_to_Go(t.Name[:], *(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_name)))
-	t.X = float32(mem.x)
-	t.Y = float32(mem.y)
-	t.Z = float32(mem.z)
-}
-func (t *DebugVect) Clone() ros2types.ROS2Msg {
+func (t *DebugVect) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *DebugVect) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var DebugVectTypeSupport types.MessageTypeSupport = _DebugVectTypeSupport{}
+
+type _DebugVectTypeSupport struct{}
+
+func (t _DebugVectTypeSupport) New() types.Message {
+	return NewDebugVect()
+}
+
+func (t _DebugVectTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__DebugVect
+	return (unsafe.Pointer)(C.px4_msgs__msg__DebugVect__create())
+}
+
+func (t _DebugVectTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__DebugVect__destroy((*C.px4_msgs__msg__DebugVect)(pointer_to_free))
+}
+
+func (t _DebugVectTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*DebugVect)
+	mem := (*C.px4_msgs__msg__DebugVect)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	cSlice_name := mem.name[:]
+	rosidl_runtime_c.Char__Array_to_C(*(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_name)), m.Name[:])
+	mem.x = C.float(m.X)
+	mem.y = C.float(m.Y)
+	mem.z = C.float(m.Z)
+}
+
+func (t _DebugVectTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*DebugVect)
+	mem := (*C.px4_msgs__msg__DebugVect)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	cSlice_name := mem.name[:]
+	rosidl_runtime_c.Char__Array_to_Go(m.Name[:], *(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_name)))
+	m.X = float32(mem.x)
+	m.Y = float32(mem.y)
+	m.Z = float32(mem.z)
+}
+
+func (t _DebugVectTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__DebugVect())
 }
 
 type CDebugVect = C.px4_msgs__msg__DebugVect
@@ -104,8 +118,7 @@ func DebugVect__Sequence_to_Go(goSlice *[]DebugVect, cSlice CDebugVect__Sequence
 		cIdx := (*C.px4_msgs__msg__DebugVect__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__DebugVect * uintptr(i)),
 		))
-		(*goSlice)[i] = DebugVect{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		DebugVectTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func DebugVect__Sequence_to_C(cSlice *CDebugVect__Sequence, goSlice []DebugVect) {
@@ -120,18 +133,16 @@ func DebugVect__Sequence_to_C(cSlice *CDebugVect__Sequence, goSlice []DebugVect)
 		cIdx := (*C.px4_msgs__msg__DebugVect)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__DebugVect * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__DebugVect)(v.AsCStruct())
+		DebugVectTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func DebugVect__Array_to_Go(goSlice []DebugVect, cSlice []CDebugVect) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		DebugVectTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func DebugVect__Array_to_C(cSlice []CDebugVect, goSlice []DebugVect) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__DebugVect)(goSlice[i].AsCStruct())
+		DebugVectTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

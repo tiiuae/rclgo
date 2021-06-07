@@ -15,7 +15,7 @@ package map_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("map_msgs/SaveMap_Response", &SaveMap_Response{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("map_msgs/SaveMap_Response", SaveMap_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSaveMap_Response
@@ -44,34 +44,46 @@ type SaveMap_Response struct {
 // NewSaveMap_Response creates a new SaveMap_Response with default values.
 func NewSaveMap_Response() *SaveMap_Response {
 	self := SaveMap_Response{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SaveMap_Response) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *SaveMap_Response) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__map_msgs__srv__SaveMap_Response())
-}
-func (t *SaveMap_Response) PrepareMemory() unsafe.Pointer { //returns *C.map_msgs__srv__SaveMap_Response
-	return (unsafe.Pointer)(C.map_msgs__srv__SaveMap_Response__create())
-}
-func (t *SaveMap_Response) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.map_msgs__srv__SaveMap_Response__destroy((*C.map_msgs__srv__SaveMap_Response)(pointer_to_free))
-}
-func (t *SaveMap_Response) AsCStruct() unsafe.Pointer {
-	mem := (*C.map_msgs__srv__SaveMap_Response)(t.PrepareMemory())
-	return unsafe.Pointer(mem)
-}
-func (t *SaveMap_Response) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	
-}
-func (t *SaveMap_Response) Clone() ros2types.ROS2Msg {
+func (t *SaveMap_Response) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SaveMap_Response) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SaveMap_ResponseTypeSupport types.MessageTypeSupport = _SaveMap_ResponseTypeSupport{}
+
+type _SaveMap_ResponseTypeSupport struct{}
+
+func (t _SaveMap_ResponseTypeSupport) New() types.Message {
+	return NewSaveMap_Response()
+}
+
+func (t _SaveMap_ResponseTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.map_msgs__srv__SaveMap_Response
+	return (unsafe.Pointer)(C.map_msgs__srv__SaveMap_Response__create())
+}
+
+func (t _SaveMap_ResponseTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.map_msgs__srv__SaveMap_Response__destroy((*C.map_msgs__srv__SaveMap_Response)(pointer_to_free))
+}
+
+func (t _SaveMap_ResponseTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	
+}
+
+func (t _SaveMap_ResponseTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	
+}
+
+func (t _SaveMap_ResponseTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__map_msgs__srv__SaveMap_Response())
 }
 
 type CSaveMap_Response = C.map_msgs__srv__SaveMap_Response
@@ -86,8 +98,7 @@ func SaveMap_Response__Sequence_to_Go(goSlice *[]SaveMap_Response, cSlice CSaveM
 		cIdx := (*C.map_msgs__srv__SaveMap_Response__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_map_msgs__srv__SaveMap_Response * uintptr(i)),
 		))
-		(*goSlice)[i] = SaveMap_Response{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SaveMap_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SaveMap_Response__Sequence_to_C(cSlice *CSaveMap_Response__Sequence, goSlice []SaveMap_Response) {
@@ -102,18 +113,16 @@ func SaveMap_Response__Sequence_to_C(cSlice *CSaveMap_Response__Sequence, goSlic
 		cIdx := (*C.map_msgs__srv__SaveMap_Response)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_map_msgs__srv__SaveMap_Response * uintptr(i)),
 		))
-		*cIdx = *(*C.map_msgs__srv__SaveMap_Response)(v.AsCStruct())
+		SaveMap_ResponseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SaveMap_Response__Array_to_Go(goSlice []SaveMap_Response, cSlice []CSaveMap_Response) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SaveMap_ResponseTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SaveMap_Response__Array_to_C(cSlice []CSaveMap_Response, goSlice []SaveMap_Response) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.map_msgs__srv__SaveMap_Response)(goSlice[i].AsCStruct())
+		SaveMap_ResponseTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package diagnostic_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,53 +34,65 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("diagnostic_msgs/KeyValue", &KeyValue{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("diagnostic_msgs/KeyValue", KeyValueTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewKeyValue
 // function instead.
 type KeyValue struct {
-	Key rosidl_runtime_c.String `yaml:"key"`// What to label this value when viewing.
-	Value rosidl_runtime_c.String `yaml:"value"`// What to label this value when viewing.A value to track over time.
+	Key string `yaml:"key"`// What to label this value when viewing.
+	Value string `yaml:"value"`// What to label this value when viewing.A value to track over time.
 }
 
 // NewKeyValue creates a new KeyValue with default values.
 func NewKeyValue() *KeyValue {
 	self := KeyValue{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *KeyValue) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Key.SetDefaults("")
-	t.Value.SetDefaults("")
-	
-	return t
-}
-
-func (t *KeyValue) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__diagnostic_msgs__msg__KeyValue())
-}
-func (t *KeyValue) PrepareMemory() unsafe.Pointer { //returns *C.diagnostic_msgs__msg__KeyValue
-	return (unsafe.Pointer)(C.diagnostic_msgs__msg__KeyValue__create())
-}
-func (t *KeyValue) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.diagnostic_msgs__msg__KeyValue__destroy((*C.diagnostic_msgs__msg__KeyValue)(pointer_to_free))
-}
-func (t *KeyValue) AsCStruct() unsafe.Pointer {
-	mem := (*C.diagnostic_msgs__msg__KeyValue)(t.PrepareMemory())
-	mem.key = *(*C.rosidl_runtime_c__String)(t.Key.AsCStruct())
-	mem.value = *(*C.rosidl_runtime_c__String)(t.Value.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *KeyValue) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.diagnostic_msgs__msg__KeyValue)(ros2_message_buffer)
-	t.Key.AsGoStruct(unsafe.Pointer(&mem.key))
-	t.Value.AsGoStruct(unsafe.Pointer(&mem.value))
-}
-func (t *KeyValue) Clone() ros2types.ROS2Msg {
+func (t *KeyValue) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *KeyValue) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var KeyValueTypeSupport types.MessageTypeSupport = _KeyValueTypeSupport{}
+
+type _KeyValueTypeSupport struct{}
+
+func (t _KeyValueTypeSupport) New() types.Message {
+	return NewKeyValue()
+}
+
+func (t _KeyValueTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.diagnostic_msgs__msg__KeyValue
+	return (unsafe.Pointer)(C.diagnostic_msgs__msg__KeyValue__create())
+}
+
+func (t _KeyValueTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.diagnostic_msgs__msg__KeyValue__destroy((*C.diagnostic_msgs__msg__KeyValue)(pointer_to_free))
+}
+
+func (t _KeyValueTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*KeyValue)
+	mem := (*C.diagnostic_msgs__msg__KeyValue)(dst)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.key), m.Key)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.value), m.Value)
+}
+
+func (t _KeyValueTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*KeyValue)
+	mem := (*C.diagnostic_msgs__msg__KeyValue)(ros2_message_buffer)
+	rosidl_runtime_c.StringAsGoStruct(&m.Key, unsafe.Pointer(&mem.key))
+	rosidl_runtime_c.StringAsGoStruct(&m.Value, unsafe.Pointer(&mem.value))
+}
+
+func (t _KeyValueTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__diagnostic_msgs__msg__KeyValue())
 }
 
 type CKeyValue = C.diagnostic_msgs__msg__KeyValue
@@ -95,8 +107,7 @@ func KeyValue__Sequence_to_Go(goSlice *[]KeyValue, cSlice CKeyValue__Sequence) {
 		cIdx := (*C.diagnostic_msgs__msg__KeyValue__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_diagnostic_msgs__msg__KeyValue * uintptr(i)),
 		))
-		(*goSlice)[i] = KeyValue{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		KeyValueTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func KeyValue__Sequence_to_C(cSlice *CKeyValue__Sequence, goSlice []KeyValue) {
@@ -111,18 +122,16 @@ func KeyValue__Sequence_to_C(cSlice *CKeyValue__Sequence, goSlice []KeyValue) {
 		cIdx := (*C.diagnostic_msgs__msg__KeyValue)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_diagnostic_msgs__msg__KeyValue * uintptr(i)),
 		))
-		*cIdx = *(*C.diagnostic_msgs__msg__KeyValue)(v.AsCStruct())
+		KeyValueTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func KeyValue__Array_to_Go(goSlice []KeyValue, cSlice []CKeyValue) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		KeyValueTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func KeyValue__Array_to_C(cSlice []CKeyValue, goSlice []KeyValue) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.diagnostic_msgs__msg__KeyValue)(goSlice[i].AsCStruct())
+		KeyValueTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

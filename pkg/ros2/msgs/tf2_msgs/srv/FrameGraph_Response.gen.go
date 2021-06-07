@@ -15,7 +15,7 @@ package tf2_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,49 +34,62 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("tf2_msgs/FrameGraph_Response", &FrameGraph_Response{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("tf2_msgs/FrameGraph_Response", FrameGraph_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewFrameGraph_Response
 // function instead.
 type FrameGraph_Response struct {
-	FrameYaml rosidl_runtime_c.String `yaml:"frame_yaml"`
+	FrameYaml string `yaml:"frame_yaml"`
 }
 
 // NewFrameGraph_Response creates a new FrameGraph_Response with default values.
 func NewFrameGraph_Response() *FrameGraph_Response {
 	self := FrameGraph_Response{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *FrameGraph_Response) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.FrameYaml.SetDefaults("")
-	
-	return t
-}
-
-func (t *FrameGraph_Response) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__tf2_msgs__srv__FrameGraph_Response())
-}
-func (t *FrameGraph_Response) PrepareMemory() unsafe.Pointer { //returns *C.tf2_msgs__srv__FrameGraph_Response
-	return (unsafe.Pointer)(C.tf2_msgs__srv__FrameGraph_Response__create())
-}
-func (t *FrameGraph_Response) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.tf2_msgs__srv__FrameGraph_Response__destroy((*C.tf2_msgs__srv__FrameGraph_Response)(pointer_to_free))
-}
-func (t *FrameGraph_Response) AsCStruct() unsafe.Pointer {
-	mem := (*C.tf2_msgs__srv__FrameGraph_Response)(t.PrepareMemory())
-	mem.frame_yaml = *(*C.rosidl_runtime_c__String)(t.FrameYaml.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *FrameGraph_Response) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.tf2_msgs__srv__FrameGraph_Response)(ros2_message_buffer)
-	t.FrameYaml.AsGoStruct(unsafe.Pointer(&mem.frame_yaml))
-}
-func (t *FrameGraph_Response) Clone() ros2types.ROS2Msg {
+func (t *FrameGraph_Response) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *FrameGraph_Response) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var FrameGraph_ResponseTypeSupport types.MessageTypeSupport = _FrameGraph_ResponseTypeSupport{}
+
+type _FrameGraph_ResponseTypeSupport struct{}
+
+func (t _FrameGraph_ResponseTypeSupport) New() types.Message {
+	return NewFrameGraph_Response()
+}
+
+func (t _FrameGraph_ResponseTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.tf2_msgs__srv__FrameGraph_Response
+	return (unsafe.Pointer)(C.tf2_msgs__srv__FrameGraph_Response__create())
+}
+
+func (t _FrameGraph_ResponseTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.tf2_msgs__srv__FrameGraph_Response__destroy((*C.tf2_msgs__srv__FrameGraph_Response)(pointer_to_free))
+}
+
+func (t _FrameGraph_ResponseTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*FrameGraph_Response)
+	mem := (*C.tf2_msgs__srv__FrameGraph_Response)(dst)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.frame_yaml), m.FrameYaml)
+}
+
+func (t _FrameGraph_ResponseTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*FrameGraph_Response)
+	mem := (*C.tf2_msgs__srv__FrameGraph_Response)(ros2_message_buffer)
+	rosidl_runtime_c.StringAsGoStruct(&m.FrameYaml, unsafe.Pointer(&mem.frame_yaml))
+}
+
+func (t _FrameGraph_ResponseTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__tf2_msgs__srv__FrameGraph_Response())
 }
 
 type CFrameGraph_Response = C.tf2_msgs__srv__FrameGraph_Response
@@ -91,8 +104,7 @@ func FrameGraph_Response__Sequence_to_Go(goSlice *[]FrameGraph_Response, cSlice 
 		cIdx := (*C.tf2_msgs__srv__FrameGraph_Response__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_tf2_msgs__srv__FrameGraph_Response * uintptr(i)),
 		))
-		(*goSlice)[i] = FrameGraph_Response{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		FrameGraph_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func FrameGraph_Response__Sequence_to_C(cSlice *CFrameGraph_Response__Sequence, goSlice []FrameGraph_Response) {
@@ -107,18 +119,16 @@ func FrameGraph_Response__Sequence_to_C(cSlice *CFrameGraph_Response__Sequence, 
 		cIdx := (*C.tf2_msgs__srv__FrameGraph_Response)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_tf2_msgs__srv__FrameGraph_Response * uintptr(i)),
 		))
-		*cIdx = *(*C.tf2_msgs__srv__FrameGraph_Response)(v.AsCStruct())
+		FrameGraph_ResponseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func FrameGraph_Response__Array_to_Go(goSlice []FrameGraph_Response, cSlice []CFrameGraph_Response) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		FrameGraph_ResponseTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func FrameGraph_Response__Array_to_C(cSlice []CFrameGraph_Response, goSlice []FrameGraph_Response) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.tf2_msgs__srv__FrameGraph_Response)(goSlice[i].AsCStruct())
+		FrameGraph_ResponseTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package nav_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	builtin_interfaces_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/builtin_interfaces/msg"
 	geometry_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/geometry_msgs/msg"
@@ -37,7 +37,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("nav_msgs/MapMetaData", &MapMetaData{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("nav_msgs/MapMetaData", MapMetaDataTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewMapMetaData
@@ -53,46 +53,60 @@ type MapMetaData struct {
 // NewMapMetaData creates a new MapMetaData with default values.
 func NewMapMetaData() *MapMetaData {
 	self := MapMetaData{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *MapMetaData) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.MapLoadTime.SetDefaults(nil)
-	t.Origin.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *MapMetaData) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__nav_msgs__msg__MapMetaData())
-}
-func (t *MapMetaData) PrepareMemory() unsafe.Pointer { //returns *C.nav_msgs__msg__MapMetaData
-	return (unsafe.Pointer)(C.nav_msgs__msg__MapMetaData__create())
-}
-func (t *MapMetaData) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.nav_msgs__msg__MapMetaData__destroy((*C.nav_msgs__msg__MapMetaData)(pointer_to_free))
-}
-func (t *MapMetaData) AsCStruct() unsafe.Pointer {
-	mem := (*C.nav_msgs__msg__MapMetaData)(t.PrepareMemory())
-	mem.map_load_time = *(*C.builtin_interfaces__msg__Time)(t.MapLoadTime.AsCStruct())
-	mem.resolution = C.float(t.Resolution)
-	mem.width = C.uint32_t(t.Width)
-	mem.height = C.uint32_t(t.Height)
-	mem.origin = *(*C.geometry_msgs__msg__Pose)(t.Origin.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *MapMetaData) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.nav_msgs__msg__MapMetaData)(ros2_message_buffer)
-	t.MapLoadTime.AsGoStruct(unsafe.Pointer(&mem.map_load_time))
-	t.Resolution = float32(mem.resolution)
-	t.Width = uint32(mem.width)
-	t.Height = uint32(mem.height)
-	t.Origin.AsGoStruct(unsafe.Pointer(&mem.origin))
-}
-func (t *MapMetaData) Clone() ros2types.ROS2Msg {
+func (t *MapMetaData) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *MapMetaData) SetDefaults() {
+	t.MapLoadTime.SetDefaults()
+	t.Origin.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var MapMetaDataTypeSupport types.MessageTypeSupport = _MapMetaDataTypeSupport{}
+
+type _MapMetaDataTypeSupport struct{}
+
+func (t _MapMetaDataTypeSupport) New() types.Message {
+	return NewMapMetaData()
+}
+
+func (t _MapMetaDataTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.nav_msgs__msg__MapMetaData
+	return (unsafe.Pointer)(C.nav_msgs__msg__MapMetaData__create())
+}
+
+func (t _MapMetaDataTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.nav_msgs__msg__MapMetaData__destroy((*C.nav_msgs__msg__MapMetaData)(pointer_to_free))
+}
+
+func (t _MapMetaDataTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*MapMetaData)
+	mem := (*C.nav_msgs__msg__MapMetaData)(dst)
+	builtin_interfaces_msg.TimeTypeSupport.AsCStruct(unsafe.Pointer(&mem.map_load_time), &m.MapLoadTime)
+	mem.resolution = C.float(m.Resolution)
+	mem.width = C.uint32_t(m.Width)
+	mem.height = C.uint32_t(m.Height)
+	geometry_msgs_msg.PoseTypeSupport.AsCStruct(unsafe.Pointer(&mem.origin), &m.Origin)
+}
+
+func (t _MapMetaDataTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*MapMetaData)
+	mem := (*C.nav_msgs__msg__MapMetaData)(ros2_message_buffer)
+	builtin_interfaces_msg.TimeTypeSupport.AsGoStruct(&m.MapLoadTime, unsafe.Pointer(&mem.map_load_time))
+	m.Resolution = float32(mem.resolution)
+	m.Width = uint32(mem.width)
+	m.Height = uint32(mem.height)
+	geometry_msgs_msg.PoseTypeSupport.AsGoStruct(&m.Origin, unsafe.Pointer(&mem.origin))
+}
+
+func (t _MapMetaDataTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__nav_msgs__msg__MapMetaData())
 }
 
 type CMapMetaData = C.nav_msgs__msg__MapMetaData
@@ -107,8 +121,7 @@ func MapMetaData__Sequence_to_Go(goSlice *[]MapMetaData, cSlice CMapMetaData__Se
 		cIdx := (*C.nav_msgs__msg__MapMetaData__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_nav_msgs__msg__MapMetaData * uintptr(i)),
 		))
-		(*goSlice)[i] = MapMetaData{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		MapMetaDataTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func MapMetaData__Sequence_to_C(cSlice *CMapMetaData__Sequence, goSlice []MapMetaData) {
@@ -123,18 +136,16 @@ func MapMetaData__Sequence_to_C(cSlice *CMapMetaData__Sequence, goSlice []MapMet
 		cIdx := (*C.nav_msgs__msg__MapMetaData)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_nav_msgs__msg__MapMetaData * uintptr(i)),
 		))
-		*cIdx = *(*C.nav_msgs__msg__MapMetaData)(v.AsCStruct())
+		MapMetaDataTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func MapMetaData__Array_to_Go(goSlice []MapMetaData, cSlice []CMapMetaData) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		MapMetaDataTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func MapMetaData__Array_to_C(cSlice []CMapMetaData, goSlice []MapMetaData) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.nav_msgs__msg__MapMetaData)(goSlice[i].AsCStruct())
+		MapMetaDataTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

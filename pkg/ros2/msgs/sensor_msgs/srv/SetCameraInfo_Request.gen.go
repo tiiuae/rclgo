@@ -15,7 +15,7 @@ package sensor_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	sensor_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/sensor_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/SetCameraInfo_Request", &SetCameraInfo_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/SetCameraInfo_Request", SetCameraInfo_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSetCameraInfo_Request
@@ -47,37 +47,51 @@ type SetCameraInfo_Request struct {
 // NewSetCameraInfo_Request creates a new SetCameraInfo_Request with default values.
 func NewSetCameraInfo_Request() *SetCameraInfo_Request {
 	self := SetCameraInfo_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SetCameraInfo_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.CameraInfo.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *SetCameraInfo_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__srv__SetCameraInfo_Request())
-}
-func (t *SetCameraInfo_Request) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__srv__SetCameraInfo_Request
-	return (unsafe.Pointer)(C.sensor_msgs__srv__SetCameraInfo_Request__create())
-}
-func (t *SetCameraInfo_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__srv__SetCameraInfo_Request__destroy((*C.sensor_msgs__srv__SetCameraInfo_Request)(pointer_to_free))
-}
-func (t *SetCameraInfo_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__srv__SetCameraInfo_Request)(t.PrepareMemory())
-	mem.camera_info = *(*C.sensor_msgs__msg__CameraInfo)(t.CameraInfo.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *SetCameraInfo_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__srv__SetCameraInfo_Request)(ros2_message_buffer)
-	t.CameraInfo.AsGoStruct(unsafe.Pointer(&mem.camera_info))
-}
-func (t *SetCameraInfo_Request) Clone() ros2types.ROS2Msg {
+func (t *SetCameraInfo_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SetCameraInfo_Request) SetDefaults() {
+	t.CameraInfo.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SetCameraInfo_RequestTypeSupport types.MessageTypeSupport = _SetCameraInfo_RequestTypeSupport{}
+
+type _SetCameraInfo_RequestTypeSupport struct{}
+
+func (t _SetCameraInfo_RequestTypeSupport) New() types.Message {
+	return NewSetCameraInfo_Request()
+}
+
+func (t _SetCameraInfo_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__srv__SetCameraInfo_Request
+	return (unsafe.Pointer)(C.sensor_msgs__srv__SetCameraInfo_Request__create())
+}
+
+func (t _SetCameraInfo_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__srv__SetCameraInfo_Request__destroy((*C.sensor_msgs__srv__SetCameraInfo_Request)(pointer_to_free))
+}
+
+func (t _SetCameraInfo_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*SetCameraInfo_Request)
+	mem := (*C.sensor_msgs__srv__SetCameraInfo_Request)(dst)
+	sensor_msgs_msg.CameraInfoTypeSupport.AsCStruct(unsafe.Pointer(&mem.camera_info), &m.CameraInfo)
+}
+
+func (t _SetCameraInfo_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*SetCameraInfo_Request)
+	mem := (*C.sensor_msgs__srv__SetCameraInfo_Request)(ros2_message_buffer)
+	sensor_msgs_msg.CameraInfoTypeSupport.AsGoStruct(&m.CameraInfo, unsafe.Pointer(&mem.camera_info))
+}
+
+func (t _SetCameraInfo_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__srv__SetCameraInfo_Request())
 }
 
 type CSetCameraInfo_Request = C.sensor_msgs__srv__SetCameraInfo_Request
@@ -92,8 +106,7 @@ func SetCameraInfo_Request__Sequence_to_Go(goSlice *[]SetCameraInfo_Request, cSl
 		cIdx := (*C.sensor_msgs__srv__SetCameraInfo_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__srv__SetCameraInfo_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = SetCameraInfo_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SetCameraInfo_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SetCameraInfo_Request__Sequence_to_C(cSlice *CSetCameraInfo_Request__Sequence, goSlice []SetCameraInfo_Request) {
@@ -108,18 +121,16 @@ func SetCameraInfo_Request__Sequence_to_C(cSlice *CSetCameraInfo_Request__Sequen
 		cIdx := (*C.sensor_msgs__srv__SetCameraInfo_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__srv__SetCameraInfo_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__srv__SetCameraInfo_Request)(v.AsCStruct())
+		SetCameraInfo_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SetCameraInfo_Request__Array_to_Go(goSlice []SetCameraInfo_Request, cSlice []CSetCameraInfo_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SetCameraInfo_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SetCameraInfo_Request__Array_to_C(cSlice []CSetCameraInfo_Request, goSlice []SetCameraInfo_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__srv__SetCameraInfo_Request)(goSlice[i].AsCStruct())
+		SetCameraInfo_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

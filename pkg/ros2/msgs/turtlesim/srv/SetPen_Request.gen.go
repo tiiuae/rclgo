@@ -15,7 +15,7 @@ package turtlesim_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("turtlesim/SetPen_Request", &SetPen_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("turtlesim/SetPen_Request", SetPen_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSetPen_Request
@@ -49,44 +49,58 @@ type SetPen_Request struct {
 // NewSetPen_Request creates a new SetPen_Request with default values.
 func NewSetPen_Request() *SetPen_Request {
 	self := SetPen_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SetPen_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *SetPen_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__turtlesim__srv__SetPen_Request())
-}
-func (t *SetPen_Request) PrepareMemory() unsafe.Pointer { //returns *C.turtlesim__srv__SetPen_Request
-	return (unsafe.Pointer)(C.turtlesim__srv__SetPen_Request__create())
-}
-func (t *SetPen_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.turtlesim__srv__SetPen_Request__destroy((*C.turtlesim__srv__SetPen_Request)(pointer_to_free))
-}
-func (t *SetPen_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.turtlesim__srv__SetPen_Request)(t.PrepareMemory())
-	mem.r = C.uint8_t(t.R)
-	mem.g = C.uint8_t(t.G)
-	mem.b = C.uint8_t(t.B)
-	mem.width = C.uint8_t(t.Width)
-	mem.off = C.uint8_t(t.Off)
-	return unsafe.Pointer(mem)
-}
-func (t *SetPen_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.turtlesim__srv__SetPen_Request)(ros2_message_buffer)
-	t.R = uint8(mem.r)
-	t.G = uint8(mem.g)
-	t.B = uint8(mem.b)
-	t.Width = uint8(mem.width)
-	t.Off = uint8(mem.off)
-}
-func (t *SetPen_Request) Clone() ros2types.ROS2Msg {
+func (t *SetPen_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SetPen_Request) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SetPen_RequestTypeSupport types.MessageTypeSupport = _SetPen_RequestTypeSupport{}
+
+type _SetPen_RequestTypeSupport struct{}
+
+func (t _SetPen_RequestTypeSupport) New() types.Message {
+	return NewSetPen_Request()
+}
+
+func (t _SetPen_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.turtlesim__srv__SetPen_Request
+	return (unsafe.Pointer)(C.turtlesim__srv__SetPen_Request__create())
+}
+
+func (t _SetPen_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.turtlesim__srv__SetPen_Request__destroy((*C.turtlesim__srv__SetPen_Request)(pointer_to_free))
+}
+
+func (t _SetPen_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*SetPen_Request)
+	mem := (*C.turtlesim__srv__SetPen_Request)(dst)
+	mem.r = C.uint8_t(m.R)
+	mem.g = C.uint8_t(m.G)
+	mem.b = C.uint8_t(m.B)
+	mem.width = C.uint8_t(m.Width)
+	mem.off = C.uint8_t(m.Off)
+}
+
+func (t _SetPen_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*SetPen_Request)
+	mem := (*C.turtlesim__srv__SetPen_Request)(ros2_message_buffer)
+	m.R = uint8(mem.r)
+	m.G = uint8(mem.g)
+	m.B = uint8(mem.b)
+	m.Width = uint8(mem.width)
+	m.Off = uint8(mem.off)
+}
+
+func (t _SetPen_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__turtlesim__srv__SetPen_Request())
 }
 
 type CSetPen_Request = C.turtlesim__srv__SetPen_Request
@@ -101,8 +115,7 @@ func SetPen_Request__Sequence_to_Go(goSlice *[]SetPen_Request, cSlice CSetPen_Re
 		cIdx := (*C.turtlesim__srv__SetPen_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_turtlesim__srv__SetPen_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = SetPen_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SetPen_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SetPen_Request__Sequence_to_C(cSlice *CSetPen_Request__Sequence, goSlice []SetPen_Request) {
@@ -117,18 +130,16 @@ func SetPen_Request__Sequence_to_C(cSlice *CSetPen_Request__Sequence, goSlice []
 		cIdx := (*C.turtlesim__srv__SetPen_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_turtlesim__srv__SetPen_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.turtlesim__srv__SetPen_Request)(v.AsCStruct())
+		SetPen_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SetPen_Request__Array_to_Go(goSlice []SetPen_Request, cSlice []CSetPen_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SetPen_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SetPen_Request__Array_to_C(cSlice []CSetPen_Request, goSlice []SetPen_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.turtlesim__srv__SetPen_Request)(goSlice[i].AsCStruct())
+		SetPen_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

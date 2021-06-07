@@ -15,7 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("std_msgs/MultiArrayLayout", &MultiArrayLayout{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("std_msgs/MultiArrayLayout", MultiArrayLayoutTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewMultiArrayLayout
@@ -46,38 +46,52 @@ type MultiArrayLayout struct {
 // NewMultiArrayLayout creates a new MultiArrayLayout with default values.
 func NewMultiArrayLayout() *MultiArrayLayout {
 	self := MultiArrayLayout{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *MultiArrayLayout) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *MultiArrayLayout) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__std_msgs__msg__MultiArrayLayout())
-}
-func (t *MultiArrayLayout) PrepareMemory() unsafe.Pointer { //returns *C.std_msgs__msg__MultiArrayLayout
-	return (unsafe.Pointer)(C.std_msgs__msg__MultiArrayLayout__create())
-}
-func (t *MultiArrayLayout) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.std_msgs__msg__MultiArrayLayout__destroy((*C.std_msgs__msg__MultiArrayLayout)(pointer_to_free))
-}
-func (t *MultiArrayLayout) AsCStruct() unsafe.Pointer {
-	mem := (*C.std_msgs__msg__MultiArrayLayout)(t.PrepareMemory())
-	MultiArrayDimension__Sequence_to_C(&mem.dim, t.Dim)
-	mem.data_offset = C.uint32_t(t.DataOffset)
-	return unsafe.Pointer(mem)
-}
-func (t *MultiArrayLayout) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.std_msgs__msg__MultiArrayLayout)(ros2_message_buffer)
-	MultiArrayDimension__Sequence_to_Go(&t.Dim, mem.dim)
-	t.DataOffset = uint32(mem.data_offset)
-}
-func (t *MultiArrayLayout) Clone() ros2types.ROS2Msg {
+func (t *MultiArrayLayout) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *MultiArrayLayout) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var MultiArrayLayoutTypeSupport types.MessageTypeSupport = _MultiArrayLayoutTypeSupport{}
+
+type _MultiArrayLayoutTypeSupport struct{}
+
+func (t _MultiArrayLayoutTypeSupport) New() types.Message {
+	return NewMultiArrayLayout()
+}
+
+func (t _MultiArrayLayoutTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.std_msgs__msg__MultiArrayLayout
+	return (unsafe.Pointer)(C.std_msgs__msg__MultiArrayLayout__create())
+}
+
+func (t _MultiArrayLayoutTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.std_msgs__msg__MultiArrayLayout__destroy((*C.std_msgs__msg__MultiArrayLayout)(pointer_to_free))
+}
+
+func (t _MultiArrayLayoutTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*MultiArrayLayout)
+	mem := (*C.std_msgs__msg__MultiArrayLayout)(dst)
+	MultiArrayDimension__Sequence_to_C(&mem.dim, m.Dim)
+	mem.data_offset = C.uint32_t(m.DataOffset)
+}
+
+func (t _MultiArrayLayoutTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*MultiArrayLayout)
+	mem := (*C.std_msgs__msg__MultiArrayLayout)(ros2_message_buffer)
+	MultiArrayDimension__Sequence_to_Go(&m.Dim, mem.dim)
+	m.DataOffset = uint32(mem.data_offset)
+}
+
+func (t _MultiArrayLayoutTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__std_msgs__msg__MultiArrayLayout())
 }
 
 type CMultiArrayLayout = C.std_msgs__msg__MultiArrayLayout
@@ -92,8 +106,7 @@ func MultiArrayLayout__Sequence_to_Go(goSlice *[]MultiArrayLayout, cSlice CMulti
 		cIdx := (*C.std_msgs__msg__MultiArrayLayout__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__MultiArrayLayout * uintptr(i)),
 		))
-		(*goSlice)[i] = MultiArrayLayout{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		MultiArrayLayoutTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func MultiArrayLayout__Sequence_to_C(cSlice *CMultiArrayLayout__Sequence, goSlice []MultiArrayLayout) {
@@ -108,18 +121,16 @@ func MultiArrayLayout__Sequence_to_C(cSlice *CMultiArrayLayout__Sequence, goSlic
 		cIdx := (*C.std_msgs__msg__MultiArrayLayout)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__MultiArrayLayout * uintptr(i)),
 		))
-		*cIdx = *(*C.std_msgs__msg__MultiArrayLayout)(v.AsCStruct())
+		MultiArrayLayoutTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func MultiArrayLayout__Array_to_Go(goSlice []MultiArrayLayout, cSlice []CMultiArrayLayout) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		MultiArrayLayoutTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func MultiArrayLayout__Array_to_C(cSlice []CMultiArrayLayout, goSlice []MultiArrayLayout) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.std_msgs__msg__MultiArrayLayout)(goSlice[i].AsCStruct())
+		MultiArrayLayoutTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

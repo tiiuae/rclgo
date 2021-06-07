@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleMocapOdometry", &VehicleMocapOdometry{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleMocapOdometry", VehicleMocapOdometryTypeSupport)
 }
 const (
 	VehicleMocapOdometry_COVARIANCE_MATRIX_X_VARIANCE uint8 = 0// Covariance matrix index constants
@@ -80,76 +80,90 @@ type VehicleMocapOdometry struct {
 // NewVehicleMocapOdometry creates a new VehicleMocapOdometry with default values.
 func NewVehicleMocapOdometry() *VehicleMocapOdometry {
 	self := VehicleMocapOdometry{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *VehicleMocapOdometry) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *VehicleMocapOdometry) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleMocapOdometry())
-}
-func (t *VehicleMocapOdometry) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleMocapOdometry
-	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleMocapOdometry__create())
-}
-func (t *VehicleMocapOdometry) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__VehicleMocapOdometry__destroy((*C.px4_msgs__msg__VehicleMocapOdometry)(pointer_to_free))
-}
-func (t *VehicleMocapOdometry) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__VehicleMocapOdometry)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	mem.local_frame = C.uint8_t(t.LocalFrame)
-	mem.x = C.float(t.X)
-	mem.y = C.float(t.Y)
-	mem.z = C.float(t.Z)
-	cSlice_q := mem.q[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)), t.Q[:])
-	cSlice_q_offset := mem.q_offset[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q_offset)), t.QOffset[:])
-	cSlice_pose_covariance := mem.pose_covariance[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_pose_covariance)), t.PoseCovariance[:])
-	mem.velocity_frame = C.uint8_t(t.VelocityFrame)
-	mem.vx = C.float(t.Vx)
-	mem.vy = C.float(t.Vy)
-	mem.vz = C.float(t.Vz)
-	mem.rollspeed = C.float(t.Rollspeed)
-	mem.pitchspeed = C.float(t.Pitchspeed)
-	mem.yawspeed = C.float(t.Yawspeed)
-	cSlice_velocity_covariance := mem.velocity_covariance[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_velocity_covariance)), t.VelocityCovariance[:])
-	return unsafe.Pointer(mem)
-}
-func (t *VehicleMocapOdometry) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__VehicleMocapOdometry)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	t.LocalFrame = uint8(mem.local_frame)
-	t.X = float32(mem.x)
-	t.Y = float32(mem.y)
-	t.Z = float32(mem.z)
-	cSlice_q := mem.q[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Q[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)))
-	cSlice_q_offset := mem.q_offset[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.QOffset[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q_offset)))
-	cSlice_pose_covariance := mem.pose_covariance[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.PoseCovariance[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_pose_covariance)))
-	t.VelocityFrame = uint8(mem.velocity_frame)
-	t.Vx = float32(mem.vx)
-	t.Vy = float32(mem.vy)
-	t.Vz = float32(mem.vz)
-	t.Rollspeed = float32(mem.rollspeed)
-	t.Pitchspeed = float32(mem.pitchspeed)
-	t.Yawspeed = float32(mem.yawspeed)
-	cSlice_velocity_covariance := mem.velocity_covariance[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.VelocityCovariance[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_velocity_covariance)))
-}
-func (t *VehicleMocapOdometry) Clone() ros2types.ROS2Msg {
+func (t *VehicleMocapOdometry) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *VehicleMocapOdometry) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VehicleMocapOdometryTypeSupport types.MessageTypeSupport = _VehicleMocapOdometryTypeSupport{}
+
+type _VehicleMocapOdometryTypeSupport struct{}
+
+func (t _VehicleMocapOdometryTypeSupport) New() types.Message {
+	return NewVehicleMocapOdometry()
+}
+
+func (t _VehicleMocapOdometryTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleMocapOdometry
+	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleMocapOdometry__create())
+}
+
+func (t _VehicleMocapOdometryTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__VehicleMocapOdometry__destroy((*C.px4_msgs__msg__VehicleMocapOdometry)(pointer_to_free))
+}
+
+func (t _VehicleMocapOdometryTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*VehicleMocapOdometry)
+	mem := (*C.px4_msgs__msg__VehicleMocapOdometry)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	mem.local_frame = C.uint8_t(m.LocalFrame)
+	mem.x = C.float(m.X)
+	mem.y = C.float(m.Y)
+	mem.z = C.float(m.Z)
+	cSlice_q := mem.q[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)), m.Q[:])
+	cSlice_q_offset := mem.q_offset[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q_offset)), m.QOffset[:])
+	cSlice_pose_covariance := mem.pose_covariance[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_pose_covariance)), m.PoseCovariance[:])
+	mem.velocity_frame = C.uint8_t(m.VelocityFrame)
+	mem.vx = C.float(m.Vx)
+	mem.vy = C.float(m.Vy)
+	mem.vz = C.float(m.Vz)
+	mem.rollspeed = C.float(m.Rollspeed)
+	mem.pitchspeed = C.float(m.Pitchspeed)
+	mem.yawspeed = C.float(m.Yawspeed)
+	cSlice_velocity_covariance := mem.velocity_covariance[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_velocity_covariance)), m.VelocityCovariance[:])
+}
+
+func (t _VehicleMocapOdometryTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*VehicleMocapOdometry)
+	mem := (*C.px4_msgs__msg__VehicleMocapOdometry)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	m.LocalFrame = uint8(mem.local_frame)
+	m.X = float32(mem.x)
+	m.Y = float32(mem.y)
+	m.Z = float32(mem.z)
+	cSlice_q := mem.q[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Q[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)))
+	cSlice_q_offset := mem.q_offset[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.QOffset[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q_offset)))
+	cSlice_pose_covariance := mem.pose_covariance[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.PoseCovariance[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_pose_covariance)))
+	m.VelocityFrame = uint8(mem.velocity_frame)
+	m.Vx = float32(mem.vx)
+	m.Vy = float32(mem.vy)
+	m.Vz = float32(mem.vz)
+	m.Rollspeed = float32(mem.rollspeed)
+	m.Pitchspeed = float32(mem.pitchspeed)
+	m.Yawspeed = float32(mem.yawspeed)
+	cSlice_velocity_covariance := mem.velocity_covariance[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.VelocityCovariance[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_velocity_covariance)))
+}
+
+func (t _VehicleMocapOdometryTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleMocapOdometry())
 }
 
 type CVehicleMocapOdometry = C.px4_msgs__msg__VehicleMocapOdometry
@@ -164,8 +178,7 @@ func VehicleMocapOdometry__Sequence_to_Go(goSlice *[]VehicleMocapOdometry, cSlic
 		cIdx := (*C.px4_msgs__msg__VehicleMocapOdometry__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleMocapOdometry * uintptr(i)),
 		))
-		(*goSlice)[i] = VehicleMocapOdometry{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VehicleMocapOdometryTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func VehicleMocapOdometry__Sequence_to_C(cSlice *CVehicleMocapOdometry__Sequence, goSlice []VehicleMocapOdometry) {
@@ -180,18 +193,16 @@ func VehicleMocapOdometry__Sequence_to_C(cSlice *CVehicleMocapOdometry__Sequence
 		cIdx := (*C.px4_msgs__msg__VehicleMocapOdometry)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleMocapOdometry * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__VehicleMocapOdometry)(v.AsCStruct())
+		VehicleMocapOdometryTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func VehicleMocapOdometry__Array_to_Go(goSlice []VehicleMocapOdometry, cSlice []CVehicleMocapOdometry) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VehicleMocapOdometryTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func VehicleMocapOdometry__Array_to_C(cSlice []CVehicleMocapOdometry, goSlice []VehicleMocapOdometry) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__VehicleMocapOdometry)(goSlice[i].AsCStruct())
+		VehicleMocapOdometryTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

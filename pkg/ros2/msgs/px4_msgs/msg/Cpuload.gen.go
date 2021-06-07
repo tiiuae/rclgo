@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/Cpuload", &Cpuload{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/Cpuload", CpuloadTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewCpuload
@@ -47,40 +47,54 @@ type Cpuload struct {
 // NewCpuload creates a new Cpuload with default values.
 func NewCpuload() *Cpuload {
 	self := Cpuload{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Cpuload) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Cpuload) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__Cpuload())
-}
-func (t *Cpuload) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__Cpuload
-	return (unsafe.Pointer)(C.px4_msgs__msg__Cpuload__create())
-}
-func (t *Cpuload) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__Cpuload__destroy((*C.px4_msgs__msg__Cpuload)(pointer_to_free))
-}
-func (t *Cpuload) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__Cpuload)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.load = C.float(t.Load)
-	mem.ram_usage = C.float(t.RamUsage)
-	return unsafe.Pointer(mem)
-}
-func (t *Cpuload) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__Cpuload)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Load = float32(mem.load)
-	t.RamUsage = float32(mem.ram_usage)
-}
-func (t *Cpuload) Clone() ros2types.ROS2Msg {
+func (t *Cpuload) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Cpuload) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var CpuloadTypeSupport types.MessageTypeSupport = _CpuloadTypeSupport{}
+
+type _CpuloadTypeSupport struct{}
+
+func (t _CpuloadTypeSupport) New() types.Message {
+	return NewCpuload()
+}
+
+func (t _CpuloadTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__Cpuload
+	return (unsafe.Pointer)(C.px4_msgs__msg__Cpuload__create())
+}
+
+func (t _CpuloadTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__Cpuload__destroy((*C.px4_msgs__msg__Cpuload)(pointer_to_free))
+}
+
+func (t _CpuloadTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Cpuload)
+	mem := (*C.px4_msgs__msg__Cpuload)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.load = C.float(m.Load)
+	mem.ram_usage = C.float(m.RamUsage)
+}
+
+func (t _CpuloadTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Cpuload)
+	mem := (*C.px4_msgs__msg__Cpuload)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Load = float32(mem.load)
+	m.RamUsage = float32(mem.ram_usage)
+}
+
+func (t _CpuloadTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__Cpuload())
 }
 
 type CCpuload = C.px4_msgs__msg__Cpuload
@@ -95,8 +109,7 @@ func Cpuload__Sequence_to_Go(goSlice *[]Cpuload, cSlice CCpuload__Sequence) {
 		cIdx := (*C.px4_msgs__msg__Cpuload__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__Cpuload * uintptr(i)),
 		))
-		(*goSlice)[i] = Cpuload{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		CpuloadTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Cpuload__Sequence_to_C(cSlice *CCpuload__Sequence, goSlice []Cpuload) {
@@ -111,18 +124,16 @@ func Cpuload__Sequence_to_C(cSlice *CCpuload__Sequence, goSlice []Cpuload) {
 		cIdx := (*C.px4_msgs__msg__Cpuload)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__Cpuload * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__Cpuload)(v.AsCStruct())
+		CpuloadTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Cpuload__Array_to_Go(goSlice []Cpuload, cSlice []CCpuload) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		CpuloadTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Cpuload__Array_to_C(cSlice []CCpuload, goSlice []Cpuload) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__Cpuload)(goSlice[i].AsCStruct())
+		CpuloadTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

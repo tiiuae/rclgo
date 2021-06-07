@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("lifecycle_msgs/ChangeState", ChangeState)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("lifecycle_msgs/ChangeState", ChangeStateTypeSupport)
 }
 
-type _ChangeState struct {
-	req,resp ros2types.ROS2Msg
+type _ChangeStateTypeSupport struct {}
+
+func (s _ChangeStateTypeSupport) Request() types.MessageTypeSupport {
+	return ChangeState_RequestTypeSupport
 }
 
-func (s *_ChangeState) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _ChangeStateTypeSupport) Response() types.MessageTypeSupport {
+	return ChangeState_ResponseTypeSupport
 }
 
-func (s *_ChangeState) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_ChangeState) TypeSupport() unsafe.Pointer {
+func (s _ChangeStateTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__lifecycle_msgs__srv__ChangeState())
 }
 
 // Modifying this variable is undefined behavior.
-var ChangeState ros2types.Service = &_ChangeState{
-	req: &ChangeState_Request{},
-	resp: &ChangeState_Response{},
-}
+var ChangeStateTypeSupport types.ServiceTypeSupport = _ChangeStateTypeSupport{}

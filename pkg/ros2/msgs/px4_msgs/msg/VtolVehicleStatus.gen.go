@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VtolVehicleStatus", &VtolVehicleStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VtolVehicleStatus", VtolVehicleStatusTypeSupport)
 }
 const (
 	VtolVehicleStatus_VEHICLE_VTOL_STATE_UNDEFINED uint8 = 0// VEHICLE_VTOL_STATE, should match 1:1 MAVLinks's MAV_VTOL_STATE
@@ -57,46 +57,60 @@ type VtolVehicleStatus struct {
 // NewVtolVehicleStatus creates a new VtolVehicleStatus with default values.
 func NewVtolVehicleStatus() *VtolVehicleStatus {
 	self := VtolVehicleStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *VtolVehicleStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *VtolVehicleStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VtolVehicleStatus())
-}
-func (t *VtolVehicleStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VtolVehicleStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__VtolVehicleStatus__create())
-}
-func (t *VtolVehicleStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__VtolVehicleStatus__destroy((*C.px4_msgs__msg__VtolVehicleStatus)(pointer_to_free))
-}
-func (t *VtolVehicleStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__VtolVehicleStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.vtol_in_rw_mode = C.bool(t.VtolInRwMode)
-	mem.vtol_in_trans_mode = C.bool(t.VtolInTransMode)
-	mem.in_transition_to_fw = C.bool(t.InTransitionToFw)
-	mem.vtol_transition_failsafe = C.bool(t.VtolTransitionFailsafe)
-	mem.fw_permanent_stab = C.bool(t.FwPermanentStab)
-	return unsafe.Pointer(mem)
-}
-func (t *VtolVehicleStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__VtolVehicleStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.VtolInRwMode = bool(mem.vtol_in_rw_mode)
-	t.VtolInTransMode = bool(mem.vtol_in_trans_mode)
-	t.InTransitionToFw = bool(mem.in_transition_to_fw)
-	t.VtolTransitionFailsafe = bool(mem.vtol_transition_failsafe)
-	t.FwPermanentStab = bool(mem.fw_permanent_stab)
-}
-func (t *VtolVehicleStatus) Clone() ros2types.ROS2Msg {
+func (t *VtolVehicleStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *VtolVehicleStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VtolVehicleStatusTypeSupport types.MessageTypeSupport = _VtolVehicleStatusTypeSupport{}
+
+type _VtolVehicleStatusTypeSupport struct{}
+
+func (t _VtolVehicleStatusTypeSupport) New() types.Message {
+	return NewVtolVehicleStatus()
+}
+
+func (t _VtolVehicleStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VtolVehicleStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__VtolVehicleStatus__create())
+}
+
+func (t _VtolVehicleStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__VtolVehicleStatus__destroy((*C.px4_msgs__msg__VtolVehicleStatus)(pointer_to_free))
+}
+
+func (t _VtolVehicleStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*VtolVehicleStatus)
+	mem := (*C.px4_msgs__msg__VtolVehicleStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.vtol_in_rw_mode = C.bool(m.VtolInRwMode)
+	mem.vtol_in_trans_mode = C.bool(m.VtolInTransMode)
+	mem.in_transition_to_fw = C.bool(m.InTransitionToFw)
+	mem.vtol_transition_failsafe = C.bool(m.VtolTransitionFailsafe)
+	mem.fw_permanent_stab = C.bool(m.FwPermanentStab)
+}
+
+func (t _VtolVehicleStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*VtolVehicleStatus)
+	mem := (*C.px4_msgs__msg__VtolVehicleStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.VtolInRwMode = bool(mem.vtol_in_rw_mode)
+	m.VtolInTransMode = bool(mem.vtol_in_trans_mode)
+	m.InTransitionToFw = bool(mem.in_transition_to_fw)
+	m.VtolTransitionFailsafe = bool(mem.vtol_transition_failsafe)
+	m.FwPermanentStab = bool(mem.fw_permanent_stab)
+}
+
+func (t _VtolVehicleStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VtolVehicleStatus())
 }
 
 type CVtolVehicleStatus = C.px4_msgs__msg__VtolVehicleStatus
@@ -111,8 +125,7 @@ func VtolVehicleStatus__Sequence_to_Go(goSlice *[]VtolVehicleStatus, cSlice CVto
 		cIdx := (*C.px4_msgs__msg__VtolVehicleStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VtolVehicleStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = VtolVehicleStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VtolVehicleStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func VtolVehicleStatus__Sequence_to_C(cSlice *CVtolVehicleStatus__Sequence, goSlice []VtolVehicleStatus) {
@@ -127,18 +140,16 @@ func VtolVehicleStatus__Sequence_to_C(cSlice *CVtolVehicleStatus__Sequence, goSl
 		cIdx := (*C.px4_msgs__msg__VtolVehicleStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VtolVehicleStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__VtolVehicleStatus)(v.AsCStruct())
+		VtolVehicleStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func VtolVehicleStatus__Array_to_Go(goSlice []VtolVehicleStatus, cSlice []CVtolVehicleStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VtolVehicleStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func VtolVehicleStatus__Array_to_C(cSlice []CVtolVehicleStatus, goSlice []VtolVehicleStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__VtolVehicleStatus)(goSlice[i].AsCStruct())
+		VtolVehicleStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package lifecycle_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("lifecycle_msgs/TransitionDescription", &TransitionDescription{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("lifecycle_msgs/TransitionDescription", TransitionDescriptionTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTransitionDescription
@@ -47,43 +47,57 @@ type TransitionDescription struct {
 // NewTransitionDescription creates a new TransitionDescription with default values.
 func NewTransitionDescription() *TransitionDescription {
 	self := TransitionDescription{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *TransitionDescription) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Transition.SetDefaults(nil)
-	t.StartState.SetDefaults(nil)
-	t.GoalState.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *TransitionDescription) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__lifecycle_msgs__msg__TransitionDescription())
-}
-func (t *TransitionDescription) PrepareMemory() unsafe.Pointer { //returns *C.lifecycle_msgs__msg__TransitionDescription
-	return (unsafe.Pointer)(C.lifecycle_msgs__msg__TransitionDescription__create())
-}
-func (t *TransitionDescription) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.lifecycle_msgs__msg__TransitionDescription__destroy((*C.lifecycle_msgs__msg__TransitionDescription)(pointer_to_free))
-}
-func (t *TransitionDescription) AsCStruct() unsafe.Pointer {
-	mem := (*C.lifecycle_msgs__msg__TransitionDescription)(t.PrepareMemory())
-	mem.transition = *(*C.lifecycle_msgs__msg__Transition)(t.Transition.AsCStruct())
-	mem.start_state = *(*C.lifecycle_msgs__msg__State)(t.StartState.AsCStruct())
-	mem.goal_state = *(*C.lifecycle_msgs__msg__State)(t.GoalState.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *TransitionDescription) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.lifecycle_msgs__msg__TransitionDescription)(ros2_message_buffer)
-	t.Transition.AsGoStruct(unsafe.Pointer(&mem.transition))
-	t.StartState.AsGoStruct(unsafe.Pointer(&mem.start_state))
-	t.GoalState.AsGoStruct(unsafe.Pointer(&mem.goal_state))
-}
-func (t *TransitionDescription) Clone() ros2types.ROS2Msg {
+func (t *TransitionDescription) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *TransitionDescription) SetDefaults() {
+	t.Transition.SetDefaults()
+	t.StartState.SetDefaults()
+	t.GoalState.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TransitionDescriptionTypeSupport types.MessageTypeSupport = _TransitionDescriptionTypeSupport{}
+
+type _TransitionDescriptionTypeSupport struct{}
+
+func (t _TransitionDescriptionTypeSupport) New() types.Message {
+	return NewTransitionDescription()
+}
+
+func (t _TransitionDescriptionTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.lifecycle_msgs__msg__TransitionDescription
+	return (unsafe.Pointer)(C.lifecycle_msgs__msg__TransitionDescription__create())
+}
+
+func (t _TransitionDescriptionTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.lifecycle_msgs__msg__TransitionDescription__destroy((*C.lifecycle_msgs__msg__TransitionDescription)(pointer_to_free))
+}
+
+func (t _TransitionDescriptionTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*TransitionDescription)
+	mem := (*C.lifecycle_msgs__msg__TransitionDescription)(dst)
+	TransitionTypeSupport.AsCStruct(unsafe.Pointer(&mem.transition), &m.Transition)
+	StateTypeSupport.AsCStruct(unsafe.Pointer(&mem.start_state), &m.StartState)
+	StateTypeSupport.AsCStruct(unsafe.Pointer(&mem.goal_state), &m.GoalState)
+}
+
+func (t _TransitionDescriptionTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*TransitionDescription)
+	mem := (*C.lifecycle_msgs__msg__TransitionDescription)(ros2_message_buffer)
+	TransitionTypeSupport.AsGoStruct(&m.Transition, unsafe.Pointer(&mem.transition))
+	StateTypeSupport.AsGoStruct(&m.StartState, unsafe.Pointer(&mem.start_state))
+	StateTypeSupport.AsGoStruct(&m.GoalState, unsafe.Pointer(&mem.goal_state))
+}
+
+func (t _TransitionDescriptionTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__lifecycle_msgs__msg__TransitionDescription())
 }
 
 type CTransitionDescription = C.lifecycle_msgs__msg__TransitionDescription
@@ -98,8 +112,7 @@ func TransitionDescription__Sequence_to_Go(goSlice *[]TransitionDescription, cSl
 		cIdx := (*C.lifecycle_msgs__msg__TransitionDescription__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_lifecycle_msgs__msg__TransitionDescription * uintptr(i)),
 		))
-		(*goSlice)[i] = TransitionDescription{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TransitionDescriptionTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func TransitionDescription__Sequence_to_C(cSlice *CTransitionDescription__Sequence, goSlice []TransitionDescription) {
@@ -114,18 +127,16 @@ func TransitionDescription__Sequence_to_C(cSlice *CTransitionDescription__Sequen
 		cIdx := (*C.lifecycle_msgs__msg__TransitionDescription)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_lifecycle_msgs__msg__TransitionDescription * uintptr(i)),
 		))
-		*cIdx = *(*C.lifecycle_msgs__msg__TransitionDescription)(v.AsCStruct())
+		TransitionDescriptionTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func TransitionDescription__Array_to_Go(goSlice []TransitionDescription, cSlice []CTransitionDescription) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TransitionDescriptionTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func TransitionDescription__Array_to_C(cSlice []CTransitionDescription, goSlice []TransitionDescription) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.lifecycle_msgs__msg__TransitionDescription)(goSlice[i].AsCStruct())
+		TransitionDescriptionTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
@@ -36,7 +36,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/LaserScan", &LaserScan{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/LaserScan", LaserScanTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewLaserScan
@@ -57,55 +57,69 @@ type LaserScan struct {
 // NewLaserScan creates a new LaserScan with default values.
 func NewLaserScan() *LaserScan {
 	self := LaserScan{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *LaserScan) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *LaserScan) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__LaserScan())
-}
-func (t *LaserScan) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__LaserScan
-	return (unsafe.Pointer)(C.sensor_msgs__msg__LaserScan__create())
-}
-func (t *LaserScan) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__msg__LaserScan__destroy((*C.sensor_msgs__msg__LaserScan)(pointer_to_free))
-}
-func (t *LaserScan) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__msg__LaserScan)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.angle_min = C.float(t.AngleMin)
-	mem.angle_max = C.float(t.AngleMax)
-	mem.angle_increment = C.float(t.AngleIncrement)
-	mem.time_increment = C.float(t.TimeIncrement)
-	mem.scan_time = C.float(t.ScanTime)
-	mem.range_min = C.float(t.RangeMin)
-	mem.range_max = C.float(t.RangeMax)
-	rosidl_runtime_c.Float32__Sequence_to_C((*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.ranges)), t.Ranges)
-	rosidl_runtime_c.Float32__Sequence_to_C((*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.intensities)), t.Intensities)
-	return unsafe.Pointer(mem)
-}
-func (t *LaserScan) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__msg__LaserScan)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.AngleMin = float32(mem.angle_min)
-	t.AngleMax = float32(mem.angle_max)
-	t.AngleIncrement = float32(mem.angle_increment)
-	t.TimeIncrement = float32(mem.time_increment)
-	t.ScanTime = float32(mem.scan_time)
-	t.RangeMin = float32(mem.range_min)
-	t.RangeMax = float32(mem.range_max)
-	rosidl_runtime_c.Float32__Sequence_to_Go(&t.Ranges, *(*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.ranges)))
-	rosidl_runtime_c.Float32__Sequence_to_Go(&t.Intensities, *(*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.intensities)))
-}
-func (t *LaserScan) Clone() ros2types.ROS2Msg {
+func (t *LaserScan) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *LaserScan) SetDefaults() {
+	t.Header.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var LaserScanTypeSupport types.MessageTypeSupport = _LaserScanTypeSupport{}
+
+type _LaserScanTypeSupport struct{}
+
+func (t _LaserScanTypeSupport) New() types.Message {
+	return NewLaserScan()
+}
+
+func (t _LaserScanTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__LaserScan
+	return (unsafe.Pointer)(C.sensor_msgs__msg__LaserScan__create())
+}
+
+func (t _LaserScanTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__msg__LaserScan__destroy((*C.sensor_msgs__msg__LaserScan)(pointer_to_free))
+}
+
+func (t _LaserScanTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*LaserScan)
+	mem := (*C.sensor_msgs__msg__LaserScan)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	mem.angle_min = C.float(m.AngleMin)
+	mem.angle_max = C.float(m.AngleMax)
+	mem.angle_increment = C.float(m.AngleIncrement)
+	mem.time_increment = C.float(m.TimeIncrement)
+	mem.scan_time = C.float(m.ScanTime)
+	mem.range_min = C.float(m.RangeMin)
+	mem.range_max = C.float(m.RangeMax)
+	rosidl_runtime_c.Float32__Sequence_to_C((*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.ranges)), m.Ranges)
+	rosidl_runtime_c.Float32__Sequence_to_C((*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.intensities)), m.Intensities)
+}
+
+func (t _LaserScanTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*LaserScan)
+	mem := (*C.sensor_msgs__msg__LaserScan)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	m.AngleMin = float32(mem.angle_min)
+	m.AngleMax = float32(mem.angle_max)
+	m.AngleIncrement = float32(mem.angle_increment)
+	m.TimeIncrement = float32(mem.time_increment)
+	m.ScanTime = float32(mem.scan_time)
+	m.RangeMin = float32(mem.range_min)
+	m.RangeMax = float32(mem.range_max)
+	rosidl_runtime_c.Float32__Sequence_to_Go(&m.Ranges, *(*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.ranges)))
+	rosidl_runtime_c.Float32__Sequence_to_Go(&m.Intensities, *(*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.intensities)))
+}
+
+func (t _LaserScanTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__LaserScan())
 }
 
 type CLaserScan = C.sensor_msgs__msg__LaserScan
@@ -120,8 +134,7 @@ func LaserScan__Sequence_to_Go(goSlice *[]LaserScan, cSlice CLaserScan__Sequence
 		cIdx := (*C.sensor_msgs__msg__LaserScan__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__LaserScan * uintptr(i)),
 		))
-		(*goSlice)[i] = LaserScan{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		LaserScanTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func LaserScan__Sequence_to_C(cSlice *CLaserScan__Sequence, goSlice []LaserScan) {
@@ -136,18 +149,16 @@ func LaserScan__Sequence_to_C(cSlice *CLaserScan__Sequence, goSlice []LaserScan)
 		cIdx := (*C.sensor_msgs__msg__LaserScan)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__LaserScan * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__msg__LaserScan)(v.AsCStruct())
+		LaserScanTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func LaserScan__Array_to_Go(goSlice []LaserScan, cSlice []CLaserScan) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		LaserScanTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func LaserScan__Array_to_C(cSlice []CLaserScan, goSlice []LaserScan) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__msg__LaserScan)(goSlice[i].AsCStruct())
+		LaserScanTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

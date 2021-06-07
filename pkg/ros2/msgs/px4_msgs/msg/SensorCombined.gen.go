@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/SensorCombined", &SensorCombined{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/SensorCombined", SensorCombinedTypeSupport)
 }
 const (
 	SensorCombined_RELATIVE_TIMESTAMP_INVALID int32 = 2147483647// (0x7fffffff) If one of the relative timestamps is set to this value, it means the associated sensor values are invalid
@@ -58,52 +58,66 @@ type SensorCombined struct {
 // NewSensorCombined creates a new SensorCombined with default values.
 func NewSensorCombined() *SensorCombined {
 	self := SensorCombined{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SensorCombined) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *SensorCombined) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__SensorCombined())
-}
-func (t *SensorCombined) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__SensorCombined
-	return (unsafe.Pointer)(C.px4_msgs__msg__SensorCombined__create())
-}
-func (t *SensorCombined) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__SensorCombined__destroy((*C.px4_msgs__msg__SensorCombined)(pointer_to_free))
-}
-func (t *SensorCombined) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__SensorCombined)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	cSlice_gyro_rad := mem.gyro_rad[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_rad)), t.GyroRad[:])
-	mem.gyro_integral_dt = C.uint32_t(t.GyroIntegralDt)
-	mem.accelerometer_timestamp_relative = C.int32_t(t.AccelerometerTimestampRelative)
-	cSlice_accelerometer_m_s2 := mem.accelerometer_m_s2[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accelerometer_m_s2)), t.AccelerometerMS2[:])
-	mem.accelerometer_integral_dt = C.uint32_t(t.AccelerometerIntegralDt)
-	mem.accelerometer_clipping = C.uint8_t(t.AccelerometerClipping)
-	return unsafe.Pointer(mem)
-}
-func (t *SensorCombined) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__SensorCombined)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	cSlice_gyro_rad := mem.gyro_rad[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.GyroRad[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_rad)))
-	t.GyroIntegralDt = uint32(mem.gyro_integral_dt)
-	t.AccelerometerTimestampRelative = int32(mem.accelerometer_timestamp_relative)
-	cSlice_accelerometer_m_s2 := mem.accelerometer_m_s2[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.AccelerometerMS2[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accelerometer_m_s2)))
-	t.AccelerometerIntegralDt = uint32(mem.accelerometer_integral_dt)
-	t.AccelerometerClipping = uint8(mem.accelerometer_clipping)
-}
-func (t *SensorCombined) Clone() ros2types.ROS2Msg {
+func (t *SensorCombined) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SensorCombined) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SensorCombinedTypeSupport types.MessageTypeSupport = _SensorCombinedTypeSupport{}
+
+type _SensorCombinedTypeSupport struct{}
+
+func (t _SensorCombinedTypeSupport) New() types.Message {
+	return NewSensorCombined()
+}
+
+func (t _SensorCombinedTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__SensorCombined
+	return (unsafe.Pointer)(C.px4_msgs__msg__SensorCombined__create())
+}
+
+func (t _SensorCombinedTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__SensorCombined__destroy((*C.px4_msgs__msg__SensorCombined)(pointer_to_free))
+}
+
+func (t _SensorCombinedTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*SensorCombined)
+	mem := (*C.px4_msgs__msg__SensorCombined)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	cSlice_gyro_rad := mem.gyro_rad[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_rad)), m.GyroRad[:])
+	mem.gyro_integral_dt = C.uint32_t(m.GyroIntegralDt)
+	mem.accelerometer_timestamp_relative = C.int32_t(m.AccelerometerTimestampRelative)
+	cSlice_accelerometer_m_s2 := mem.accelerometer_m_s2[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accelerometer_m_s2)), m.AccelerometerMS2[:])
+	mem.accelerometer_integral_dt = C.uint32_t(m.AccelerometerIntegralDt)
+	mem.accelerometer_clipping = C.uint8_t(m.AccelerometerClipping)
+}
+
+func (t _SensorCombinedTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*SensorCombined)
+	mem := (*C.px4_msgs__msg__SensorCombined)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	cSlice_gyro_rad := mem.gyro_rad[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.GyroRad[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_rad)))
+	m.GyroIntegralDt = uint32(mem.gyro_integral_dt)
+	m.AccelerometerTimestampRelative = int32(mem.accelerometer_timestamp_relative)
+	cSlice_accelerometer_m_s2 := mem.accelerometer_m_s2[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.AccelerometerMS2[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accelerometer_m_s2)))
+	m.AccelerometerIntegralDt = uint32(mem.accelerometer_integral_dt)
+	m.AccelerometerClipping = uint8(mem.accelerometer_clipping)
+}
+
+func (t _SensorCombinedTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__SensorCombined())
 }
 
 type CSensorCombined = C.px4_msgs__msg__SensorCombined
@@ -118,8 +132,7 @@ func SensorCombined__Sequence_to_Go(goSlice *[]SensorCombined, cSlice CSensorCom
 		cIdx := (*C.px4_msgs__msg__SensorCombined__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__SensorCombined * uintptr(i)),
 		))
-		(*goSlice)[i] = SensorCombined{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SensorCombinedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SensorCombined__Sequence_to_C(cSlice *CSensorCombined__Sequence, goSlice []SensorCombined) {
@@ -134,18 +147,16 @@ func SensorCombined__Sequence_to_C(cSlice *CSensorCombined__Sequence, goSlice []
 		cIdx := (*C.px4_msgs__msg__SensorCombined)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__SensorCombined * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__SensorCombined)(v.AsCStruct())
+		SensorCombinedTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SensorCombined__Array_to_Go(goSlice []SensorCombined, cSlice []CSensorCombined) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SensorCombinedTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SensorCombined__Array_to_C(cSlice []CSensorCombined, goSlice []SensorCombined) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__SensorCombined)(goSlice[i].AsCStruct())
+		SensorCombinedTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

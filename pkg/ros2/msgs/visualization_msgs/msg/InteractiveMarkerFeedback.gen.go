@@ -15,7 +15,7 @@ package visualization_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	geometry_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/geometry_msgs/msg"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
@@ -38,7 +38,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("visualization_msgs/InteractiveMarkerFeedback", &InteractiveMarkerFeedback{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("visualization_msgs/InteractiveMarkerFeedback", InteractiveMarkerFeedbackTypeSupport)
 }
 const (
 	InteractiveMarkerFeedback_KEEP_ALIVE uint8 = 0// Type of the eventKEEP_ALIVE: sent while dragging to keep up control of the markerMENU_SELECT: a menu entry has been selectedBUTTON_CLICK: a button control has been clickedPOSE_UPDATE: the pose has been changed using one of the controls
@@ -53,9 +53,9 @@ const (
 // function instead.
 type InteractiveMarkerFeedback struct {
 	Header std_msgs_msg.Header `yaml:"header"`// Time/frame info.
-	ClientId rosidl_runtime_c.String `yaml:"client_id"`// Identifying string. Must be unique in the topic namespace.
-	MarkerName rosidl_runtime_c.String `yaml:"marker_name"`// Specifies which interactive marker and control this message refers to
-	ControlName rosidl_runtime_c.String `yaml:"control_name"`// Specifies which interactive marker and control this message refers to
+	ClientId string `yaml:"client_id"`// Identifying string. Must be unique in the topic namespace.
+	MarkerName string `yaml:"marker_name"`// Specifies which interactive marker and control this message refers to
+	ControlName string `yaml:"control_name"`// Specifies which interactive marker and control this message refers to
 	EventType uint8 `yaml:"event_type"`
 	Pose geometry_msgs_msg.Pose `yaml:"pose"`// Current pose of the markerNote: Has to be valid for all feedback types.
 	MenuEntryId uint32 `yaml:"menu_entry_id"`// Contains the ID of the selected menu entryOnly valid for MENU_SELECT events.
@@ -66,58 +66,69 @@ type InteractiveMarkerFeedback struct {
 // NewInteractiveMarkerFeedback creates a new InteractiveMarkerFeedback with default values.
 func NewInteractiveMarkerFeedback() *InteractiveMarkerFeedback {
 	self := InteractiveMarkerFeedback{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *InteractiveMarkerFeedback) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.ClientId.SetDefaults("")
-	t.MarkerName.SetDefaults("")
-	t.ControlName.SetDefaults("")
-	t.Pose.SetDefaults(nil)
-	t.MousePoint.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *InteractiveMarkerFeedback) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__visualization_msgs__msg__InteractiveMarkerFeedback())
-}
-func (t *InteractiveMarkerFeedback) PrepareMemory() unsafe.Pointer { //returns *C.visualization_msgs__msg__InteractiveMarkerFeedback
-	return (unsafe.Pointer)(C.visualization_msgs__msg__InteractiveMarkerFeedback__create())
-}
-func (t *InteractiveMarkerFeedback) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.visualization_msgs__msg__InteractiveMarkerFeedback__destroy((*C.visualization_msgs__msg__InteractiveMarkerFeedback)(pointer_to_free))
-}
-func (t *InteractiveMarkerFeedback) AsCStruct() unsafe.Pointer {
-	mem := (*C.visualization_msgs__msg__InteractiveMarkerFeedback)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.client_id = *(*C.rosidl_runtime_c__String)(t.ClientId.AsCStruct())
-	mem.marker_name = *(*C.rosidl_runtime_c__String)(t.MarkerName.AsCStruct())
-	mem.control_name = *(*C.rosidl_runtime_c__String)(t.ControlName.AsCStruct())
-	mem.event_type = C.uint8_t(t.EventType)
-	mem.pose = *(*C.geometry_msgs__msg__Pose)(t.Pose.AsCStruct())
-	mem.menu_entry_id = C.uint32_t(t.MenuEntryId)
-	mem.mouse_point = *(*C.geometry_msgs__msg__Point)(t.MousePoint.AsCStruct())
-	mem.mouse_point_valid = C.bool(t.MousePointValid)
-	return unsafe.Pointer(mem)
-}
-func (t *InteractiveMarkerFeedback) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.visualization_msgs__msg__InteractiveMarkerFeedback)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.ClientId.AsGoStruct(unsafe.Pointer(&mem.client_id))
-	t.MarkerName.AsGoStruct(unsafe.Pointer(&mem.marker_name))
-	t.ControlName.AsGoStruct(unsafe.Pointer(&mem.control_name))
-	t.EventType = uint8(mem.event_type)
-	t.Pose.AsGoStruct(unsafe.Pointer(&mem.pose))
-	t.MenuEntryId = uint32(mem.menu_entry_id)
-	t.MousePoint.AsGoStruct(unsafe.Pointer(&mem.mouse_point))
-	t.MousePointValid = bool(mem.mouse_point_valid)
-}
-func (t *InteractiveMarkerFeedback) Clone() ros2types.ROS2Msg {
+func (t *InteractiveMarkerFeedback) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *InteractiveMarkerFeedback) SetDefaults() {
+	t.Header.SetDefaults()
+	t.Pose.SetDefaults()
+	t.MousePoint.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var InteractiveMarkerFeedbackTypeSupport types.MessageTypeSupport = _InteractiveMarkerFeedbackTypeSupport{}
+
+type _InteractiveMarkerFeedbackTypeSupport struct{}
+
+func (t _InteractiveMarkerFeedbackTypeSupport) New() types.Message {
+	return NewInteractiveMarkerFeedback()
+}
+
+func (t _InteractiveMarkerFeedbackTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.visualization_msgs__msg__InteractiveMarkerFeedback
+	return (unsafe.Pointer)(C.visualization_msgs__msg__InteractiveMarkerFeedback__create())
+}
+
+func (t _InteractiveMarkerFeedbackTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.visualization_msgs__msg__InteractiveMarkerFeedback__destroy((*C.visualization_msgs__msg__InteractiveMarkerFeedback)(pointer_to_free))
+}
+
+func (t _InteractiveMarkerFeedbackTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*InteractiveMarkerFeedback)
+	mem := (*C.visualization_msgs__msg__InteractiveMarkerFeedback)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.client_id), m.ClientId)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.marker_name), m.MarkerName)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.control_name), m.ControlName)
+	mem.event_type = C.uint8_t(m.EventType)
+	geometry_msgs_msg.PoseTypeSupport.AsCStruct(unsafe.Pointer(&mem.pose), &m.Pose)
+	mem.menu_entry_id = C.uint32_t(m.MenuEntryId)
+	geometry_msgs_msg.PointTypeSupport.AsCStruct(unsafe.Pointer(&mem.mouse_point), &m.MousePoint)
+	mem.mouse_point_valid = C.bool(m.MousePointValid)
+}
+
+func (t _InteractiveMarkerFeedbackTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*InteractiveMarkerFeedback)
+	mem := (*C.visualization_msgs__msg__InteractiveMarkerFeedback)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	rosidl_runtime_c.StringAsGoStruct(&m.ClientId, unsafe.Pointer(&mem.client_id))
+	rosidl_runtime_c.StringAsGoStruct(&m.MarkerName, unsafe.Pointer(&mem.marker_name))
+	rosidl_runtime_c.StringAsGoStruct(&m.ControlName, unsafe.Pointer(&mem.control_name))
+	m.EventType = uint8(mem.event_type)
+	geometry_msgs_msg.PoseTypeSupport.AsGoStruct(&m.Pose, unsafe.Pointer(&mem.pose))
+	m.MenuEntryId = uint32(mem.menu_entry_id)
+	geometry_msgs_msg.PointTypeSupport.AsGoStruct(&m.MousePoint, unsafe.Pointer(&mem.mouse_point))
+	m.MousePointValid = bool(mem.mouse_point_valid)
+}
+
+func (t _InteractiveMarkerFeedbackTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__visualization_msgs__msg__InteractiveMarkerFeedback())
 }
 
 type CInteractiveMarkerFeedback = C.visualization_msgs__msg__InteractiveMarkerFeedback
@@ -132,8 +143,7 @@ func InteractiveMarkerFeedback__Sequence_to_Go(goSlice *[]InteractiveMarkerFeedb
 		cIdx := (*C.visualization_msgs__msg__InteractiveMarkerFeedback__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_visualization_msgs__msg__InteractiveMarkerFeedback * uintptr(i)),
 		))
-		(*goSlice)[i] = InteractiveMarkerFeedback{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		InteractiveMarkerFeedbackTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func InteractiveMarkerFeedback__Sequence_to_C(cSlice *CInteractiveMarkerFeedback__Sequence, goSlice []InteractiveMarkerFeedback) {
@@ -148,18 +158,16 @@ func InteractiveMarkerFeedback__Sequence_to_C(cSlice *CInteractiveMarkerFeedback
 		cIdx := (*C.visualization_msgs__msg__InteractiveMarkerFeedback)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_visualization_msgs__msg__InteractiveMarkerFeedback * uintptr(i)),
 		))
-		*cIdx = *(*C.visualization_msgs__msg__InteractiveMarkerFeedback)(v.AsCStruct())
+		InteractiveMarkerFeedbackTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func InteractiveMarkerFeedback__Array_to_Go(goSlice []InteractiveMarkerFeedback, cSlice []CInteractiveMarkerFeedback) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		InteractiveMarkerFeedbackTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func InteractiveMarkerFeedback__Array_to_C(cSlice []CInteractiveMarkerFeedback, goSlice []InteractiveMarkerFeedback) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.visualization_msgs__msg__InteractiveMarkerFeedback)(goSlice[i].AsCStruct())
+		InteractiveMarkerFeedbackTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

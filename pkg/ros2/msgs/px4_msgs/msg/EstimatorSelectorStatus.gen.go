@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EstimatorSelectorStatus", &EstimatorSelectorStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EstimatorSelectorStatus", EstimatorSelectorStatusTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewEstimatorSelectorStatus
@@ -61,76 +61,90 @@ type EstimatorSelectorStatus struct {
 // NewEstimatorSelectorStatus creates a new EstimatorSelectorStatus with default values.
 func NewEstimatorSelectorStatus() *EstimatorSelectorStatus {
 	self := EstimatorSelectorStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *EstimatorSelectorStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *EstimatorSelectorStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EstimatorSelectorStatus())
-}
-func (t *EstimatorSelectorStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EstimatorSelectorStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__EstimatorSelectorStatus__create())
-}
-func (t *EstimatorSelectorStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__EstimatorSelectorStatus__destroy((*C.px4_msgs__msg__EstimatorSelectorStatus)(pointer_to_free))
-}
-func (t *EstimatorSelectorStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__EstimatorSelectorStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.primary_instance = C.uint8_t(t.PrimaryInstance)
-	mem.instances_available = C.uint8_t(t.InstancesAvailable)
-	mem.instance_changed_count = C.uint32_t(t.InstanceChangedCount)
-	mem.last_instance_change = C.uint64_t(t.LastInstanceChange)
-	mem.accel_device_id = C.uint32_t(t.AccelDeviceId)
-	mem.baro_device_id = C.uint32_t(t.BaroDeviceId)
-	mem.gyro_device_id = C.uint32_t(t.GyroDeviceId)
-	mem.mag_device_id = C.uint32_t(t.MagDeviceId)
-	cSlice_combined_test_ratio := mem.combined_test_ratio[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_combined_test_ratio)), t.CombinedTestRatio[:])
-	cSlice_relative_test_ratio := mem.relative_test_ratio[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_relative_test_ratio)), t.RelativeTestRatio[:])
-	cSlice_healthy := mem.healthy[:]
-	rosidl_runtime_c.Bool__Array_to_C(*(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_healthy)), t.Healthy[:])
-	cSlice_accumulated_gyro_error := mem.accumulated_gyro_error[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accumulated_gyro_error)), t.AccumulatedGyroError[:])
-	cSlice_accumulated_accel_error := mem.accumulated_accel_error[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accumulated_accel_error)), t.AccumulatedAccelError[:])
-	mem.gyro_fault_detected = C.bool(t.GyroFaultDetected)
-	mem.accel_fault_detected = C.bool(t.AccelFaultDetected)
-	return unsafe.Pointer(mem)
-}
-func (t *EstimatorSelectorStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__EstimatorSelectorStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.PrimaryInstance = uint8(mem.primary_instance)
-	t.InstancesAvailable = uint8(mem.instances_available)
-	t.InstanceChangedCount = uint32(mem.instance_changed_count)
-	t.LastInstanceChange = uint64(mem.last_instance_change)
-	t.AccelDeviceId = uint32(mem.accel_device_id)
-	t.BaroDeviceId = uint32(mem.baro_device_id)
-	t.GyroDeviceId = uint32(mem.gyro_device_id)
-	t.MagDeviceId = uint32(mem.mag_device_id)
-	cSlice_combined_test_ratio := mem.combined_test_ratio[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.CombinedTestRatio[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_combined_test_ratio)))
-	cSlice_relative_test_ratio := mem.relative_test_ratio[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.RelativeTestRatio[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_relative_test_ratio)))
-	cSlice_healthy := mem.healthy[:]
-	rosidl_runtime_c.Bool__Array_to_Go(t.Healthy[:], *(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_healthy)))
-	cSlice_accumulated_gyro_error := mem.accumulated_gyro_error[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.AccumulatedGyroError[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accumulated_gyro_error)))
-	cSlice_accumulated_accel_error := mem.accumulated_accel_error[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.AccumulatedAccelError[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accumulated_accel_error)))
-	t.GyroFaultDetected = bool(mem.gyro_fault_detected)
-	t.AccelFaultDetected = bool(mem.accel_fault_detected)
-}
-func (t *EstimatorSelectorStatus) Clone() ros2types.ROS2Msg {
+func (t *EstimatorSelectorStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *EstimatorSelectorStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var EstimatorSelectorStatusTypeSupport types.MessageTypeSupport = _EstimatorSelectorStatusTypeSupport{}
+
+type _EstimatorSelectorStatusTypeSupport struct{}
+
+func (t _EstimatorSelectorStatusTypeSupport) New() types.Message {
+	return NewEstimatorSelectorStatus()
+}
+
+func (t _EstimatorSelectorStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EstimatorSelectorStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__EstimatorSelectorStatus__create())
+}
+
+func (t _EstimatorSelectorStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__EstimatorSelectorStatus__destroy((*C.px4_msgs__msg__EstimatorSelectorStatus)(pointer_to_free))
+}
+
+func (t _EstimatorSelectorStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*EstimatorSelectorStatus)
+	mem := (*C.px4_msgs__msg__EstimatorSelectorStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.primary_instance = C.uint8_t(m.PrimaryInstance)
+	mem.instances_available = C.uint8_t(m.InstancesAvailable)
+	mem.instance_changed_count = C.uint32_t(m.InstanceChangedCount)
+	mem.last_instance_change = C.uint64_t(m.LastInstanceChange)
+	mem.accel_device_id = C.uint32_t(m.AccelDeviceId)
+	mem.baro_device_id = C.uint32_t(m.BaroDeviceId)
+	mem.gyro_device_id = C.uint32_t(m.GyroDeviceId)
+	mem.mag_device_id = C.uint32_t(m.MagDeviceId)
+	cSlice_combined_test_ratio := mem.combined_test_ratio[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_combined_test_ratio)), m.CombinedTestRatio[:])
+	cSlice_relative_test_ratio := mem.relative_test_ratio[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_relative_test_ratio)), m.RelativeTestRatio[:])
+	cSlice_healthy := mem.healthy[:]
+	rosidl_runtime_c.Bool__Array_to_C(*(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_healthy)), m.Healthy[:])
+	cSlice_accumulated_gyro_error := mem.accumulated_gyro_error[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accumulated_gyro_error)), m.AccumulatedGyroError[:])
+	cSlice_accumulated_accel_error := mem.accumulated_accel_error[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accumulated_accel_error)), m.AccumulatedAccelError[:])
+	mem.gyro_fault_detected = C.bool(m.GyroFaultDetected)
+	mem.accel_fault_detected = C.bool(m.AccelFaultDetected)
+}
+
+func (t _EstimatorSelectorStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*EstimatorSelectorStatus)
+	mem := (*C.px4_msgs__msg__EstimatorSelectorStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.PrimaryInstance = uint8(mem.primary_instance)
+	m.InstancesAvailable = uint8(mem.instances_available)
+	m.InstanceChangedCount = uint32(mem.instance_changed_count)
+	m.LastInstanceChange = uint64(mem.last_instance_change)
+	m.AccelDeviceId = uint32(mem.accel_device_id)
+	m.BaroDeviceId = uint32(mem.baro_device_id)
+	m.GyroDeviceId = uint32(mem.gyro_device_id)
+	m.MagDeviceId = uint32(mem.mag_device_id)
+	cSlice_combined_test_ratio := mem.combined_test_ratio[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.CombinedTestRatio[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_combined_test_ratio)))
+	cSlice_relative_test_ratio := mem.relative_test_ratio[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.RelativeTestRatio[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_relative_test_ratio)))
+	cSlice_healthy := mem.healthy[:]
+	rosidl_runtime_c.Bool__Array_to_Go(m.Healthy[:], *(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_healthy)))
+	cSlice_accumulated_gyro_error := mem.accumulated_gyro_error[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.AccumulatedGyroError[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accumulated_gyro_error)))
+	cSlice_accumulated_accel_error := mem.accumulated_accel_error[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.AccumulatedAccelError[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accumulated_accel_error)))
+	m.GyroFaultDetected = bool(mem.gyro_fault_detected)
+	m.AccelFaultDetected = bool(mem.accel_fault_detected)
+}
+
+func (t _EstimatorSelectorStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EstimatorSelectorStatus())
 }
 
 type CEstimatorSelectorStatus = C.px4_msgs__msg__EstimatorSelectorStatus
@@ -145,8 +159,7 @@ func EstimatorSelectorStatus__Sequence_to_Go(goSlice *[]EstimatorSelectorStatus,
 		cIdx := (*C.px4_msgs__msg__EstimatorSelectorStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EstimatorSelectorStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = EstimatorSelectorStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		EstimatorSelectorStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func EstimatorSelectorStatus__Sequence_to_C(cSlice *CEstimatorSelectorStatus__Sequence, goSlice []EstimatorSelectorStatus) {
@@ -161,18 +174,16 @@ func EstimatorSelectorStatus__Sequence_to_C(cSlice *CEstimatorSelectorStatus__Se
 		cIdx := (*C.px4_msgs__msg__EstimatorSelectorStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EstimatorSelectorStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__EstimatorSelectorStatus)(v.AsCStruct())
+		EstimatorSelectorStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func EstimatorSelectorStatus__Array_to_Go(goSlice []EstimatorSelectorStatus, cSlice []CEstimatorSelectorStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		EstimatorSelectorStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func EstimatorSelectorStatus__Array_to_C(cSlice []CEstimatorSelectorStatus, goSlice []EstimatorSelectorStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__EstimatorSelectorStatus)(goSlice[i].AsCStruct())
+		EstimatorSelectorStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

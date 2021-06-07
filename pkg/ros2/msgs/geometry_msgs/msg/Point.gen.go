@@ -15,7 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/Point", &Point{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/Point", PointTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPoint
@@ -47,40 +47,54 @@ type Point struct {
 // NewPoint creates a new Point with default values.
 func NewPoint() *Point {
 	self := Point{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Point) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Point) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__Point())
-}
-func (t *Point) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__Point
-	return (unsafe.Pointer)(C.geometry_msgs__msg__Point__create())
-}
-func (t *Point) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.geometry_msgs__msg__Point__destroy((*C.geometry_msgs__msg__Point)(pointer_to_free))
-}
-func (t *Point) AsCStruct() unsafe.Pointer {
-	mem := (*C.geometry_msgs__msg__Point)(t.PrepareMemory())
-	mem.x = C.double(t.X)
-	mem.y = C.double(t.Y)
-	mem.z = C.double(t.Z)
-	return unsafe.Pointer(mem)
-}
-func (t *Point) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.geometry_msgs__msg__Point)(ros2_message_buffer)
-	t.X = float64(mem.x)
-	t.Y = float64(mem.y)
-	t.Z = float64(mem.z)
-}
-func (t *Point) Clone() ros2types.ROS2Msg {
+func (t *Point) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Point) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var PointTypeSupport types.MessageTypeSupport = _PointTypeSupport{}
+
+type _PointTypeSupport struct{}
+
+func (t _PointTypeSupport) New() types.Message {
+	return NewPoint()
+}
+
+func (t _PointTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__Point
+	return (unsafe.Pointer)(C.geometry_msgs__msg__Point__create())
+}
+
+func (t _PointTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.geometry_msgs__msg__Point__destroy((*C.geometry_msgs__msg__Point)(pointer_to_free))
+}
+
+func (t _PointTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Point)
+	mem := (*C.geometry_msgs__msg__Point)(dst)
+	mem.x = C.double(m.X)
+	mem.y = C.double(m.Y)
+	mem.z = C.double(m.Z)
+}
+
+func (t _PointTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Point)
+	mem := (*C.geometry_msgs__msg__Point)(ros2_message_buffer)
+	m.X = float64(mem.x)
+	m.Y = float64(mem.y)
+	m.Z = float64(mem.z)
+}
+
+func (t _PointTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__Point())
 }
 
 type CPoint = C.geometry_msgs__msg__Point
@@ -95,8 +109,7 @@ func Point__Sequence_to_Go(goSlice *[]Point, cSlice CPoint__Sequence) {
 		cIdx := (*C.geometry_msgs__msg__Point__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Point * uintptr(i)),
 		))
-		(*goSlice)[i] = Point{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		PointTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Point__Sequence_to_C(cSlice *CPoint__Sequence, goSlice []Point) {
@@ -111,18 +124,16 @@ func Point__Sequence_to_C(cSlice *CPoint__Sequence, goSlice []Point) {
 		cIdx := (*C.geometry_msgs__msg__Point)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Point * uintptr(i)),
 		))
-		*cIdx = *(*C.geometry_msgs__msg__Point)(v.AsCStruct())
+		PointTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Point__Array_to_Go(goSlice []Point, cSlice []CPoint) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		PointTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Point__Array_to_C(cSlice []CPoint, goSlice []Point) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.geometry_msgs__msg__Point)(goSlice[i].AsCStruct())
+		PointTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

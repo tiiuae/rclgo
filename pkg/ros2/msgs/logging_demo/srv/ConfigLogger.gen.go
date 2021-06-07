@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("logging_demo/ConfigLogger", ConfigLogger)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("logging_demo/ConfigLogger", ConfigLoggerTypeSupport)
 }
 
-type _ConfigLogger struct {
-	req,resp ros2types.ROS2Msg
+type _ConfigLoggerTypeSupport struct {}
+
+func (s _ConfigLoggerTypeSupport) Request() types.MessageTypeSupport {
+	return ConfigLogger_RequestTypeSupport
 }
 
-func (s *_ConfigLogger) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _ConfigLoggerTypeSupport) Response() types.MessageTypeSupport {
+	return ConfigLogger_ResponseTypeSupport
 }
 
-func (s *_ConfigLogger) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_ConfigLogger) TypeSupport() unsafe.Pointer {
+func (s _ConfigLoggerTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__logging_demo__srv__ConfigLogger())
 }
 
 // Modifying this variable is undefined behavior.
-var ConfigLogger ros2types.Service = &_ConfigLogger{
-	req: &ConfigLogger_Request{},
-	resp: &ConfigLogger_Response{},
-}
+var ConfigLoggerTypeSupport types.ServiceTypeSupport = _ConfigLoggerTypeSupport{}

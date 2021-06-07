@@ -15,7 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/QuaternionStamped", &QuaternionStamped{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/QuaternionStamped", QuaternionStampedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewQuaternionStamped
@@ -48,40 +48,54 @@ type QuaternionStamped struct {
 // NewQuaternionStamped creates a new QuaternionStamped with default values.
 func NewQuaternionStamped() *QuaternionStamped {
 	self := QuaternionStamped{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *QuaternionStamped) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.Quaternion.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *QuaternionStamped) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__QuaternionStamped())
-}
-func (t *QuaternionStamped) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__QuaternionStamped
-	return (unsafe.Pointer)(C.geometry_msgs__msg__QuaternionStamped__create())
-}
-func (t *QuaternionStamped) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.geometry_msgs__msg__QuaternionStamped__destroy((*C.geometry_msgs__msg__QuaternionStamped)(pointer_to_free))
-}
-func (t *QuaternionStamped) AsCStruct() unsafe.Pointer {
-	mem := (*C.geometry_msgs__msg__QuaternionStamped)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.quaternion = *(*C.geometry_msgs__msg__Quaternion)(t.Quaternion.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *QuaternionStamped) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.geometry_msgs__msg__QuaternionStamped)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.Quaternion.AsGoStruct(unsafe.Pointer(&mem.quaternion))
-}
-func (t *QuaternionStamped) Clone() ros2types.ROS2Msg {
+func (t *QuaternionStamped) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *QuaternionStamped) SetDefaults() {
+	t.Header.SetDefaults()
+	t.Quaternion.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var QuaternionStampedTypeSupport types.MessageTypeSupport = _QuaternionStampedTypeSupport{}
+
+type _QuaternionStampedTypeSupport struct{}
+
+func (t _QuaternionStampedTypeSupport) New() types.Message {
+	return NewQuaternionStamped()
+}
+
+func (t _QuaternionStampedTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__QuaternionStamped
+	return (unsafe.Pointer)(C.geometry_msgs__msg__QuaternionStamped__create())
+}
+
+func (t _QuaternionStampedTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.geometry_msgs__msg__QuaternionStamped__destroy((*C.geometry_msgs__msg__QuaternionStamped)(pointer_to_free))
+}
+
+func (t _QuaternionStampedTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*QuaternionStamped)
+	mem := (*C.geometry_msgs__msg__QuaternionStamped)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	QuaternionTypeSupport.AsCStruct(unsafe.Pointer(&mem.quaternion), &m.Quaternion)
+}
+
+func (t _QuaternionStampedTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*QuaternionStamped)
+	mem := (*C.geometry_msgs__msg__QuaternionStamped)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	QuaternionTypeSupport.AsGoStruct(&m.Quaternion, unsafe.Pointer(&mem.quaternion))
+}
+
+func (t _QuaternionStampedTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__QuaternionStamped())
 }
 
 type CQuaternionStamped = C.geometry_msgs__msg__QuaternionStamped
@@ -96,8 +110,7 @@ func QuaternionStamped__Sequence_to_Go(goSlice *[]QuaternionStamped, cSlice CQua
 		cIdx := (*C.geometry_msgs__msg__QuaternionStamped__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__QuaternionStamped * uintptr(i)),
 		))
-		(*goSlice)[i] = QuaternionStamped{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		QuaternionStampedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func QuaternionStamped__Sequence_to_C(cSlice *CQuaternionStamped__Sequence, goSlice []QuaternionStamped) {
@@ -112,18 +125,16 @@ func QuaternionStamped__Sequence_to_C(cSlice *CQuaternionStamped__Sequence, goSl
 		cIdx := (*C.geometry_msgs__msg__QuaternionStamped)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__QuaternionStamped * uintptr(i)),
 		))
-		*cIdx = *(*C.geometry_msgs__msg__QuaternionStamped)(v.AsCStruct())
+		QuaternionStampedTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func QuaternionStamped__Array_to_Go(goSlice []QuaternionStamped, cSlice []CQuaternionStamped) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		QuaternionStampedTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func QuaternionStamped__Array_to_C(cSlice []CQuaternionStamped, goSlice []QuaternionStamped) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.geometry_msgs__msg__QuaternionStamped)(goSlice[i].AsCStruct())
+		QuaternionStampedTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

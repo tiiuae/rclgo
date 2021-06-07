@@ -15,7 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("std_msgs/Int64", &Int64{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("std_msgs/Int64", Int64TypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewInt64
@@ -45,36 +45,50 @@ type Int64 struct {
 // NewInt64 creates a new Int64 with default values.
 func NewInt64() *Int64 {
 	self := Int64{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Int64) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Int64) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__std_msgs__msg__Int64())
-}
-func (t *Int64) PrepareMemory() unsafe.Pointer { //returns *C.std_msgs__msg__Int64
-	return (unsafe.Pointer)(C.std_msgs__msg__Int64__create())
-}
-func (t *Int64) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.std_msgs__msg__Int64__destroy((*C.std_msgs__msg__Int64)(pointer_to_free))
-}
-func (t *Int64) AsCStruct() unsafe.Pointer {
-	mem := (*C.std_msgs__msg__Int64)(t.PrepareMemory())
-	mem.data = C.int64_t(t.Data)
-	return unsafe.Pointer(mem)
-}
-func (t *Int64) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.std_msgs__msg__Int64)(ros2_message_buffer)
-	t.Data = int64(mem.data)
-}
-func (t *Int64) Clone() ros2types.ROS2Msg {
+func (t *Int64) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Int64) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var Int64TypeSupport types.MessageTypeSupport = _Int64TypeSupport{}
+
+type _Int64TypeSupport struct{}
+
+func (t _Int64TypeSupport) New() types.Message {
+	return NewInt64()
+}
+
+func (t _Int64TypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.std_msgs__msg__Int64
+	return (unsafe.Pointer)(C.std_msgs__msg__Int64__create())
+}
+
+func (t _Int64TypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.std_msgs__msg__Int64__destroy((*C.std_msgs__msg__Int64)(pointer_to_free))
+}
+
+func (t _Int64TypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Int64)
+	mem := (*C.std_msgs__msg__Int64)(dst)
+	mem.data = C.int64_t(m.Data)
+}
+
+func (t _Int64TypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Int64)
+	mem := (*C.std_msgs__msg__Int64)(ros2_message_buffer)
+	m.Data = int64(mem.data)
+}
+
+func (t _Int64TypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__std_msgs__msg__Int64())
 }
 
 type CInt64 = C.std_msgs__msg__Int64
@@ -89,8 +103,7 @@ func Int64__Sequence_to_Go(goSlice *[]Int64, cSlice CInt64__Sequence) {
 		cIdx := (*C.std_msgs__msg__Int64__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__Int64 * uintptr(i)),
 		))
-		(*goSlice)[i] = Int64{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		Int64TypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Int64__Sequence_to_C(cSlice *CInt64__Sequence, goSlice []Int64) {
@@ -105,18 +118,16 @@ func Int64__Sequence_to_C(cSlice *CInt64__Sequence, goSlice []Int64) {
 		cIdx := (*C.std_msgs__msg__Int64)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__Int64 * uintptr(i)),
 		))
-		*cIdx = *(*C.std_msgs__msg__Int64)(v.AsCStruct())
+		Int64TypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Int64__Array_to_Go(goSlice []Int64, cSlice []CInt64) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		Int64TypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Int64__Array_to_C(cSlice []CInt64, goSlice []Int64) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.std_msgs__msg__Int64)(goSlice[i].AsCStruct())
+		Int64TypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

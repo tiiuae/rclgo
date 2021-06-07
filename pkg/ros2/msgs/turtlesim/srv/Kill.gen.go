@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("turtlesim/Kill", Kill)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("turtlesim/Kill", KillTypeSupport)
 }
 
-type _Kill struct {
-	req,resp ros2types.ROS2Msg
+type _KillTypeSupport struct {}
+
+func (s _KillTypeSupport) Request() types.MessageTypeSupport {
+	return Kill_RequestTypeSupport
 }
 
-func (s *_Kill) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _KillTypeSupport) Response() types.MessageTypeSupport {
+	return Kill_ResponseTypeSupport
 }
 
-func (s *_Kill) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_Kill) TypeSupport() unsafe.Pointer {
+func (s _KillTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__turtlesim__srv__Kill())
 }
 
 // Modifying this variable is undefined behavior.
-var Kill ros2types.Service = &_Kill{
-	req: &Kill_Request{},
-	resp: &Kill_Response{},
-}
+var KillTypeSupport types.ServiceTypeSupport = _KillTypeSupport{}

@@ -15,7 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/MultiEchoLaserScan", &MultiEchoLaserScan{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/MultiEchoLaserScan", MultiEchoLaserScanTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewMultiEchoLaserScan
@@ -56,55 +56,69 @@ type MultiEchoLaserScan struct {
 // NewMultiEchoLaserScan creates a new MultiEchoLaserScan with default values.
 func NewMultiEchoLaserScan() *MultiEchoLaserScan {
 	self := MultiEchoLaserScan{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *MultiEchoLaserScan) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *MultiEchoLaserScan) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__MultiEchoLaserScan())
-}
-func (t *MultiEchoLaserScan) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__MultiEchoLaserScan
-	return (unsafe.Pointer)(C.sensor_msgs__msg__MultiEchoLaserScan__create())
-}
-func (t *MultiEchoLaserScan) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__msg__MultiEchoLaserScan__destroy((*C.sensor_msgs__msg__MultiEchoLaserScan)(pointer_to_free))
-}
-func (t *MultiEchoLaserScan) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__msg__MultiEchoLaserScan)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.angle_min = C.float(t.AngleMin)
-	mem.angle_max = C.float(t.AngleMax)
-	mem.angle_increment = C.float(t.AngleIncrement)
-	mem.time_increment = C.float(t.TimeIncrement)
-	mem.scan_time = C.float(t.ScanTime)
-	mem.range_min = C.float(t.RangeMin)
-	mem.range_max = C.float(t.RangeMax)
-	LaserEcho__Sequence_to_C(&mem.ranges, t.Ranges)
-	LaserEcho__Sequence_to_C(&mem.intensities, t.Intensities)
-	return unsafe.Pointer(mem)
-}
-func (t *MultiEchoLaserScan) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__msg__MultiEchoLaserScan)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.AngleMin = float32(mem.angle_min)
-	t.AngleMax = float32(mem.angle_max)
-	t.AngleIncrement = float32(mem.angle_increment)
-	t.TimeIncrement = float32(mem.time_increment)
-	t.ScanTime = float32(mem.scan_time)
-	t.RangeMin = float32(mem.range_min)
-	t.RangeMax = float32(mem.range_max)
-	LaserEcho__Sequence_to_Go(&t.Ranges, mem.ranges)
-	LaserEcho__Sequence_to_Go(&t.Intensities, mem.intensities)
-}
-func (t *MultiEchoLaserScan) Clone() ros2types.ROS2Msg {
+func (t *MultiEchoLaserScan) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *MultiEchoLaserScan) SetDefaults() {
+	t.Header.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var MultiEchoLaserScanTypeSupport types.MessageTypeSupport = _MultiEchoLaserScanTypeSupport{}
+
+type _MultiEchoLaserScanTypeSupport struct{}
+
+func (t _MultiEchoLaserScanTypeSupport) New() types.Message {
+	return NewMultiEchoLaserScan()
+}
+
+func (t _MultiEchoLaserScanTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__MultiEchoLaserScan
+	return (unsafe.Pointer)(C.sensor_msgs__msg__MultiEchoLaserScan__create())
+}
+
+func (t _MultiEchoLaserScanTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__msg__MultiEchoLaserScan__destroy((*C.sensor_msgs__msg__MultiEchoLaserScan)(pointer_to_free))
+}
+
+func (t _MultiEchoLaserScanTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*MultiEchoLaserScan)
+	mem := (*C.sensor_msgs__msg__MultiEchoLaserScan)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	mem.angle_min = C.float(m.AngleMin)
+	mem.angle_max = C.float(m.AngleMax)
+	mem.angle_increment = C.float(m.AngleIncrement)
+	mem.time_increment = C.float(m.TimeIncrement)
+	mem.scan_time = C.float(m.ScanTime)
+	mem.range_min = C.float(m.RangeMin)
+	mem.range_max = C.float(m.RangeMax)
+	LaserEcho__Sequence_to_C(&mem.ranges, m.Ranges)
+	LaserEcho__Sequence_to_C(&mem.intensities, m.Intensities)
+}
+
+func (t _MultiEchoLaserScanTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*MultiEchoLaserScan)
+	mem := (*C.sensor_msgs__msg__MultiEchoLaserScan)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	m.AngleMin = float32(mem.angle_min)
+	m.AngleMax = float32(mem.angle_max)
+	m.AngleIncrement = float32(mem.angle_increment)
+	m.TimeIncrement = float32(mem.time_increment)
+	m.ScanTime = float32(mem.scan_time)
+	m.RangeMin = float32(mem.range_min)
+	m.RangeMax = float32(mem.range_max)
+	LaserEcho__Sequence_to_Go(&m.Ranges, mem.ranges)
+	LaserEcho__Sequence_to_Go(&m.Intensities, mem.intensities)
+}
+
+func (t _MultiEchoLaserScanTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__MultiEchoLaserScan())
 }
 
 type CMultiEchoLaserScan = C.sensor_msgs__msg__MultiEchoLaserScan
@@ -119,8 +133,7 @@ func MultiEchoLaserScan__Sequence_to_Go(goSlice *[]MultiEchoLaserScan, cSlice CM
 		cIdx := (*C.sensor_msgs__msg__MultiEchoLaserScan__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__MultiEchoLaserScan * uintptr(i)),
 		))
-		(*goSlice)[i] = MultiEchoLaserScan{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		MultiEchoLaserScanTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func MultiEchoLaserScan__Sequence_to_C(cSlice *CMultiEchoLaserScan__Sequence, goSlice []MultiEchoLaserScan) {
@@ -135,18 +148,16 @@ func MultiEchoLaserScan__Sequence_to_C(cSlice *CMultiEchoLaserScan__Sequence, go
 		cIdx := (*C.sensor_msgs__msg__MultiEchoLaserScan)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__MultiEchoLaserScan * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__msg__MultiEchoLaserScan)(v.AsCStruct())
+		MultiEchoLaserScanTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func MultiEchoLaserScan__Array_to_Go(goSlice []MultiEchoLaserScan, cSlice []CMultiEchoLaserScan) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		MultiEchoLaserScanTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func MultiEchoLaserScan__Array_to_C(cSlice []CMultiEchoLaserScan, goSlice []MultiEchoLaserScan) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__msg__MultiEchoLaserScan)(goSlice[i].AsCStruct())
+		MultiEchoLaserScanTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

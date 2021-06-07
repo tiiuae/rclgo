@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/CommanderState", &CommanderState{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/CommanderState", CommanderStateTypeSupport)
 }
 const (
 	CommanderState_MAIN_STATE_MANUAL uint8 = 0
@@ -63,38 +63,52 @@ type CommanderState struct {
 // NewCommanderState creates a new CommanderState with default values.
 func NewCommanderState() *CommanderState {
 	self := CommanderState{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *CommanderState) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *CommanderState) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__CommanderState())
-}
-func (t *CommanderState) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__CommanderState
-	return (unsafe.Pointer)(C.px4_msgs__msg__CommanderState__create())
-}
-func (t *CommanderState) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__CommanderState__destroy((*C.px4_msgs__msg__CommanderState)(pointer_to_free))
-}
-func (t *CommanderState) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__CommanderState)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.main_state = C.uint8_t(t.MainState)
-	return unsafe.Pointer(mem)
-}
-func (t *CommanderState) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__CommanderState)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.MainState = uint8(mem.main_state)
-}
-func (t *CommanderState) Clone() ros2types.ROS2Msg {
+func (t *CommanderState) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *CommanderState) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var CommanderStateTypeSupport types.MessageTypeSupport = _CommanderStateTypeSupport{}
+
+type _CommanderStateTypeSupport struct{}
+
+func (t _CommanderStateTypeSupport) New() types.Message {
+	return NewCommanderState()
+}
+
+func (t _CommanderStateTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__CommanderState
+	return (unsafe.Pointer)(C.px4_msgs__msg__CommanderState__create())
+}
+
+func (t _CommanderStateTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__CommanderState__destroy((*C.px4_msgs__msg__CommanderState)(pointer_to_free))
+}
+
+func (t _CommanderStateTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*CommanderState)
+	mem := (*C.px4_msgs__msg__CommanderState)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.main_state = C.uint8_t(m.MainState)
+}
+
+func (t _CommanderStateTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*CommanderState)
+	mem := (*C.px4_msgs__msg__CommanderState)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.MainState = uint8(mem.main_state)
+}
+
+func (t _CommanderStateTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__CommanderState())
 }
 
 type CCommanderState = C.px4_msgs__msg__CommanderState
@@ -109,8 +123,7 @@ func CommanderState__Sequence_to_Go(goSlice *[]CommanderState, cSlice CCommander
 		cIdx := (*C.px4_msgs__msg__CommanderState__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__CommanderState * uintptr(i)),
 		))
-		(*goSlice)[i] = CommanderState{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		CommanderStateTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func CommanderState__Sequence_to_C(cSlice *CCommanderState__Sequence, goSlice []CommanderState) {
@@ -125,18 +138,16 @@ func CommanderState__Sequence_to_C(cSlice *CCommanderState__Sequence, goSlice []
 		cIdx := (*C.px4_msgs__msg__CommanderState)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__CommanderState * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__CommanderState)(v.AsCStruct())
+		CommanderStateTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func CommanderState__Array_to_Go(goSlice []CommanderState, cSlice []CCommanderState) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		CommanderStateTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func CommanderState__Array_to_C(cSlice []CCommanderState, goSlice []CommanderState) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__CommanderState)(goSlice[i].AsCStruct())
+		CommanderStateTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

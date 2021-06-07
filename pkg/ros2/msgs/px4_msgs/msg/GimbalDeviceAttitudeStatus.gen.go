@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/GimbalDeviceAttitudeStatus", &GimbalDeviceAttitudeStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/GimbalDeviceAttitudeStatus", GimbalDeviceAttitudeStatusTypeSupport)
 }
 const (
 	GimbalDeviceAttitudeStatus_DEVICE_FLAGS_RETRACT uint16 = 1
@@ -61,54 +61,68 @@ type GimbalDeviceAttitudeStatus struct {
 // NewGimbalDeviceAttitudeStatus creates a new GimbalDeviceAttitudeStatus with default values.
 func NewGimbalDeviceAttitudeStatus() *GimbalDeviceAttitudeStatus {
 	self := GimbalDeviceAttitudeStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *GimbalDeviceAttitudeStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *GimbalDeviceAttitudeStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__GimbalDeviceAttitudeStatus())
-}
-func (t *GimbalDeviceAttitudeStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__GimbalDeviceAttitudeStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__GimbalDeviceAttitudeStatus__create())
-}
-func (t *GimbalDeviceAttitudeStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__GimbalDeviceAttitudeStatus__destroy((*C.px4_msgs__msg__GimbalDeviceAttitudeStatus)(pointer_to_free))
-}
-func (t *GimbalDeviceAttitudeStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__GimbalDeviceAttitudeStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.target_system = C.uint8_t(t.TargetSystem)
-	mem.target_component = C.uint8_t(t.TargetComponent)
-	mem.device_flags = C.uint16_t(t.DeviceFlags)
-	cSlice_q := mem.q[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)), t.Q[:])
-	mem.angular_velocity_x = C.float(t.AngularVelocityX)
-	mem.angular_velocity_y = C.float(t.AngularVelocityY)
-	mem.angular_velocity_z = C.float(t.AngularVelocityZ)
-	mem.failure_flags = C.uint32_t(t.FailureFlags)
-	return unsafe.Pointer(mem)
-}
-func (t *GimbalDeviceAttitudeStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__GimbalDeviceAttitudeStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TargetSystem = uint8(mem.target_system)
-	t.TargetComponent = uint8(mem.target_component)
-	t.DeviceFlags = uint16(mem.device_flags)
-	cSlice_q := mem.q[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Q[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)))
-	t.AngularVelocityX = float32(mem.angular_velocity_x)
-	t.AngularVelocityY = float32(mem.angular_velocity_y)
-	t.AngularVelocityZ = float32(mem.angular_velocity_z)
-	t.FailureFlags = uint32(mem.failure_flags)
-}
-func (t *GimbalDeviceAttitudeStatus) Clone() ros2types.ROS2Msg {
+func (t *GimbalDeviceAttitudeStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *GimbalDeviceAttitudeStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var GimbalDeviceAttitudeStatusTypeSupport types.MessageTypeSupport = _GimbalDeviceAttitudeStatusTypeSupport{}
+
+type _GimbalDeviceAttitudeStatusTypeSupport struct{}
+
+func (t _GimbalDeviceAttitudeStatusTypeSupport) New() types.Message {
+	return NewGimbalDeviceAttitudeStatus()
+}
+
+func (t _GimbalDeviceAttitudeStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__GimbalDeviceAttitudeStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__GimbalDeviceAttitudeStatus__create())
+}
+
+func (t _GimbalDeviceAttitudeStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__GimbalDeviceAttitudeStatus__destroy((*C.px4_msgs__msg__GimbalDeviceAttitudeStatus)(pointer_to_free))
+}
+
+func (t _GimbalDeviceAttitudeStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*GimbalDeviceAttitudeStatus)
+	mem := (*C.px4_msgs__msg__GimbalDeviceAttitudeStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.target_system = C.uint8_t(m.TargetSystem)
+	mem.target_component = C.uint8_t(m.TargetComponent)
+	mem.device_flags = C.uint16_t(m.DeviceFlags)
+	cSlice_q := mem.q[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)), m.Q[:])
+	mem.angular_velocity_x = C.float(m.AngularVelocityX)
+	mem.angular_velocity_y = C.float(m.AngularVelocityY)
+	mem.angular_velocity_z = C.float(m.AngularVelocityZ)
+	mem.failure_flags = C.uint32_t(m.FailureFlags)
+}
+
+func (t _GimbalDeviceAttitudeStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*GimbalDeviceAttitudeStatus)
+	mem := (*C.px4_msgs__msg__GimbalDeviceAttitudeStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TargetSystem = uint8(mem.target_system)
+	m.TargetComponent = uint8(mem.target_component)
+	m.DeviceFlags = uint16(mem.device_flags)
+	cSlice_q := mem.q[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Q[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)))
+	m.AngularVelocityX = float32(mem.angular_velocity_x)
+	m.AngularVelocityY = float32(mem.angular_velocity_y)
+	m.AngularVelocityZ = float32(mem.angular_velocity_z)
+	m.FailureFlags = uint32(mem.failure_flags)
+}
+
+func (t _GimbalDeviceAttitudeStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__GimbalDeviceAttitudeStatus())
 }
 
 type CGimbalDeviceAttitudeStatus = C.px4_msgs__msg__GimbalDeviceAttitudeStatus
@@ -123,8 +137,7 @@ func GimbalDeviceAttitudeStatus__Sequence_to_Go(goSlice *[]GimbalDeviceAttitudeS
 		cIdx := (*C.px4_msgs__msg__GimbalDeviceAttitudeStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__GimbalDeviceAttitudeStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = GimbalDeviceAttitudeStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		GimbalDeviceAttitudeStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func GimbalDeviceAttitudeStatus__Sequence_to_C(cSlice *CGimbalDeviceAttitudeStatus__Sequence, goSlice []GimbalDeviceAttitudeStatus) {
@@ -139,18 +152,16 @@ func GimbalDeviceAttitudeStatus__Sequence_to_C(cSlice *CGimbalDeviceAttitudeStat
 		cIdx := (*C.px4_msgs__msg__GimbalDeviceAttitudeStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__GimbalDeviceAttitudeStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__GimbalDeviceAttitudeStatus)(v.AsCStruct())
+		GimbalDeviceAttitudeStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func GimbalDeviceAttitudeStatus__Array_to_Go(goSlice []GimbalDeviceAttitudeStatus, cSlice []CGimbalDeviceAttitudeStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		GimbalDeviceAttitudeStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func GimbalDeviceAttitudeStatus__Array_to_C(cSlice []CGimbalDeviceAttitudeStatus, goSlice []GimbalDeviceAttitudeStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__GimbalDeviceAttitudeStatus)(goSlice[i].AsCStruct())
+		GimbalDeviceAttitudeStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

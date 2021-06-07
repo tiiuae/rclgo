@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/AdcReport", &AdcReport{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/AdcReport", AdcReportTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewAdcReport
@@ -51,50 +51,64 @@ type AdcReport struct {
 // NewAdcReport creates a new AdcReport with default values.
 func NewAdcReport() *AdcReport {
 	self := AdcReport{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *AdcReport) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *AdcReport) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__AdcReport())
-}
-func (t *AdcReport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__AdcReport
-	return (unsafe.Pointer)(C.px4_msgs__msg__AdcReport__create())
-}
-func (t *AdcReport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__AdcReport__destroy((*C.px4_msgs__msg__AdcReport)(pointer_to_free))
-}
-func (t *AdcReport) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__AdcReport)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.device_id = C.uint32_t(t.DeviceId)
-	cSlice_channel_id := mem.channel_id[:]
-	rosidl_runtime_c.Int16__Array_to_C(*(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_channel_id)), t.ChannelId[:])
-	cSlice_raw_data := mem.raw_data[:]
-	rosidl_runtime_c.Int32__Array_to_C(*(*[]rosidl_runtime_c.CInt32)(unsafe.Pointer(&cSlice_raw_data)), t.RawData[:])
-	mem.resolution = C.uint32_t(t.Resolution)
-	mem.v_ref = C.float(t.VRef)
-	return unsafe.Pointer(mem)
-}
-func (t *AdcReport) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__AdcReport)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.DeviceId = uint32(mem.device_id)
-	cSlice_channel_id := mem.channel_id[:]
-	rosidl_runtime_c.Int16__Array_to_Go(t.ChannelId[:], *(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_channel_id)))
-	cSlice_raw_data := mem.raw_data[:]
-	rosidl_runtime_c.Int32__Array_to_Go(t.RawData[:], *(*[]rosidl_runtime_c.CInt32)(unsafe.Pointer(&cSlice_raw_data)))
-	t.Resolution = uint32(mem.resolution)
-	t.VRef = float32(mem.v_ref)
-}
-func (t *AdcReport) Clone() ros2types.ROS2Msg {
+func (t *AdcReport) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *AdcReport) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var AdcReportTypeSupport types.MessageTypeSupport = _AdcReportTypeSupport{}
+
+type _AdcReportTypeSupport struct{}
+
+func (t _AdcReportTypeSupport) New() types.Message {
+	return NewAdcReport()
+}
+
+func (t _AdcReportTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__AdcReport
+	return (unsafe.Pointer)(C.px4_msgs__msg__AdcReport__create())
+}
+
+func (t _AdcReportTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__AdcReport__destroy((*C.px4_msgs__msg__AdcReport)(pointer_to_free))
+}
+
+func (t _AdcReportTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*AdcReport)
+	mem := (*C.px4_msgs__msg__AdcReport)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.device_id = C.uint32_t(m.DeviceId)
+	cSlice_channel_id := mem.channel_id[:]
+	rosidl_runtime_c.Int16__Array_to_C(*(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_channel_id)), m.ChannelId[:])
+	cSlice_raw_data := mem.raw_data[:]
+	rosidl_runtime_c.Int32__Array_to_C(*(*[]rosidl_runtime_c.CInt32)(unsafe.Pointer(&cSlice_raw_data)), m.RawData[:])
+	mem.resolution = C.uint32_t(m.Resolution)
+	mem.v_ref = C.float(m.VRef)
+}
+
+func (t _AdcReportTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*AdcReport)
+	mem := (*C.px4_msgs__msg__AdcReport)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.DeviceId = uint32(mem.device_id)
+	cSlice_channel_id := mem.channel_id[:]
+	rosidl_runtime_c.Int16__Array_to_Go(m.ChannelId[:], *(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_channel_id)))
+	cSlice_raw_data := mem.raw_data[:]
+	rosidl_runtime_c.Int32__Array_to_Go(m.RawData[:], *(*[]rosidl_runtime_c.CInt32)(unsafe.Pointer(&cSlice_raw_data)))
+	m.Resolution = uint32(mem.resolution)
+	m.VRef = float32(mem.v_ref)
+}
+
+func (t _AdcReportTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__AdcReport())
 }
 
 type CAdcReport = C.px4_msgs__msg__AdcReport
@@ -109,8 +123,7 @@ func AdcReport__Sequence_to_Go(goSlice *[]AdcReport, cSlice CAdcReport__Sequence
 		cIdx := (*C.px4_msgs__msg__AdcReport__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__AdcReport * uintptr(i)),
 		))
-		(*goSlice)[i] = AdcReport{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		AdcReportTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func AdcReport__Sequence_to_C(cSlice *CAdcReport__Sequence, goSlice []AdcReport) {
@@ -125,18 +138,16 @@ func AdcReport__Sequence_to_C(cSlice *CAdcReport__Sequence, goSlice []AdcReport)
 		cIdx := (*C.px4_msgs__msg__AdcReport)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__AdcReport * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__AdcReport)(v.AsCStruct())
+		AdcReportTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func AdcReport__Array_to_Go(goSlice []AdcReport, cSlice []CAdcReport) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		AdcReportTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func AdcReport__Array_to_C(cSlice []CAdcReport, goSlice []AdcReport) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__AdcReport)(goSlice[i].AsCStruct())
+		AdcReportTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/SensorCorrection", &SensorCorrection{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/SensorCorrection", SensorCorrectionTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSensorCorrection
@@ -61,88 +61,102 @@ type SensorCorrection struct {
 // NewSensorCorrection creates a new SensorCorrection with default values.
 func NewSensorCorrection() *SensorCorrection {
 	self := SensorCorrection{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SensorCorrection) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *SensorCorrection) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__SensorCorrection())
-}
-func (t *SensorCorrection) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__SensorCorrection
-	return (unsafe.Pointer)(C.px4_msgs__msg__SensorCorrection__create())
-}
-func (t *SensorCorrection) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__SensorCorrection__destroy((*C.px4_msgs__msg__SensorCorrection)(pointer_to_free))
-}
-func (t *SensorCorrection) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__SensorCorrection)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	cSlice_gyro_device_ids := mem.gyro_device_ids[:]
-	rosidl_runtime_c.Uint32__Array_to_C(*(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_gyro_device_ids)), t.GyroDeviceIds[:])
-	cSlice_gyro_offset_0 := mem.gyro_offset_0[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_offset_0)), t.GyroOffset0[:])
-	cSlice_gyro_offset_1 := mem.gyro_offset_1[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_offset_1)), t.GyroOffset1[:])
-	cSlice_gyro_offset_2 := mem.gyro_offset_2[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_offset_2)), t.GyroOffset2[:])
-	cSlice_gyro_offset_3 := mem.gyro_offset_3[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_offset_3)), t.GyroOffset3[:])
-	cSlice_accel_device_ids := mem.accel_device_ids[:]
-	rosidl_runtime_c.Uint32__Array_to_C(*(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_accel_device_ids)), t.AccelDeviceIds[:])
-	cSlice_accel_offset_0 := mem.accel_offset_0[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_offset_0)), t.AccelOffset0[:])
-	cSlice_accel_offset_1 := mem.accel_offset_1[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_offset_1)), t.AccelOffset1[:])
-	cSlice_accel_offset_2 := mem.accel_offset_2[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_offset_2)), t.AccelOffset2[:])
-	cSlice_accel_offset_3 := mem.accel_offset_3[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_offset_3)), t.AccelOffset3[:])
-	cSlice_baro_device_ids := mem.baro_device_ids[:]
-	rosidl_runtime_c.Uint32__Array_to_C(*(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_baro_device_ids)), t.BaroDeviceIds[:])
-	mem.baro_offset_0 = C.float(t.BaroOffset0)
-	mem.baro_offset_1 = C.float(t.BaroOffset1)
-	mem.baro_offset_2 = C.float(t.BaroOffset2)
-	mem.baro_offset_3 = C.float(t.BaroOffset3)
-	return unsafe.Pointer(mem)
-}
-func (t *SensorCorrection) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__SensorCorrection)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	cSlice_gyro_device_ids := mem.gyro_device_ids[:]
-	rosidl_runtime_c.Uint32__Array_to_Go(t.GyroDeviceIds[:], *(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_gyro_device_ids)))
-	cSlice_gyro_offset_0 := mem.gyro_offset_0[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.GyroOffset0[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_offset_0)))
-	cSlice_gyro_offset_1 := mem.gyro_offset_1[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.GyroOffset1[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_offset_1)))
-	cSlice_gyro_offset_2 := mem.gyro_offset_2[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.GyroOffset2[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_offset_2)))
-	cSlice_gyro_offset_3 := mem.gyro_offset_3[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.GyroOffset3[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_offset_3)))
-	cSlice_accel_device_ids := mem.accel_device_ids[:]
-	rosidl_runtime_c.Uint32__Array_to_Go(t.AccelDeviceIds[:], *(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_accel_device_ids)))
-	cSlice_accel_offset_0 := mem.accel_offset_0[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.AccelOffset0[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_offset_0)))
-	cSlice_accel_offset_1 := mem.accel_offset_1[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.AccelOffset1[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_offset_1)))
-	cSlice_accel_offset_2 := mem.accel_offset_2[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.AccelOffset2[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_offset_2)))
-	cSlice_accel_offset_3 := mem.accel_offset_3[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.AccelOffset3[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_offset_3)))
-	cSlice_baro_device_ids := mem.baro_device_ids[:]
-	rosidl_runtime_c.Uint32__Array_to_Go(t.BaroDeviceIds[:], *(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_baro_device_ids)))
-	t.BaroOffset0 = float32(mem.baro_offset_0)
-	t.BaroOffset1 = float32(mem.baro_offset_1)
-	t.BaroOffset2 = float32(mem.baro_offset_2)
-	t.BaroOffset3 = float32(mem.baro_offset_3)
-}
-func (t *SensorCorrection) Clone() ros2types.ROS2Msg {
+func (t *SensorCorrection) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SensorCorrection) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SensorCorrectionTypeSupport types.MessageTypeSupport = _SensorCorrectionTypeSupport{}
+
+type _SensorCorrectionTypeSupport struct{}
+
+func (t _SensorCorrectionTypeSupport) New() types.Message {
+	return NewSensorCorrection()
+}
+
+func (t _SensorCorrectionTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__SensorCorrection
+	return (unsafe.Pointer)(C.px4_msgs__msg__SensorCorrection__create())
+}
+
+func (t _SensorCorrectionTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__SensorCorrection__destroy((*C.px4_msgs__msg__SensorCorrection)(pointer_to_free))
+}
+
+func (t _SensorCorrectionTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*SensorCorrection)
+	mem := (*C.px4_msgs__msg__SensorCorrection)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	cSlice_gyro_device_ids := mem.gyro_device_ids[:]
+	rosidl_runtime_c.Uint32__Array_to_C(*(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_gyro_device_ids)), m.GyroDeviceIds[:])
+	cSlice_gyro_offset_0 := mem.gyro_offset_0[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_offset_0)), m.GyroOffset0[:])
+	cSlice_gyro_offset_1 := mem.gyro_offset_1[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_offset_1)), m.GyroOffset1[:])
+	cSlice_gyro_offset_2 := mem.gyro_offset_2[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_offset_2)), m.GyroOffset2[:])
+	cSlice_gyro_offset_3 := mem.gyro_offset_3[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_offset_3)), m.GyroOffset3[:])
+	cSlice_accel_device_ids := mem.accel_device_ids[:]
+	rosidl_runtime_c.Uint32__Array_to_C(*(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_accel_device_ids)), m.AccelDeviceIds[:])
+	cSlice_accel_offset_0 := mem.accel_offset_0[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_offset_0)), m.AccelOffset0[:])
+	cSlice_accel_offset_1 := mem.accel_offset_1[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_offset_1)), m.AccelOffset1[:])
+	cSlice_accel_offset_2 := mem.accel_offset_2[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_offset_2)), m.AccelOffset2[:])
+	cSlice_accel_offset_3 := mem.accel_offset_3[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_offset_3)), m.AccelOffset3[:])
+	cSlice_baro_device_ids := mem.baro_device_ids[:]
+	rosidl_runtime_c.Uint32__Array_to_C(*(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_baro_device_ids)), m.BaroDeviceIds[:])
+	mem.baro_offset_0 = C.float(m.BaroOffset0)
+	mem.baro_offset_1 = C.float(m.BaroOffset1)
+	mem.baro_offset_2 = C.float(m.BaroOffset2)
+	mem.baro_offset_3 = C.float(m.BaroOffset3)
+}
+
+func (t _SensorCorrectionTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*SensorCorrection)
+	mem := (*C.px4_msgs__msg__SensorCorrection)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	cSlice_gyro_device_ids := mem.gyro_device_ids[:]
+	rosidl_runtime_c.Uint32__Array_to_Go(m.GyroDeviceIds[:], *(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_gyro_device_ids)))
+	cSlice_gyro_offset_0 := mem.gyro_offset_0[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.GyroOffset0[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_offset_0)))
+	cSlice_gyro_offset_1 := mem.gyro_offset_1[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.GyroOffset1[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_offset_1)))
+	cSlice_gyro_offset_2 := mem.gyro_offset_2[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.GyroOffset2[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_offset_2)))
+	cSlice_gyro_offset_3 := mem.gyro_offset_3[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.GyroOffset3[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_offset_3)))
+	cSlice_accel_device_ids := mem.accel_device_ids[:]
+	rosidl_runtime_c.Uint32__Array_to_Go(m.AccelDeviceIds[:], *(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_accel_device_ids)))
+	cSlice_accel_offset_0 := mem.accel_offset_0[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.AccelOffset0[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_offset_0)))
+	cSlice_accel_offset_1 := mem.accel_offset_1[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.AccelOffset1[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_offset_1)))
+	cSlice_accel_offset_2 := mem.accel_offset_2[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.AccelOffset2[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_offset_2)))
+	cSlice_accel_offset_3 := mem.accel_offset_3[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.AccelOffset3[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_offset_3)))
+	cSlice_baro_device_ids := mem.baro_device_ids[:]
+	rosidl_runtime_c.Uint32__Array_to_Go(m.BaroDeviceIds[:], *(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_baro_device_ids)))
+	m.BaroOffset0 = float32(mem.baro_offset_0)
+	m.BaroOffset1 = float32(mem.baro_offset_1)
+	m.BaroOffset2 = float32(mem.baro_offset_2)
+	m.BaroOffset3 = float32(mem.baro_offset_3)
+}
+
+func (t _SensorCorrectionTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__SensorCorrection())
 }
 
 type CSensorCorrection = C.px4_msgs__msg__SensorCorrection
@@ -157,8 +171,7 @@ func SensorCorrection__Sequence_to_Go(goSlice *[]SensorCorrection, cSlice CSenso
 		cIdx := (*C.px4_msgs__msg__SensorCorrection__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__SensorCorrection * uintptr(i)),
 		))
-		(*goSlice)[i] = SensorCorrection{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SensorCorrectionTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SensorCorrection__Sequence_to_C(cSlice *CSensorCorrection__Sequence, goSlice []SensorCorrection) {
@@ -173,18 +186,16 @@ func SensorCorrection__Sequence_to_C(cSlice *CSensorCorrection__Sequence, goSlic
 		cIdx := (*C.px4_msgs__msg__SensorCorrection)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__SensorCorrection * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__SensorCorrection)(v.AsCStruct())
+		SensorCorrectionTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SensorCorrection__Array_to_Go(goSlice []SensorCorrection, cSlice []CSensorCorrection) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SensorCorrectionTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SensorCorrection__Array_to_C(cSlice []CSensorCorrection, goSlice []SensorCorrection) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__SensorCorrection)(goSlice[i].AsCStruct())
+		SensorCorrectionTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

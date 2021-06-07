@@ -15,7 +15,7 @@ package example_interfaces_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("example_interfaces/UInt8", &UInt8{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("example_interfaces/UInt8", UInt8TypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewUInt8
@@ -45,36 +45,50 @@ type UInt8 struct {
 // NewUInt8 creates a new UInt8 with default values.
 func NewUInt8() *UInt8 {
 	self := UInt8{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *UInt8) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *UInt8) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__example_interfaces__msg__UInt8())
-}
-func (t *UInt8) PrepareMemory() unsafe.Pointer { //returns *C.example_interfaces__msg__UInt8
-	return (unsafe.Pointer)(C.example_interfaces__msg__UInt8__create())
-}
-func (t *UInt8) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.example_interfaces__msg__UInt8__destroy((*C.example_interfaces__msg__UInt8)(pointer_to_free))
-}
-func (t *UInt8) AsCStruct() unsafe.Pointer {
-	mem := (*C.example_interfaces__msg__UInt8)(t.PrepareMemory())
-	mem.data = C.uint8_t(t.Data)
-	return unsafe.Pointer(mem)
-}
-func (t *UInt8) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.example_interfaces__msg__UInt8)(ros2_message_buffer)
-	t.Data = uint8(mem.data)
-}
-func (t *UInt8) Clone() ros2types.ROS2Msg {
+func (t *UInt8) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *UInt8) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var UInt8TypeSupport types.MessageTypeSupport = _UInt8TypeSupport{}
+
+type _UInt8TypeSupport struct{}
+
+func (t _UInt8TypeSupport) New() types.Message {
+	return NewUInt8()
+}
+
+func (t _UInt8TypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.example_interfaces__msg__UInt8
+	return (unsafe.Pointer)(C.example_interfaces__msg__UInt8__create())
+}
+
+func (t _UInt8TypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.example_interfaces__msg__UInt8__destroy((*C.example_interfaces__msg__UInt8)(pointer_to_free))
+}
+
+func (t _UInt8TypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*UInt8)
+	mem := (*C.example_interfaces__msg__UInt8)(dst)
+	mem.data = C.uint8_t(m.Data)
+}
+
+func (t _UInt8TypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*UInt8)
+	mem := (*C.example_interfaces__msg__UInt8)(ros2_message_buffer)
+	m.Data = uint8(mem.data)
+}
+
+func (t _UInt8TypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__example_interfaces__msg__UInt8())
 }
 
 type CUInt8 = C.example_interfaces__msg__UInt8
@@ -89,8 +103,7 @@ func UInt8__Sequence_to_Go(goSlice *[]UInt8, cSlice CUInt8__Sequence) {
 		cIdx := (*C.example_interfaces__msg__UInt8__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__UInt8 * uintptr(i)),
 		))
-		(*goSlice)[i] = UInt8{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		UInt8TypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func UInt8__Sequence_to_C(cSlice *CUInt8__Sequence, goSlice []UInt8) {
@@ -105,18 +118,16 @@ func UInt8__Sequence_to_C(cSlice *CUInt8__Sequence, goSlice []UInt8) {
 		cIdx := (*C.example_interfaces__msg__UInt8)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__UInt8 * uintptr(i)),
 		))
-		*cIdx = *(*C.example_interfaces__msg__UInt8)(v.AsCStruct())
+		UInt8TypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func UInt8__Array_to_Go(goSlice []UInt8, cSlice []CUInt8) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		UInt8TypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func UInt8__Array_to_C(cSlice []CUInt8, goSlice []UInt8) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.example_interfaces__msg__UInt8)(goSlice[i].AsCStruct())
+		UInt8TypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

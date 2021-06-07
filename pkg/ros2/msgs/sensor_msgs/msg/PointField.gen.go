@@ -15,7 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/PointField", &PointField{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/PointField", PointFieldTypeSupport)
 }
 const (
 	PointField_INT8 uint8 = 1// This message holds the description of one point entry in thePointCloud2 message format.
@@ -50,7 +50,7 @@ const (
 // Do not create instances of this type directly. Always use NewPointField
 // function instead.
 type PointField struct {
-	Name rosidl_runtime_c.String `yaml:"name"`// Name of field. Common PointField names are x, y, z, intensity, rgb, rgba
+	Name string `yaml:"name"`// Name of field. Common PointField names are x, y, z, intensity, rgb, rgba
 	Offset uint32 `yaml:"offset"`// Offset from start of point struct. Common PointField names are x, y, z, intensity, rgb, rgba
 	Datatype uint8 `yaml:"datatype"`// Datatype enumeration, see above. Common PointField names are x, y, z, intensity, rgb, rgba
 	Count uint32 `yaml:"count"`// How many elements in the field. Common PointField names are x, y, z, intensity, rgb, rgba
@@ -59,43 +59,56 @@ type PointField struct {
 // NewPointField creates a new PointField with default values.
 func NewPointField() *PointField {
 	self := PointField{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *PointField) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Name.SetDefaults("")
-	
-	return t
-}
-
-func (t *PointField) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__PointField())
-}
-func (t *PointField) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__PointField
-	return (unsafe.Pointer)(C.sensor_msgs__msg__PointField__create())
-}
-func (t *PointField) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__msg__PointField__destroy((*C.sensor_msgs__msg__PointField)(pointer_to_free))
-}
-func (t *PointField) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__msg__PointField)(t.PrepareMemory())
-	mem.name = *(*C.rosidl_runtime_c__String)(t.Name.AsCStruct())
-	mem.offset = C.uint32_t(t.Offset)
-	mem.datatype = C.uint8_t(t.Datatype)
-	mem.count = C.uint32_t(t.Count)
-	return unsafe.Pointer(mem)
-}
-func (t *PointField) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__msg__PointField)(ros2_message_buffer)
-	t.Name.AsGoStruct(unsafe.Pointer(&mem.name))
-	t.Offset = uint32(mem.offset)
-	t.Datatype = uint8(mem.datatype)
-	t.Count = uint32(mem.count)
-}
-func (t *PointField) Clone() ros2types.ROS2Msg {
+func (t *PointField) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *PointField) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var PointFieldTypeSupport types.MessageTypeSupport = _PointFieldTypeSupport{}
+
+type _PointFieldTypeSupport struct{}
+
+func (t _PointFieldTypeSupport) New() types.Message {
+	return NewPointField()
+}
+
+func (t _PointFieldTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__PointField
+	return (unsafe.Pointer)(C.sensor_msgs__msg__PointField__create())
+}
+
+func (t _PointFieldTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__msg__PointField__destroy((*C.sensor_msgs__msg__PointField)(pointer_to_free))
+}
+
+func (t _PointFieldTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*PointField)
+	mem := (*C.sensor_msgs__msg__PointField)(dst)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.name), m.Name)
+	mem.offset = C.uint32_t(m.Offset)
+	mem.datatype = C.uint8_t(m.Datatype)
+	mem.count = C.uint32_t(m.Count)
+}
+
+func (t _PointFieldTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*PointField)
+	mem := (*C.sensor_msgs__msg__PointField)(ros2_message_buffer)
+	rosidl_runtime_c.StringAsGoStruct(&m.Name, unsafe.Pointer(&mem.name))
+	m.Offset = uint32(mem.offset)
+	m.Datatype = uint8(mem.datatype)
+	m.Count = uint32(mem.count)
+}
+
+func (t _PointFieldTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__PointField())
 }
 
 type CPointField = C.sensor_msgs__msg__PointField
@@ -110,8 +123,7 @@ func PointField__Sequence_to_Go(goSlice *[]PointField, cSlice CPointField__Seque
 		cIdx := (*C.sensor_msgs__msg__PointField__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__PointField * uintptr(i)),
 		))
-		(*goSlice)[i] = PointField{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		PointFieldTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func PointField__Sequence_to_C(cSlice *CPointField__Sequence, goSlice []PointField) {
@@ -126,18 +138,16 @@ func PointField__Sequence_to_C(cSlice *CPointField__Sequence, goSlice []PointFie
 		cIdx := (*C.sensor_msgs__msg__PointField)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__PointField * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__msg__PointField)(v.AsCStruct())
+		PointFieldTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func PointField__Array_to_Go(goSlice []PointField, cSlice []CPointField) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		PointFieldTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func PointField__Array_to_C(cSlice []CPointField, goSlice []PointField) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__msg__PointField)(goSlice[i].AsCStruct())
+		PointFieldTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

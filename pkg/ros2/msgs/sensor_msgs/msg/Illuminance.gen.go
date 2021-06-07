@@ -15,7 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/Illuminance", &Illuminance{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/Illuminance", IlluminanceTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewIlluminance
@@ -49,41 +49,55 @@ type Illuminance struct {
 // NewIlluminance creates a new Illuminance with default values.
 func NewIlluminance() *Illuminance {
 	self := Illuminance{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Illuminance) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *Illuminance) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__Illuminance())
-}
-func (t *Illuminance) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__Illuminance
-	return (unsafe.Pointer)(C.sensor_msgs__msg__Illuminance__create())
-}
-func (t *Illuminance) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__msg__Illuminance__destroy((*C.sensor_msgs__msg__Illuminance)(pointer_to_free))
-}
-func (t *Illuminance) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__msg__Illuminance)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.illuminance = C.double(t.Illuminance)
-	mem.variance = C.double(t.Variance)
-	return unsafe.Pointer(mem)
-}
-func (t *Illuminance) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__msg__Illuminance)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.Illuminance = float64(mem.illuminance)
-	t.Variance = float64(mem.variance)
-}
-func (t *Illuminance) Clone() ros2types.ROS2Msg {
+func (t *Illuminance) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Illuminance) SetDefaults() {
+	t.Header.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var IlluminanceTypeSupport types.MessageTypeSupport = _IlluminanceTypeSupport{}
+
+type _IlluminanceTypeSupport struct{}
+
+func (t _IlluminanceTypeSupport) New() types.Message {
+	return NewIlluminance()
+}
+
+func (t _IlluminanceTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__Illuminance
+	return (unsafe.Pointer)(C.sensor_msgs__msg__Illuminance__create())
+}
+
+func (t _IlluminanceTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__msg__Illuminance__destroy((*C.sensor_msgs__msg__Illuminance)(pointer_to_free))
+}
+
+func (t _IlluminanceTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Illuminance)
+	mem := (*C.sensor_msgs__msg__Illuminance)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	mem.illuminance = C.double(m.Illuminance)
+	mem.variance = C.double(m.Variance)
+}
+
+func (t _IlluminanceTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Illuminance)
+	mem := (*C.sensor_msgs__msg__Illuminance)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	m.Illuminance = float64(mem.illuminance)
+	m.Variance = float64(mem.variance)
+}
+
+func (t _IlluminanceTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__Illuminance())
 }
 
 type CIlluminance = C.sensor_msgs__msg__Illuminance
@@ -98,8 +112,7 @@ func Illuminance__Sequence_to_Go(goSlice *[]Illuminance, cSlice CIlluminance__Se
 		cIdx := (*C.sensor_msgs__msg__Illuminance__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__Illuminance * uintptr(i)),
 		))
-		(*goSlice)[i] = Illuminance{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		IlluminanceTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Illuminance__Sequence_to_C(cSlice *CIlluminance__Sequence, goSlice []Illuminance) {
@@ -114,18 +127,16 @@ func Illuminance__Sequence_to_C(cSlice *CIlluminance__Sequence, goSlice []Illumi
 		cIdx := (*C.sensor_msgs__msg__Illuminance)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__Illuminance * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__msg__Illuminance)(v.AsCStruct())
+		IlluminanceTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Illuminance__Array_to_Go(goSlice []Illuminance, cSlice []CIlluminance) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		IlluminanceTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Illuminance__Array_to_C(cSlice []CIlluminance, goSlice []Illuminance) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__msg__Illuminance)(goSlice[i].AsCStruct())
+		IlluminanceTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

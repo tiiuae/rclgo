@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleConstraints", &VehicleConstraints{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleConstraints", VehicleConstraintsTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewVehicleConstraints
@@ -49,44 +49,58 @@ type VehicleConstraints struct {
 // NewVehicleConstraints creates a new VehicleConstraints with default values.
 func NewVehicleConstraints() *VehicleConstraints {
 	self := VehicleConstraints{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *VehicleConstraints) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *VehicleConstraints) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleConstraints())
-}
-func (t *VehicleConstraints) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleConstraints
-	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleConstraints__create())
-}
-func (t *VehicleConstraints) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__VehicleConstraints__destroy((*C.px4_msgs__msg__VehicleConstraints)(pointer_to_free))
-}
-func (t *VehicleConstraints) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__VehicleConstraints)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.speed_xy = C.float(t.SpeedXy)
-	mem.speed_up = C.float(t.SpeedUp)
-	mem.speed_down = C.float(t.SpeedDown)
-	mem.want_takeoff = C.bool(t.WantTakeoff)
-	return unsafe.Pointer(mem)
-}
-func (t *VehicleConstraints) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__VehicleConstraints)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.SpeedXy = float32(mem.speed_xy)
-	t.SpeedUp = float32(mem.speed_up)
-	t.SpeedDown = float32(mem.speed_down)
-	t.WantTakeoff = bool(mem.want_takeoff)
-}
-func (t *VehicleConstraints) Clone() ros2types.ROS2Msg {
+func (t *VehicleConstraints) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *VehicleConstraints) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VehicleConstraintsTypeSupport types.MessageTypeSupport = _VehicleConstraintsTypeSupport{}
+
+type _VehicleConstraintsTypeSupport struct{}
+
+func (t _VehicleConstraintsTypeSupport) New() types.Message {
+	return NewVehicleConstraints()
+}
+
+func (t _VehicleConstraintsTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleConstraints
+	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleConstraints__create())
+}
+
+func (t _VehicleConstraintsTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__VehicleConstraints__destroy((*C.px4_msgs__msg__VehicleConstraints)(pointer_to_free))
+}
+
+func (t _VehicleConstraintsTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*VehicleConstraints)
+	mem := (*C.px4_msgs__msg__VehicleConstraints)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.speed_xy = C.float(m.SpeedXy)
+	mem.speed_up = C.float(m.SpeedUp)
+	mem.speed_down = C.float(m.SpeedDown)
+	mem.want_takeoff = C.bool(m.WantTakeoff)
+}
+
+func (t _VehicleConstraintsTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*VehicleConstraints)
+	mem := (*C.px4_msgs__msg__VehicleConstraints)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.SpeedXy = float32(mem.speed_xy)
+	m.SpeedUp = float32(mem.speed_up)
+	m.SpeedDown = float32(mem.speed_down)
+	m.WantTakeoff = bool(mem.want_takeoff)
+}
+
+func (t _VehicleConstraintsTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleConstraints())
 }
 
 type CVehicleConstraints = C.px4_msgs__msg__VehicleConstraints
@@ -101,8 +115,7 @@ func VehicleConstraints__Sequence_to_Go(goSlice *[]VehicleConstraints, cSlice CV
 		cIdx := (*C.px4_msgs__msg__VehicleConstraints__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleConstraints * uintptr(i)),
 		))
-		(*goSlice)[i] = VehicleConstraints{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VehicleConstraintsTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func VehicleConstraints__Sequence_to_C(cSlice *CVehicleConstraints__Sequence, goSlice []VehicleConstraints) {
@@ -117,18 +130,16 @@ func VehicleConstraints__Sequence_to_C(cSlice *CVehicleConstraints__Sequence, go
 		cIdx := (*C.px4_msgs__msg__VehicleConstraints)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleConstraints * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__VehicleConstraints)(v.AsCStruct())
+		VehicleConstraintsTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func VehicleConstraints__Array_to_Go(goSlice []VehicleConstraints, cSlice []CVehicleConstraints) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VehicleConstraintsTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func VehicleConstraints__Array_to_C(cSlice []CVehicleConstraints, goSlice []VehicleConstraints) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__VehicleConstraints)(goSlice[i].AsCStruct())
+		VehicleConstraintsTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

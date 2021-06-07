@@ -15,7 +15,7 @@ package statistics_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("statistics_msgs/StatisticDataPoint", &StatisticDataPoint{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("statistics_msgs/StatisticDataPoint", StatisticDataPointTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewStatisticDataPoint
@@ -46,38 +46,52 @@ type StatisticDataPoint struct {
 // NewStatisticDataPoint creates a new StatisticDataPoint with default values.
 func NewStatisticDataPoint() *StatisticDataPoint {
 	self := StatisticDataPoint{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *StatisticDataPoint) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *StatisticDataPoint) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__statistics_msgs__msg__StatisticDataPoint())
-}
-func (t *StatisticDataPoint) PrepareMemory() unsafe.Pointer { //returns *C.statistics_msgs__msg__StatisticDataPoint
-	return (unsafe.Pointer)(C.statistics_msgs__msg__StatisticDataPoint__create())
-}
-func (t *StatisticDataPoint) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.statistics_msgs__msg__StatisticDataPoint__destroy((*C.statistics_msgs__msg__StatisticDataPoint)(pointer_to_free))
-}
-func (t *StatisticDataPoint) AsCStruct() unsafe.Pointer {
-	mem := (*C.statistics_msgs__msg__StatisticDataPoint)(t.PrepareMemory())
-	mem.data_type = C.uint8_t(t.DataType)
-	mem.data = C.double(t.Data)
-	return unsafe.Pointer(mem)
-}
-func (t *StatisticDataPoint) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.statistics_msgs__msg__StatisticDataPoint)(ros2_message_buffer)
-	t.DataType = uint8(mem.data_type)
-	t.Data = float64(mem.data)
-}
-func (t *StatisticDataPoint) Clone() ros2types.ROS2Msg {
+func (t *StatisticDataPoint) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *StatisticDataPoint) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var StatisticDataPointTypeSupport types.MessageTypeSupport = _StatisticDataPointTypeSupport{}
+
+type _StatisticDataPointTypeSupport struct{}
+
+func (t _StatisticDataPointTypeSupport) New() types.Message {
+	return NewStatisticDataPoint()
+}
+
+func (t _StatisticDataPointTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.statistics_msgs__msg__StatisticDataPoint
+	return (unsafe.Pointer)(C.statistics_msgs__msg__StatisticDataPoint__create())
+}
+
+func (t _StatisticDataPointTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.statistics_msgs__msg__StatisticDataPoint__destroy((*C.statistics_msgs__msg__StatisticDataPoint)(pointer_to_free))
+}
+
+func (t _StatisticDataPointTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*StatisticDataPoint)
+	mem := (*C.statistics_msgs__msg__StatisticDataPoint)(dst)
+	mem.data_type = C.uint8_t(m.DataType)
+	mem.data = C.double(m.Data)
+}
+
+func (t _StatisticDataPointTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*StatisticDataPoint)
+	mem := (*C.statistics_msgs__msg__StatisticDataPoint)(ros2_message_buffer)
+	m.DataType = uint8(mem.data_type)
+	m.Data = float64(mem.data)
+}
+
+func (t _StatisticDataPointTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__statistics_msgs__msg__StatisticDataPoint())
 }
 
 type CStatisticDataPoint = C.statistics_msgs__msg__StatisticDataPoint
@@ -92,8 +106,7 @@ func StatisticDataPoint__Sequence_to_Go(goSlice *[]StatisticDataPoint, cSlice CS
 		cIdx := (*C.statistics_msgs__msg__StatisticDataPoint__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_statistics_msgs__msg__StatisticDataPoint * uintptr(i)),
 		))
-		(*goSlice)[i] = StatisticDataPoint{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		StatisticDataPointTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func StatisticDataPoint__Sequence_to_C(cSlice *CStatisticDataPoint__Sequence, goSlice []StatisticDataPoint) {
@@ -108,18 +121,16 @@ func StatisticDataPoint__Sequence_to_C(cSlice *CStatisticDataPoint__Sequence, go
 		cIdx := (*C.statistics_msgs__msg__StatisticDataPoint)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_statistics_msgs__msg__StatisticDataPoint * uintptr(i)),
 		))
-		*cIdx = *(*C.statistics_msgs__msg__StatisticDataPoint)(v.AsCStruct())
+		StatisticDataPointTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func StatisticDataPoint__Array_to_Go(goSlice []StatisticDataPoint, cSlice []CStatisticDataPoint) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		StatisticDataPointTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func StatisticDataPoint__Array_to_C(cSlice []CStatisticDataPoint, goSlice []StatisticDataPoint) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.statistics_msgs__msg__StatisticDataPoint)(goSlice[i].AsCStruct())
+		StatisticDataPointTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

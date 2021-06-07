@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/TakeoffStatus", &TakeoffStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/TakeoffStatus", TakeoffStatusTypeSupport)
 }
 const (
 	TakeoffStatus_TAKEOFF_STATE_UNINITIALIZED uint8 = 0
@@ -54,38 +54,52 @@ type TakeoffStatus struct {
 // NewTakeoffStatus creates a new TakeoffStatus with default values.
 func NewTakeoffStatus() *TakeoffStatus {
 	self := TakeoffStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *TakeoffStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *TakeoffStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__TakeoffStatus())
-}
-func (t *TakeoffStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__TakeoffStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__TakeoffStatus__create())
-}
-func (t *TakeoffStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__TakeoffStatus__destroy((*C.px4_msgs__msg__TakeoffStatus)(pointer_to_free))
-}
-func (t *TakeoffStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__TakeoffStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.takeoff_state = C.uint8_t(t.TakeoffState)
-	return unsafe.Pointer(mem)
-}
-func (t *TakeoffStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__TakeoffStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TakeoffState = uint8(mem.takeoff_state)
-}
-func (t *TakeoffStatus) Clone() ros2types.ROS2Msg {
+func (t *TakeoffStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *TakeoffStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TakeoffStatusTypeSupport types.MessageTypeSupport = _TakeoffStatusTypeSupport{}
+
+type _TakeoffStatusTypeSupport struct{}
+
+func (t _TakeoffStatusTypeSupport) New() types.Message {
+	return NewTakeoffStatus()
+}
+
+func (t _TakeoffStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__TakeoffStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__TakeoffStatus__create())
+}
+
+func (t _TakeoffStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__TakeoffStatus__destroy((*C.px4_msgs__msg__TakeoffStatus)(pointer_to_free))
+}
+
+func (t _TakeoffStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*TakeoffStatus)
+	mem := (*C.px4_msgs__msg__TakeoffStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.takeoff_state = C.uint8_t(m.TakeoffState)
+}
+
+func (t _TakeoffStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*TakeoffStatus)
+	mem := (*C.px4_msgs__msg__TakeoffStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TakeoffState = uint8(mem.takeoff_state)
+}
+
+func (t _TakeoffStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__TakeoffStatus())
 }
 
 type CTakeoffStatus = C.px4_msgs__msg__TakeoffStatus
@@ -100,8 +114,7 @@ func TakeoffStatus__Sequence_to_Go(goSlice *[]TakeoffStatus, cSlice CTakeoffStat
 		cIdx := (*C.px4_msgs__msg__TakeoffStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__TakeoffStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = TakeoffStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TakeoffStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func TakeoffStatus__Sequence_to_C(cSlice *CTakeoffStatus__Sequence, goSlice []TakeoffStatus) {
@@ -116,18 +129,16 @@ func TakeoffStatus__Sequence_to_C(cSlice *CTakeoffStatus__Sequence, goSlice []Ta
 		cIdx := (*C.px4_msgs__msg__TakeoffStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__TakeoffStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__TakeoffStatus)(v.AsCStruct())
+		TakeoffStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func TakeoffStatus__Array_to_Go(goSlice []TakeoffStatus, cSlice []CTakeoffStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TakeoffStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func TakeoffStatus__Array_to_C(cSlice []CTakeoffStatus, goSlice []TakeoffStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__TakeoffStatus)(goSlice[i].AsCStruct())
+		TakeoffStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

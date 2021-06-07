@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/Ekf2Timestamps", &Ekf2Timestamps{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/Ekf2Timestamps", Ekf2TimestampsTypeSupport)
 }
 const (
 	Ekf2Timestamps_RELATIVE_TIMESTAMP_INVALID int16 = 32767// (0x7fff) If one of the relative timestamps
@@ -54,48 +54,62 @@ type Ekf2Timestamps struct {
 // NewEkf2Timestamps creates a new Ekf2Timestamps with default values.
 func NewEkf2Timestamps() *Ekf2Timestamps {
 	self := Ekf2Timestamps{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Ekf2Timestamps) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Ekf2Timestamps) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__Ekf2Timestamps())
-}
-func (t *Ekf2Timestamps) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__Ekf2Timestamps
-	return (unsafe.Pointer)(C.px4_msgs__msg__Ekf2Timestamps__create())
-}
-func (t *Ekf2Timestamps) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__Ekf2Timestamps__destroy((*C.px4_msgs__msg__Ekf2Timestamps)(pointer_to_free))
-}
-func (t *Ekf2Timestamps) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__Ekf2Timestamps)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.airspeed_timestamp_rel = C.int16_t(t.AirspeedTimestampRel)
-	mem.distance_sensor_timestamp_rel = C.int16_t(t.DistanceSensorTimestampRel)
-	mem.optical_flow_timestamp_rel = C.int16_t(t.OpticalFlowTimestampRel)
-	mem.vehicle_air_data_timestamp_rel = C.int16_t(t.VehicleAirDataTimestampRel)
-	mem.vehicle_magnetometer_timestamp_rel = C.int16_t(t.VehicleMagnetometerTimestampRel)
-	mem.visual_odometry_timestamp_rel = C.int16_t(t.VisualOdometryTimestampRel)
-	return unsafe.Pointer(mem)
-}
-func (t *Ekf2Timestamps) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__Ekf2Timestamps)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.AirspeedTimestampRel = int16(mem.airspeed_timestamp_rel)
-	t.DistanceSensorTimestampRel = int16(mem.distance_sensor_timestamp_rel)
-	t.OpticalFlowTimestampRel = int16(mem.optical_flow_timestamp_rel)
-	t.VehicleAirDataTimestampRel = int16(mem.vehicle_air_data_timestamp_rel)
-	t.VehicleMagnetometerTimestampRel = int16(mem.vehicle_magnetometer_timestamp_rel)
-	t.VisualOdometryTimestampRel = int16(mem.visual_odometry_timestamp_rel)
-}
-func (t *Ekf2Timestamps) Clone() ros2types.ROS2Msg {
+func (t *Ekf2Timestamps) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Ekf2Timestamps) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var Ekf2TimestampsTypeSupport types.MessageTypeSupport = _Ekf2TimestampsTypeSupport{}
+
+type _Ekf2TimestampsTypeSupport struct{}
+
+func (t _Ekf2TimestampsTypeSupport) New() types.Message {
+	return NewEkf2Timestamps()
+}
+
+func (t _Ekf2TimestampsTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__Ekf2Timestamps
+	return (unsafe.Pointer)(C.px4_msgs__msg__Ekf2Timestamps__create())
+}
+
+func (t _Ekf2TimestampsTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__Ekf2Timestamps__destroy((*C.px4_msgs__msg__Ekf2Timestamps)(pointer_to_free))
+}
+
+func (t _Ekf2TimestampsTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Ekf2Timestamps)
+	mem := (*C.px4_msgs__msg__Ekf2Timestamps)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.airspeed_timestamp_rel = C.int16_t(m.AirspeedTimestampRel)
+	mem.distance_sensor_timestamp_rel = C.int16_t(m.DistanceSensorTimestampRel)
+	mem.optical_flow_timestamp_rel = C.int16_t(m.OpticalFlowTimestampRel)
+	mem.vehicle_air_data_timestamp_rel = C.int16_t(m.VehicleAirDataTimestampRel)
+	mem.vehicle_magnetometer_timestamp_rel = C.int16_t(m.VehicleMagnetometerTimestampRel)
+	mem.visual_odometry_timestamp_rel = C.int16_t(m.VisualOdometryTimestampRel)
+}
+
+func (t _Ekf2TimestampsTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Ekf2Timestamps)
+	mem := (*C.px4_msgs__msg__Ekf2Timestamps)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.AirspeedTimestampRel = int16(mem.airspeed_timestamp_rel)
+	m.DistanceSensorTimestampRel = int16(mem.distance_sensor_timestamp_rel)
+	m.OpticalFlowTimestampRel = int16(mem.optical_flow_timestamp_rel)
+	m.VehicleAirDataTimestampRel = int16(mem.vehicle_air_data_timestamp_rel)
+	m.VehicleMagnetometerTimestampRel = int16(mem.vehicle_magnetometer_timestamp_rel)
+	m.VisualOdometryTimestampRel = int16(mem.visual_odometry_timestamp_rel)
+}
+
+func (t _Ekf2TimestampsTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__Ekf2Timestamps())
 }
 
 type CEkf2Timestamps = C.px4_msgs__msg__Ekf2Timestamps
@@ -110,8 +124,7 @@ func Ekf2Timestamps__Sequence_to_Go(goSlice *[]Ekf2Timestamps, cSlice CEkf2Times
 		cIdx := (*C.px4_msgs__msg__Ekf2Timestamps__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__Ekf2Timestamps * uintptr(i)),
 		))
-		(*goSlice)[i] = Ekf2Timestamps{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		Ekf2TimestampsTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Ekf2Timestamps__Sequence_to_C(cSlice *CEkf2Timestamps__Sequence, goSlice []Ekf2Timestamps) {
@@ -126,18 +139,16 @@ func Ekf2Timestamps__Sequence_to_C(cSlice *CEkf2Timestamps__Sequence, goSlice []
 		cIdx := (*C.px4_msgs__msg__Ekf2Timestamps)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__Ekf2Timestamps * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__Ekf2Timestamps)(v.AsCStruct())
+		Ekf2TimestampsTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Ekf2Timestamps__Array_to_Go(goSlice []Ekf2Timestamps, cSlice []CEkf2Timestamps) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		Ekf2TimestampsTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Ekf2Timestamps__Array_to_C(cSlice []CEkf2Timestamps, goSlice []Ekf2Timestamps) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__Ekf2Timestamps)(goSlice[i].AsCStruct())
+		Ekf2TimestampsTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

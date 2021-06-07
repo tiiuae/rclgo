@@ -15,7 +15,7 @@ package turtlesim_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,49 +34,62 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("turtlesim/Kill_Request", &Kill_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("turtlesim/Kill_Request", Kill_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewKill_Request
 // function instead.
 type Kill_Request struct {
-	Name rosidl_runtime_c.String `yaml:"name"`
+	Name string `yaml:"name"`
 }
 
 // NewKill_Request creates a new Kill_Request with default values.
 func NewKill_Request() *Kill_Request {
 	self := Kill_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Kill_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Name.SetDefaults("")
-	
-	return t
-}
-
-func (t *Kill_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__turtlesim__srv__Kill_Request())
-}
-func (t *Kill_Request) PrepareMemory() unsafe.Pointer { //returns *C.turtlesim__srv__Kill_Request
-	return (unsafe.Pointer)(C.turtlesim__srv__Kill_Request__create())
-}
-func (t *Kill_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.turtlesim__srv__Kill_Request__destroy((*C.turtlesim__srv__Kill_Request)(pointer_to_free))
-}
-func (t *Kill_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.turtlesim__srv__Kill_Request)(t.PrepareMemory())
-	mem.name = *(*C.rosidl_runtime_c__String)(t.Name.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *Kill_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.turtlesim__srv__Kill_Request)(ros2_message_buffer)
-	t.Name.AsGoStruct(unsafe.Pointer(&mem.name))
-}
-func (t *Kill_Request) Clone() ros2types.ROS2Msg {
+func (t *Kill_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Kill_Request) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var Kill_RequestTypeSupport types.MessageTypeSupport = _Kill_RequestTypeSupport{}
+
+type _Kill_RequestTypeSupport struct{}
+
+func (t _Kill_RequestTypeSupport) New() types.Message {
+	return NewKill_Request()
+}
+
+func (t _Kill_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.turtlesim__srv__Kill_Request
+	return (unsafe.Pointer)(C.turtlesim__srv__Kill_Request__create())
+}
+
+func (t _Kill_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.turtlesim__srv__Kill_Request__destroy((*C.turtlesim__srv__Kill_Request)(pointer_to_free))
+}
+
+func (t _Kill_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Kill_Request)
+	mem := (*C.turtlesim__srv__Kill_Request)(dst)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.name), m.Name)
+}
+
+func (t _Kill_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Kill_Request)
+	mem := (*C.turtlesim__srv__Kill_Request)(ros2_message_buffer)
+	rosidl_runtime_c.StringAsGoStruct(&m.Name, unsafe.Pointer(&mem.name))
+}
+
+func (t _Kill_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__turtlesim__srv__Kill_Request())
 }
 
 type CKill_Request = C.turtlesim__srv__Kill_Request
@@ -91,8 +104,7 @@ func Kill_Request__Sequence_to_Go(goSlice *[]Kill_Request, cSlice CKill_Request_
 		cIdx := (*C.turtlesim__srv__Kill_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_turtlesim__srv__Kill_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = Kill_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		Kill_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Kill_Request__Sequence_to_C(cSlice *CKill_Request__Sequence, goSlice []Kill_Request) {
@@ -107,18 +119,16 @@ func Kill_Request__Sequence_to_C(cSlice *CKill_Request__Sequence, goSlice []Kill
 		cIdx := (*C.turtlesim__srv__Kill_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_turtlesim__srv__Kill_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.turtlesim__srv__Kill_Request)(v.AsCStruct())
+		Kill_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Kill_Request__Array_to_Go(goSlice []Kill_Request, cSlice []CKill_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		Kill_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Kill_Request__Array_to_C(cSlice []CKill_Request, goSlice []Kill_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.turtlesim__srv__Kill_Request)(goSlice[i].AsCStruct())
+		Kill_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

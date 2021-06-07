@@ -15,7 +15,7 @@ package visualization_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("visualization_msgs/MarkerArray", &MarkerArray{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("visualization_msgs/MarkerArray", MarkerArrayTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewMarkerArray
@@ -45,36 +45,50 @@ type MarkerArray struct {
 // NewMarkerArray creates a new MarkerArray with default values.
 func NewMarkerArray() *MarkerArray {
 	self := MarkerArray{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *MarkerArray) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *MarkerArray) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__visualization_msgs__msg__MarkerArray())
-}
-func (t *MarkerArray) PrepareMemory() unsafe.Pointer { //returns *C.visualization_msgs__msg__MarkerArray
-	return (unsafe.Pointer)(C.visualization_msgs__msg__MarkerArray__create())
-}
-func (t *MarkerArray) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.visualization_msgs__msg__MarkerArray__destroy((*C.visualization_msgs__msg__MarkerArray)(pointer_to_free))
-}
-func (t *MarkerArray) AsCStruct() unsafe.Pointer {
-	mem := (*C.visualization_msgs__msg__MarkerArray)(t.PrepareMemory())
-	Marker__Sequence_to_C(&mem.markers, t.Markers)
-	return unsafe.Pointer(mem)
-}
-func (t *MarkerArray) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.visualization_msgs__msg__MarkerArray)(ros2_message_buffer)
-	Marker__Sequence_to_Go(&t.Markers, mem.markers)
-}
-func (t *MarkerArray) Clone() ros2types.ROS2Msg {
+func (t *MarkerArray) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *MarkerArray) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var MarkerArrayTypeSupport types.MessageTypeSupport = _MarkerArrayTypeSupport{}
+
+type _MarkerArrayTypeSupport struct{}
+
+func (t _MarkerArrayTypeSupport) New() types.Message {
+	return NewMarkerArray()
+}
+
+func (t _MarkerArrayTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.visualization_msgs__msg__MarkerArray
+	return (unsafe.Pointer)(C.visualization_msgs__msg__MarkerArray__create())
+}
+
+func (t _MarkerArrayTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.visualization_msgs__msg__MarkerArray__destroy((*C.visualization_msgs__msg__MarkerArray)(pointer_to_free))
+}
+
+func (t _MarkerArrayTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*MarkerArray)
+	mem := (*C.visualization_msgs__msg__MarkerArray)(dst)
+	Marker__Sequence_to_C(&mem.markers, m.Markers)
+}
+
+func (t _MarkerArrayTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*MarkerArray)
+	mem := (*C.visualization_msgs__msg__MarkerArray)(ros2_message_buffer)
+	Marker__Sequence_to_Go(&m.Markers, mem.markers)
+}
+
+func (t _MarkerArrayTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__visualization_msgs__msg__MarkerArray())
 }
 
 type CMarkerArray = C.visualization_msgs__msg__MarkerArray
@@ -89,8 +103,7 @@ func MarkerArray__Sequence_to_Go(goSlice *[]MarkerArray, cSlice CMarkerArray__Se
 		cIdx := (*C.visualization_msgs__msg__MarkerArray__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_visualization_msgs__msg__MarkerArray * uintptr(i)),
 		))
-		(*goSlice)[i] = MarkerArray{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		MarkerArrayTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func MarkerArray__Sequence_to_C(cSlice *CMarkerArray__Sequence, goSlice []MarkerArray) {
@@ -105,18 +118,16 @@ func MarkerArray__Sequence_to_C(cSlice *CMarkerArray__Sequence, goSlice []Marker
 		cIdx := (*C.visualization_msgs__msg__MarkerArray)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_visualization_msgs__msg__MarkerArray * uintptr(i)),
 		))
-		*cIdx = *(*C.visualization_msgs__msg__MarkerArray)(v.AsCStruct())
+		MarkerArrayTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func MarkerArray__Array_to_Go(goSlice []MarkerArray, cSlice []CMarkerArray) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		MarkerArrayTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func MarkerArray__Array_to_C(cSlice []CMarkerArray, goSlice []MarkerArray) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.visualization_msgs__msg__MarkerArray)(goSlice[i].AsCStruct())
+		MarkerArrayTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

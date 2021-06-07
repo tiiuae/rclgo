@@ -107,14 +107,6 @@ func normalizeMsgDefaultArrayValue(defaultsField string) string {
 	return re.Ss(defaultsField, `s!(?:^\[)|(?:\]$)!!gsm`) // So much fun with regexp love! Accurately trim leading and following [] without possible side-effects
 }
 
-func ValOrNil(val string) string {
-	if val == "" {
-		return "nil"
-	} else {
-		return val
-	}
-}
-
 func defaultValueSanitizer(ros2type string, defaultValue string) string {
 	switch ros2type {
 	// CSV parser removes the double quotes only, here we invoke the defaults parsing directly, and need to deal with double quotations manually

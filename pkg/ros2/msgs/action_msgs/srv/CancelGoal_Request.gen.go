@@ -15,7 +15,7 @@ package action_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	action_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/action_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("action_msgs/CancelGoal_Request", &CancelGoal_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("action_msgs/CancelGoal_Request", CancelGoal_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewCancelGoal_Request
@@ -47,37 +47,51 @@ type CancelGoal_Request struct {
 // NewCancelGoal_Request creates a new CancelGoal_Request with default values.
 func NewCancelGoal_Request() *CancelGoal_Request {
 	self := CancelGoal_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *CancelGoal_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.GoalInfo.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *CancelGoal_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__action_msgs__srv__CancelGoal_Request())
-}
-func (t *CancelGoal_Request) PrepareMemory() unsafe.Pointer { //returns *C.action_msgs__srv__CancelGoal_Request
-	return (unsafe.Pointer)(C.action_msgs__srv__CancelGoal_Request__create())
-}
-func (t *CancelGoal_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.action_msgs__srv__CancelGoal_Request__destroy((*C.action_msgs__srv__CancelGoal_Request)(pointer_to_free))
-}
-func (t *CancelGoal_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.action_msgs__srv__CancelGoal_Request)(t.PrepareMemory())
-	mem.goal_info = *(*C.action_msgs__msg__GoalInfo)(t.GoalInfo.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *CancelGoal_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.action_msgs__srv__CancelGoal_Request)(ros2_message_buffer)
-	t.GoalInfo.AsGoStruct(unsafe.Pointer(&mem.goal_info))
-}
-func (t *CancelGoal_Request) Clone() ros2types.ROS2Msg {
+func (t *CancelGoal_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *CancelGoal_Request) SetDefaults() {
+	t.GoalInfo.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var CancelGoal_RequestTypeSupport types.MessageTypeSupport = _CancelGoal_RequestTypeSupport{}
+
+type _CancelGoal_RequestTypeSupport struct{}
+
+func (t _CancelGoal_RequestTypeSupport) New() types.Message {
+	return NewCancelGoal_Request()
+}
+
+func (t _CancelGoal_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.action_msgs__srv__CancelGoal_Request
+	return (unsafe.Pointer)(C.action_msgs__srv__CancelGoal_Request__create())
+}
+
+func (t _CancelGoal_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.action_msgs__srv__CancelGoal_Request__destroy((*C.action_msgs__srv__CancelGoal_Request)(pointer_to_free))
+}
+
+func (t _CancelGoal_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*CancelGoal_Request)
+	mem := (*C.action_msgs__srv__CancelGoal_Request)(dst)
+	action_msgs_msg.GoalInfoTypeSupport.AsCStruct(unsafe.Pointer(&mem.goal_info), &m.GoalInfo)
+}
+
+func (t _CancelGoal_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*CancelGoal_Request)
+	mem := (*C.action_msgs__srv__CancelGoal_Request)(ros2_message_buffer)
+	action_msgs_msg.GoalInfoTypeSupport.AsGoStruct(&m.GoalInfo, unsafe.Pointer(&mem.goal_info))
+}
+
+func (t _CancelGoal_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__action_msgs__srv__CancelGoal_Request())
 }
 
 type CCancelGoal_Request = C.action_msgs__srv__CancelGoal_Request
@@ -92,8 +106,7 @@ func CancelGoal_Request__Sequence_to_Go(goSlice *[]CancelGoal_Request, cSlice CC
 		cIdx := (*C.action_msgs__srv__CancelGoal_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_action_msgs__srv__CancelGoal_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = CancelGoal_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		CancelGoal_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func CancelGoal_Request__Sequence_to_C(cSlice *CCancelGoal_Request__Sequence, goSlice []CancelGoal_Request) {
@@ -108,18 +121,16 @@ func CancelGoal_Request__Sequence_to_C(cSlice *CCancelGoal_Request__Sequence, go
 		cIdx := (*C.action_msgs__srv__CancelGoal_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_action_msgs__srv__CancelGoal_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.action_msgs__srv__CancelGoal_Request)(v.AsCStruct())
+		CancelGoal_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func CancelGoal_Request__Array_to_Go(goSlice []CancelGoal_Request, cSlice []CCancelGoal_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		CancelGoal_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func CancelGoal_Request__Array_to_C(cSlice []CCancelGoal_Request, goSlice []CancelGoal_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.action_msgs__srv__CancelGoal_Request)(goSlice[i].AsCStruct())
+		CancelGoal_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

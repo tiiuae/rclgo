@@ -15,7 +15,7 @@ package rcl_interfaces_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("rcl_interfaces/ParameterEventDescriptors", &ParameterEventDescriptors{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("rcl_interfaces/ParameterEventDescriptors", ParameterEventDescriptorsTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewParameterEventDescriptors
@@ -47,40 +47,54 @@ type ParameterEventDescriptors struct {
 // NewParameterEventDescriptors creates a new ParameterEventDescriptors with default values.
 func NewParameterEventDescriptors() *ParameterEventDescriptors {
 	self := ParameterEventDescriptors{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *ParameterEventDescriptors) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *ParameterEventDescriptors) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__rcl_interfaces__msg__ParameterEventDescriptors())
-}
-func (t *ParameterEventDescriptors) PrepareMemory() unsafe.Pointer { //returns *C.rcl_interfaces__msg__ParameterEventDescriptors
-	return (unsafe.Pointer)(C.rcl_interfaces__msg__ParameterEventDescriptors__create())
-}
-func (t *ParameterEventDescriptors) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.rcl_interfaces__msg__ParameterEventDescriptors__destroy((*C.rcl_interfaces__msg__ParameterEventDescriptors)(pointer_to_free))
-}
-func (t *ParameterEventDescriptors) AsCStruct() unsafe.Pointer {
-	mem := (*C.rcl_interfaces__msg__ParameterEventDescriptors)(t.PrepareMemory())
-	ParameterDescriptor__Sequence_to_C(&mem.new_parameters, t.NewParameters)
-	ParameterDescriptor__Sequence_to_C(&mem.changed_parameters, t.ChangedParameters)
-	ParameterDescriptor__Sequence_to_C(&mem.deleted_parameters, t.DeletedParameters)
-	return unsafe.Pointer(mem)
-}
-func (t *ParameterEventDescriptors) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.rcl_interfaces__msg__ParameterEventDescriptors)(ros2_message_buffer)
-	ParameterDescriptor__Sequence_to_Go(&t.NewParameters, mem.new_parameters)
-	ParameterDescriptor__Sequence_to_Go(&t.ChangedParameters, mem.changed_parameters)
-	ParameterDescriptor__Sequence_to_Go(&t.DeletedParameters, mem.deleted_parameters)
-}
-func (t *ParameterEventDescriptors) Clone() ros2types.ROS2Msg {
+func (t *ParameterEventDescriptors) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *ParameterEventDescriptors) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ParameterEventDescriptorsTypeSupport types.MessageTypeSupport = _ParameterEventDescriptorsTypeSupport{}
+
+type _ParameterEventDescriptorsTypeSupport struct{}
+
+func (t _ParameterEventDescriptorsTypeSupport) New() types.Message {
+	return NewParameterEventDescriptors()
+}
+
+func (t _ParameterEventDescriptorsTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.rcl_interfaces__msg__ParameterEventDescriptors
+	return (unsafe.Pointer)(C.rcl_interfaces__msg__ParameterEventDescriptors__create())
+}
+
+func (t _ParameterEventDescriptorsTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.rcl_interfaces__msg__ParameterEventDescriptors__destroy((*C.rcl_interfaces__msg__ParameterEventDescriptors)(pointer_to_free))
+}
+
+func (t _ParameterEventDescriptorsTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*ParameterEventDescriptors)
+	mem := (*C.rcl_interfaces__msg__ParameterEventDescriptors)(dst)
+	ParameterDescriptor__Sequence_to_C(&mem.new_parameters, m.NewParameters)
+	ParameterDescriptor__Sequence_to_C(&mem.changed_parameters, m.ChangedParameters)
+	ParameterDescriptor__Sequence_to_C(&mem.deleted_parameters, m.DeletedParameters)
+}
+
+func (t _ParameterEventDescriptorsTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*ParameterEventDescriptors)
+	mem := (*C.rcl_interfaces__msg__ParameterEventDescriptors)(ros2_message_buffer)
+	ParameterDescriptor__Sequence_to_Go(&m.NewParameters, mem.new_parameters)
+	ParameterDescriptor__Sequence_to_Go(&m.ChangedParameters, mem.changed_parameters)
+	ParameterDescriptor__Sequence_to_Go(&m.DeletedParameters, mem.deleted_parameters)
+}
+
+func (t _ParameterEventDescriptorsTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__rcl_interfaces__msg__ParameterEventDescriptors())
 }
 
 type CParameterEventDescriptors = C.rcl_interfaces__msg__ParameterEventDescriptors
@@ -95,8 +109,7 @@ func ParameterEventDescriptors__Sequence_to_Go(goSlice *[]ParameterEventDescript
 		cIdx := (*C.rcl_interfaces__msg__ParameterEventDescriptors__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rcl_interfaces__msg__ParameterEventDescriptors * uintptr(i)),
 		))
-		(*goSlice)[i] = ParameterEventDescriptors{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ParameterEventDescriptorsTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func ParameterEventDescriptors__Sequence_to_C(cSlice *CParameterEventDescriptors__Sequence, goSlice []ParameterEventDescriptors) {
@@ -111,18 +124,16 @@ func ParameterEventDescriptors__Sequence_to_C(cSlice *CParameterEventDescriptors
 		cIdx := (*C.rcl_interfaces__msg__ParameterEventDescriptors)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rcl_interfaces__msg__ParameterEventDescriptors * uintptr(i)),
 		))
-		*cIdx = *(*C.rcl_interfaces__msg__ParameterEventDescriptors)(v.AsCStruct())
+		ParameterEventDescriptorsTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func ParameterEventDescriptors__Array_to_Go(goSlice []ParameterEventDescriptors, cSlice []CParameterEventDescriptors) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ParameterEventDescriptorsTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func ParameterEventDescriptors__Array_to_C(cSlice []CParameterEventDescriptors, goSlice []ParameterEventDescriptors) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.rcl_interfaces__msg__ParameterEventDescriptors)(goSlice[i].AsCStruct())
+		ParameterEventDescriptorsTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

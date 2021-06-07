@@ -20,7 +20,7 @@ import (
 	"github.com/hashicorp/go-multierror"
 	"github.com/tiiuae/rclgo/pkg/datagenerator"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 )
 
 /*
@@ -38,7 +38,7 @@ func SubscriberBundle(ctx context.Context, rclContext *Context, wg *sync.WaitGro
 
 func SubscriberBundleReturnWaitSet(ctx context.Context, rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *RCLArgs, subscriberCallback SubscriptionCallback) (*Context, *WaitSet, error) {
 	var errs error
-	var msgType ros2types.ROS2Msg
+	var msgType types.MessageTypeSupport
 	rclContext, wg, msgType, errs = bundleDefaults(rclContext, wg, &namespace, &nodeName, &topicName, &msgTypeName, rosArgs)
 	if errs != nil {
 		return rclContext, nil, errs
@@ -49,8 +49,7 @@ func SubscriberBundleReturnWaitSet(ctx context.Context, rclContext *Context, wg 
 		return rclContext, nil, multierror.Append(errs, err)
 	}
 
-	ros2msgClone := msgType.Clone()
-	subscription, err := rclNode.NewSubscription(topicName, ros2msgClone, subscriberCallback)
+	subscription, err := rclNode.NewSubscription(topicName, msgType, subscriberCallback)
 	if err != nil {
 		return rclContext, nil, multierror.Append(errs, err)
 	}
@@ -68,7 +67,7 @@ func SubscriberBundleReturnWaitSet(ctx context.Context, rclContext *Context, wg 
 
 func PublisherBundle(rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *RCLArgs) (*Context, *Publisher, error) {
 	var errs error
-	var msgType ros2types.ROS2Msg
+	var msgType types.MessageTypeSupport
 	rclContext, _, msgType, errs = bundleDefaults(rclContext, wg, &namespace, &nodeName, &topicName, &msgTypeName, rosArgs)
 	if errs != nil {
 		return rclContext, nil, errs
@@ -87,7 +86,7 @@ func PublisherBundle(rclContext *Context, wg *sync.WaitGroup, namespace, nodeNam
 	return rclContext, publisher, errs
 }
 
-func PublisherBundleTimer(ctx context.Context, rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *RCLArgs, interval time.Duration, payload string, publisherCallback func(*Publisher, ros2types.ROS2Msg) bool) (*Context, error) {
+func PublisherBundleTimer(ctx context.Context, rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *RCLArgs, interval time.Duration, payload string, publisherCallback func(*Publisher, types.Message) bool) (*Context, error) {
 	var errs error
 	var publisher *Publisher
 	rclContext, publisher, errs = PublisherBundle(rclContext, wg, namespace, nodeName, topicName, msgTypeName, rosArgs)
@@ -97,7 +96,7 @@ func PublisherBundleTimer(ctx context.Context, rclContext *Context, wg *sync.Wai
 
 	timer, err := rclContext.NewTimer(interval, func(timer *Timer) {
 		// It would be smarter to allocate memory for the ros2msg outside the timer callback, but this way the tests can test for memory leaks too using this same codebase.
-		ros2msg, err_yaml := ros2_type_dispatcher.TranslateMsgPayloadYAMLToROS2Msg(strings.ReplaceAll(payload, "\\n", "\n"), publisher.Ros2MsgType)
+		ros2msg, err_yaml := ros2_type_dispatcher.TranslateMsgPayloadYAMLToROS2Msg(strings.ReplaceAll(payload, "\\n", "\n"), publisher.typeSupport)
 		if err_yaml != nil {
 			errs = multierror.Append(errs, ErrorsCastC(1003, fmt.Sprintf("Error '%v' unmarshalling YAML '%s' to ROS2 message type '%s'", err_yaml, payload, msgTypeName)))
 		}
@@ -127,7 +126,7 @@ func PublisherBundleTimer(ctx context.Context, rclContext *Context, wg *sync.Wai
 /*
 bundleDefaults creates a default context from the given parameters.
 */
-func bundleDefaults(rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName *string, rosArgs *RCLArgs) (*Context, *sync.WaitGroup, ros2types.ROS2Msg, error) {
+func bundleDefaults(rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName *string, rosArgs *RCLArgs) (*Context, *sync.WaitGroup, types.MessageTypeSupport, error) {
 	var err, errs error
 
 	if rosArgs == nil {

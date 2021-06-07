@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/Rpm", &Rpm{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/Rpm", RpmTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewRpm
@@ -47,40 +47,54 @@ type Rpm struct {
 // NewRpm creates a new Rpm with default values.
 func NewRpm() *Rpm {
 	self := Rpm{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Rpm) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Rpm) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__Rpm())
-}
-func (t *Rpm) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__Rpm
-	return (unsafe.Pointer)(C.px4_msgs__msg__Rpm__create())
-}
-func (t *Rpm) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__Rpm__destroy((*C.px4_msgs__msg__Rpm)(pointer_to_free))
-}
-func (t *Rpm) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__Rpm)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.indicated_frequency_rpm = C.float(t.IndicatedFrequencyRpm)
-	mem.estimated_accurancy_rpm = C.float(t.EstimatedAccurancyRpm)
-	return unsafe.Pointer(mem)
-}
-func (t *Rpm) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__Rpm)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.IndicatedFrequencyRpm = float32(mem.indicated_frequency_rpm)
-	t.EstimatedAccurancyRpm = float32(mem.estimated_accurancy_rpm)
-}
-func (t *Rpm) Clone() ros2types.ROS2Msg {
+func (t *Rpm) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Rpm) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var RpmTypeSupport types.MessageTypeSupport = _RpmTypeSupport{}
+
+type _RpmTypeSupport struct{}
+
+func (t _RpmTypeSupport) New() types.Message {
+	return NewRpm()
+}
+
+func (t _RpmTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__Rpm
+	return (unsafe.Pointer)(C.px4_msgs__msg__Rpm__create())
+}
+
+func (t _RpmTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__Rpm__destroy((*C.px4_msgs__msg__Rpm)(pointer_to_free))
+}
+
+func (t _RpmTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Rpm)
+	mem := (*C.px4_msgs__msg__Rpm)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.indicated_frequency_rpm = C.float(m.IndicatedFrequencyRpm)
+	mem.estimated_accurancy_rpm = C.float(m.EstimatedAccurancyRpm)
+}
+
+func (t _RpmTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Rpm)
+	mem := (*C.px4_msgs__msg__Rpm)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.IndicatedFrequencyRpm = float32(mem.indicated_frequency_rpm)
+	m.EstimatedAccurancyRpm = float32(mem.estimated_accurancy_rpm)
+}
+
+func (t _RpmTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__Rpm())
 }
 
 type CRpm = C.px4_msgs__msg__Rpm
@@ -95,8 +109,7 @@ func Rpm__Sequence_to_Go(goSlice *[]Rpm, cSlice CRpm__Sequence) {
 		cIdx := (*C.px4_msgs__msg__Rpm__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__Rpm * uintptr(i)),
 		))
-		(*goSlice)[i] = Rpm{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		RpmTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Rpm__Sequence_to_C(cSlice *CRpm__Sequence, goSlice []Rpm) {
@@ -111,18 +124,16 @@ func Rpm__Sequence_to_C(cSlice *CRpm__Sequence, goSlice []Rpm) {
 		cIdx := (*C.px4_msgs__msg__Rpm)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__Rpm * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__Rpm)(v.AsCStruct())
+		RpmTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Rpm__Array_to_Go(goSlice []Rpm, cSlice []CRpm) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		RpmTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Rpm__Array_to_C(cSlice []CRpm, goSlice []Rpm) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__Rpm)(goSlice[i].AsCStruct())
+		RpmTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

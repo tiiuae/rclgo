@@ -15,7 +15,7 @@ package test_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("test_msgs/BasicTypes_Request", &BasicTypes_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("test_msgs/BasicTypes_Request", BasicTypes_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewBasicTypes_Request
@@ -53,69 +53,82 @@ type BasicTypes_Request struct {
 	Uint32Value uint32 `yaml:"uint32_value"`
 	Int64Value int64 `yaml:"int64_value"`
 	Uint64Value uint64 `yaml:"uint64_value"`
-	StringValue rosidl_runtime_c.String `yaml:"string_value"`
+	StringValue string `yaml:"string_value"`
 }
 
 // NewBasicTypes_Request creates a new BasicTypes_Request with default values.
 func NewBasicTypes_Request() *BasicTypes_Request {
 	self := BasicTypes_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *BasicTypes_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.StringValue.SetDefaults("")
-	
-	return t
-}
-
-func (t *BasicTypes_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__srv__BasicTypes_Request())
-}
-func (t *BasicTypes_Request) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__srv__BasicTypes_Request
-	return (unsafe.Pointer)(C.test_msgs__srv__BasicTypes_Request__create())
-}
-func (t *BasicTypes_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.test_msgs__srv__BasicTypes_Request__destroy((*C.test_msgs__srv__BasicTypes_Request)(pointer_to_free))
-}
-func (t *BasicTypes_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.test_msgs__srv__BasicTypes_Request)(t.PrepareMemory())
-	mem.bool_value = C.bool(t.BoolValue)
-	mem.byte_value = C.uint8_t(t.ByteValue)
-	mem.char_value = C.uchar(t.CharValue)
-	mem.float32_value = C.float(t.Float32Value)
-	mem.float64_value = C.double(t.Float64Value)
-	mem.int8_value = C.int8_t(t.Int8Value)
-	mem.uint8_value = C.uint8_t(t.Uint8Value)
-	mem.int16_value = C.int16_t(t.Int16Value)
-	mem.uint16_value = C.uint16_t(t.Uint16Value)
-	mem.int32_value = C.int32_t(t.Int32Value)
-	mem.uint32_value = C.uint32_t(t.Uint32Value)
-	mem.int64_value = C.int64_t(t.Int64Value)
-	mem.uint64_value = C.uint64_t(t.Uint64Value)
-	mem.string_value = *(*C.rosidl_runtime_c__String)(t.StringValue.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *BasicTypes_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.test_msgs__srv__BasicTypes_Request)(ros2_message_buffer)
-	t.BoolValue = bool(mem.bool_value)
-	t.ByteValue = byte(mem.byte_value)
-	t.CharValue = byte(mem.char_value)
-	t.Float32Value = float32(mem.float32_value)
-	t.Float64Value = float64(mem.float64_value)
-	t.Int8Value = int8(mem.int8_value)
-	t.Uint8Value = uint8(mem.uint8_value)
-	t.Int16Value = int16(mem.int16_value)
-	t.Uint16Value = uint16(mem.uint16_value)
-	t.Int32Value = int32(mem.int32_value)
-	t.Uint32Value = uint32(mem.uint32_value)
-	t.Int64Value = int64(mem.int64_value)
-	t.Uint64Value = uint64(mem.uint64_value)
-	t.StringValue.AsGoStruct(unsafe.Pointer(&mem.string_value))
-}
-func (t *BasicTypes_Request) Clone() ros2types.ROS2Msg {
+func (t *BasicTypes_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *BasicTypes_Request) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var BasicTypes_RequestTypeSupport types.MessageTypeSupport = _BasicTypes_RequestTypeSupport{}
+
+type _BasicTypes_RequestTypeSupport struct{}
+
+func (t _BasicTypes_RequestTypeSupport) New() types.Message {
+	return NewBasicTypes_Request()
+}
+
+func (t _BasicTypes_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__srv__BasicTypes_Request
+	return (unsafe.Pointer)(C.test_msgs__srv__BasicTypes_Request__create())
+}
+
+func (t _BasicTypes_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.test_msgs__srv__BasicTypes_Request__destroy((*C.test_msgs__srv__BasicTypes_Request)(pointer_to_free))
+}
+
+func (t _BasicTypes_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*BasicTypes_Request)
+	mem := (*C.test_msgs__srv__BasicTypes_Request)(dst)
+	mem.bool_value = C.bool(m.BoolValue)
+	mem.byte_value = C.uint8_t(m.ByteValue)
+	mem.char_value = C.uchar(m.CharValue)
+	mem.float32_value = C.float(m.Float32Value)
+	mem.float64_value = C.double(m.Float64Value)
+	mem.int8_value = C.int8_t(m.Int8Value)
+	mem.uint8_value = C.uint8_t(m.Uint8Value)
+	mem.int16_value = C.int16_t(m.Int16Value)
+	mem.uint16_value = C.uint16_t(m.Uint16Value)
+	mem.int32_value = C.int32_t(m.Int32Value)
+	mem.uint32_value = C.uint32_t(m.Uint32Value)
+	mem.int64_value = C.int64_t(m.Int64Value)
+	mem.uint64_value = C.uint64_t(m.Uint64Value)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.string_value), m.StringValue)
+}
+
+func (t _BasicTypes_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*BasicTypes_Request)
+	mem := (*C.test_msgs__srv__BasicTypes_Request)(ros2_message_buffer)
+	m.BoolValue = bool(mem.bool_value)
+	m.ByteValue = byte(mem.byte_value)
+	m.CharValue = byte(mem.char_value)
+	m.Float32Value = float32(mem.float32_value)
+	m.Float64Value = float64(mem.float64_value)
+	m.Int8Value = int8(mem.int8_value)
+	m.Uint8Value = uint8(mem.uint8_value)
+	m.Int16Value = int16(mem.int16_value)
+	m.Uint16Value = uint16(mem.uint16_value)
+	m.Int32Value = int32(mem.int32_value)
+	m.Uint32Value = uint32(mem.uint32_value)
+	m.Int64Value = int64(mem.int64_value)
+	m.Uint64Value = uint64(mem.uint64_value)
+	rosidl_runtime_c.StringAsGoStruct(&m.StringValue, unsafe.Pointer(&mem.string_value))
+}
+
+func (t _BasicTypes_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__srv__BasicTypes_Request())
 }
 
 type CBasicTypes_Request = C.test_msgs__srv__BasicTypes_Request
@@ -130,8 +143,7 @@ func BasicTypes_Request__Sequence_to_Go(goSlice *[]BasicTypes_Request, cSlice CB
 		cIdx := (*C.test_msgs__srv__BasicTypes_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__srv__BasicTypes_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = BasicTypes_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		BasicTypes_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func BasicTypes_Request__Sequence_to_C(cSlice *CBasicTypes_Request__Sequence, goSlice []BasicTypes_Request) {
@@ -146,18 +158,16 @@ func BasicTypes_Request__Sequence_to_C(cSlice *CBasicTypes_Request__Sequence, go
 		cIdx := (*C.test_msgs__srv__BasicTypes_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__srv__BasicTypes_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.test_msgs__srv__BasicTypes_Request)(v.AsCStruct())
+		BasicTypes_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func BasicTypes_Request__Array_to_Go(goSlice []BasicTypes_Request, cSlice []CBasicTypes_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		BasicTypes_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func BasicTypes_Request__Array_to_C(cSlice []CBasicTypes_Request, goSlice []BasicTypes_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.test_msgs__srv__BasicTypes_Request)(goSlice[i].AsCStruct())
+		BasicTypes_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

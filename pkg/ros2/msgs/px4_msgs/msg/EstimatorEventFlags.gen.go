@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EstimatorEventFlags", &EstimatorEventFlags{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EstimatorEventFlags", EstimatorEventFlagsTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewEstimatorEventFlags
@@ -72,90 +72,104 @@ type EstimatorEventFlags struct {
 // NewEstimatorEventFlags creates a new EstimatorEventFlags with default values.
 func NewEstimatorEventFlags() *EstimatorEventFlags {
 	self := EstimatorEventFlags{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *EstimatorEventFlags) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *EstimatorEventFlags) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EstimatorEventFlags())
-}
-func (t *EstimatorEventFlags) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EstimatorEventFlags
-	return (unsafe.Pointer)(C.px4_msgs__msg__EstimatorEventFlags__create())
-}
-func (t *EstimatorEventFlags) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__EstimatorEventFlags__destroy((*C.px4_msgs__msg__EstimatorEventFlags)(pointer_to_free))
-}
-func (t *EstimatorEventFlags) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__EstimatorEventFlags)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	mem.information_event_changes = C.uint32_t(t.InformationEventChanges)
-	mem.gps_checks_passed = C.bool(t.GpsChecksPassed)
-	mem.reset_vel_to_gps = C.bool(t.ResetVelToGps)
-	mem.reset_vel_to_flow = C.bool(t.ResetVelToFlow)
-	mem.reset_vel_to_vision = C.bool(t.ResetVelToVision)
-	mem.reset_vel_to_zero = C.bool(t.ResetVelToZero)
-	mem.reset_pos_to_last_known = C.bool(t.ResetPosToLastKnown)
-	mem.reset_pos_to_gps = C.bool(t.ResetPosToGps)
-	mem.reset_pos_to_vision = C.bool(t.ResetPosToVision)
-	mem.starting_gps_fusion = C.bool(t.StartingGpsFusion)
-	mem.starting_vision_pos_fusion = C.bool(t.StartingVisionPosFusion)
-	mem.starting_vision_vel_fusion = C.bool(t.StartingVisionVelFusion)
-	mem.starting_vision_yaw_fusion = C.bool(t.StartingVisionYawFusion)
-	mem.yaw_aligned_to_imu_gps = C.bool(t.YawAlignedToImuGps)
-	mem.warning_event_changes = C.uint32_t(t.WarningEventChanges)
-	mem.gps_quality_poor = C.bool(t.GpsQualityPoor)
-	mem.gps_fusion_timout = C.bool(t.GpsFusionTimout)
-	mem.gps_data_stopped = C.bool(t.GpsDataStopped)
-	mem.gps_data_stopped_using_alternate = C.bool(t.GpsDataStoppedUsingAlternate)
-	mem.height_sensor_timeout = C.bool(t.HeightSensorTimeout)
-	mem.stopping_navigation = C.bool(t.StoppingNavigation)
-	mem.invalid_accel_bias_cov_reset = C.bool(t.InvalidAccelBiasCovReset)
-	mem.bad_yaw_using_gps_course = C.bool(t.BadYawUsingGpsCourse)
-	mem.stopping_mag_use = C.bool(t.StoppingMagUse)
-	mem.vision_data_stopped = C.bool(t.VisionDataStopped)
-	mem.emergency_yaw_reset_mag_stopped = C.bool(t.EmergencyYawResetMagStopped)
-	return unsafe.Pointer(mem)
-}
-func (t *EstimatorEventFlags) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__EstimatorEventFlags)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	t.InformationEventChanges = uint32(mem.information_event_changes)
-	t.GpsChecksPassed = bool(mem.gps_checks_passed)
-	t.ResetVelToGps = bool(mem.reset_vel_to_gps)
-	t.ResetVelToFlow = bool(mem.reset_vel_to_flow)
-	t.ResetVelToVision = bool(mem.reset_vel_to_vision)
-	t.ResetVelToZero = bool(mem.reset_vel_to_zero)
-	t.ResetPosToLastKnown = bool(mem.reset_pos_to_last_known)
-	t.ResetPosToGps = bool(mem.reset_pos_to_gps)
-	t.ResetPosToVision = bool(mem.reset_pos_to_vision)
-	t.StartingGpsFusion = bool(mem.starting_gps_fusion)
-	t.StartingVisionPosFusion = bool(mem.starting_vision_pos_fusion)
-	t.StartingVisionVelFusion = bool(mem.starting_vision_vel_fusion)
-	t.StartingVisionYawFusion = bool(mem.starting_vision_yaw_fusion)
-	t.YawAlignedToImuGps = bool(mem.yaw_aligned_to_imu_gps)
-	t.WarningEventChanges = uint32(mem.warning_event_changes)
-	t.GpsQualityPoor = bool(mem.gps_quality_poor)
-	t.GpsFusionTimout = bool(mem.gps_fusion_timout)
-	t.GpsDataStopped = bool(mem.gps_data_stopped)
-	t.GpsDataStoppedUsingAlternate = bool(mem.gps_data_stopped_using_alternate)
-	t.HeightSensorTimeout = bool(mem.height_sensor_timeout)
-	t.StoppingNavigation = bool(mem.stopping_navigation)
-	t.InvalidAccelBiasCovReset = bool(mem.invalid_accel_bias_cov_reset)
-	t.BadYawUsingGpsCourse = bool(mem.bad_yaw_using_gps_course)
-	t.StoppingMagUse = bool(mem.stopping_mag_use)
-	t.VisionDataStopped = bool(mem.vision_data_stopped)
-	t.EmergencyYawResetMagStopped = bool(mem.emergency_yaw_reset_mag_stopped)
-}
-func (t *EstimatorEventFlags) Clone() ros2types.ROS2Msg {
+func (t *EstimatorEventFlags) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *EstimatorEventFlags) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var EstimatorEventFlagsTypeSupport types.MessageTypeSupport = _EstimatorEventFlagsTypeSupport{}
+
+type _EstimatorEventFlagsTypeSupport struct{}
+
+func (t _EstimatorEventFlagsTypeSupport) New() types.Message {
+	return NewEstimatorEventFlags()
+}
+
+func (t _EstimatorEventFlagsTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EstimatorEventFlags
+	return (unsafe.Pointer)(C.px4_msgs__msg__EstimatorEventFlags__create())
+}
+
+func (t _EstimatorEventFlagsTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__EstimatorEventFlags__destroy((*C.px4_msgs__msg__EstimatorEventFlags)(pointer_to_free))
+}
+
+func (t _EstimatorEventFlagsTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*EstimatorEventFlags)
+	mem := (*C.px4_msgs__msg__EstimatorEventFlags)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	mem.information_event_changes = C.uint32_t(m.InformationEventChanges)
+	mem.gps_checks_passed = C.bool(m.GpsChecksPassed)
+	mem.reset_vel_to_gps = C.bool(m.ResetVelToGps)
+	mem.reset_vel_to_flow = C.bool(m.ResetVelToFlow)
+	mem.reset_vel_to_vision = C.bool(m.ResetVelToVision)
+	mem.reset_vel_to_zero = C.bool(m.ResetVelToZero)
+	mem.reset_pos_to_last_known = C.bool(m.ResetPosToLastKnown)
+	mem.reset_pos_to_gps = C.bool(m.ResetPosToGps)
+	mem.reset_pos_to_vision = C.bool(m.ResetPosToVision)
+	mem.starting_gps_fusion = C.bool(m.StartingGpsFusion)
+	mem.starting_vision_pos_fusion = C.bool(m.StartingVisionPosFusion)
+	mem.starting_vision_vel_fusion = C.bool(m.StartingVisionVelFusion)
+	mem.starting_vision_yaw_fusion = C.bool(m.StartingVisionYawFusion)
+	mem.yaw_aligned_to_imu_gps = C.bool(m.YawAlignedToImuGps)
+	mem.warning_event_changes = C.uint32_t(m.WarningEventChanges)
+	mem.gps_quality_poor = C.bool(m.GpsQualityPoor)
+	mem.gps_fusion_timout = C.bool(m.GpsFusionTimout)
+	mem.gps_data_stopped = C.bool(m.GpsDataStopped)
+	mem.gps_data_stopped_using_alternate = C.bool(m.GpsDataStoppedUsingAlternate)
+	mem.height_sensor_timeout = C.bool(m.HeightSensorTimeout)
+	mem.stopping_navigation = C.bool(m.StoppingNavigation)
+	mem.invalid_accel_bias_cov_reset = C.bool(m.InvalidAccelBiasCovReset)
+	mem.bad_yaw_using_gps_course = C.bool(m.BadYawUsingGpsCourse)
+	mem.stopping_mag_use = C.bool(m.StoppingMagUse)
+	mem.vision_data_stopped = C.bool(m.VisionDataStopped)
+	mem.emergency_yaw_reset_mag_stopped = C.bool(m.EmergencyYawResetMagStopped)
+}
+
+func (t _EstimatorEventFlagsTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*EstimatorEventFlags)
+	mem := (*C.px4_msgs__msg__EstimatorEventFlags)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	m.InformationEventChanges = uint32(mem.information_event_changes)
+	m.GpsChecksPassed = bool(mem.gps_checks_passed)
+	m.ResetVelToGps = bool(mem.reset_vel_to_gps)
+	m.ResetVelToFlow = bool(mem.reset_vel_to_flow)
+	m.ResetVelToVision = bool(mem.reset_vel_to_vision)
+	m.ResetVelToZero = bool(mem.reset_vel_to_zero)
+	m.ResetPosToLastKnown = bool(mem.reset_pos_to_last_known)
+	m.ResetPosToGps = bool(mem.reset_pos_to_gps)
+	m.ResetPosToVision = bool(mem.reset_pos_to_vision)
+	m.StartingGpsFusion = bool(mem.starting_gps_fusion)
+	m.StartingVisionPosFusion = bool(mem.starting_vision_pos_fusion)
+	m.StartingVisionVelFusion = bool(mem.starting_vision_vel_fusion)
+	m.StartingVisionYawFusion = bool(mem.starting_vision_yaw_fusion)
+	m.YawAlignedToImuGps = bool(mem.yaw_aligned_to_imu_gps)
+	m.WarningEventChanges = uint32(mem.warning_event_changes)
+	m.GpsQualityPoor = bool(mem.gps_quality_poor)
+	m.GpsFusionTimout = bool(mem.gps_fusion_timout)
+	m.GpsDataStopped = bool(mem.gps_data_stopped)
+	m.GpsDataStoppedUsingAlternate = bool(mem.gps_data_stopped_using_alternate)
+	m.HeightSensorTimeout = bool(mem.height_sensor_timeout)
+	m.StoppingNavigation = bool(mem.stopping_navigation)
+	m.InvalidAccelBiasCovReset = bool(mem.invalid_accel_bias_cov_reset)
+	m.BadYawUsingGpsCourse = bool(mem.bad_yaw_using_gps_course)
+	m.StoppingMagUse = bool(mem.stopping_mag_use)
+	m.VisionDataStopped = bool(mem.vision_data_stopped)
+	m.EmergencyYawResetMagStopped = bool(mem.emergency_yaw_reset_mag_stopped)
+}
+
+func (t _EstimatorEventFlagsTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EstimatorEventFlags())
 }
 
 type CEstimatorEventFlags = C.px4_msgs__msg__EstimatorEventFlags
@@ -170,8 +184,7 @@ func EstimatorEventFlags__Sequence_to_Go(goSlice *[]EstimatorEventFlags, cSlice 
 		cIdx := (*C.px4_msgs__msg__EstimatorEventFlags__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EstimatorEventFlags * uintptr(i)),
 		))
-		(*goSlice)[i] = EstimatorEventFlags{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		EstimatorEventFlagsTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func EstimatorEventFlags__Sequence_to_C(cSlice *CEstimatorEventFlags__Sequence, goSlice []EstimatorEventFlags) {
@@ -186,18 +199,16 @@ func EstimatorEventFlags__Sequence_to_C(cSlice *CEstimatorEventFlags__Sequence, 
 		cIdx := (*C.px4_msgs__msg__EstimatorEventFlags)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EstimatorEventFlags * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__EstimatorEventFlags)(v.AsCStruct())
+		EstimatorEventFlagsTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func EstimatorEventFlags__Array_to_Go(goSlice []EstimatorEventFlags, cSlice []CEstimatorEventFlags) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		EstimatorEventFlagsTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func EstimatorEventFlags__Array_to_C(cSlice []CEstimatorEventFlags, goSlice []EstimatorEventFlags) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__EstimatorEventFlags)(goSlice[i].AsCStruct())
+		EstimatorEventFlagsTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

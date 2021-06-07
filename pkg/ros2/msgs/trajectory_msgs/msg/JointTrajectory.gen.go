@@ -15,7 +15,7 @@ package trajectory_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
@@ -36,55 +36,69 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("trajectory_msgs/JointTrajectory", &JointTrajectory{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("trajectory_msgs/JointTrajectory", JointTrajectoryTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewJointTrajectory
 // function instead.
 type JointTrajectory struct {
 	Header std_msgs_msg.Header `yaml:"header"`// The header is used to specify the coordinate frame and the reference time forthe trajectory durations
-	JointNames []rosidl_runtime_c.String `yaml:"joint_names"`// The names of the active joints in each trajectory point. These names areordered and must correspond to the values in each trajectory point.
+	JointNames []string `yaml:"joint_names"`// The names of the active joints in each trajectory point. These names areordered and must correspond to the values in each trajectory point.
 	Points []JointTrajectoryPoint `yaml:"points"`// Array of trajectory points, which describe the positions, velocities,accelerations and/or efforts of the joints at each time point.
 }
 
 // NewJointTrajectory creates a new JointTrajectory with default values.
 func NewJointTrajectory() *JointTrajectory {
 	self := JointTrajectory{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *JointTrajectory) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *JointTrajectory) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__trajectory_msgs__msg__JointTrajectory())
-}
-func (t *JointTrajectory) PrepareMemory() unsafe.Pointer { //returns *C.trajectory_msgs__msg__JointTrajectory
-	return (unsafe.Pointer)(C.trajectory_msgs__msg__JointTrajectory__create())
-}
-func (t *JointTrajectory) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.trajectory_msgs__msg__JointTrajectory__destroy((*C.trajectory_msgs__msg__JointTrajectory)(pointer_to_free))
-}
-func (t *JointTrajectory) AsCStruct() unsafe.Pointer {
-	mem := (*C.trajectory_msgs__msg__JointTrajectory)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	rosidl_runtime_c.String__Sequence_to_C((*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.joint_names)), t.JointNames)
-	JointTrajectoryPoint__Sequence_to_C(&mem.points, t.Points)
-	return unsafe.Pointer(mem)
-}
-func (t *JointTrajectory) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.trajectory_msgs__msg__JointTrajectory)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	rosidl_runtime_c.String__Sequence_to_Go(&t.JointNames, *(*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.joint_names)))
-	JointTrajectoryPoint__Sequence_to_Go(&t.Points, mem.points)
-}
-func (t *JointTrajectory) Clone() ros2types.ROS2Msg {
+func (t *JointTrajectory) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *JointTrajectory) SetDefaults() {
+	t.Header.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var JointTrajectoryTypeSupport types.MessageTypeSupport = _JointTrajectoryTypeSupport{}
+
+type _JointTrajectoryTypeSupport struct{}
+
+func (t _JointTrajectoryTypeSupport) New() types.Message {
+	return NewJointTrajectory()
+}
+
+func (t _JointTrajectoryTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.trajectory_msgs__msg__JointTrajectory
+	return (unsafe.Pointer)(C.trajectory_msgs__msg__JointTrajectory__create())
+}
+
+func (t _JointTrajectoryTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.trajectory_msgs__msg__JointTrajectory__destroy((*C.trajectory_msgs__msg__JointTrajectory)(pointer_to_free))
+}
+
+func (t _JointTrajectoryTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*JointTrajectory)
+	mem := (*C.trajectory_msgs__msg__JointTrajectory)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	rosidl_runtime_c.String__Sequence_to_C((*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.joint_names)), m.JointNames)
+	JointTrajectoryPoint__Sequence_to_C(&mem.points, m.Points)
+}
+
+func (t _JointTrajectoryTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*JointTrajectory)
+	mem := (*C.trajectory_msgs__msg__JointTrajectory)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	rosidl_runtime_c.String__Sequence_to_Go(&m.JointNames, *(*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.joint_names)))
+	JointTrajectoryPoint__Sequence_to_Go(&m.Points, mem.points)
+}
+
+func (t _JointTrajectoryTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__trajectory_msgs__msg__JointTrajectory())
 }
 
 type CJointTrajectory = C.trajectory_msgs__msg__JointTrajectory
@@ -99,8 +113,7 @@ func JointTrajectory__Sequence_to_Go(goSlice *[]JointTrajectory, cSlice CJointTr
 		cIdx := (*C.trajectory_msgs__msg__JointTrajectory__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_trajectory_msgs__msg__JointTrajectory * uintptr(i)),
 		))
-		(*goSlice)[i] = JointTrajectory{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		JointTrajectoryTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func JointTrajectory__Sequence_to_C(cSlice *CJointTrajectory__Sequence, goSlice []JointTrajectory) {
@@ -115,18 +128,16 @@ func JointTrajectory__Sequence_to_C(cSlice *CJointTrajectory__Sequence, goSlice 
 		cIdx := (*C.trajectory_msgs__msg__JointTrajectory)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_trajectory_msgs__msg__JointTrajectory * uintptr(i)),
 		))
-		*cIdx = *(*C.trajectory_msgs__msg__JointTrajectory)(v.AsCStruct())
+		JointTrajectoryTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func JointTrajectory__Array_to_Go(goSlice []JointTrajectory, cSlice []CJointTrajectory) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		JointTrajectoryTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func JointTrajectory__Array_to_C(cSlice []CJointTrajectory, goSlice []JointTrajectory) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.trajectory_msgs__msg__JointTrajectory)(goSlice[i].AsCStruct())
+		JointTrajectoryTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

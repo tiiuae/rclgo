@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/PositionControllerStatus", &PositionControllerStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/PositionControllerStatus", PositionControllerStatusTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPositionControllerStatus
@@ -55,56 +55,70 @@ type PositionControllerStatus struct {
 // NewPositionControllerStatus creates a new PositionControllerStatus with default values.
 func NewPositionControllerStatus() *PositionControllerStatus {
 	self := PositionControllerStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *PositionControllerStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *PositionControllerStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__PositionControllerStatus())
-}
-func (t *PositionControllerStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__PositionControllerStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__PositionControllerStatus__create())
-}
-func (t *PositionControllerStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__PositionControllerStatus__destroy((*C.px4_msgs__msg__PositionControllerStatus)(pointer_to_free))
-}
-func (t *PositionControllerStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__PositionControllerStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.nav_roll = C.float(t.NavRoll)
-	mem.nav_pitch = C.float(t.NavPitch)
-	mem.nav_bearing = C.float(t.NavBearing)
-	mem.target_bearing = C.float(t.TargetBearing)
-	mem.xtrack_error = C.float(t.XtrackError)
-	mem.wp_dist = C.float(t.WpDist)
-	mem.acceptance_radius = C.float(t.AcceptanceRadius)
-	mem.yaw_acceptance = C.float(t.YawAcceptance)
-	mem.altitude_acceptance = C.float(t.AltitudeAcceptance)
-	mem._type = C.uint8_t(t.Type)
-	return unsafe.Pointer(mem)
-}
-func (t *PositionControllerStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__PositionControllerStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.NavRoll = float32(mem.nav_roll)
-	t.NavPitch = float32(mem.nav_pitch)
-	t.NavBearing = float32(mem.nav_bearing)
-	t.TargetBearing = float32(mem.target_bearing)
-	t.XtrackError = float32(mem.xtrack_error)
-	t.WpDist = float32(mem.wp_dist)
-	t.AcceptanceRadius = float32(mem.acceptance_radius)
-	t.YawAcceptance = float32(mem.yaw_acceptance)
-	t.AltitudeAcceptance = float32(mem.altitude_acceptance)
-	t.Type = uint8(mem._type)
-}
-func (t *PositionControllerStatus) Clone() ros2types.ROS2Msg {
+func (t *PositionControllerStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *PositionControllerStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var PositionControllerStatusTypeSupport types.MessageTypeSupport = _PositionControllerStatusTypeSupport{}
+
+type _PositionControllerStatusTypeSupport struct{}
+
+func (t _PositionControllerStatusTypeSupport) New() types.Message {
+	return NewPositionControllerStatus()
+}
+
+func (t _PositionControllerStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__PositionControllerStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__PositionControllerStatus__create())
+}
+
+func (t _PositionControllerStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__PositionControllerStatus__destroy((*C.px4_msgs__msg__PositionControllerStatus)(pointer_to_free))
+}
+
+func (t _PositionControllerStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*PositionControllerStatus)
+	mem := (*C.px4_msgs__msg__PositionControllerStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.nav_roll = C.float(m.NavRoll)
+	mem.nav_pitch = C.float(m.NavPitch)
+	mem.nav_bearing = C.float(m.NavBearing)
+	mem.target_bearing = C.float(m.TargetBearing)
+	mem.xtrack_error = C.float(m.XtrackError)
+	mem.wp_dist = C.float(m.WpDist)
+	mem.acceptance_radius = C.float(m.AcceptanceRadius)
+	mem.yaw_acceptance = C.float(m.YawAcceptance)
+	mem.altitude_acceptance = C.float(m.AltitudeAcceptance)
+	mem._type = C.uint8_t(m.Type)
+}
+
+func (t _PositionControllerStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*PositionControllerStatus)
+	mem := (*C.px4_msgs__msg__PositionControllerStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.NavRoll = float32(mem.nav_roll)
+	m.NavPitch = float32(mem.nav_pitch)
+	m.NavBearing = float32(mem.nav_bearing)
+	m.TargetBearing = float32(mem.target_bearing)
+	m.XtrackError = float32(mem.xtrack_error)
+	m.WpDist = float32(mem.wp_dist)
+	m.AcceptanceRadius = float32(mem.acceptance_radius)
+	m.YawAcceptance = float32(mem.yaw_acceptance)
+	m.AltitudeAcceptance = float32(mem.altitude_acceptance)
+	m.Type = uint8(mem._type)
+}
+
+func (t _PositionControllerStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__PositionControllerStatus())
 }
 
 type CPositionControllerStatus = C.px4_msgs__msg__PositionControllerStatus
@@ -119,8 +133,7 @@ func PositionControllerStatus__Sequence_to_Go(goSlice *[]PositionControllerStatu
 		cIdx := (*C.px4_msgs__msg__PositionControllerStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__PositionControllerStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = PositionControllerStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		PositionControllerStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func PositionControllerStatus__Sequence_to_C(cSlice *CPositionControllerStatus__Sequence, goSlice []PositionControllerStatus) {
@@ -135,18 +148,16 @@ func PositionControllerStatus__Sequence_to_C(cSlice *CPositionControllerStatus__
 		cIdx := (*C.px4_msgs__msg__PositionControllerStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__PositionControllerStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__PositionControllerStatus)(v.AsCStruct())
+		PositionControllerStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func PositionControllerStatus__Array_to_Go(goSlice []PositionControllerStatus, cSlice []CPositionControllerStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		PositionControllerStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func PositionControllerStatus__Array_to_C(cSlice []CPositionControllerStatus, goSlice []PositionControllerStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__PositionControllerStatus)(goSlice[i].AsCStruct())
+		PositionControllerStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

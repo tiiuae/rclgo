@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleGpsPosition", &VehicleGpsPosition{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleGpsPosition", VehicleGpsPositionTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewVehicleGpsPosition
@@ -71,88 +71,102 @@ type VehicleGpsPosition struct {
 // NewVehicleGpsPosition creates a new VehicleGpsPosition with default values.
 func NewVehicleGpsPosition() *VehicleGpsPosition {
 	self := VehicleGpsPosition{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *VehicleGpsPosition) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *VehicleGpsPosition) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleGpsPosition())
-}
-func (t *VehicleGpsPosition) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleGpsPosition
-	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleGpsPosition__create())
-}
-func (t *VehicleGpsPosition) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__VehicleGpsPosition__destroy((*C.px4_msgs__msg__VehicleGpsPosition)(pointer_to_free))
-}
-func (t *VehicleGpsPosition) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__VehicleGpsPosition)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.lat = C.int32_t(t.Lat)
-	mem.lon = C.int32_t(t.Lon)
-	mem.alt = C.int32_t(t.Alt)
-	mem.alt_ellipsoid = C.int32_t(t.AltEllipsoid)
-	mem.s_variance_m_s = C.float(t.SVarianceMS)
-	mem.c_variance_rad = C.float(t.CVarianceRad)
-	mem.fix_type = C.uint8_t(t.FixType)
-	mem.eph = C.float(t.Eph)
-	mem.epv = C.float(t.Epv)
-	mem.hdop = C.float(t.Hdop)
-	mem.vdop = C.float(t.Vdop)
-	mem.noise_per_ms = C.int32_t(t.NoisePerMs)
-	mem.jamming_indicator = C.int32_t(t.JammingIndicator)
-	mem.jamming_state = C.uint8_t(t.JammingState)
-	mem.vel_m_s = C.float(t.VelMS)
-	mem.vel_n_m_s = C.float(t.VelNMS)
-	mem.vel_e_m_s = C.float(t.VelEMS)
-	mem.vel_d_m_s = C.float(t.VelDMS)
-	mem.cog_rad = C.float(t.CogRad)
-	mem.vel_ned_valid = C.bool(t.VelNedValid)
-	mem.timestamp_time_relative = C.int32_t(t.TimestampTimeRelative)
-	mem.time_utc_usec = C.uint64_t(t.TimeUtcUsec)
-	mem.satellites_used = C.uint8_t(t.SatellitesUsed)
-	mem.heading = C.float(t.Heading)
-	mem.heading_offset = C.float(t.HeadingOffset)
-	mem.selected = C.uint8_t(t.Selected)
-	return unsafe.Pointer(mem)
-}
-func (t *VehicleGpsPosition) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__VehicleGpsPosition)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Lat = int32(mem.lat)
-	t.Lon = int32(mem.lon)
-	t.Alt = int32(mem.alt)
-	t.AltEllipsoid = int32(mem.alt_ellipsoid)
-	t.SVarianceMS = float32(mem.s_variance_m_s)
-	t.CVarianceRad = float32(mem.c_variance_rad)
-	t.FixType = uint8(mem.fix_type)
-	t.Eph = float32(mem.eph)
-	t.Epv = float32(mem.epv)
-	t.Hdop = float32(mem.hdop)
-	t.Vdop = float32(mem.vdop)
-	t.NoisePerMs = int32(mem.noise_per_ms)
-	t.JammingIndicator = int32(mem.jamming_indicator)
-	t.JammingState = uint8(mem.jamming_state)
-	t.VelMS = float32(mem.vel_m_s)
-	t.VelNMS = float32(mem.vel_n_m_s)
-	t.VelEMS = float32(mem.vel_e_m_s)
-	t.VelDMS = float32(mem.vel_d_m_s)
-	t.CogRad = float32(mem.cog_rad)
-	t.VelNedValid = bool(mem.vel_ned_valid)
-	t.TimestampTimeRelative = int32(mem.timestamp_time_relative)
-	t.TimeUtcUsec = uint64(mem.time_utc_usec)
-	t.SatellitesUsed = uint8(mem.satellites_used)
-	t.Heading = float32(mem.heading)
-	t.HeadingOffset = float32(mem.heading_offset)
-	t.Selected = uint8(mem.selected)
-}
-func (t *VehicleGpsPosition) Clone() ros2types.ROS2Msg {
+func (t *VehicleGpsPosition) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *VehicleGpsPosition) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VehicleGpsPositionTypeSupport types.MessageTypeSupport = _VehicleGpsPositionTypeSupport{}
+
+type _VehicleGpsPositionTypeSupport struct{}
+
+func (t _VehicleGpsPositionTypeSupport) New() types.Message {
+	return NewVehicleGpsPosition()
+}
+
+func (t _VehicleGpsPositionTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleGpsPosition
+	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleGpsPosition__create())
+}
+
+func (t _VehicleGpsPositionTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__VehicleGpsPosition__destroy((*C.px4_msgs__msg__VehicleGpsPosition)(pointer_to_free))
+}
+
+func (t _VehicleGpsPositionTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*VehicleGpsPosition)
+	mem := (*C.px4_msgs__msg__VehicleGpsPosition)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.lat = C.int32_t(m.Lat)
+	mem.lon = C.int32_t(m.Lon)
+	mem.alt = C.int32_t(m.Alt)
+	mem.alt_ellipsoid = C.int32_t(m.AltEllipsoid)
+	mem.s_variance_m_s = C.float(m.SVarianceMS)
+	mem.c_variance_rad = C.float(m.CVarianceRad)
+	mem.fix_type = C.uint8_t(m.FixType)
+	mem.eph = C.float(m.Eph)
+	mem.epv = C.float(m.Epv)
+	mem.hdop = C.float(m.Hdop)
+	mem.vdop = C.float(m.Vdop)
+	mem.noise_per_ms = C.int32_t(m.NoisePerMs)
+	mem.jamming_indicator = C.int32_t(m.JammingIndicator)
+	mem.jamming_state = C.uint8_t(m.JammingState)
+	mem.vel_m_s = C.float(m.VelMS)
+	mem.vel_n_m_s = C.float(m.VelNMS)
+	mem.vel_e_m_s = C.float(m.VelEMS)
+	mem.vel_d_m_s = C.float(m.VelDMS)
+	mem.cog_rad = C.float(m.CogRad)
+	mem.vel_ned_valid = C.bool(m.VelNedValid)
+	mem.timestamp_time_relative = C.int32_t(m.TimestampTimeRelative)
+	mem.time_utc_usec = C.uint64_t(m.TimeUtcUsec)
+	mem.satellites_used = C.uint8_t(m.SatellitesUsed)
+	mem.heading = C.float(m.Heading)
+	mem.heading_offset = C.float(m.HeadingOffset)
+	mem.selected = C.uint8_t(m.Selected)
+}
+
+func (t _VehicleGpsPositionTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*VehicleGpsPosition)
+	mem := (*C.px4_msgs__msg__VehicleGpsPosition)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Lat = int32(mem.lat)
+	m.Lon = int32(mem.lon)
+	m.Alt = int32(mem.alt)
+	m.AltEllipsoid = int32(mem.alt_ellipsoid)
+	m.SVarianceMS = float32(mem.s_variance_m_s)
+	m.CVarianceRad = float32(mem.c_variance_rad)
+	m.FixType = uint8(mem.fix_type)
+	m.Eph = float32(mem.eph)
+	m.Epv = float32(mem.epv)
+	m.Hdop = float32(mem.hdop)
+	m.Vdop = float32(mem.vdop)
+	m.NoisePerMs = int32(mem.noise_per_ms)
+	m.JammingIndicator = int32(mem.jamming_indicator)
+	m.JammingState = uint8(mem.jamming_state)
+	m.VelMS = float32(mem.vel_m_s)
+	m.VelNMS = float32(mem.vel_n_m_s)
+	m.VelEMS = float32(mem.vel_e_m_s)
+	m.VelDMS = float32(mem.vel_d_m_s)
+	m.CogRad = float32(mem.cog_rad)
+	m.VelNedValid = bool(mem.vel_ned_valid)
+	m.TimestampTimeRelative = int32(mem.timestamp_time_relative)
+	m.TimeUtcUsec = uint64(mem.time_utc_usec)
+	m.SatellitesUsed = uint8(mem.satellites_used)
+	m.Heading = float32(mem.heading)
+	m.HeadingOffset = float32(mem.heading_offset)
+	m.Selected = uint8(mem.selected)
+}
+
+func (t _VehicleGpsPositionTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleGpsPosition())
 }
 
 type CVehicleGpsPosition = C.px4_msgs__msg__VehicleGpsPosition
@@ -167,8 +181,7 @@ func VehicleGpsPosition__Sequence_to_Go(goSlice *[]VehicleGpsPosition, cSlice CV
 		cIdx := (*C.px4_msgs__msg__VehicleGpsPosition__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleGpsPosition * uintptr(i)),
 		))
-		(*goSlice)[i] = VehicleGpsPosition{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VehicleGpsPositionTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func VehicleGpsPosition__Sequence_to_C(cSlice *CVehicleGpsPosition__Sequence, goSlice []VehicleGpsPosition) {
@@ -183,18 +196,16 @@ func VehicleGpsPosition__Sequence_to_C(cSlice *CVehicleGpsPosition__Sequence, go
 		cIdx := (*C.px4_msgs__msg__VehicleGpsPosition)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleGpsPosition * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__VehicleGpsPosition)(v.AsCStruct())
+		VehicleGpsPositionTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func VehicleGpsPosition__Array_to_Go(goSlice []VehicleGpsPosition, cSlice []CVehicleGpsPosition) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VehicleGpsPositionTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func VehicleGpsPosition__Array_to_C(cSlice []CVehicleGpsPosition, goSlice []VehicleGpsPosition) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__VehicleGpsPosition)(goSlice[i].AsCStruct())
+		VehicleGpsPositionTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

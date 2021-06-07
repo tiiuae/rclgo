@@ -15,7 +15,7 @@ package diagnostic_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("diagnostic_msgs/DiagnosticStatus", &DiagnosticStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("diagnostic_msgs/DiagnosticStatus", DiagnosticStatusTypeSupport)
 }
 const (
 	DiagnosticStatus_OK byte = 0// Possible levels of operations.
@@ -47,56 +47,67 @@ const (
 // function instead.
 type DiagnosticStatus struct {
 	Level byte `yaml:"level"`// Level of operation enumerated above.
-	Name rosidl_runtime_c.String `yaml:"name"`// Level of operation enumerated above.A description of the test/component reporting.
-	Message rosidl_runtime_c.String `yaml:"message"`// Level of operation enumerated above.A description of the test/component reporting.A description of the status.
-	HardwareId rosidl_runtime_c.String `yaml:"hardware_id"`// Level of operation enumerated above.A description of the test/component reporting.A description of the status.A hardware unique string.
+	Name string `yaml:"name"`// Level of operation enumerated above.A description of the test/component reporting.
+	Message string `yaml:"message"`// Level of operation enumerated above.A description of the test/component reporting.A description of the status.
+	HardwareId string `yaml:"hardware_id"`// Level of operation enumerated above.A description of the test/component reporting.A description of the status.A hardware unique string.
 	Values []KeyValue `yaml:"values"`// Level of operation enumerated above.A description of the test/component reporting.A description of the status.A hardware unique string.An array of values associated with the status.
 }
 
 // NewDiagnosticStatus creates a new DiagnosticStatus with default values.
 func NewDiagnosticStatus() *DiagnosticStatus {
 	self := DiagnosticStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *DiagnosticStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Name.SetDefaults("")
-	t.Message.SetDefaults("")
-	t.HardwareId.SetDefaults("")
-	
-	return t
-}
-
-func (t *DiagnosticStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__diagnostic_msgs__msg__DiagnosticStatus())
-}
-func (t *DiagnosticStatus) PrepareMemory() unsafe.Pointer { //returns *C.diagnostic_msgs__msg__DiagnosticStatus
-	return (unsafe.Pointer)(C.diagnostic_msgs__msg__DiagnosticStatus__create())
-}
-func (t *DiagnosticStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.diagnostic_msgs__msg__DiagnosticStatus__destroy((*C.diagnostic_msgs__msg__DiagnosticStatus)(pointer_to_free))
-}
-func (t *DiagnosticStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.diagnostic_msgs__msg__DiagnosticStatus)(t.PrepareMemory())
-	mem.level = C.uint8_t(t.Level)
-	mem.name = *(*C.rosidl_runtime_c__String)(t.Name.AsCStruct())
-	mem.message = *(*C.rosidl_runtime_c__String)(t.Message.AsCStruct())
-	mem.hardware_id = *(*C.rosidl_runtime_c__String)(t.HardwareId.AsCStruct())
-	KeyValue__Sequence_to_C(&mem.values, t.Values)
-	return unsafe.Pointer(mem)
-}
-func (t *DiagnosticStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.diagnostic_msgs__msg__DiagnosticStatus)(ros2_message_buffer)
-	t.Level = byte(mem.level)
-	t.Name.AsGoStruct(unsafe.Pointer(&mem.name))
-	t.Message.AsGoStruct(unsafe.Pointer(&mem.message))
-	t.HardwareId.AsGoStruct(unsafe.Pointer(&mem.hardware_id))
-	KeyValue__Sequence_to_Go(&t.Values, mem.values)
-}
-func (t *DiagnosticStatus) Clone() ros2types.ROS2Msg {
+func (t *DiagnosticStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *DiagnosticStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var DiagnosticStatusTypeSupport types.MessageTypeSupport = _DiagnosticStatusTypeSupport{}
+
+type _DiagnosticStatusTypeSupport struct{}
+
+func (t _DiagnosticStatusTypeSupport) New() types.Message {
+	return NewDiagnosticStatus()
+}
+
+func (t _DiagnosticStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.diagnostic_msgs__msg__DiagnosticStatus
+	return (unsafe.Pointer)(C.diagnostic_msgs__msg__DiagnosticStatus__create())
+}
+
+func (t _DiagnosticStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.diagnostic_msgs__msg__DiagnosticStatus__destroy((*C.diagnostic_msgs__msg__DiagnosticStatus)(pointer_to_free))
+}
+
+func (t _DiagnosticStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*DiagnosticStatus)
+	mem := (*C.diagnostic_msgs__msg__DiagnosticStatus)(dst)
+	mem.level = C.uint8_t(m.Level)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.name), m.Name)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.message), m.Message)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.hardware_id), m.HardwareId)
+	KeyValue__Sequence_to_C(&mem.values, m.Values)
+}
+
+func (t _DiagnosticStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*DiagnosticStatus)
+	mem := (*C.diagnostic_msgs__msg__DiagnosticStatus)(ros2_message_buffer)
+	m.Level = byte(mem.level)
+	rosidl_runtime_c.StringAsGoStruct(&m.Name, unsafe.Pointer(&mem.name))
+	rosidl_runtime_c.StringAsGoStruct(&m.Message, unsafe.Pointer(&mem.message))
+	rosidl_runtime_c.StringAsGoStruct(&m.HardwareId, unsafe.Pointer(&mem.hardware_id))
+	KeyValue__Sequence_to_Go(&m.Values, mem.values)
+}
+
+func (t _DiagnosticStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__diagnostic_msgs__msg__DiagnosticStatus())
 }
 
 type CDiagnosticStatus = C.diagnostic_msgs__msg__DiagnosticStatus
@@ -111,8 +122,7 @@ func DiagnosticStatus__Sequence_to_Go(goSlice *[]DiagnosticStatus, cSlice CDiagn
 		cIdx := (*C.diagnostic_msgs__msg__DiagnosticStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_diagnostic_msgs__msg__DiagnosticStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = DiagnosticStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		DiagnosticStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func DiagnosticStatus__Sequence_to_C(cSlice *CDiagnosticStatus__Sequence, goSlice []DiagnosticStatus) {
@@ -127,18 +137,16 @@ func DiagnosticStatus__Sequence_to_C(cSlice *CDiagnosticStatus__Sequence, goSlic
 		cIdx := (*C.diagnostic_msgs__msg__DiagnosticStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_diagnostic_msgs__msg__DiagnosticStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.diagnostic_msgs__msg__DiagnosticStatus)(v.AsCStruct())
+		DiagnosticStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func DiagnosticStatus__Array_to_Go(goSlice []DiagnosticStatus, cSlice []CDiagnosticStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		DiagnosticStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func DiagnosticStatus__Array_to_C(cSlice []CDiagnosticStatus, goSlice []DiagnosticStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.diagnostic_msgs__msg__DiagnosticStatus)(goSlice[i].AsCStruct())
+		DiagnosticStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

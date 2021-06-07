@@ -15,7 +15,7 @@ package stereo_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	sensor_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/sensor_msgs/msg"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
@@ -37,7 +37,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("stereo_msgs/DisparityImage", &DisparityImage{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("stereo_msgs/DisparityImage", DisparityImageTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewDisparityImage
@@ -56,53 +56,67 @@ type DisparityImage struct {
 // NewDisparityImage creates a new DisparityImage with default values.
 func NewDisparityImage() *DisparityImage {
 	self := DisparityImage{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *DisparityImage) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.Image.SetDefaults(nil)
-	t.ValidWindow.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *DisparityImage) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__stereo_msgs__msg__DisparityImage())
-}
-func (t *DisparityImage) PrepareMemory() unsafe.Pointer { //returns *C.stereo_msgs__msg__DisparityImage
-	return (unsafe.Pointer)(C.stereo_msgs__msg__DisparityImage__create())
-}
-func (t *DisparityImage) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.stereo_msgs__msg__DisparityImage__destroy((*C.stereo_msgs__msg__DisparityImage)(pointer_to_free))
-}
-func (t *DisparityImage) AsCStruct() unsafe.Pointer {
-	mem := (*C.stereo_msgs__msg__DisparityImage)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.image = *(*C.sensor_msgs__msg__Image)(t.Image.AsCStruct())
-	mem.f = C.float(t.F)
-	mem.t = C.float(t.T)
-	mem.valid_window = *(*C.sensor_msgs__msg__RegionOfInterest)(t.ValidWindow.AsCStruct())
-	mem.min_disparity = C.float(t.MinDisparity)
-	mem.max_disparity = C.float(t.MaxDisparity)
-	mem.delta_d = C.float(t.DeltaD)
-	return unsafe.Pointer(mem)
-}
-func (t *DisparityImage) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.stereo_msgs__msg__DisparityImage)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.Image.AsGoStruct(unsafe.Pointer(&mem.image))
-	t.F = float32(mem.f)
-	t.T = float32(mem.t)
-	t.ValidWindow.AsGoStruct(unsafe.Pointer(&mem.valid_window))
-	t.MinDisparity = float32(mem.min_disparity)
-	t.MaxDisparity = float32(mem.max_disparity)
-	t.DeltaD = float32(mem.delta_d)
-}
-func (t *DisparityImage) Clone() ros2types.ROS2Msg {
+func (t *DisparityImage) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *DisparityImage) SetDefaults() {
+	t.Header.SetDefaults()
+	t.Image.SetDefaults()
+	t.ValidWindow.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var DisparityImageTypeSupport types.MessageTypeSupport = _DisparityImageTypeSupport{}
+
+type _DisparityImageTypeSupport struct{}
+
+func (t _DisparityImageTypeSupport) New() types.Message {
+	return NewDisparityImage()
+}
+
+func (t _DisparityImageTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.stereo_msgs__msg__DisparityImage
+	return (unsafe.Pointer)(C.stereo_msgs__msg__DisparityImage__create())
+}
+
+func (t _DisparityImageTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.stereo_msgs__msg__DisparityImage__destroy((*C.stereo_msgs__msg__DisparityImage)(pointer_to_free))
+}
+
+func (t _DisparityImageTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*DisparityImage)
+	mem := (*C.stereo_msgs__msg__DisparityImage)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	sensor_msgs_msg.ImageTypeSupport.AsCStruct(unsafe.Pointer(&mem.image), &m.Image)
+	mem.f = C.float(m.F)
+	mem.t = C.float(m.T)
+	sensor_msgs_msg.RegionOfInterestTypeSupport.AsCStruct(unsafe.Pointer(&mem.valid_window), &m.ValidWindow)
+	mem.min_disparity = C.float(m.MinDisparity)
+	mem.max_disparity = C.float(m.MaxDisparity)
+	mem.delta_d = C.float(m.DeltaD)
+}
+
+func (t _DisparityImageTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*DisparityImage)
+	mem := (*C.stereo_msgs__msg__DisparityImage)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	sensor_msgs_msg.ImageTypeSupport.AsGoStruct(&m.Image, unsafe.Pointer(&mem.image))
+	m.F = float32(mem.f)
+	m.T = float32(mem.t)
+	sensor_msgs_msg.RegionOfInterestTypeSupport.AsGoStruct(&m.ValidWindow, unsafe.Pointer(&mem.valid_window))
+	m.MinDisparity = float32(mem.min_disparity)
+	m.MaxDisparity = float32(mem.max_disparity)
+	m.DeltaD = float32(mem.delta_d)
+}
+
+func (t _DisparityImageTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__stereo_msgs__msg__DisparityImage())
 }
 
 type CDisparityImage = C.stereo_msgs__msg__DisparityImage
@@ -117,8 +131,7 @@ func DisparityImage__Sequence_to_Go(goSlice *[]DisparityImage, cSlice CDisparity
 		cIdx := (*C.stereo_msgs__msg__DisparityImage__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_stereo_msgs__msg__DisparityImage * uintptr(i)),
 		))
-		(*goSlice)[i] = DisparityImage{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		DisparityImageTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func DisparityImage__Sequence_to_C(cSlice *CDisparityImage__Sequence, goSlice []DisparityImage) {
@@ -133,18 +146,16 @@ func DisparityImage__Sequence_to_C(cSlice *CDisparityImage__Sequence, goSlice []
 		cIdx := (*C.stereo_msgs__msg__DisparityImage)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_stereo_msgs__msg__DisparityImage * uintptr(i)),
 		))
-		*cIdx = *(*C.stereo_msgs__msg__DisparityImage)(v.AsCStruct())
+		DisparityImageTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func DisparityImage__Array_to_Go(goSlice []DisparityImage, cSlice []CDisparityImage) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		DisparityImageTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func DisparityImage__Array_to_C(cSlice []CDisparityImage, goSlice []DisparityImage) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.stereo_msgs__msg__DisparityImage)(goSlice[i].AsCStruct())
+		DisparityImageTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

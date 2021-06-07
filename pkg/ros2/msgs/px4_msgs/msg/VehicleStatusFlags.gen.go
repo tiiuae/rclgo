@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleStatusFlags", &VehicleStatusFlags{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleStatusFlags", VehicleStatusFlagsTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewVehicleStatusFlags
@@ -76,98 +76,112 @@ type VehicleStatusFlags struct {
 // NewVehicleStatusFlags creates a new VehicleStatusFlags with default values.
 func NewVehicleStatusFlags() *VehicleStatusFlags {
 	self := VehicleStatusFlags{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *VehicleStatusFlags) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *VehicleStatusFlags) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleStatusFlags())
-}
-func (t *VehicleStatusFlags) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleStatusFlags
-	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleStatusFlags__create())
-}
-func (t *VehicleStatusFlags) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__VehicleStatusFlags__destroy((*C.px4_msgs__msg__VehicleStatusFlags)(pointer_to_free))
-}
-func (t *VehicleStatusFlags) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__VehicleStatusFlags)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.condition_calibration_enabled = C.bool(t.ConditionCalibrationEnabled)
-	mem.condition_system_sensors_initialized = C.bool(t.ConditionSystemSensorsInitialized)
-	mem.condition_system_hotplug_timeout = C.bool(t.ConditionSystemHotplugTimeout)
-	mem.condition_system_returned_to_home = C.bool(t.ConditionSystemReturnedToHome)
-	mem.condition_auto_mission_available = C.bool(t.ConditionAutoMissionAvailable)
-	mem.condition_angular_velocity_valid = C.bool(t.ConditionAngularVelocityValid)
-	mem.condition_attitude_valid = C.bool(t.ConditionAttitudeValid)
-	mem.condition_local_altitude_valid = C.bool(t.ConditionLocalAltitudeValid)
-	mem.condition_local_position_valid = C.bool(t.ConditionLocalPositionValid)
-	mem.condition_local_velocity_valid = C.bool(t.ConditionLocalVelocityValid)
-	mem.condition_global_position_valid = C.bool(t.ConditionGlobalPositionValid)
-	mem.condition_home_position_valid = C.bool(t.ConditionHomePositionValid)
-	mem.condition_power_input_valid = C.bool(t.ConditionPowerInputValid)
-	mem.condition_battery_healthy = C.bool(t.ConditionBatteryHealthy)
-	mem.condition_escs_error = C.bool(t.ConditionEscsError)
-	mem.circuit_breaker_engaged_power_check = C.bool(t.CircuitBreakerEngagedPowerCheck)
-	mem.circuit_breaker_engaged_airspd_check = C.bool(t.CircuitBreakerEngagedAirspdCheck)
-	mem.circuit_breaker_engaged_enginefailure_check = C.bool(t.CircuitBreakerEngagedEnginefailureCheck)
-	mem.circuit_breaker_flight_termination_disabled = C.bool(t.CircuitBreakerFlightTerminationDisabled)
-	mem.circuit_breaker_engaged_usb_check = C.bool(t.CircuitBreakerEngagedUsbCheck)
-	mem.circuit_breaker_engaged_posfailure_check = C.bool(t.CircuitBreakerEngagedPosfailureCheck)
-	mem.circuit_breaker_vtol_fw_arming_check = C.bool(t.CircuitBreakerVtolFwArmingCheck)
-	mem.offboard_control_signal_found_once = C.bool(t.OffboardControlSignalFoundOnce)
-	mem.offboard_control_signal_lost = C.bool(t.OffboardControlSignalLost)
-	mem.rc_signal_found_once = C.bool(t.RcSignalFoundOnce)
-	mem.rc_input_blocked = C.bool(t.RcInputBlocked)
-	mem.rc_calibration_valid = C.bool(t.RcCalibrationValid)
-	mem.vtol_transition_failure = C.bool(t.VtolTransitionFailure)
-	mem.usb_connected = C.bool(t.UsbConnected)
-	mem.avoidance_system_required = C.bool(t.AvoidanceSystemRequired)
-	mem.avoidance_system_valid = C.bool(t.AvoidanceSystemValid)
-	return unsafe.Pointer(mem)
-}
-func (t *VehicleStatusFlags) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__VehicleStatusFlags)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.ConditionCalibrationEnabled = bool(mem.condition_calibration_enabled)
-	t.ConditionSystemSensorsInitialized = bool(mem.condition_system_sensors_initialized)
-	t.ConditionSystemHotplugTimeout = bool(mem.condition_system_hotplug_timeout)
-	t.ConditionSystemReturnedToHome = bool(mem.condition_system_returned_to_home)
-	t.ConditionAutoMissionAvailable = bool(mem.condition_auto_mission_available)
-	t.ConditionAngularVelocityValid = bool(mem.condition_angular_velocity_valid)
-	t.ConditionAttitudeValid = bool(mem.condition_attitude_valid)
-	t.ConditionLocalAltitudeValid = bool(mem.condition_local_altitude_valid)
-	t.ConditionLocalPositionValid = bool(mem.condition_local_position_valid)
-	t.ConditionLocalVelocityValid = bool(mem.condition_local_velocity_valid)
-	t.ConditionGlobalPositionValid = bool(mem.condition_global_position_valid)
-	t.ConditionHomePositionValid = bool(mem.condition_home_position_valid)
-	t.ConditionPowerInputValid = bool(mem.condition_power_input_valid)
-	t.ConditionBatteryHealthy = bool(mem.condition_battery_healthy)
-	t.ConditionEscsError = bool(mem.condition_escs_error)
-	t.CircuitBreakerEngagedPowerCheck = bool(mem.circuit_breaker_engaged_power_check)
-	t.CircuitBreakerEngagedAirspdCheck = bool(mem.circuit_breaker_engaged_airspd_check)
-	t.CircuitBreakerEngagedEnginefailureCheck = bool(mem.circuit_breaker_engaged_enginefailure_check)
-	t.CircuitBreakerFlightTerminationDisabled = bool(mem.circuit_breaker_flight_termination_disabled)
-	t.CircuitBreakerEngagedUsbCheck = bool(mem.circuit_breaker_engaged_usb_check)
-	t.CircuitBreakerEngagedPosfailureCheck = bool(mem.circuit_breaker_engaged_posfailure_check)
-	t.CircuitBreakerVtolFwArmingCheck = bool(mem.circuit_breaker_vtol_fw_arming_check)
-	t.OffboardControlSignalFoundOnce = bool(mem.offboard_control_signal_found_once)
-	t.OffboardControlSignalLost = bool(mem.offboard_control_signal_lost)
-	t.RcSignalFoundOnce = bool(mem.rc_signal_found_once)
-	t.RcInputBlocked = bool(mem.rc_input_blocked)
-	t.RcCalibrationValid = bool(mem.rc_calibration_valid)
-	t.VtolTransitionFailure = bool(mem.vtol_transition_failure)
-	t.UsbConnected = bool(mem.usb_connected)
-	t.AvoidanceSystemRequired = bool(mem.avoidance_system_required)
-	t.AvoidanceSystemValid = bool(mem.avoidance_system_valid)
-}
-func (t *VehicleStatusFlags) Clone() ros2types.ROS2Msg {
+func (t *VehicleStatusFlags) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *VehicleStatusFlags) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VehicleStatusFlagsTypeSupport types.MessageTypeSupport = _VehicleStatusFlagsTypeSupport{}
+
+type _VehicleStatusFlagsTypeSupport struct{}
+
+func (t _VehicleStatusFlagsTypeSupport) New() types.Message {
+	return NewVehicleStatusFlags()
+}
+
+func (t _VehicleStatusFlagsTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleStatusFlags
+	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleStatusFlags__create())
+}
+
+func (t _VehicleStatusFlagsTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__VehicleStatusFlags__destroy((*C.px4_msgs__msg__VehicleStatusFlags)(pointer_to_free))
+}
+
+func (t _VehicleStatusFlagsTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*VehicleStatusFlags)
+	mem := (*C.px4_msgs__msg__VehicleStatusFlags)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.condition_calibration_enabled = C.bool(m.ConditionCalibrationEnabled)
+	mem.condition_system_sensors_initialized = C.bool(m.ConditionSystemSensorsInitialized)
+	mem.condition_system_hotplug_timeout = C.bool(m.ConditionSystemHotplugTimeout)
+	mem.condition_system_returned_to_home = C.bool(m.ConditionSystemReturnedToHome)
+	mem.condition_auto_mission_available = C.bool(m.ConditionAutoMissionAvailable)
+	mem.condition_angular_velocity_valid = C.bool(m.ConditionAngularVelocityValid)
+	mem.condition_attitude_valid = C.bool(m.ConditionAttitudeValid)
+	mem.condition_local_altitude_valid = C.bool(m.ConditionLocalAltitudeValid)
+	mem.condition_local_position_valid = C.bool(m.ConditionLocalPositionValid)
+	mem.condition_local_velocity_valid = C.bool(m.ConditionLocalVelocityValid)
+	mem.condition_global_position_valid = C.bool(m.ConditionGlobalPositionValid)
+	mem.condition_home_position_valid = C.bool(m.ConditionHomePositionValid)
+	mem.condition_power_input_valid = C.bool(m.ConditionPowerInputValid)
+	mem.condition_battery_healthy = C.bool(m.ConditionBatteryHealthy)
+	mem.condition_escs_error = C.bool(m.ConditionEscsError)
+	mem.circuit_breaker_engaged_power_check = C.bool(m.CircuitBreakerEngagedPowerCheck)
+	mem.circuit_breaker_engaged_airspd_check = C.bool(m.CircuitBreakerEngagedAirspdCheck)
+	mem.circuit_breaker_engaged_enginefailure_check = C.bool(m.CircuitBreakerEngagedEnginefailureCheck)
+	mem.circuit_breaker_flight_termination_disabled = C.bool(m.CircuitBreakerFlightTerminationDisabled)
+	mem.circuit_breaker_engaged_usb_check = C.bool(m.CircuitBreakerEngagedUsbCheck)
+	mem.circuit_breaker_engaged_posfailure_check = C.bool(m.CircuitBreakerEngagedPosfailureCheck)
+	mem.circuit_breaker_vtol_fw_arming_check = C.bool(m.CircuitBreakerVtolFwArmingCheck)
+	mem.offboard_control_signal_found_once = C.bool(m.OffboardControlSignalFoundOnce)
+	mem.offboard_control_signal_lost = C.bool(m.OffboardControlSignalLost)
+	mem.rc_signal_found_once = C.bool(m.RcSignalFoundOnce)
+	mem.rc_input_blocked = C.bool(m.RcInputBlocked)
+	mem.rc_calibration_valid = C.bool(m.RcCalibrationValid)
+	mem.vtol_transition_failure = C.bool(m.VtolTransitionFailure)
+	mem.usb_connected = C.bool(m.UsbConnected)
+	mem.avoidance_system_required = C.bool(m.AvoidanceSystemRequired)
+	mem.avoidance_system_valid = C.bool(m.AvoidanceSystemValid)
+}
+
+func (t _VehicleStatusFlagsTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*VehicleStatusFlags)
+	mem := (*C.px4_msgs__msg__VehicleStatusFlags)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.ConditionCalibrationEnabled = bool(mem.condition_calibration_enabled)
+	m.ConditionSystemSensorsInitialized = bool(mem.condition_system_sensors_initialized)
+	m.ConditionSystemHotplugTimeout = bool(mem.condition_system_hotplug_timeout)
+	m.ConditionSystemReturnedToHome = bool(mem.condition_system_returned_to_home)
+	m.ConditionAutoMissionAvailable = bool(mem.condition_auto_mission_available)
+	m.ConditionAngularVelocityValid = bool(mem.condition_angular_velocity_valid)
+	m.ConditionAttitudeValid = bool(mem.condition_attitude_valid)
+	m.ConditionLocalAltitudeValid = bool(mem.condition_local_altitude_valid)
+	m.ConditionLocalPositionValid = bool(mem.condition_local_position_valid)
+	m.ConditionLocalVelocityValid = bool(mem.condition_local_velocity_valid)
+	m.ConditionGlobalPositionValid = bool(mem.condition_global_position_valid)
+	m.ConditionHomePositionValid = bool(mem.condition_home_position_valid)
+	m.ConditionPowerInputValid = bool(mem.condition_power_input_valid)
+	m.ConditionBatteryHealthy = bool(mem.condition_battery_healthy)
+	m.ConditionEscsError = bool(mem.condition_escs_error)
+	m.CircuitBreakerEngagedPowerCheck = bool(mem.circuit_breaker_engaged_power_check)
+	m.CircuitBreakerEngagedAirspdCheck = bool(mem.circuit_breaker_engaged_airspd_check)
+	m.CircuitBreakerEngagedEnginefailureCheck = bool(mem.circuit_breaker_engaged_enginefailure_check)
+	m.CircuitBreakerFlightTerminationDisabled = bool(mem.circuit_breaker_flight_termination_disabled)
+	m.CircuitBreakerEngagedUsbCheck = bool(mem.circuit_breaker_engaged_usb_check)
+	m.CircuitBreakerEngagedPosfailureCheck = bool(mem.circuit_breaker_engaged_posfailure_check)
+	m.CircuitBreakerVtolFwArmingCheck = bool(mem.circuit_breaker_vtol_fw_arming_check)
+	m.OffboardControlSignalFoundOnce = bool(mem.offboard_control_signal_found_once)
+	m.OffboardControlSignalLost = bool(mem.offboard_control_signal_lost)
+	m.RcSignalFoundOnce = bool(mem.rc_signal_found_once)
+	m.RcInputBlocked = bool(mem.rc_input_blocked)
+	m.RcCalibrationValid = bool(mem.rc_calibration_valid)
+	m.VtolTransitionFailure = bool(mem.vtol_transition_failure)
+	m.UsbConnected = bool(mem.usb_connected)
+	m.AvoidanceSystemRequired = bool(mem.avoidance_system_required)
+	m.AvoidanceSystemValid = bool(mem.avoidance_system_valid)
+}
+
+func (t _VehicleStatusFlagsTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleStatusFlags())
 }
 
 type CVehicleStatusFlags = C.px4_msgs__msg__VehicleStatusFlags
@@ -182,8 +196,7 @@ func VehicleStatusFlags__Sequence_to_Go(goSlice *[]VehicleStatusFlags, cSlice CV
 		cIdx := (*C.px4_msgs__msg__VehicleStatusFlags__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleStatusFlags * uintptr(i)),
 		))
-		(*goSlice)[i] = VehicleStatusFlags{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VehicleStatusFlagsTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func VehicleStatusFlags__Sequence_to_C(cSlice *CVehicleStatusFlags__Sequence, goSlice []VehicleStatusFlags) {
@@ -198,18 +211,16 @@ func VehicleStatusFlags__Sequence_to_C(cSlice *CVehicleStatusFlags__Sequence, go
 		cIdx := (*C.px4_msgs__msg__VehicleStatusFlags)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleStatusFlags * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__VehicleStatusFlags)(v.AsCStruct())
+		VehicleStatusFlagsTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func VehicleStatusFlags__Array_to_Go(goSlice []VehicleStatusFlags, cSlice []CVehicleStatusFlags) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VehicleStatusFlagsTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func VehicleStatusFlags__Array_to_C(cSlice []CVehicleStatusFlags, goSlice []VehicleStatusFlags) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__VehicleStatusFlags)(goSlice[i].AsCStruct())
+		VehicleStatusFlagsTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

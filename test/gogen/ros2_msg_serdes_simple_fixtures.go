@@ -92,7 +92,6 @@ import (
 	builtin_interfaces "github.com/tiiuae/rclgo/pkg/ros2/msgs/builtin_interfaces/msg"
 	sensor_msgs "github.com/tiiuae/rclgo/pkg/ros2/msgs/sensor_msgs/msg"
 	std_msgs "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
-	"github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 )
 
 func Fixture_C_sensor_msgs__ChannelFloat32() *C.sensor_msgs__msg__ChannelFloat32 {
@@ -100,7 +99,7 @@ func Fixture_C_sensor_msgs__ChannelFloat32() *C.sensor_msgs__msg__ChannelFloat32
 }
 func Fixture_Go_sensor_msgs__ChannelFloat32() *sensor_msgs.ChannelFloat32 {
 	return &sensor_msgs.ChannelFloat32{
-		Name:   rosidl_runtime_c.String("Always outnumbered, never outgunned"),
+		Name:   "Always outnumbered, never outgunned",
 		Values: []float32{0.0, 1.1, 2.2, 3.3, 4.4, 5.5},
 	}
 }
@@ -114,7 +113,7 @@ func Fixture_Go_sensor_msgs__Illuminance() *sensor_msgs.Illuminance {
 				Sec:     3600,
 				Nanosec: 7200,
 			},
-			FrameId: rosidl_runtime_c.String("Illuminati is here!"),
+			FrameId: "Illuminati is here!",
 		},
 		Illuminance: 123456789.987654321,
 		Variance:    918273645.546372819,
@@ -136,7 +135,7 @@ func Fixture_C_std_msgs__String() *C.std_msgs__msg__String {
 }
 func Fixture_Go_std_msgs__String() *std_msgs.String {
 	return &std_msgs.String{
-		Data: rosidl_runtime_c.String("this is a string"),
+		Data: "this is a string",
 	}
 }
 func Fixture_C_std_msgs__Int64MultiArray() *C.std_msgs__msg__Int64MultiArray {
@@ -147,7 +146,7 @@ func Fixture_Go_std_msgs__Int64MultiArray() *std_msgs.Int64MultiArray {
 		Layout: std_msgs.MultiArrayLayout{
 			Dim: []std_msgs.MultiArrayDimension{
 				{
-					Label:  rosidl_runtime_c.String("MAD_Sequence_0"),
+					Label:  "MAD_Sequence_0",
 					Size:   10,
 					Stride: 15,
 				},

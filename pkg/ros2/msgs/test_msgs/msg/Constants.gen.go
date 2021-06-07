@@ -15,7 +15,7 @@ package test_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("test_msgs/Constants", &Constants{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("test_msgs/Constants", ConstantsTypeSupport)
 }
 const (
 	Constants_BOOL_CONST bool = true
@@ -59,34 +59,46 @@ type Constants struct {
 // NewConstants creates a new Constants with default values.
 func NewConstants() *Constants {
 	self := Constants{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Constants) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Constants) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__msg__Constants())
-}
-func (t *Constants) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__msg__Constants
-	return (unsafe.Pointer)(C.test_msgs__msg__Constants__create())
-}
-func (t *Constants) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.test_msgs__msg__Constants__destroy((*C.test_msgs__msg__Constants)(pointer_to_free))
-}
-func (t *Constants) AsCStruct() unsafe.Pointer {
-	mem := (*C.test_msgs__msg__Constants)(t.PrepareMemory())
-	return unsafe.Pointer(mem)
-}
-func (t *Constants) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	
-}
-func (t *Constants) Clone() ros2types.ROS2Msg {
+func (t *Constants) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Constants) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ConstantsTypeSupport types.MessageTypeSupport = _ConstantsTypeSupport{}
+
+type _ConstantsTypeSupport struct{}
+
+func (t _ConstantsTypeSupport) New() types.Message {
+	return NewConstants()
+}
+
+func (t _ConstantsTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__msg__Constants
+	return (unsafe.Pointer)(C.test_msgs__msg__Constants__create())
+}
+
+func (t _ConstantsTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.test_msgs__msg__Constants__destroy((*C.test_msgs__msg__Constants)(pointer_to_free))
+}
+
+func (t _ConstantsTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	
+}
+
+func (t _ConstantsTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	
+}
+
+func (t _ConstantsTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__msg__Constants())
 }
 
 type CConstants = C.test_msgs__msg__Constants
@@ -101,8 +113,7 @@ func Constants__Sequence_to_Go(goSlice *[]Constants, cSlice CConstants__Sequence
 		cIdx := (*C.test_msgs__msg__Constants__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__msg__Constants * uintptr(i)),
 		))
-		(*goSlice)[i] = Constants{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ConstantsTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Constants__Sequence_to_C(cSlice *CConstants__Sequence, goSlice []Constants) {
@@ -117,18 +128,16 @@ func Constants__Sequence_to_C(cSlice *CConstants__Sequence, goSlice []Constants)
 		cIdx := (*C.test_msgs__msg__Constants)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__msg__Constants * uintptr(i)),
 		))
-		*cIdx = *(*C.test_msgs__msg__Constants)(v.AsCStruct())
+		ConstantsTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Constants__Array_to_Go(goSlice []Constants, cSlice []CConstants) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ConstantsTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Constants__Array_to_C(cSlice []CConstants, goSlice []Constants) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.test_msgs__msg__Constants)(goSlice[i].AsCStruct())
+		ConstantsTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("visualization_msgs/GetInteractiveMarkers", GetInteractiveMarkers)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("visualization_msgs/GetInteractiveMarkers", GetInteractiveMarkersTypeSupport)
 }
 
-type _GetInteractiveMarkers struct {
-	req,resp ros2types.ROS2Msg
+type _GetInteractiveMarkersTypeSupport struct {}
+
+func (s _GetInteractiveMarkersTypeSupport) Request() types.MessageTypeSupport {
+	return GetInteractiveMarkers_RequestTypeSupport
 }
 
-func (s *_GetInteractiveMarkers) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _GetInteractiveMarkersTypeSupport) Response() types.MessageTypeSupport {
+	return GetInteractiveMarkers_ResponseTypeSupport
 }
 
-func (s *_GetInteractiveMarkers) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_GetInteractiveMarkers) TypeSupport() unsafe.Pointer {
+func (s _GetInteractiveMarkersTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__visualization_msgs__srv__GetInteractiveMarkers())
 }
 
 // Modifying this variable is undefined behavior.
-var GetInteractiveMarkers ros2types.Service = &_GetInteractiveMarkers{
-	req: &GetInteractiveMarkers_Request{},
-	resp: &GetInteractiveMarkers_Response{},
-}
+var GetInteractiveMarkersTypeSupport types.ServiceTypeSupport = _GetInteractiveMarkersTypeSupport{}

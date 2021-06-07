@@ -15,7 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,49 +34,62 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("std_msgs/String", &String{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("std_msgs/String", StringTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewString
 // function instead.
 type String struct {
-	Data rosidl_runtime_c.String `yaml:"data"`
+	Data string `yaml:"data"`
 }
 
 // NewString creates a new String with default values.
 func NewString() *String {
 	self := String{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *String) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Data.SetDefaults("")
-	
-	return t
-}
-
-func (t *String) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__std_msgs__msg__String())
-}
-func (t *String) PrepareMemory() unsafe.Pointer { //returns *C.std_msgs__msg__String
-	return (unsafe.Pointer)(C.std_msgs__msg__String__create())
-}
-func (t *String) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.std_msgs__msg__String__destroy((*C.std_msgs__msg__String)(pointer_to_free))
-}
-func (t *String) AsCStruct() unsafe.Pointer {
-	mem := (*C.std_msgs__msg__String)(t.PrepareMemory())
-	mem.data = *(*C.rosidl_runtime_c__String)(t.Data.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *String) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.std_msgs__msg__String)(ros2_message_buffer)
-	t.Data.AsGoStruct(unsafe.Pointer(&mem.data))
-}
-func (t *String) Clone() ros2types.ROS2Msg {
+func (t *String) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *String) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var StringTypeSupport types.MessageTypeSupport = _StringTypeSupport{}
+
+type _StringTypeSupport struct{}
+
+func (t _StringTypeSupport) New() types.Message {
+	return NewString()
+}
+
+func (t _StringTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.std_msgs__msg__String
+	return (unsafe.Pointer)(C.std_msgs__msg__String__create())
+}
+
+func (t _StringTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.std_msgs__msg__String__destroy((*C.std_msgs__msg__String)(pointer_to_free))
+}
+
+func (t _StringTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*String)
+	mem := (*C.std_msgs__msg__String)(dst)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.data), m.Data)
+}
+
+func (t _StringTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*String)
+	mem := (*C.std_msgs__msg__String)(ros2_message_buffer)
+	rosidl_runtime_c.StringAsGoStruct(&m.Data, unsafe.Pointer(&mem.data))
+}
+
+func (t _StringTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__std_msgs__msg__String())
 }
 
 type CString = C.std_msgs__msg__String
@@ -91,8 +104,7 @@ func String__Sequence_to_Go(goSlice *[]String, cSlice CString__Sequence) {
 		cIdx := (*C.std_msgs__msg__String__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__String * uintptr(i)),
 		))
-		(*goSlice)[i] = String{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		StringTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func String__Sequence_to_C(cSlice *CString__Sequence, goSlice []String) {
@@ -107,18 +119,16 @@ func String__Sequence_to_C(cSlice *CString__Sequence, goSlice []String) {
 		cIdx := (*C.std_msgs__msg__String)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__String * uintptr(i)),
 		))
-		*cIdx = *(*C.std_msgs__msg__String)(v.AsCStruct())
+		StringTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func String__Array_to_Go(goSlice []String, cSlice []CString) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		StringTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func String__Array_to_C(cSlice []CString, goSlice []String) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.std_msgs__msg__String)(goSlice[i].AsCStruct())
+		StringTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

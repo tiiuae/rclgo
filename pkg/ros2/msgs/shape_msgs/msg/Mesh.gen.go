@@ -15,7 +15,7 @@ package shape_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	geometry_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/geometry_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("shape_msgs/Mesh", &Mesh{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("shape_msgs/Mesh", MeshTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewMesh
@@ -48,38 +48,52 @@ type Mesh struct {
 // NewMesh creates a new Mesh with default values.
 func NewMesh() *Mesh {
 	self := Mesh{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Mesh) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Mesh) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__shape_msgs__msg__Mesh())
-}
-func (t *Mesh) PrepareMemory() unsafe.Pointer { //returns *C.shape_msgs__msg__Mesh
-	return (unsafe.Pointer)(C.shape_msgs__msg__Mesh__create())
-}
-func (t *Mesh) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.shape_msgs__msg__Mesh__destroy((*C.shape_msgs__msg__Mesh)(pointer_to_free))
-}
-func (t *Mesh) AsCStruct() unsafe.Pointer {
-	mem := (*C.shape_msgs__msg__Mesh)(t.PrepareMemory())
-	MeshTriangle__Sequence_to_C(&mem.triangles, t.Triangles)
-	geometry_msgs_msg.Point__Sequence_to_C((*geometry_msgs_msg.CPoint__Sequence)(unsafe.Pointer(&mem.vertices)), t.Vertices)
-	return unsafe.Pointer(mem)
-}
-func (t *Mesh) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.shape_msgs__msg__Mesh)(ros2_message_buffer)
-	MeshTriangle__Sequence_to_Go(&t.Triangles, mem.triangles)
-	geometry_msgs_msg.Point__Sequence_to_Go(&t.Vertices, *(*geometry_msgs_msg.CPoint__Sequence)(unsafe.Pointer(&mem.vertices)))
-}
-func (t *Mesh) Clone() ros2types.ROS2Msg {
+func (t *Mesh) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Mesh) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var MeshTypeSupport types.MessageTypeSupport = _MeshTypeSupport{}
+
+type _MeshTypeSupport struct{}
+
+func (t _MeshTypeSupport) New() types.Message {
+	return NewMesh()
+}
+
+func (t _MeshTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.shape_msgs__msg__Mesh
+	return (unsafe.Pointer)(C.shape_msgs__msg__Mesh__create())
+}
+
+func (t _MeshTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.shape_msgs__msg__Mesh__destroy((*C.shape_msgs__msg__Mesh)(pointer_to_free))
+}
+
+func (t _MeshTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Mesh)
+	mem := (*C.shape_msgs__msg__Mesh)(dst)
+	MeshTriangle__Sequence_to_C(&mem.triangles, m.Triangles)
+	geometry_msgs_msg.Point__Sequence_to_C((*geometry_msgs_msg.CPoint__Sequence)(unsafe.Pointer(&mem.vertices)), m.Vertices)
+}
+
+func (t _MeshTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Mesh)
+	mem := (*C.shape_msgs__msg__Mesh)(ros2_message_buffer)
+	MeshTriangle__Sequence_to_Go(&m.Triangles, mem.triangles)
+	geometry_msgs_msg.Point__Sequence_to_Go(&m.Vertices, *(*geometry_msgs_msg.CPoint__Sequence)(unsafe.Pointer(&mem.vertices)))
+}
+
+func (t _MeshTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__shape_msgs__msg__Mesh())
 }
 
 type CMesh = C.shape_msgs__msg__Mesh
@@ -94,8 +108,7 @@ func Mesh__Sequence_to_Go(goSlice *[]Mesh, cSlice CMesh__Sequence) {
 		cIdx := (*C.shape_msgs__msg__Mesh__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_shape_msgs__msg__Mesh * uintptr(i)),
 		))
-		(*goSlice)[i] = Mesh{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		MeshTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Mesh__Sequence_to_C(cSlice *CMesh__Sequence, goSlice []Mesh) {
@@ -110,18 +123,16 @@ func Mesh__Sequence_to_C(cSlice *CMesh__Sequence, goSlice []Mesh) {
 		cIdx := (*C.shape_msgs__msg__Mesh)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_shape_msgs__msg__Mesh * uintptr(i)),
 		))
-		*cIdx = *(*C.shape_msgs__msg__Mesh)(v.AsCStruct())
+		MeshTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Mesh__Array_to_Go(goSlice []Mesh, cSlice []CMesh) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		MeshTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Mesh__Array_to_C(cSlice []CMesh, goSlice []Mesh) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.shape_msgs__msg__Mesh)(goSlice[i].AsCStruct())
+		MeshTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

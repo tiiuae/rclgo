@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("action_msgs/CancelGoal", CancelGoal)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("action_msgs/CancelGoal", CancelGoalTypeSupport)
 }
 
-type _CancelGoal struct {
-	req,resp ros2types.ROS2Msg
+type _CancelGoalTypeSupport struct {}
+
+func (s _CancelGoalTypeSupport) Request() types.MessageTypeSupport {
+	return CancelGoal_RequestTypeSupport
 }
 
-func (s *_CancelGoal) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _CancelGoalTypeSupport) Response() types.MessageTypeSupport {
+	return CancelGoal_ResponseTypeSupport
 }
 
-func (s *_CancelGoal) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_CancelGoal) TypeSupport() unsafe.Pointer {
+func (s _CancelGoalTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__action_msgs__srv__CancelGoal())
 }
 
 // Modifying this variable is undefined behavior.
-var CancelGoal ros2types.Service = &_CancelGoal{
-	req: &CancelGoal_Request{},
-	resp: &CancelGoal_Response{},
-}
+var CancelGoalTypeSupport types.ServiceTypeSupport = _CancelGoalTypeSupport{}

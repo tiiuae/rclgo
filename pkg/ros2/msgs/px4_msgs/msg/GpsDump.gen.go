@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/GpsDump", &GpsDump{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/GpsDump", GpsDumpTypeSupport)
 }
 const (
 	GpsDump_ORB_QUEUE_LENGTH uint8 = 8
@@ -52,44 +52,58 @@ type GpsDump struct {
 // NewGpsDump creates a new GpsDump with default values.
 func NewGpsDump() *GpsDump {
 	self := GpsDump{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *GpsDump) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *GpsDump) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__GpsDump())
-}
-func (t *GpsDump) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__GpsDump
-	return (unsafe.Pointer)(C.px4_msgs__msg__GpsDump__create())
-}
-func (t *GpsDump) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__GpsDump__destroy((*C.px4_msgs__msg__GpsDump)(pointer_to_free))
-}
-func (t *GpsDump) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__GpsDump)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.instance = C.uint8_t(t.Instance)
-	mem.len = C.uint8_t(t.Len)
-	cSlice_data := mem.data[:]
-	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_data)), t.Data[:])
-	return unsafe.Pointer(mem)
-}
-func (t *GpsDump) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__GpsDump)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Instance = uint8(mem.instance)
-	t.Len = uint8(mem.len)
-	cSlice_data := mem.data[:]
-	rosidl_runtime_c.Uint8__Array_to_Go(t.Data[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_data)))
-}
-func (t *GpsDump) Clone() ros2types.ROS2Msg {
+func (t *GpsDump) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *GpsDump) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var GpsDumpTypeSupport types.MessageTypeSupport = _GpsDumpTypeSupport{}
+
+type _GpsDumpTypeSupport struct{}
+
+func (t _GpsDumpTypeSupport) New() types.Message {
+	return NewGpsDump()
+}
+
+func (t _GpsDumpTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__GpsDump
+	return (unsafe.Pointer)(C.px4_msgs__msg__GpsDump__create())
+}
+
+func (t _GpsDumpTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__GpsDump__destroy((*C.px4_msgs__msg__GpsDump)(pointer_to_free))
+}
+
+func (t _GpsDumpTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*GpsDump)
+	mem := (*C.px4_msgs__msg__GpsDump)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.instance = C.uint8_t(m.Instance)
+	mem.len = C.uint8_t(m.Len)
+	cSlice_data := mem.data[:]
+	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_data)), m.Data[:])
+}
+
+func (t _GpsDumpTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*GpsDump)
+	mem := (*C.px4_msgs__msg__GpsDump)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Instance = uint8(mem.instance)
+	m.Len = uint8(mem.len)
+	cSlice_data := mem.data[:]
+	rosidl_runtime_c.Uint8__Array_to_Go(m.Data[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_data)))
+}
+
+func (t _GpsDumpTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__GpsDump())
 }
 
 type CGpsDump = C.px4_msgs__msg__GpsDump
@@ -104,8 +118,7 @@ func GpsDump__Sequence_to_Go(goSlice *[]GpsDump, cSlice CGpsDump__Sequence) {
 		cIdx := (*C.px4_msgs__msg__GpsDump__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__GpsDump * uintptr(i)),
 		))
-		(*goSlice)[i] = GpsDump{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		GpsDumpTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func GpsDump__Sequence_to_C(cSlice *CGpsDump__Sequence, goSlice []GpsDump) {
@@ -120,18 +133,16 @@ func GpsDump__Sequence_to_C(cSlice *CGpsDump__Sequence, goSlice []GpsDump) {
 		cIdx := (*C.px4_msgs__msg__GpsDump)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__GpsDump * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__GpsDump)(v.AsCStruct())
+		GpsDumpTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func GpsDump__Array_to_Go(goSlice []GpsDump, cSlice []CGpsDump) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		GpsDumpTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func GpsDump__Array_to_C(cSlice []CGpsDump, goSlice []GpsDump) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__GpsDump)(goSlice[i].AsCStruct())
+		GpsDumpTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

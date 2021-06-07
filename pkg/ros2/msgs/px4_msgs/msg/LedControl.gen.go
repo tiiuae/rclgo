@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/LedControl", &LedControl{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/LedControl", LedControlTypeSupport)
 }
 const (
 	LedControl_COLOR_OFF uint8 = 0// this is only used in the drivers. colors
@@ -71,46 +71,60 @@ type LedControl struct {
 // NewLedControl creates a new LedControl with default values.
 func NewLedControl() *LedControl {
 	self := LedControl{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *LedControl) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *LedControl) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__LedControl())
-}
-func (t *LedControl) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__LedControl
-	return (unsafe.Pointer)(C.px4_msgs__msg__LedControl__create())
-}
-func (t *LedControl) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__LedControl__destroy((*C.px4_msgs__msg__LedControl)(pointer_to_free))
-}
-func (t *LedControl) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__LedControl)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.led_mask = C.uint8_t(t.LedMask)
-	mem.color = C.uint8_t(t.Color)
-	mem.mode = C.uint8_t(t.Mode)
-	mem.num_blinks = C.uint8_t(t.NumBlinks)
-	mem.priority = C.uint8_t(t.Priority)
-	return unsafe.Pointer(mem)
-}
-func (t *LedControl) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__LedControl)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.LedMask = uint8(mem.led_mask)
-	t.Color = uint8(mem.color)
-	t.Mode = uint8(mem.mode)
-	t.NumBlinks = uint8(mem.num_blinks)
-	t.Priority = uint8(mem.priority)
-}
-func (t *LedControl) Clone() ros2types.ROS2Msg {
+func (t *LedControl) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *LedControl) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var LedControlTypeSupport types.MessageTypeSupport = _LedControlTypeSupport{}
+
+type _LedControlTypeSupport struct{}
+
+func (t _LedControlTypeSupport) New() types.Message {
+	return NewLedControl()
+}
+
+func (t _LedControlTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__LedControl
+	return (unsafe.Pointer)(C.px4_msgs__msg__LedControl__create())
+}
+
+func (t _LedControlTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__LedControl__destroy((*C.px4_msgs__msg__LedControl)(pointer_to_free))
+}
+
+func (t _LedControlTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*LedControl)
+	mem := (*C.px4_msgs__msg__LedControl)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.led_mask = C.uint8_t(m.LedMask)
+	mem.color = C.uint8_t(m.Color)
+	mem.mode = C.uint8_t(m.Mode)
+	mem.num_blinks = C.uint8_t(m.NumBlinks)
+	mem.priority = C.uint8_t(m.Priority)
+}
+
+func (t _LedControlTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*LedControl)
+	mem := (*C.px4_msgs__msg__LedControl)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.LedMask = uint8(mem.led_mask)
+	m.Color = uint8(mem.color)
+	m.Mode = uint8(mem.mode)
+	m.NumBlinks = uint8(mem.num_blinks)
+	m.Priority = uint8(mem.priority)
+}
+
+func (t _LedControlTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__LedControl())
 }
 
 type CLedControl = C.px4_msgs__msg__LedControl
@@ -125,8 +139,7 @@ func LedControl__Sequence_to_Go(goSlice *[]LedControl, cSlice CLedControl__Seque
 		cIdx := (*C.px4_msgs__msg__LedControl__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__LedControl * uintptr(i)),
 		))
-		(*goSlice)[i] = LedControl{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		LedControlTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func LedControl__Sequence_to_C(cSlice *CLedControl__Sequence, goSlice []LedControl) {
@@ -141,18 +154,16 @@ func LedControl__Sequence_to_C(cSlice *CLedControl__Sequence, goSlice []LedContr
 		cIdx := (*C.px4_msgs__msg__LedControl)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__LedControl * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__LedControl)(v.AsCStruct())
+		LedControlTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func LedControl__Array_to_Go(goSlice []LedControl, cSlice []CLedControl) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		LedControlTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func LedControl__Array_to_C(cSlice []CLedControl, goSlice []LedControl) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__LedControl)(goSlice[i].AsCStruct())
+		LedControlTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

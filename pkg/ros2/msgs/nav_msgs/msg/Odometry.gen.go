@@ -15,7 +15,7 @@ package nav_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	geometry_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/geometry_msgs/msg"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
@@ -38,14 +38,14 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("nav_msgs/Odometry", &Odometry{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("nav_msgs/Odometry", OdometryTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewOdometry
 // function instead.
 type Odometry struct {
 	Header std_msgs_msg.Header `yaml:"header"`// Includes the frame id of the pose parent.
-	ChildFrameId rosidl_runtime_c.String `yaml:"child_frame_id"`// Frame id the pose points to. The twist is in this coordinate frame.
+	ChildFrameId string `yaml:"child_frame_id"`// Frame id the pose points to. The twist is in this coordinate frame.
 	Pose geometry_msgs_msg.PoseWithCovariance `yaml:"pose"`// Estimated pose that is typically relative to a fixed world frame.
 	Twist geometry_msgs_msg.TwistWithCovariance `yaml:"twist"`// Estimated linear and angular velocity relative to child_frame_id.
 }
@@ -53,46 +53,59 @@ type Odometry struct {
 // NewOdometry creates a new Odometry with default values.
 func NewOdometry() *Odometry {
 	self := Odometry{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Odometry) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.ChildFrameId.SetDefaults("")
-	t.Pose.SetDefaults(nil)
-	t.Twist.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *Odometry) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__nav_msgs__msg__Odometry())
-}
-func (t *Odometry) PrepareMemory() unsafe.Pointer { //returns *C.nav_msgs__msg__Odometry
-	return (unsafe.Pointer)(C.nav_msgs__msg__Odometry__create())
-}
-func (t *Odometry) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.nav_msgs__msg__Odometry__destroy((*C.nav_msgs__msg__Odometry)(pointer_to_free))
-}
-func (t *Odometry) AsCStruct() unsafe.Pointer {
-	mem := (*C.nav_msgs__msg__Odometry)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.child_frame_id = *(*C.rosidl_runtime_c__String)(t.ChildFrameId.AsCStruct())
-	mem.pose = *(*C.geometry_msgs__msg__PoseWithCovariance)(t.Pose.AsCStruct())
-	mem.twist = *(*C.geometry_msgs__msg__TwistWithCovariance)(t.Twist.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *Odometry) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.nav_msgs__msg__Odometry)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.ChildFrameId.AsGoStruct(unsafe.Pointer(&mem.child_frame_id))
-	t.Pose.AsGoStruct(unsafe.Pointer(&mem.pose))
-	t.Twist.AsGoStruct(unsafe.Pointer(&mem.twist))
-}
-func (t *Odometry) Clone() ros2types.ROS2Msg {
+func (t *Odometry) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Odometry) SetDefaults() {
+	t.Header.SetDefaults()
+	t.Pose.SetDefaults()
+	t.Twist.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var OdometryTypeSupport types.MessageTypeSupport = _OdometryTypeSupport{}
+
+type _OdometryTypeSupport struct{}
+
+func (t _OdometryTypeSupport) New() types.Message {
+	return NewOdometry()
+}
+
+func (t _OdometryTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.nav_msgs__msg__Odometry
+	return (unsafe.Pointer)(C.nav_msgs__msg__Odometry__create())
+}
+
+func (t _OdometryTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.nav_msgs__msg__Odometry__destroy((*C.nav_msgs__msg__Odometry)(pointer_to_free))
+}
+
+func (t _OdometryTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Odometry)
+	mem := (*C.nav_msgs__msg__Odometry)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.child_frame_id), m.ChildFrameId)
+	geometry_msgs_msg.PoseWithCovarianceTypeSupport.AsCStruct(unsafe.Pointer(&mem.pose), &m.Pose)
+	geometry_msgs_msg.TwistWithCovarianceTypeSupport.AsCStruct(unsafe.Pointer(&mem.twist), &m.Twist)
+}
+
+func (t _OdometryTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Odometry)
+	mem := (*C.nav_msgs__msg__Odometry)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	rosidl_runtime_c.StringAsGoStruct(&m.ChildFrameId, unsafe.Pointer(&mem.child_frame_id))
+	geometry_msgs_msg.PoseWithCovarianceTypeSupport.AsGoStruct(&m.Pose, unsafe.Pointer(&mem.pose))
+	geometry_msgs_msg.TwistWithCovarianceTypeSupport.AsGoStruct(&m.Twist, unsafe.Pointer(&mem.twist))
+}
+
+func (t _OdometryTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__nav_msgs__msg__Odometry())
 }
 
 type COdometry = C.nav_msgs__msg__Odometry
@@ -107,8 +120,7 @@ func Odometry__Sequence_to_Go(goSlice *[]Odometry, cSlice COdometry__Sequence) {
 		cIdx := (*C.nav_msgs__msg__Odometry__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_nav_msgs__msg__Odometry * uintptr(i)),
 		))
-		(*goSlice)[i] = Odometry{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		OdometryTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Odometry__Sequence_to_C(cSlice *COdometry__Sequence, goSlice []Odometry) {
@@ -123,18 +135,16 @@ func Odometry__Sequence_to_C(cSlice *COdometry__Sequence, goSlice []Odometry) {
 		cIdx := (*C.nav_msgs__msg__Odometry)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_nav_msgs__msg__Odometry * uintptr(i)),
 		))
-		*cIdx = *(*C.nav_msgs__msg__Odometry)(v.AsCStruct())
+		OdometryTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Odometry__Array_to_Go(goSlice []Odometry, cSlice []COdometry) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		OdometryTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Odometry__Array_to_C(cSlice []COdometry, goSlice []Odometry) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.nav_msgs__msg__Odometry)(goSlice[i].AsCStruct())
+		OdometryTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

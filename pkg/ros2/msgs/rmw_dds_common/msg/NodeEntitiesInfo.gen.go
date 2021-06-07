@@ -15,7 +15,7 @@ package rmw_dds_common_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,14 +34,14 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("rmw_dds_common/NodeEntitiesInfo", &NodeEntitiesInfo{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("rmw_dds_common/NodeEntitiesInfo", NodeEntitiesInfoTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewNodeEntitiesInfo
 // function instead.
 type NodeEntitiesInfo struct {
-	NodeNamespace rosidl_runtime_c.String `yaml:"node_namespace"`
-	NodeName rosidl_runtime_c.String `yaml:"node_name"`
+	NodeNamespace string `yaml:"node_namespace"`
+	NodeName string `yaml:"node_name"`
 	ReaderGidSeq []Gid `yaml:"reader_gid_seq"`
 	WriterGidSeq []Gid `yaml:"writer_gid_seq"`
 }
@@ -49,44 +49,56 @@ type NodeEntitiesInfo struct {
 // NewNodeEntitiesInfo creates a new NodeEntitiesInfo with default values.
 func NewNodeEntitiesInfo() *NodeEntitiesInfo {
 	self := NodeEntitiesInfo{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *NodeEntitiesInfo) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.NodeNamespace.SetDefaults("")
-	t.NodeName.SetDefaults("")
-	
-	return t
-}
-
-func (t *NodeEntitiesInfo) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__rmw_dds_common__msg__NodeEntitiesInfo())
-}
-func (t *NodeEntitiesInfo) PrepareMemory() unsafe.Pointer { //returns *C.rmw_dds_common__msg__NodeEntitiesInfo
-	return (unsafe.Pointer)(C.rmw_dds_common__msg__NodeEntitiesInfo__create())
-}
-func (t *NodeEntitiesInfo) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.rmw_dds_common__msg__NodeEntitiesInfo__destroy((*C.rmw_dds_common__msg__NodeEntitiesInfo)(pointer_to_free))
-}
-func (t *NodeEntitiesInfo) AsCStruct() unsafe.Pointer {
-	mem := (*C.rmw_dds_common__msg__NodeEntitiesInfo)(t.PrepareMemory())
-	mem.node_namespace = *(*C.rosidl_runtime_c__String)(t.NodeNamespace.AsCStruct())
-	mem.node_name = *(*C.rosidl_runtime_c__String)(t.NodeName.AsCStruct())
-	Gid__Sequence_to_C(&mem.reader_gid_seq, t.ReaderGidSeq)
-	Gid__Sequence_to_C(&mem.writer_gid_seq, t.WriterGidSeq)
-	return unsafe.Pointer(mem)
-}
-func (t *NodeEntitiesInfo) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.rmw_dds_common__msg__NodeEntitiesInfo)(ros2_message_buffer)
-	t.NodeNamespace.AsGoStruct(unsafe.Pointer(&mem.node_namespace))
-	t.NodeName.AsGoStruct(unsafe.Pointer(&mem.node_name))
-	Gid__Sequence_to_Go(&t.ReaderGidSeq, mem.reader_gid_seq)
-	Gid__Sequence_to_Go(&t.WriterGidSeq, mem.writer_gid_seq)
-}
-func (t *NodeEntitiesInfo) Clone() ros2types.ROS2Msg {
+func (t *NodeEntitiesInfo) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *NodeEntitiesInfo) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var NodeEntitiesInfoTypeSupport types.MessageTypeSupport = _NodeEntitiesInfoTypeSupport{}
+
+type _NodeEntitiesInfoTypeSupport struct{}
+
+func (t _NodeEntitiesInfoTypeSupport) New() types.Message {
+	return NewNodeEntitiesInfo()
+}
+
+func (t _NodeEntitiesInfoTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.rmw_dds_common__msg__NodeEntitiesInfo
+	return (unsafe.Pointer)(C.rmw_dds_common__msg__NodeEntitiesInfo__create())
+}
+
+func (t _NodeEntitiesInfoTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.rmw_dds_common__msg__NodeEntitiesInfo__destroy((*C.rmw_dds_common__msg__NodeEntitiesInfo)(pointer_to_free))
+}
+
+func (t _NodeEntitiesInfoTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*NodeEntitiesInfo)
+	mem := (*C.rmw_dds_common__msg__NodeEntitiesInfo)(dst)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.node_namespace), m.NodeNamespace)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.node_name), m.NodeName)
+	Gid__Sequence_to_C(&mem.reader_gid_seq, m.ReaderGidSeq)
+	Gid__Sequence_to_C(&mem.writer_gid_seq, m.WriterGidSeq)
+}
+
+func (t _NodeEntitiesInfoTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*NodeEntitiesInfo)
+	mem := (*C.rmw_dds_common__msg__NodeEntitiesInfo)(ros2_message_buffer)
+	rosidl_runtime_c.StringAsGoStruct(&m.NodeNamespace, unsafe.Pointer(&mem.node_namespace))
+	rosidl_runtime_c.StringAsGoStruct(&m.NodeName, unsafe.Pointer(&mem.node_name))
+	Gid__Sequence_to_Go(&m.ReaderGidSeq, mem.reader_gid_seq)
+	Gid__Sequence_to_Go(&m.WriterGidSeq, mem.writer_gid_seq)
+}
+
+func (t _NodeEntitiesInfoTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__rmw_dds_common__msg__NodeEntitiesInfo())
 }
 
 type CNodeEntitiesInfo = C.rmw_dds_common__msg__NodeEntitiesInfo
@@ -101,8 +113,7 @@ func NodeEntitiesInfo__Sequence_to_Go(goSlice *[]NodeEntitiesInfo, cSlice CNodeE
 		cIdx := (*C.rmw_dds_common__msg__NodeEntitiesInfo__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rmw_dds_common__msg__NodeEntitiesInfo * uintptr(i)),
 		))
-		(*goSlice)[i] = NodeEntitiesInfo{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		NodeEntitiesInfoTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func NodeEntitiesInfo__Sequence_to_C(cSlice *CNodeEntitiesInfo__Sequence, goSlice []NodeEntitiesInfo) {
@@ -117,18 +128,16 @@ func NodeEntitiesInfo__Sequence_to_C(cSlice *CNodeEntitiesInfo__Sequence, goSlic
 		cIdx := (*C.rmw_dds_common__msg__NodeEntitiesInfo)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rmw_dds_common__msg__NodeEntitiesInfo * uintptr(i)),
 		))
-		*cIdx = *(*C.rmw_dds_common__msg__NodeEntitiesInfo)(v.AsCStruct())
+		NodeEntitiesInfoTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func NodeEntitiesInfo__Array_to_Go(goSlice []NodeEntitiesInfo, cSlice []CNodeEntitiesInfo) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		NodeEntitiesInfoTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func NodeEntitiesInfo__Array_to_C(cSlice []CNodeEntitiesInfo, goSlice []NodeEntitiesInfo) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.rmw_dds_common__msg__NodeEntitiesInfo)(goSlice[i].AsCStruct())
+		NodeEntitiesInfoTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

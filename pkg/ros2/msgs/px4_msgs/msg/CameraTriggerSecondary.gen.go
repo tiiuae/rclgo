@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/CameraTriggerSecondary", &CameraTriggerSecondary{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/CameraTriggerSecondary", CameraTriggerSecondaryTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewCameraTriggerSecondary
@@ -48,42 +48,56 @@ type CameraTriggerSecondary struct {
 // NewCameraTriggerSecondary creates a new CameraTriggerSecondary with default values.
 func NewCameraTriggerSecondary() *CameraTriggerSecondary {
 	self := CameraTriggerSecondary{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *CameraTriggerSecondary) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *CameraTriggerSecondary) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__CameraTriggerSecondary())
-}
-func (t *CameraTriggerSecondary) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__CameraTriggerSecondary
-	return (unsafe.Pointer)(C.px4_msgs__msg__CameraTriggerSecondary__create())
-}
-func (t *CameraTriggerSecondary) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__CameraTriggerSecondary__destroy((*C.px4_msgs__msg__CameraTriggerSecondary)(pointer_to_free))
-}
-func (t *CameraTriggerSecondary) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__CameraTriggerSecondary)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_utc = C.uint64_t(t.TimestampUtc)
-	mem.seq = C.uint32_t(t.Seq)
-	mem.feedback = C.bool(t.Feedback)
-	return unsafe.Pointer(mem)
-}
-func (t *CameraTriggerSecondary) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__CameraTriggerSecondary)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampUtc = uint64(mem.timestamp_utc)
-	t.Seq = uint32(mem.seq)
-	t.Feedback = bool(mem.feedback)
-}
-func (t *CameraTriggerSecondary) Clone() ros2types.ROS2Msg {
+func (t *CameraTriggerSecondary) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *CameraTriggerSecondary) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var CameraTriggerSecondaryTypeSupport types.MessageTypeSupport = _CameraTriggerSecondaryTypeSupport{}
+
+type _CameraTriggerSecondaryTypeSupport struct{}
+
+func (t _CameraTriggerSecondaryTypeSupport) New() types.Message {
+	return NewCameraTriggerSecondary()
+}
+
+func (t _CameraTriggerSecondaryTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__CameraTriggerSecondary
+	return (unsafe.Pointer)(C.px4_msgs__msg__CameraTriggerSecondary__create())
+}
+
+func (t _CameraTriggerSecondaryTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__CameraTriggerSecondary__destroy((*C.px4_msgs__msg__CameraTriggerSecondary)(pointer_to_free))
+}
+
+func (t _CameraTriggerSecondaryTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*CameraTriggerSecondary)
+	mem := (*C.px4_msgs__msg__CameraTriggerSecondary)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_utc = C.uint64_t(m.TimestampUtc)
+	mem.seq = C.uint32_t(m.Seq)
+	mem.feedback = C.bool(m.Feedback)
+}
+
+func (t _CameraTriggerSecondaryTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*CameraTriggerSecondary)
+	mem := (*C.px4_msgs__msg__CameraTriggerSecondary)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampUtc = uint64(mem.timestamp_utc)
+	m.Seq = uint32(mem.seq)
+	m.Feedback = bool(mem.feedback)
+}
+
+func (t _CameraTriggerSecondaryTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__CameraTriggerSecondary())
 }
 
 type CCameraTriggerSecondary = C.px4_msgs__msg__CameraTriggerSecondary
@@ -98,8 +112,7 @@ func CameraTriggerSecondary__Sequence_to_Go(goSlice *[]CameraTriggerSecondary, c
 		cIdx := (*C.px4_msgs__msg__CameraTriggerSecondary__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__CameraTriggerSecondary * uintptr(i)),
 		))
-		(*goSlice)[i] = CameraTriggerSecondary{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		CameraTriggerSecondaryTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func CameraTriggerSecondary__Sequence_to_C(cSlice *CCameraTriggerSecondary__Sequence, goSlice []CameraTriggerSecondary) {
@@ -114,18 +127,16 @@ func CameraTriggerSecondary__Sequence_to_C(cSlice *CCameraTriggerSecondary__Sequ
 		cIdx := (*C.px4_msgs__msg__CameraTriggerSecondary)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__CameraTriggerSecondary * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__CameraTriggerSecondary)(v.AsCStruct())
+		CameraTriggerSecondaryTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func CameraTriggerSecondary__Array_to_Go(goSlice []CameraTriggerSecondary, cSlice []CCameraTriggerSecondary) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		CameraTriggerSecondaryTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func CameraTriggerSecondary__Array_to_C(cSlice []CCameraTriggerSecondary, goSlice []CameraTriggerSecondary) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__CameraTriggerSecondary)(goSlice[i].AsCStruct())
+		CameraTriggerSecondaryTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

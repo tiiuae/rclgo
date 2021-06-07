@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleAngularAccelerationSetpoint", &VehicleAngularAccelerationSetpoint{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleAngularAccelerationSetpoint", VehicleAngularAccelerationSetpointTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewVehicleAngularAccelerationSetpoint
@@ -48,42 +48,56 @@ type VehicleAngularAccelerationSetpoint struct {
 // NewVehicleAngularAccelerationSetpoint creates a new VehicleAngularAccelerationSetpoint with default values.
 func NewVehicleAngularAccelerationSetpoint() *VehicleAngularAccelerationSetpoint {
 	self := VehicleAngularAccelerationSetpoint{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *VehicleAngularAccelerationSetpoint) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *VehicleAngularAccelerationSetpoint) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleAngularAccelerationSetpoint())
-}
-func (t *VehicleAngularAccelerationSetpoint) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleAngularAccelerationSetpoint
-	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleAngularAccelerationSetpoint__create())
-}
-func (t *VehicleAngularAccelerationSetpoint) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__VehicleAngularAccelerationSetpoint__destroy((*C.px4_msgs__msg__VehicleAngularAccelerationSetpoint)(pointer_to_free))
-}
-func (t *VehicleAngularAccelerationSetpoint) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__VehicleAngularAccelerationSetpoint)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	cSlice_xyz := mem.xyz[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_xyz)), t.Xyz[:])
-	return unsafe.Pointer(mem)
-}
-func (t *VehicleAngularAccelerationSetpoint) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__VehicleAngularAccelerationSetpoint)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	cSlice_xyz := mem.xyz[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Xyz[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_xyz)))
-}
-func (t *VehicleAngularAccelerationSetpoint) Clone() ros2types.ROS2Msg {
+func (t *VehicleAngularAccelerationSetpoint) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *VehicleAngularAccelerationSetpoint) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VehicleAngularAccelerationSetpointTypeSupport types.MessageTypeSupport = _VehicleAngularAccelerationSetpointTypeSupport{}
+
+type _VehicleAngularAccelerationSetpointTypeSupport struct{}
+
+func (t _VehicleAngularAccelerationSetpointTypeSupport) New() types.Message {
+	return NewVehicleAngularAccelerationSetpoint()
+}
+
+func (t _VehicleAngularAccelerationSetpointTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleAngularAccelerationSetpoint
+	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleAngularAccelerationSetpoint__create())
+}
+
+func (t _VehicleAngularAccelerationSetpointTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__VehicleAngularAccelerationSetpoint__destroy((*C.px4_msgs__msg__VehicleAngularAccelerationSetpoint)(pointer_to_free))
+}
+
+func (t _VehicleAngularAccelerationSetpointTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*VehicleAngularAccelerationSetpoint)
+	mem := (*C.px4_msgs__msg__VehicleAngularAccelerationSetpoint)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	cSlice_xyz := mem.xyz[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_xyz)), m.Xyz[:])
+}
+
+func (t _VehicleAngularAccelerationSetpointTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*VehicleAngularAccelerationSetpoint)
+	mem := (*C.px4_msgs__msg__VehicleAngularAccelerationSetpoint)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	cSlice_xyz := mem.xyz[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Xyz[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_xyz)))
+}
+
+func (t _VehicleAngularAccelerationSetpointTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleAngularAccelerationSetpoint())
 }
 
 type CVehicleAngularAccelerationSetpoint = C.px4_msgs__msg__VehicleAngularAccelerationSetpoint
@@ -98,8 +112,7 @@ func VehicleAngularAccelerationSetpoint__Sequence_to_Go(goSlice *[]VehicleAngula
 		cIdx := (*C.px4_msgs__msg__VehicleAngularAccelerationSetpoint__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleAngularAccelerationSetpoint * uintptr(i)),
 		))
-		(*goSlice)[i] = VehicleAngularAccelerationSetpoint{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VehicleAngularAccelerationSetpointTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func VehicleAngularAccelerationSetpoint__Sequence_to_C(cSlice *CVehicleAngularAccelerationSetpoint__Sequence, goSlice []VehicleAngularAccelerationSetpoint) {
@@ -114,18 +127,16 @@ func VehicleAngularAccelerationSetpoint__Sequence_to_C(cSlice *CVehicleAngularAc
 		cIdx := (*C.px4_msgs__msg__VehicleAngularAccelerationSetpoint)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleAngularAccelerationSetpoint * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__VehicleAngularAccelerationSetpoint)(v.AsCStruct())
+		VehicleAngularAccelerationSetpointTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func VehicleAngularAccelerationSetpoint__Array_to_Go(goSlice []VehicleAngularAccelerationSetpoint, cSlice []CVehicleAngularAccelerationSetpoint) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VehicleAngularAccelerationSetpointTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func VehicleAngularAccelerationSetpoint__Array_to_C(cSlice []CVehicleAngularAccelerationSetpoint, goSlice []VehicleAngularAccelerationSetpoint) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__VehicleAngularAccelerationSetpoint)(goSlice[i].AsCStruct())
+		VehicleAngularAccelerationSetpointTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

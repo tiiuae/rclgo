@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleRoi", &VehicleRoi{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleRoi", VehicleRoiTypeSupport)
 }
 const (
 	VehicleRoi_ROI_NONE uint8 = 0// No region of interest
@@ -60,50 +60,64 @@ type VehicleRoi struct {
 // NewVehicleRoi creates a new VehicleRoi with default values.
 func NewVehicleRoi() *VehicleRoi {
 	self := VehicleRoi{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *VehicleRoi) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *VehicleRoi) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleRoi())
-}
-func (t *VehicleRoi) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleRoi
-	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleRoi__create())
-}
-func (t *VehicleRoi) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__VehicleRoi__destroy((*C.px4_msgs__msg__VehicleRoi)(pointer_to_free))
-}
-func (t *VehicleRoi) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__VehicleRoi)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.mode = C.uint8_t(t.Mode)
-	mem.lat = C.double(t.Lat)
-	mem.lon = C.double(t.Lon)
-	mem.alt = C.float(t.Alt)
-	mem.roll_offset = C.float(t.RollOffset)
-	mem.pitch_offset = C.float(t.PitchOffset)
-	mem.yaw_offset = C.float(t.YawOffset)
-	return unsafe.Pointer(mem)
-}
-func (t *VehicleRoi) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__VehicleRoi)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Mode = uint8(mem.mode)
-	t.Lat = float64(mem.lat)
-	t.Lon = float64(mem.lon)
-	t.Alt = float32(mem.alt)
-	t.RollOffset = float32(mem.roll_offset)
-	t.PitchOffset = float32(mem.pitch_offset)
-	t.YawOffset = float32(mem.yaw_offset)
-}
-func (t *VehicleRoi) Clone() ros2types.ROS2Msg {
+func (t *VehicleRoi) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *VehicleRoi) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VehicleRoiTypeSupport types.MessageTypeSupport = _VehicleRoiTypeSupport{}
+
+type _VehicleRoiTypeSupport struct{}
+
+func (t _VehicleRoiTypeSupport) New() types.Message {
+	return NewVehicleRoi()
+}
+
+func (t _VehicleRoiTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleRoi
+	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleRoi__create())
+}
+
+func (t _VehicleRoiTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__VehicleRoi__destroy((*C.px4_msgs__msg__VehicleRoi)(pointer_to_free))
+}
+
+func (t _VehicleRoiTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*VehicleRoi)
+	mem := (*C.px4_msgs__msg__VehicleRoi)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.mode = C.uint8_t(m.Mode)
+	mem.lat = C.double(m.Lat)
+	mem.lon = C.double(m.Lon)
+	mem.alt = C.float(m.Alt)
+	mem.roll_offset = C.float(m.RollOffset)
+	mem.pitch_offset = C.float(m.PitchOffset)
+	mem.yaw_offset = C.float(m.YawOffset)
+}
+
+func (t _VehicleRoiTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*VehicleRoi)
+	mem := (*C.px4_msgs__msg__VehicleRoi)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Mode = uint8(mem.mode)
+	m.Lat = float64(mem.lat)
+	m.Lon = float64(mem.lon)
+	m.Alt = float32(mem.alt)
+	m.RollOffset = float32(mem.roll_offset)
+	m.PitchOffset = float32(mem.pitch_offset)
+	m.YawOffset = float32(mem.yaw_offset)
+}
+
+func (t _VehicleRoiTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleRoi())
 }
 
 type CVehicleRoi = C.px4_msgs__msg__VehicleRoi
@@ -118,8 +132,7 @@ func VehicleRoi__Sequence_to_Go(goSlice *[]VehicleRoi, cSlice CVehicleRoi__Seque
 		cIdx := (*C.px4_msgs__msg__VehicleRoi__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleRoi * uintptr(i)),
 		))
-		(*goSlice)[i] = VehicleRoi{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VehicleRoiTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func VehicleRoi__Sequence_to_C(cSlice *CVehicleRoi__Sequence, goSlice []VehicleRoi) {
@@ -134,18 +147,16 @@ func VehicleRoi__Sequence_to_C(cSlice *CVehicleRoi__Sequence, goSlice []VehicleR
 		cIdx := (*C.px4_msgs__msg__VehicleRoi)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleRoi * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__VehicleRoi)(v.AsCStruct())
+		VehicleRoiTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func VehicleRoi__Array_to_Go(goSlice []VehicleRoi, cSlice []CVehicleRoi) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VehicleRoiTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func VehicleRoi__Array_to_C(cSlice []CVehicleRoi, goSlice []VehicleRoi) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__VehicleRoi)(goSlice[i].AsCStruct())
+		VehicleRoiTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

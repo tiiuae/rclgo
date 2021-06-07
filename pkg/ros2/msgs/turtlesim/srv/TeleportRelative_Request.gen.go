@@ -15,7 +15,7 @@ package turtlesim_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("turtlesim/TeleportRelative_Request", &TeleportRelative_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("turtlesim/TeleportRelative_Request", TeleportRelative_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTeleportRelative_Request
@@ -46,38 +46,52 @@ type TeleportRelative_Request struct {
 // NewTeleportRelative_Request creates a new TeleportRelative_Request with default values.
 func NewTeleportRelative_Request() *TeleportRelative_Request {
 	self := TeleportRelative_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *TeleportRelative_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *TeleportRelative_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__turtlesim__srv__TeleportRelative_Request())
-}
-func (t *TeleportRelative_Request) PrepareMemory() unsafe.Pointer { //returns *C.turtlesim__srv__TeleportRelative_Request
-	return (unsafe.Pointer)(C.turtlesim__srv__TeleportRelative_Request__create())
-}
-func (t *TeleportRelative_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.turtlesim__srv__TeleportRelative_Request__destroy((*C.turtlesim__srv__TeleportRelative_Request)(pointer_to_free))
-}
-func (t *TeleportRelative_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.turtlesim__srv__TeleportRelative_Request)(t.PrepareMemory())
-	mem.linear = C.float(t.Linear)
-	mem.angular = C.float(t.Angular)
-	return unsafe.Pointer(mem)
-}
-func (t *TeleportRelative_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.turtlesim__srv__TeleportRelative_Request)(ros2_message_buffer)
-	t.Linear = float32(mem.linear)
-	t.Angular = float32(mem.angular)
-}
-func (t *TeleportRelative_Request) Clone() ros2types.ROS2Msg {
+func (t *TeleportRelative_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *TeleportRelative_Request) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TeleportRelative_RequestTypeSupport types.MessageTypeSupport = _TeleportRelative_RequestTypeSupport{}
+
+type _TeleportRelative_RequestTypeSupport struct{}
+
+func (t _TeleportRelative_RequestTypeSupport) New() types.Message {
+	return NewTeleportRelative_Request()
+}
+
+func (t _TeleportRelative_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.turtlesim__srv__TeleportRelative_Request
+	return (unsafe.Pointer)(C.turtlesim__srv__TeleportRelative_Request__create())
+}
+
+func (t _TeleportRelative_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.turtlesim__srv__TeleportRelative_Request__destroy((*C.turtlesim__srv__TeleportRelative_Request)(pointer_to_free))
+}
+
+func (t _TeleportRelative_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*TeleportRelative_Request)
+	mem := (*C.turtlesim__srv__TeleportRelative_Request)(dst)
+	mem.linear = C.float(m.Linear)
+	mem.angular = C.float(m.Angular)
+}
+
+func (t _TeleportRelative_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*TeleportRelative_Request)
+	mem := (*C.turtlesim__srv__TeleportRelative_Request)(ros2_message_buffer)
+	m.Linear = float32(mem.linear)
+	m.Angular = float32(mem.angular)
+}
+
+func (t _TeleportRelative_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__turtlesim__srv__TeleportRelative_Request())
 }
 
 type CTeleportRelative_Request = C.turtlesim__srv__TeleportRelative_Request
@@ -92,8 +106,7 @@ func TeleportRelative_Request__Sequence_to_Go(goSlice *[]TeleportRelative_Reques
 		cIdx := (*C.turtlesim__srv__TeleportRelative_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_turtlesim__srv__TeleportRelative_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = TeleportRelative_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TeleportRelative_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func TeleportRelative_Request__Sequence_to_C(cSlice *CTeleportRelative_Request__Sequence, goSlice []TeleportRelative_Request) {
@@ -108,18 +121,16 @@ func TeleportRelative_Request__Sequence_to_C(cSlice *CTeleportRelative_Request__
 		cIdx := (*C.turtlesim__srv__TeleportRelative_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_turtlesim__srv__TeleportRelative_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.turtlesim__srv__TeleportRelative_Request)(v.AsCStruct())
+		TeleportRelative_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func TeleportRelative_Request__Array_to_Go(goSlice []TeleportRelative_Request, cSlice []CTeleportRelative_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TeleportRelative_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func TeleportRelative_Request__Array_to_C(cSlice []CTeleportRelative_Request, goSlice []TeleportRelative_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.turtlesim__srv__TeleportRelative_Request)(goSlice[i].AsCStruct())
+		TeleportRelative_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

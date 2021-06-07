@@ -15,7 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
@@ -36,7 +36,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/BatteryState", &BatteryState{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/BatteryState", BatteryStateTypeSupport)
 }
 const (
 	BatteryState_POWER_SUPPLY_STATUS_UNKNOWN uint8 = 0// Power supply status constants
@@ -79,76 +79,88 @@ type BatteryState struct {
 	Present bool `yaml:"present"`// True if the battery is present
 	CellVoltage []float32 `yaml:"cell_voltage"`// An array of individual cell voltages for each cell in the pack
 	CellTemperature []float32 `yaml:"cell_temperature"`// An array of individual cell temperatures for each cell in the pack. If individual voltages unknown but number of cells known set each to NaN
-	Location rosidl_runtime_c.String `yaml:"location"`// The location into which the battery is inserted. (slot number or plug). If individual voltages unknown but number of cells known set each to NaNIf individual temperatures unknown but number of cells known set each to NaN
-	SerialNumber rosidl_runtime_c.String `yaml:"serial_number"`// The best approximation of the battery serial number. If individual voltages unknown but number of cells known set each to NaNIf individual temperatures unknown but number of cells known set each to NaN
+	Location string `yaml:"location"`// The location into which the battery is inserted. (slot number or plug). If individual voltages unknown but number of cells known set each to NaNIf individual temperatures unknown but number of cells known set each to NaN
+	SerialNumber string `yaml:"serial_number"`// The best approximation of the battery serial number. If individual voltages unknown but number of cells known set each to NaNIf individual temperatures unknown but number of cells known set each to NaN
 }
 
 // NewBatteryState creates a new BatteryState with default values.
 func NewBatteryState() *BatteryState {
 	self := BatteryState{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *BatteryState) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.Location.SetDefaults("")
-	t.SerialNumber.SetDefaults("")
-	
-	return t
-}
-
-func (t *BatteryState) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__BatteryState())
-}
-func (t *BatteryState) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__BatteryState
-	return (unsafe.Pointer)(C.sensor_msgs__msg__BatteryState__create())
-}
-func (t *BatteryState) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__msg__BatteryState__destroy((*C.sensor_msgs__msg__BatteryState)(pointer_to_free))
-}
-func (t *BatteryState) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__msg__BatteryState)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.voltage = C.float(t.Voltage)
-	mem.temperature = C.float(t.Temperature)
-	mem.current = C.float(t.Current)
-	mem.charge = C.float(t.Charge)
-	mem.capacity = C.float(t.Capacity)
-	mem.design_capacity = C.float(t.DesignCapacity)
-	mem.percentage = C.float(t.Percentage)
-	mem.power_supply_status = C.uint8_t(t.PowerSupplyStatus)
-	mem.power_supply_health = C.uint8_t(t.PowerSupplyHealth)
-	mem.power_supply_technology = C.uint8_t(t.PowerSupplyTechnology)
-	mem.present = C.bool(t.Present)
-	rosidl_runtime_c.Float32__Sequence_to_C((*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.cell_voltage)), t.CellVoltage)
-	rosidl_runtime_c.Float32__Sequence_to_C((*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.cell_temperature)), t.CellTemperature)
-	mem.location = *(*C.rosidl_runtime_c__String)(t.Location.AsCStruct())
-	mem.serial_number = *(*C.rosidl_runtime_c__String)(t.SerialNumber.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *BatteryState) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__msg__BatteryState)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.Voltage = float32(mem.voltage)
-	t.Temperature = float32(mem.temperature)
-	t.Current = float32(mem.current)
-	t.Charge = float32(mem.charge)
-	t.Capacity = float32(mem.capacity)
-	t.DesignCapacity = float32(mem.design_capacity)
-	t.Percentage = float32(mem.percentage)
-	t.PowerSupplyStatus = uint8(mem.power_supply_status)
-	t.PowerSupplyHealth = uint8(mem.power_supply_health)
-	t.PowerSupplyTechnology = uint8(mem.power_supply_technology)
-	t.Present = bool(mem.present)
-	rosidl_runtime_c.Float32__Sequence_to_Go(&t.CellVoltage, *(*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.cell_voltage)))
-	rosidl_runtime_c.Float32__Sequence_to_Go(&t.CellTemperature, *(*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.cell_temperature)))
-	t.Location.AsGoStruct(unsafe.Pointer(&mem.location))
-	t.SerialNumber.AsGoStruct(unsafe.Pointer(&mem.serial_number))
-}
-func (t *BatteryState) Clone() ros2types.ROS2Msg {
+func (t *BatteryState) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *BatteryState) SetDefaults() {
+	t.Header.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var BatteryStateTypeSupport types.MessageTypeSupport = _BatteryStateTypeSupport{}
+
+type _BatteryStateTypeSupport struct{}
+
+func (t _BatteryStateTypeSupport) New() types.Message {
+	return NewBatteryState()
+}
+
+func (t _BatteryStateTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__BatteryState
+	return (unsafe.Pointer)(C.sensor_msgs__msg__BatteryState__create())
+}
+
+func (t _BatteryStateTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__msg__BatteryState__destroy((*C.sensor_msgs__msg__BatteryState)(pointer_to_free))
+}
+
+func (t _BatteryStateTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*BatteryState)
+	mem := (*C.sensor_msgs__msg__BatteryState)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	mem.voltage = C.float(m.Voltage)
+	mem.temperature = C.float(m.Temperature)
+	mem.current = C.float(m.Current)
+	mem.charge = C.float(m.Charge)
+	mem.capacity = C.float(m.Capacity)
+	mem.design_capacity = C.float(m.DesignCapacity)
+	mem.percentage = C.float(m.Percentage)
+	mem.power_supply_status = C.uint8_t(m.PowerSupplyStatus)
+	mem.power_supply_health = C.uint8_t(m.PowerSupplyHealth)
+	mem.power_supply_technology = C.uint8_t(m.PowerSupplyTechnology)
+	mem.present = C.bool(m.Present)
+	rosidl_runtime_c.Float32__Sequence_to_C((*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.cell_voltage)), m.CellVoltage)
+	rosidl_runtime_c.Float32__Sequence_to_C((*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.cell_temperature)), m.CellTemperature)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.location), m.Location)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.serial_number), m.SerialNumber)
+}
+
+func (t _BatteryStateTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*BatteryState)
+	mem := (*C.sensor_msgs__msg__BatteryState)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	m.Voltage = float32(mem.voltage)
+	m.Temperature = float32(mem.temperature)
+	m.Current = float32(mem.current)
+	m.Charge = float32(mem.charge)
+	m.Capacity = float32(mem.capacity)
+	m.DesignCapacity = float32(mem.design_capacity)
+	m.Percentage = float32(mem.percentage)
+	m.PowerSupplyStatus = uint8(mem.power_supply_status)
+	m.PowerSupplyHealth = uint8(mem.power_supply_health)
+	m.PowerSupplyTechnology = uint8(mem.power_supply_technology)
+	m.Present = bool(mem.present)
+	rosidl_runtime_c.Float32__Sequence_to_Go(&m.CellVoltage, *(*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.cell_voltage)))
+	rosidl_runtime_c.Float32__Sequence_to_Go(&m.CellTemperature, *(*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.cell_temperature)))
+	rosidl_runtime_c.StringAsGoStruct(&m.Location, unsafe.Pointer(&mem.location))
+	rosidl_runtime_c.StringAsGoStruct(&m.SerialNumber, unsafe.Pointer(&mem.serial_number))
+}
+
+func (t _BatteryStateTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__BatteryState())
 }
 
 type CBatteryState = C.sensor_msgs__msg__BatteryState
@@ -163,8 +175,7 @@ func BatteryState__Sequence_to_Go(goSlice *[]BatteryState, cSlice CBatteryState_
 		cIdx := (*C.sensor_msgs__msg__BatteryState__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__BatteryState * uintptr(i)),
 		))
-		(*goSlice)[i] = BatteryState{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		BatteryStateTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func BatteryState__Sequence_to_C(cSlice *CBatteryState__Sequence, goSlice []BatteryState) {
@@ -179,18 +190,16 @@ func BatteryState__Sequence_to_C(cSlice *CBatteryState__Sequence, goSlice []Batt
 		cIdx := (*C.sensor_msgs__msg__BatteryState)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__BatteryState * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__msg__BatteryState)(v.AsCStruct())
+		BatteryStateTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func BatteryState__Array_to_Go(goSlice []BatteryState, cSlice []CBatteryState) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		BatteryStateTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func BatteryState__Array_to_C(cSlice []CBatteryState, goSlice []BatteryState) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__msg__BatteryState)(goSlice[i].AsCStruct())
+		BatteryStateTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

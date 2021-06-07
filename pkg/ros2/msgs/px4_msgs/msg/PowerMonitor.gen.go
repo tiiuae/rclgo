@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/PowerMonitor", &PowerMonitor{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/PowerMonitor", PowerMonitorTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPowerMonitor
@@ -56,58 +56,72 @@ type PowerMonitor struct {
 // NewPowerMonitor creates a new PowerMonitor with default values.
 func NewPowerMonitor() *PowerMonitor {
 	self := PowerMonitor{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *PowerMonitor) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *PowerMonitor) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__PowerMonitor())
-}
-func (t *PowerMonitor) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__PowerMonitor
-	return (unsafe.Pointer)(C.px4_msgs__msg__PowerMonitor__create())
-}
-func (t *PowerMonitor) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__PowerMonitor__destroy((*C.px4_msgs__msg__PowerMonitor)(pointer_to_free))
-}
-func (t *PowerMonitor) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__PowerMonitor)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.voltage_v = C.float(t.VoltageV)
-	mem.current_a = C.float(t.CurrentA)
-	mem.power_w = C.float(t.PowerW)
-	mem.rconf = C.int16_t(t.Rconf)
-	mem.rsv = C.int16_t(t.Rsv)
-	mem.rbv = C.int16_t(t.Rbv)
-	mem.rp = C.int16_t(t.Rp)
-	mem.rc = C.int16_t(t.Rc)
-	mem.rcal = C.int16_t(t.Rcal)
-	mem.me = C.int16_t(t.Me)
-	mem.al = C.int16_t(t.Al)
-	return unsafe.Pointer(mem)
-}
-func (t *PowerMonitor) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__PowerMonitor)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.VoltageV = float32(mem.voltage_v)
-	t.CurrentA = float32(mem.current_a)
-	t.PowerW = float32(mem.power_w)
-	t.Rconf = int16(mem.rconf)
-	t.Rsv = int16(mem.rsv)
-	t.Rbv = int16(mem.rbv)
-	t.Rp = int16(mem.rp)
-	t.Rc = int16(mem.rc)
-	t.Rcal = int16(mem.rcal)
-	t.Me = int16(mem.me)
-	t.Al = int16(mem.al)
-}
-func (t *PowerMonitor) Clone() ros2types.ROS2Msg {
+func (t *PowerMonitor) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *PowerMonitor) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var PowerMonitorTypeSupport types.MessageTypeSupport = _PowerMonitorTypeSupport{}
+
+type _PowerMonitorTypeSupport struct{}
+
+func (t _PowerMonitorTypeSupport) New() types.Message {
+	return NewPowerMonitor()
+}
+
+func (t _PowerMonitorTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__PowerMonitor
+	return (unsafe.Pointer)(C.px4_msgs__msg__PowerMonitor__create())
+}
+
+func (t _PowerMonitorTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__PowerMonitor__destroy((*C.px4_msgs__msg__PowerMonitor)(pointer_to_free))
+}
+
+func (t _PowerMonitorTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*PowerMonitor)
+	mem := (*C.px4_msgs__msg__PowerMonitor)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.voltage_v = C.float(m.VoltageV)
+	mem.current_a = C.float(m.CurrentA)
+	mem.power_w = C.float(m.PowerW)
+	mem.rconf = C.int16_t(m.Rconf)
+	mem.rsv = C.int16_t(m.Rsv)
+	mem.rbv = C.int16_t(m.Rbv)
+	mem.rp = C.int16_t(m.Rp)
+	mem.rc = C.int16_t(m.Rc)
+	mem.rcal = C.int16_t(m.Rcal)
+	mem.me = C.int16_t(m.Me)
+	mem.al = C.int16_t(m.Al)
+}
+
+func (t _PowerMonitorTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*PowerMonitor)
+	mem := (*C.px4_msgs__msg__PowerMonitor)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.VoltageV = float32(mem.voltage_v)
+	m.CurrentA = float32(mem.current_a)
+	m.PowerW = float32(mem.power_w)
+	m.Rconf = int16(mem.rconf)
+	m.Rsv = int16(mem.rsv)
+	m.Rbv = int16(mem.rbv)
+	m.Rp = int16(mem.rp)
+	m.Rc = int16(mem.rc)
+	m.Rcal = int16(mem.rcal)
+	m.Me = int16(mem.me)
+	m.Al = int16(mem.al)
+}
+
+func (t _PowerMonitorTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__PowerMonitor())
 }
 
 type CPowerMonitor = C.px4_msgs__msg__PowerMonitor
@@ -122,8 +136,7 @@ func PowerMonitor__Sequence_to_Go(goSlice *[]PowerMonitor, cSlice CPowerMonitor_
 		cIdx := (*C.px4_msgs__msg__PowerMonitor__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__PowerMonitor * uintptr(i)),
 		))
-		(*goSlice)[i] = PowerMonitor{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		PowerMonitorTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func PowerMonitor__Sequence_to_C(cSlice *CPowerMonitor__Sequence, goSlice []PowerMonitor) {
@@ -138,18 +151,16 @@ func PowerMonitor__Sequence_to_C(cSlice *CPowerMonitor__Sequence, goSlice []Powe
 		cIdx := (*C.px4_msgs__msg__PowerMonitor)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__PowerMonitor * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__PowerMonitor)(v.AsCStruct())
+		PowerMonitorTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func PowerMonitor__Array_to_Go(goSlice []PowerMonitor, cSlice []CPowerMonitor) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		PowerMonitorTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func PowerMonitor__Array_to_C(cSlice []CPowerMonitor, goSlice []PowerMonitor) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__PowerMonitor)(goSlice[i].AsCStruct())
+		PowerMonitorTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

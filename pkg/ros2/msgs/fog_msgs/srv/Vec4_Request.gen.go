@@ -15,7 +15,7 @@ package fog_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("fog_msgs/Vec4_Request", &Vec4_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("fog_msgs/Vec4_Request", Vec4_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewVec4_Request
@@ -46,36 +46,50 @@ type Vec4_Request struct {
 // NewVec4_Request creates a new Vec4_Request with default values.
 func NewVec4_Request() *Vec4_Request {
 	self := Vec4_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Vec4_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Vec4_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__fog_msgs__srv__Vec4_Request())
-}
-func (t *Vec4_Request) PrepareMemory() unsafe.Pointer { //returns *C.fog_msgs__srv__Vec4_Request
-	return (unsafe.Pointer)(C.fog_msgs__srv__Vec4_Request__create())
-}
-func (t *Vec4_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.fog_msgs__srv__Vec4_Request__destroy((*C.fog_msgs__srv__Vec4_Request)(pointer_to_free))
-}
-func (t *Vec4_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.fog_msgs__srv__Vec4_Request)(t.PrepareMemory())
-	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.goal)), t.Goal)
-	return unsafe.Pointer(mem)
-}
-func (t *Vec4_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.fog_msgs__srv__Vec4_Request)(ros2_message_buffer)
-	rosidl_runtime_c.Float64__Sequence_to_Go(&t.Goal, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.goal)))
-}
-func (t *Vec4_Request) Clone() ros2types.ROS2Msg {
+func (t *Vec4_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Vec4_Request) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var Vec4_RequestTypeSupport types.MessageTypeSupport = _Vec4_RequestTypeSupport{}
+
+type _Vec4_RequestTypeSupport struct{}
+
+func (t _Vec4_RequestTypeSupport) New() types.Message {
+	return NewVec4_Request()
+}
+
+func (t _Vec4_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.fog_msgs__srv__Vec4_Request
+	return (unsafe.Pointer)(C.fog_msgs__srv__Vec4_Request__create())
+}
+
+func (t _Vec4_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.fog_msgs__srv__Vec4_Request__destroy((*C.fog_msgs__srv__Vec4_Request)(pointer_to_free))
+}
+
+func (t _Vec4_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Vec4_Request)
+	mem := (*C.fog_msgs__srv__Vec4_Request)(dst)
+	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.goal)), m.Goal)
+}
+
+func (t _Vec4_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Vec4_Request)
+	mem := (*C.fog_msgs__srv__Vec4_Request)(ros2_message_buffer)
+	rosidl_runtime_c.Float64__Sequence_to_Go(&m.Goal, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.goal)))
+}
+
+func (t _Vec4_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__fog_msgs__srv__Vec4_Request())
 }
 
 type CVec4_Request = C.fog_msgs__srv__Vec4_Request
@@ -90,8 +104,7 @@ func Vec4_Request__Sequence_to_Go(goSlice *[]Vec4_Request, cSlice CVec4_Request_
 		cIdx := (*C.fog_msgs__srv__Vec4_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_fog_msgs__srv__Vec4_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = Vec4_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		Vec4_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Vec4_Request__Sequence_to_C(cSlice *CVec4_Request__Sequence, goSlice []Vec4_Request) {
@@ -106,18 +119,16 @@ func Vec4_Request__Sequence_to_C(cSlice *CVec4_Request__Sequence, goSlice []Vec4
 		cIdx := (*C.fog_msgs__srv__Vec4_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_fog_msgs__srv__Vec4_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.fog_msgs__srv__Vec4_Request)(v.AsCStruct())
+		Vec4_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Vec4_Request__Array_to_Go(goSlice []Vec4_Request, cSlice []CVec4_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		Vec4_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Vec4_Request__Array_to_C(cSlice []CVec4_Request, goSlice []Vec4_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.fog_msgs__srv__Vec4_Request)(goSlice[i].AsCStruct())
+		Vec4_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

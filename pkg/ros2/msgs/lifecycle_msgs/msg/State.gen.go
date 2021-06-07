@@ -15,7 +15,7 @@ package lifecycle_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("lifecycle_msgs/State", &State{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("lifecycle_msgs/State", StateTypeSupport)
 }
 const (
 	State_PRIMARY_STATE_UNKNOWN uint8 = 0// Indicates state has not yet been set.
@@ -54,45 +54,58 @@ const (
 // function instead.
 type State struct {
 	Id uint8 `yaml:"id"`// The state id value from the above definitions.
-	Label rosidl_runtime_c.String `yaml:"label"`// A text label of the state.
+	Label string `yaml:"label"`// A text label of the state.
 }
 
 // NewState creates a new State with default values.
 func NewState() *State {
 	self := State{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *State) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Label.SetDefaults("")
-	
-	return t
-}
-
-func (t *State) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__lifecycle_msgs__msg__State())
-}
-func (t *State) PrepareMemory() unsafe.Pointer { //returns *C.lifecycle_msgs__msg__State
-	return (unsafe.Pointer)(C.lifecycle_msgs__msg__State__create())
-}
-func (t *State) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.lifecycle_msgs__msg__State__destroy((*C.lifecycle_msgs__msg__State)(pointer_to_free))
-}
-func (t *State) AsCStruct() unsafe.Pointer {
-	mem := (*C.lifecycle_msgs__msg__State)(t.PrepareMemory())
-	mem.id = C.uint8_t(t.Id)
-	mem.label = *(*C.rosidl_runtime_c__String)(t.Label.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *State) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.lifecycle_msgs__msg__State)(ros2_message_buffer)
-	t.Id = uint8(mem.id)
-	t.Label.AsGoStruct(unsafe.Pointer(&mem.label))
-}
-func (t *State) Clone() ros2types.ROS2Msg {
+func (t *State) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *State) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var StateTypeSupport types.MessageTypeSupport = _StateTypeSupport{}
+
+type _StateTypeSupport struct{}
+
+func (t _StateTypeSupport) New() types.Message {
+	return NewState()
+}
+
+func (t _StateTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.lifecycle_msgs__msg__State
+	return (unsafe.Pointer)(C.lifecycle_msgs__msg__State__create())
+}
+
+func (t _StateTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.lifecycle_msgs__msg__State__destroy((*C.lifecycle_msgs__msg__State)(pointer_to_free))
+}
+
+func (t _StateTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*State)
+	mem := (*C.lifecycle_msgs__msg__State)(dst)
+	mem.id = C.uint8_t(m.Id)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.label), m.Label)
+}
+
+func (t _StateTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*State)
+	mem := (*C.lifecycle_msgs__msg__State)(ros2_message_buffer)
+	m.Id = uint8(mem.id)
+	rosidl_runtime_c.StringAsGoStruct(&m.Label, unsafe.Pointer(&mem.label))
+}
+
+func (t _StateTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__lifecycle_msgs__msg__State())
 }
 
 type CState = C.lifecycle_msgs__msg__State
@@ -107,8 +120,7 @@ func State__Sequence_to_Go(goSlice *[]State, cSlice CState__Sequence) {
 		cIdx := (*C.lifecycle_msgs__msg__State__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_lifecycle_msgs__msg__State * uintptr(i)),
 		))
-		(*goSlice)[i] = State{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		StateTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func State__Sequence_to_C(cSlice *CState__Sequence, goSlice []State) {
@@ -123,18 +135,16 @@ func State__Sequence_to_C(cSlice *CState__Sequence, goSlice []State) {
 		cIdx := (*C.lifecycle_msgs__msg__State)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_lifecycle_msgs__msg__State * uintptr(i)),
 		))
-		*cIdx = *(*C.lifecycle_msgs__msg__State)(v.AsCStruct())
+		StateTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func State__Array_to_Go(goSlice []State, cSlice []CState) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		StateTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func State__Array_to_C(cSlice []CState, goSlice []State) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.lifecycle_msgs__msg__State)(goSlice[i].AsCStruct())
+		StateTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

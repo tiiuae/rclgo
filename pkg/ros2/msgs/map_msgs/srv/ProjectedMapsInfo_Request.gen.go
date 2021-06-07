@@ -15,7 +15,7 @@ package map_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	map_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/map_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("map_msgs/ProjectedMapsInfo_Request", &ProjectedMapsInfo_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("map_msgs/ProjectedMapsInfo_Request", ProjectedMapsInfo_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewProjectedMapsInfo_Request
@@ -47,36 +47,50 @@ type ProjectedMapsInfo_Request struct {
 // NewProjectedMapsInfo_Request creates a new ProjectedMapsInfo_Request with default values.
 func NewProjectedMapsInfo_Request() *ProjectedMapsInfo_Request {
 	self := ProjectedMapsInfo_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *ProjectedMapsInfo_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *ProjectedMapsInfo_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__map_msgs__srv__ProjectedMapsInfo_Request())
-}
-func (t *ProjectedMapsInfo_Request) PrepareMemory() unsafe.Pointer { //returns *C.map_msgs__srv__ProjectedMapsInfo_Request
-	return (unsafe.Pointer)(C.map_msgs__srv__ProjectedMapsInfo_Request__create())
-}
-func (t *ProjectedMapsInfo_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.map_msgs__srv__ProjectedMapsInfo_Request__destroy((*C.map_msgs__srv__ProjectedMapsInfo_Request)(pointer_to_free))
-}
-func (t *ProjectedMapsInfo_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.map_msgs__srv__ProjectedMapsInfo_Request)(t.PrepareMemory())
-	map_msgs_msg.ProjectedMapInfo__Sequence_to_C((*map_msgs_msg.CProjectedMapInfo__Sequence)(unsafe.Pointer(&mem.projected_maps_info)), t.ProjectedMapsInfo)
-	return unsafe.Pointer(mem)
-}
-func (t *ProjectedMapsInfo_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.map_msgs__srv__ProjectedMapsInfo_Request)(ros2_message_buffer)
-	map_msgs_msg.ProjectedMapInfo__Sequence_to_Go(&t.ProjectedMapsInfo, *(*map_msgs_msg.CProjectedMapInfo__Sequence)(unsafe.Pointer(&mem.projected_maps_info)))
-}
-func (t *ProjectedMapsInfo_Request) Clone() ros2types.ROS2Msg {
+func (t *ProjectedMapsInfo_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *ProjectedMapsInfo_Request) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ProjectedMapsInfo_RequestTypeSupport types.MessageTypeSupport = _ProjectedMapsInfo_RequestTypeSupport{}
+
+type _ProjectedMapsInfo_RequestTypeSupport struct{}
+
+func (t _ProjectedMapsInfo_RequestTypeSupport) New() types.Message {
+	return NewProjectedMapsInfo_Request()
+}
+
+func (t _ProjectedMapsInfo_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.map_msgs__srv__ProjectedMapsInfo_Request
+	return (unsafe.Pointer)(C.map_msgs__srv__ProjectedMapsInfo_Request__create())
+}
+
+func (t _ProjectedMapsInfo_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.map_msgs__srv__ProjectedMapsInfo_Request__destroy((*C.map_msgs__srv__ProjectedMapsInfo_Request)(pointer_to_free))
+}
+
+func (t _ProjectedMapsInfo_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*ProjectedMapsInfo_Request)
+	mem := (*C.map_msgs__srv__ProjectedMapsInfo_Request)(dst)
+	map_msgs_msg.ProjectedMapInfo__Sequence_to_C((*map_msgs_msg.CProjectedMapInfo__Sequence)(unsafe.Pointer(&mem.projected_maps_info)), m.ProjectedMapsInfo)
+}
+
+func (t _ProjectedMapsInfo_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*ProjectedMapsInfo_Request)
+	mem := (*C.map_msgs__srv__ProjectedMapsInfo_Request)(ros2_message_buffer)
+	map_msgs_msg.ProjectedMapInfo__Sequence_to_Go(&m.ProjectedMapsInfo, *(*map_msgs_msg.CProjectedMapInfo__Sequence)(unsafe.Pointer(&mem.projected_maps_info)))
+}
+
+func (t _ProjectedMapsInfo_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__map_msgs__srv__ProjectedMapsInfo_Request())
 }
 
 type CProjectedMapsInfo_Request = C.map_msgs__srv__ProjectedMapsInfo_Request
@@ -91,8 +105,7 @@ func ProjectedMapsInfo_Request__Sequence_to_Go(goSlice *[]ProjectedMapsInfo_Requ
 		cIdx := (*C.map_msgs__srv__ProjectedMapsInfo_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_map_msgs__srv__ProjectedMapsInfo_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = ProjectedMapsInfo_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ProjectedMapsInfo_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func ProjectedMapsInfo_Request__Sequence_to_C(cSlice *CProjectedMapsInfo_Request__Sequence, goSlice []ProjectedMapsInfo_Request) {
@@ -107,18 +120,16 @@ func ProjectedMapsInfo_Request__Sequence_to_C(cSlice *CProjectedMapsInfo_Request
 		cIdx := (*C.map_msgs__srv__ProjectedMapsInfo_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_map_msgs__srv__ProjectedMapsInfo_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.map_msgs__srv__ProjectedMapsInfo_Request)(v.AsCStruct())
+		ProjectedMapsInfo_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func ProjectedMapsInfo_Request__Array_to_Go(goSlice []ProjectedMapsInfo_Request, cSlice []CProjectedMapsInfo_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ProjectedMapsInfo_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func ProjectedMapsInfo_Request__Array_to_C(cSlice []CProjectedMapsInfo_Request, goSlice []ProjectedMapsInfo_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.map_msgs__srv__ProjectedMapsInfo_Request)(goSlice[i].AsCStruct())
+		ProjectedMapsInfo_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

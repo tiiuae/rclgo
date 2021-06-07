@@ -8,13 +8,13 @@ import (
 
 	. "github.com/smartystreets/goconvey/convey"
 	example_interfaces_srv "github.com/tiiuae/rclgo/pkg/ros2/msgs/example_interfaces/srv"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 )
 
 func TestServiceAndClient(t *testing.T) {
 	type testSendResult struct {
-		req  ros2types.ROS2Msg
-		resp ros2types.ROS2Msg
+		req  types.Message
+		resp types.Message
 		info *RmwServiceInfo
 		err  error
 		sum  int64
@@ -60,9 +60,9 @@ func TestServiceAndClient(t *testing.T) {
 			So(err, ShouldBeNil)
 			service, err := node.NewService(
 				"add",
-				example_interfaces_srv.AddTwoInts,
+				example_interfaces_srv.AddTwoIntsTypeSupport,
 				&ServiceOptions{Qos: qosProfile},
-				func(rsi *RmwServiceInfo, rm ros2types.ROS2Msg, srs ServiceResponseSender) {
+				func(rsi *RmwServiceInfo, rm types.Message, srs ServiceResponseSender) {
 					req := rm.(*example_interfaces_srv.AddTwoInts_Request)
 					requestReceivedChan <- req
 					resp := example_interfaces_srv.NewAddTwoInts_Response()
@@ -84,7 +84,7 @@ func TestServiceAndClient(t *testing.T) {
 			So(err, ShouldBeNil)
 			client, err = node.NewClient(
 				"add",
-				example_interfaces_srv.AddTwoInts,
+				example_interfaces_srv.AddTwoIntsTypeSupport,
 				&ClientOptions{Qos: qosProfile},
 			)
 			So(err, ShouldBeNil)

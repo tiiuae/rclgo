@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/UavcanParameterRequest", &UavcanParameterRequest{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/UavcanParameterRequest", UavcanParameterRequestTypeSupport)
 }
 const (
 	UavcanParameterRequest_MESSAGE_TYPE_PARAM_REQUEST_READ uint8 = 20// MAVLINK_MSG_ID_PARAM_REQUEST_READ
@@ -63,52 +63,66 @@ type UavcanParameterRequest struct {
 // NewUavcanParameterRequest creates a new UavcanParameterRequest with default values.
 func NewUavcanParameterRequest() *UavcanParameterRequest {
 	self := UavcanParameterRequest{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *UavcanParameterRequest) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *UavcanParameterRequest) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__UavcanParameterRequest())
-}
-func (t *UavcanParameterRequest) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__UavcanParameterRequest
-	return (unsafe.Pointer)(C.px4_msgs__msg__UavcanParameterRequest__create())
-}
-func (t *UavcanParameterRequest) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__UavcanParameterRequest__destroy((*C.px4_msgs__msg__UavcanParameterRequest)(pointer_to_free))
-}
-func (t *UavcanParameterRequest) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__UavcanParameterRequest)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.message_type = C.uint8_t(t.MessageType)
-	mem.node_id = C.uint8_t(t.NodeId)
-	cSlice_param_id := mem.param_id[:]
-	rosidl_runtime_c.Char__Array_to_C(*(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_param_id)), t.ParamId[:])
-	mem.param_index = C.int16_t(t.ParamIndex)
-	mem.param_type = C.uint8_t(t.ParamType)
-	mem.int_value = C.int64_t(t.IntValue)
-	mem.real_value = C.float(t.RealValue)
-	return unsafe.Pointer(mem)
-}
-func (t *UavcanParameterRequest) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__UavcanParameterRequest)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.MessageType = uint8(mem.message_type)
-	t.NodeId = uint8(mem.node_id)
-	cSlice_param_id := mem.param_id[:]
-	rosidl_runtime_c.Char__Array_to_Go(t.ParamId[:], *(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_param_id)))
-	t.ParamIndex = int16(mem.param_index)
-	t.ParamType = uint8(mem.param_type)
-	t.IntValue = int64(mem.int_value)
-	t.RealValue = float32(mem.real_value)
-}
-func (t *UavcanParameterRequest) Clone() ros2types.ROS2Msg {
+func (t *UavcanParameterRequest) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *UavcanParameterRequest) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var UavcanParameterRequestTypeSupport types.MessageTypeSupport = _UavcanParameterRequestTypeSupport{}
+
+type _UavcanParameterRequestTypeSupport struct{}
+
+func (t _UavcanParameterRequestTypeSupport) New() types.Message {
+	return NewUavcanParameterRequest()
+}
+
+func (t _UavcanParameterRequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__UavcanParameterRequest
+	return (unsafe.Pointer)(C.px4_msgs__msg__UavcanParameterRequest__create())
+}
+
+func (t _UavcanParameterRequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__UavcanParameterRequest__destroy((*C.px4_msgs__msg__UavcanParameterRequest)(pointer_to_free))
+}
+
+func (t _UavcanParameterRequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*UavcanParameterRequest)
+	mem := (*C.px4_msgs__msg__UavcanParameterRequest)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.message_type = C.uint8_t(m.MessageType)
+	mem.node_id = C.uint8_t(m.NodeId)
+	cSlice_param_id := mem.param_id[:]
+	rosidl_runtime_c.Char__Array_to_C(*(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_param_id)), m.ParamId[:])
+	mem.param_index = C.int16_t(m.ParamIndex)
+	mem.param_type = C.uint8_t(m.ParamType)
+	mem.int_value = C.int64_t(m.IntValue)
+	mem.real_value = C.float(m.RealValue)
+}
+
+func (t _UavcanParameterRequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*UavcanParameterRequest)
+	mem := (*C.px4_msgs__msg__UavcanParameterRequest)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.MessageType = uint8(mem.message_type)
+	m.NodeId = uint8(mem.node_id)
+	cSlice_param_id := mem.param_id[:]
+	rosidl_runtime_c.Char__Array_to_Go(m.ParamId[:], *(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_param_id)))
+	m.ParamIndex = int16(mem.param_index)
+	m.ParamType = uint8(mem.param_type)
+	m.IntValue = int64(mem.int_value)
+	m.RealValue = float32(mem.real_value)
+}
+
+func (t _UavcanParameterRequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__UavcanParameterRequest())
 }
 
 type CUavcanParameterRequest = C.px4_msgs__msg__UavcanParameterRequest
@@ -123,8 +137,7 @@ func UavcanParameterRequest__Sequence_to_Go(goSlice *[]UavcanParameterRequest, c
 		cIdx := (*C.px4_msgs__msg__UavcanParameterRequest__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__UavcanParameterRequest * uintptr(i)),
 		))
-		(*goSlice)[i] = UavcanParameterRequest{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		UavcanParameterRequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func UavcanParameterRequest__Sequence_to_C(cSlice *CUavcanParameterRequest__Sequence, goSlice []UavcanParameterRequest) {
@@ -139,18 +152,16 @@ func UavcanParameterRequest__Sequence_to_C(cSlice *CUavcanParameterRequest__Sequ
 		cIdx := (*C.px4_msgs__msg__UavcanParameterRequest)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__UavcanParameterRequest * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__UavcanParameterRequest)(v.AsCStruct())
+		UavcanParameterRequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func UavcanParameterRequest__Array_to_Go(goSlice []UavcanParameterRequest, cSlice []CUavcanParameterRequest) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		UavcanParameterRequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func UavcanParameterRequest__Array_to_C(cSlice []CUavcanParameterRequest, goSlice []UavcanParameterRequest) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__UavcanParameterRequest)(goSlice[i].AsCStruct())
+		UavcanParameterRequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

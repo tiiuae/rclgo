@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/SensorPreflightMag", &SensorPreflightMag{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/SensorPreflightMag", SensorPreflightMagTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSensorPreflightMag
@@ -46,38 +46,52 @@ type SensorPreflightMag struct {
 // NewSensorPreflightMag creates a new SensorPreflightMag with default values.
 func NewSensorPreflightMag() *SensorPreflightMag {
 	self := SensorPreflightMag{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SensorPreflightMag) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *SensorPreflightMag) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__SensorPreflightMag())
-}
-func (t *SensorPreflightMag) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__SensorPreflightMag
-	return (unsafe.Pointer)(C.px4_msgs__msg__SensorPreflightMag__create())
-}
-func (t *SensorPreflightMag) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__SensorPreflightMag__destroy((*C.px4_msgs__msg__SensorPreflightMag)(pointer_to_free))
-}
-func (t *SensorPreflightMag) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__SensorPreflightMag)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.mag_inconsistency_angle = C.float(t.MagInconsistencyAngle)
-	return unsafe.Pointer(mem)
-}
-func (t *SensorPreflightMag) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__SensorPreflightMag)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.MagInconsistencyAngle = float32(mem.mag_inconsistency_angle)
-}
-func (t *SensorPreflightMag) Clone() ros2types.ROS2Msg {
+func (t *SensorPreflightMag) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SensorPreflightMag) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SensorPreflightMagTypeSupport types.MessageTypeSupport = _SensorPreflightMagTypeSupport{}
+
+type _SensorPreflightMagTypeSupport struct{}
+
+func (t _SensorPreflightMagTypeSupport) New() types.Message {
+	return NewSensorPreflightMag()
+}
+
+func (t _SensorPreflightMagTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__SensorPreflightMag
+	return (unsafe.Pointer)(C.px4_msgs__msg__SensorPreflightMag__create())
+}
+
+func (t _SensorPreflightMagTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__SensorPreflightMag__destroy((*C.px4_msgs__msg__SensorPreflightMag)(pointer_to_free))
+}
+
+func (t _SensorPreflightMagTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*SensorPreflightMag)
+	mem := (*C.px4_msgs__msg__SensorPreflightMag)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.mag_inconsistency_angle = C.float(m.MagInconsistencyAngle)
+}
+
+func (t _SensorPreflightMagTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*SensorPreflightMag)
+	mem := (*C.px4_msgs__msg__SensorPreflightMag)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.MagInconsistencyAngle = float32(mem.mag_inconsistency_angle)
+}
+
+func (t _SensorPreflightMagTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__SensorPreflightMag())
 }
 
 type CSensorPreflightMag = C.px4_msgs__msg__SensorPreflightMag
@@ -92,8 +106,7 @@ func SensorPreflightMag__Sequence_to_Go(goSlice *[]SensorPreflightMag, cSlice CS
 		cIdx := (*C.px4_msgs__msg__SensorPreflightMag__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__SensorPreflightMag * uintptr(i)),
 		))
-		(*goSlice)[i] = SensorPreflightMag{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SensorPreflightMagTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SensorPreflightMag__Sequence_to_C(cSlice *CSensorPreflightMag__Sequence, goSlice []SensorPreflightMag) {
@@ -108,18 +121,16 @@ func SensorPreflightMag__Sequence_to_C(cSlice *CSensorPreflightMag__Sequence, go
 		cIdx := (*C.px4_msgs__msg__SensorPreflightMag)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__SensorPreflightMag * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__SensorPreflightMag)(v.AsCStruct())
+		SensorPreflightMagTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SensorPreflightMag__Array_to_Go(goSlice []SensorPreflightMag, cSlice []CSensorPreflightMag) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SensorPreflightMagTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SensorPreflightMag__Array_to_C(cSlice []CSensorPreflightMag, goSlice []SensorPreflightMag) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__SensorPreflightMag)(goSlice[i].AsCStruct())
+		SensorPreflightMagTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

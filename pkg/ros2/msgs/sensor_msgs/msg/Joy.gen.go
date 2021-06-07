@@ -15,7 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
@@ -36,7 +36,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/Joy", &Joy{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/Joy", JoyTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewJoy
@@ -50,41 +50,55 @@ type Joy struct {
 // NewJoy creates a new Joy with default values.
 func NewJoy() *Joy {
 	self := Joy{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Joy) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *Joy) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__Joy())
-}
-func (t *Joy) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__Joy
-	return (unsafe.Pointer)(C.sensor_msgs__msg__Joy__create())
-}
-func (t *Joy) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__msg__Joy__destroy((*C.sensor_msgs__msg__Joy)(pointer_to_free))
-}
-func (t *Joy) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__msg__Joy)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	rosidl_runtime_c.Float32__Sequence_to_C((*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.axes)), t.Axes)
-	rosidl_runtime_c.Int32__Sequence_to_C((*rosidl_runtime_c.CInt32__Sequence)(unsafe.Pointer(&mem.buttons)), t.Buttons)
-	return unsafe.Pointer(mem)
-}
-func (t *Joy) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__msg__Joy)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	rosidl_runtime_c.Float32__Sequence_to_Go(&t.Axes, *(*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.axes)))
-	rosidl_runtime_c.Int32__Sequence_to_Go(&t.Buttons, *(*rosidl_runtime_c.CInt32__Sequence)(unsafe.Pointer(&mem.buttons)))
-}
-func (t *Joy) Clone() ros2types.ROS2Msg {
+func (t *Joy) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Joy) SetDefaults() {
+	t.Header.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var JoyTypeSupport types.MessageTypeSupport = _JoyTypeSupport{}
+
+type _JoyTypeSupport struct{}
+
+func (t _JoyTypeSupport) New() types.Message {
+	return NewJoy()
+}
+
+func (t _JoyTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__Joy
+	return (unsafe.Pointer)(C.sensor_msgs__msg__Joy__create())
+}
+
+func (t _JoyTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__msg__Joy__destroy((*C.sensor_msgs__msg__Joy)(pointer_to_free))
+}
+
+func (t _JoyTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Joy)
+	mem := (*C.sensor_msgs__msg__Joy)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	rosidl_runtime_c.Float32__Sequence_to_C((*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.axes)), m.Axes)
+	rosidl_runtime_c.Int32__Sequence_to_C((*rosidl_runtime_c.CInt32__Sequence)(unsafe.Pointer(&mem.buttons)), m.Buttons)
+}
+
+func (t _JoyTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Joy)
+	mem := (*C.sensor_msgs__msg__Joy)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	rosidl_runtime_c.Float32__Sequence_to_Go(&m.Axes, *(*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.axes)))
+	rosidl_runtime_c.Int32__Sequence_to_Go(&m.Buttons, *(*rosidl_runtime_c.CInt32__Sequence)(unsafe.Pointer(&mem.buttons)))
+}
+
+func (t _JoyTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__Joy())
 }
 
 type CJoy = C.sensor_msgs__msg__Joy
@@ -99,8 +113,7 @@ func Joy__Sequence_to_Go(goSlice *[]Joy, cSlice CJoy__Sequence) {
 		cIdx := (*C.sensor_msgs__msg__Joy__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__Joy * uintptr(i)),
 		))
-		(*goSlice)[i] = Joy{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		JoyTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Joy__Sequence_to_C(cSlice *CJoy__Sequence, goSlice []Joy) {
@@ -115,18 +128,16 @@ func Joy__Sequence_to_C(cSlice *CJoy__Sequence, goSlice []Joy) {
 		cIdx := (*C.sensor_msgs__msg__Joy)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__Joy * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__msg__Joy)(v.AsCStruct())
+		JoyTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Joy__Array_to_Go(goSlice []Joy, cSlice []CJoy) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		JoyTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Joy__Array_to_C(cSlice []CJoy, goSlice []Joy) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__msg__Joy)(goSlice[i].AsCStruct())
+		JoyTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

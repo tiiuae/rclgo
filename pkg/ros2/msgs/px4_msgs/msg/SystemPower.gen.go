@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/SystemPower", &SystemPower{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/SystemPower", SystemPowerTypeSupport)
 }
 const (
 	SystemPower_BRICK1_VALID_SHIFTS uint8 = 0
@@ -67,60 +67,74 @@ type SystemPower struct {
 // NewSystemPower creates a new SystemPower with default values.
 func NewSystemPower() *SystemPower {
 	self := SystemPower{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SystemPower) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *SystemPower) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__SystemPower())
-}
-func (t *SystemPower) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__SystemPower
-	return (unsafe.Pointer)(C.px4_msgs__msg__SystemPower__create())
-}
-func (t *SystemPower) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__SystemPower__destroy((*C.px4_msgs__msg__SystemPower)(pointer_to_free))
-}
-func (t *SystemPower) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__SystemPower)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.voltage5v_v = C.float(t.Voltage5vV)
-	cSlice_sensors3v3 := mem.sensors3v3[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_sensors3v3)), t.Sensors3v3[:])
-	mem.sensors3v3_valid = C.uint8_t(t.Sensors3v3Valid)
-	mem.usb_connected = C.uint8_t(t.UsbConnected)
-	mem.brick_valid = C.uint8_t(t.BrickValid)
-	mem.usb_valid = C.uint8_t(t.UsbValid)
-	mem.servo_valid = C.uint8_t(t.ServoValid)
-	mem.periph_5v_oc = C.uint8_t(t.Periph5vOc)
-	mem.hipower_5v_oc = C.uint8_t(t.Hipower5vOc)
-	mem.comp_5v_valid = C.uint8_t(t.Comp5vValid)
-	mem.can1_gps1_5v_valid = C.uint8_t(t.Can1Gps15vValid)
-	return unsafe.Pointer(mem)
-}
-func (t *SystemPower) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__SystemPower)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Voltage5vV = float32(mem.voltage5v_v)
-	cSlice_sensors3v3 := mem.sensors3v3[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Sensors3v3[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_sensors3v3)))
-	t.Sensors3v3Valid = uint8(mem.sensors3v3_valid)
-	t.UsbConnected = uint8(mem.usb_connected)
-	t.BrickValid = uint8(mem.brick_valid)
-	t.UsbValid = uint8(mem.usb_valid)
-	t.ServoValid = uint8(mem.servo_valid)
-	t.Periph5vOc = uint8(mem.periph_5v_oc)
-	t.Hipower5vOc = uint8(mem.hipower_5v_oc)
-	t.Comp5vValid = uint8(mem.comp_5v_valid)
-	t.Can1Gps15vValid = uint8(mem.can1_gps1_5v_valid)
-}
-func (t *SystemPower) Clone() ros2types.ROS2Msg {
+func (t *SystemPower) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SystemPower) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SystemPowerTypeSupport types.MessageTypeSupport = _SystemPowerTypeSupport{}
+
+type _SystemPowerTypeSupport struct{}
+
+func (t _SystemPowerTypeSupport) New() types.Message {
+	return NewSystemPower()
+}
+
+func (t _SystemPowerTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__SystemPower
+	return (unsafe.Pointer)(C.px4_msgs__msg__SystemPower__create())
+}
+
+func (t _SystemPowerTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__SystemPower__destroy((*C.px4_msgs__msg__SystemPower)(pointer_to_free))
+}
+
+func (t _SystemPowerTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*SystemPower)
+	mem := (*C.px4_msgs__msg__SystemPower)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.voltage5v_v = C.float(m.Voltage5vV)
+	cSlice_sensors3v3 := mem.sensors3v3[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_sensors3v3)), m.Sensors3v3[:])
+	mem.sensors3v3_valid = C.uint8_t(m.Sensors3v3Valid)
+	mem.usb_connected = C.uint8_t(m.UsbConnected)
+	mem.brick_valid = C.uint8_t(m.BrickValid)
+	mem.usb_valid = C.uint8_t(m.UsbValid)
+	mem.servo_valid = C.uint8_t(m.ServoValid)
+	mem.periph_5v_oc = C.uint8_t(m.Periph5vOc)
+	mem.hipower_5v_oc = C.uint8_t(m.Hipower5vOc)
+	mem.comp_5v_valid = C.uint8_t(m.Comp5vValid)
+	mem.can1_gps1_5v_valid = C.uint8_t(m.Can1Gps15vValid)
+}
+
+func (t _SystemPowerTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*SystemPower)
+	mem := (*C.px4_msgs__msg__SystemPower)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Voltage5vV = float32(mem.voltage5v_v)
+	cSlice_sensors3v3 := mem.sensors3v3[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Sensors3v3[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_sensors3v3)))
+	m.Sensors3v3Valid = uint8(mem.sensors3v3_valid)
+	m.UsbConnected = uint8(mem.usb_connected)
+	m.BrickValid = uint8(mem.brick_valid)
+	m.UsbValid = uint8(mem.usb_valid)
+	m.ServoValid = uint8(mem.servo_valid)
+	m.Periph5vOc = uint8(mem.periph_5v_oc)
+	m.Hipower5vOc = uint8(mem.hipower_5v_oc)
+	m.Comp5vValid = uint8(mem.comp_5v_valid)
+	m.Can1Gps15vValid = uint8(mem.can1_gps1_5v_valid)
+}
+
+func (t _SystemPowerTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__SystemPower())
 }
 
 type CSystemPower = C.px4_msgs__msg__SystemPower
@@ -135,8 +149,7 @@ func SystemPower__Sequence_to_Go(goSlice *[]SystemPower, cSlice CSystemPower__Se
 		cIdx := (*C.px4_msgs__msg__SystemPower__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__SystemPower * uintptr(i)),
 		))
-		(*goSlice)[i] = SystemPower{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SystemPowerTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SystemPower__Sequence_to_C(cSlice *CSystemPower__Sequence, goSlice []SystemPower) {
@@ -151,18 +164,16 @@ func SystemPower__Sequence_to_C(cSlice *CSystemPower__Sequence, goSlice []System
 		cIdx := (*C.px4_msgs__msg__SystemPower)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__SystemPower * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__SystemPower)(v.AsCStruct())
+		SystemPowerTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SystemPower__Array_to_Go(goSlice []SystemPower, cSlice []CSystemPower) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SystemPowerTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SystemPower__Array_to_C(cSlice []CSystemPower, goSlice []SystemPower) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__SystemPower)(goSlice[i].AsCStruct())
+		SystemPowerTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

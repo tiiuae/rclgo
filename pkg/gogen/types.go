@@ -96,6 +96,10 @@ func (t *ROS2Field) GoPkgReference() string {
 	return t.GoPkgName + "."
 }
 
+func (t *ROS2Field) IsSingleComplex() bool {
+	return t.TypeArray == "" && t.PkgName != ""
+}
+
 type ROS2Service struct {
 	*Metadata
 	Request  *ROS2Message
@@ -135,7 +139,7 @@ type rosidl_runtime_c_type_mapping struct {
 }
 
 var ROSIDL_RUNTIME_C_PRIMITIVE_TYPES_MAPPING = map[string]rosidl_runtime_c_type_mapping{
-	"string":   {RosType: "string", GoType: "String", CStructName: "String", CType: "String", PackageName: "rosidl_runtime_c", SkipAutogen: true},
+	"string":   {RosType: "string", GoType: "string", CStructName: "String", CType: "String", SkipAutogen: true},
 	"time":     {RosType: "time", GoType: "Time", CStructName: "Time", CType: "time", SkipAutogen: true},
 	"duration": {RosType: "duration", GoType: "Duration", CStructName: "Duration", CType: "duration", SkipAutogen: true},
 	"float32":  {RosType: "float32", GoType: "float32", CStructName: "float", CType: "float"},
@@ -152,7 +156,7 @@ var ROSIDL_RUNTIME_C_PRIMITIVE_TYPES_MAPPING = map[string]rosidl_runtime_c_type_
 	"uint32":   {RosType: "uint32", GoType: "uint32", CStructName: "uint32", CType: "uint32_t"},
 	"uint64":   {RosType: "uint64", GoType: "uint64", CStructName: "uint64", CType: "uint64_t"},
 	// for wstring the RosType is actually "wstring", but the way the generator is implemented, this is a reasonable hack to make it work with this fringe-case without extensive refactoring
-	"wstring": {RosType: "U16String", GoType: "U16String", CStructName: "U16String", CType: "U16String", PackageName: "rosidl_runtime_c", SkipAutogen: true},
+	"wstring": {RosType: "U16String", GoType: "string", CStructName: "U16String", CType: "U16String", SkipAutogen: true},
 }
 
 /*

@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/IridiumsbdStatus", &IridiumsbdStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/IridiumsbdStatus", IridiumsbdStatusTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewIridiumsbdStatus
@@ -59,64 +59,78 @@ type IridiumsbdStatus struct {
 // NewIridiumsbdStatus creates a new IridiumsbdStatus with default values.
 func NewIridiumsbdStatus() *IridiumsbdStatus {
 	self := IridiumsbdStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *IridiumsbdStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *IridiumsbdStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__IridiumsbdStatus())
-}
-func (t *IridiumsbdStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__IridiumsbdStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__IridiumsbdStatus__create())
-}
-func (t *IridiumsbdStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__IridiumsbdStatus__destroy((*C.px4_msgs__msg__IridiumsbdStatus)(pointer_to_free))
-}
-func (t *IridiumsbdStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__IridiumsbdStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.last_heartbeat = C.uint64_t(t.LastHeartbeat)
-	mem.tx_buf_write_index = C.uint16_t(t.TxBufWriteIndex)
-	mem.rx_buf_read_index = C.uint16_t(t.RxBufReadIndex)
-	mem.rx_buf_end_index = C.uint16_t(t.RxBufEndIndex)
-	mem.failed_sbd_sessions = C.uint16_t(t.FailedSbdSessions)
-	mem.successful_sbd_sessions = C.uint16_t(t.SuccessfulSbdSessions)
-	mem.num_tx_buf_reset = C.uint16_t(t.NumTxBufReset)
-	mem.signal_quality = C.uint8_t(t.SignalQuality)
-	mem.state = C.uint8_t(t.State)
-	mem.ring_pending = C.bool(t.RingPending)
-	mem.tx_buf_write_pending = C.bool(t.TxBufWritePending)
-	mem.tx_session_pending = C.bool(t.TxSessionPending)
-	mem.rx_read_pending = C.bool(t.RxReadPending)
-	mem.rx_session_pending = C.bool(t.RxSessionPending)
-	return unsafe.Pointer(mem)
-}
-func (t *IridiumsbdStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__IridiumsbdStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.LastHeartbeat = uint64(mem.last_heartbeat)
-	t.TxBufWriteIndex = uint16(mem.tx_buf_write_index)
-	t.RxBufReadIndex = uint16(mem.rx_buf_read_index)
-	t.RxBufEndIndex = uint16(mem.rx_buf_end_index)
-	t.FailedSbdSessions = uint16(mem.failed_sbd_sessions)
-	t.SuccessfulSbdSessions = uint16(mem.successful_sbd_sessions)
-	t.NumTxBufReset = uint16(mem.num_tx_buf_reset)
-	t.SignalQuality = uint8(mem.signal_quality)
-	t.State = uint8(mem.state)
-	t.RingPending = bool(mem.ring_pending)
-	t.TxBufWritePending = bool(mem.tx_buf_write_pending)
-	t.TxSessionPending = bool(mem.tx_session_pending)
-	t.RxReadPending = bool(mem.rx_read_pending)
-	t.RxSessionPending = bool(mem.rx_session_pending)
-}
-func (t *IridiumsbdStatus) Clone() ros2types.ROS2Msg {
+func (t *IridiumsbdStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *IridiumsbdStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var IridiumsbdStatusTypeSupport types.MessageTypeSupport = _IridiumsbdStatusTypeSupport{}
+
+type _IridiumsbdStatusTypeSupport struct{}
+
+func (t _IridiumsbdStatusTypeSupport) New() types.Message {
+	return NewIridiumsbdStatus()
+}
+
+func (t _IridiumsbdStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__IridiumsbdStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__IridiumsbdStatus__create())
+}
+
+func (t _IridiumsbdStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__IridiumsbdStatus__destroy((*C.px4_msgs__msg__IridiumsbdStatus)(pointer_to_free))
+}
+
+func (t _IridiumsbdStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*IridiumsbdStatus)
+	mem := (*C.px4_msgs__msg__IridiumsbdStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.last_heartbeat = C.uint64_t(m.LastHeartbeat)
+	mem.tx_buf_write_index = C.uint16_t(m.TxBufWriteIndex)
+	mem.rx_buf_read_index = C.uint16_t(m.RxBufReadIndex)
+	mem.rx_buf_end_index = C.uint16_t(m.RxBufEndIndex)
+	mem.failed_sbd_sessions = C.uint16_t(m.FailedSbdSessions)
+	mem.successful_sbd_sessions = C.uint16_t(m.SuccessfulSbdSessions)
+	mem.num_tx_buf_reset = C.uint16_t(m.NumTxBufReset)
+	mem.signal_quality = C.uint8_t(m.SignalQuality)
+	mem.state = C.uint8_t(m.State)
+	mem.ring_pending = C.bool(m.RingPending)
+	mem.tx_buf_write_pending = C.bool(m.TxBufWritePending)
+	mem.tx_session_pending = C.bool(m.TxSessionPending)
+	mem.rx_read_pending = C.bool(m.RxReadPending)
+	mem.rx_session_pending = C.bool(m.RxSessionPending)
+}
+
+func (t _IridiumsbdStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*IridiumsbdStatus)
+	mem := (*C.px4_msgs__msg__IridiumsbdStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.LastHeartbeat = uint64(mem.last_heartbeat)
+	m.TxBufWriteIndex = uint16(mem.tx_buf_write_index)
+	m.RxBufReadIndex = uint16(mem.rx_buf_read_index)
+	m.RxBufEndIndex = uint16(mem.rx_buf_end_index)
+	m.FailedSbdSessions = uint16(mem.failed_sbd_sessions)
+	m.SuccessfulSbdSessions = uint16(mem.successful_sbd_sessions)
+	m.NumTxBufReset = uint16(mem.num_tx_buf_reset)
+	m.SignalQuality = uint8(mem.signal_quality)
+	m.State = uint8(mem.state)
+	m.RingPending = bool(mem.ring_pending)
+	m.TxBufWritePending = bool(mem.tx_buf_write_pending)
+	m.TxSessionPending = bool(mem.tx_session_pending)
+	m.RxReadPending = bool(mem.rx_read_pending)
+	m.RxSessionPending = bool(mem.rx_session_pending)
+}
+
+func (t _IridiumsbdStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__IridiumsbdStatus())
 }
 
 type CIridiumsbdStatus = C.px4_msgs__msg__IridiumsbdStatus
@@ -131,8 +145,7 @@ func IridiumsbdStatus__Sequence_to_Go(goSlice *[]IridiumsbdStatus, cSlice CIridi
 		cIdx := (*C.px4_msgs__msg__IridiumsbdStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__IridiumsbdStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = IridiumsbdStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		IridiumsbdStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func IridiumsbdStatus__Sequence_to_C(cSlice *CIridiumsbdStatus__Sequence, goSlice []IridiumsbdStatus) {
@@ -147,18 +160,16 @@ func IridiumsbdStatus__Sequence_to_C(cSlice *CIridiumsbdStatus__Sequence, goSlic
 		cIdx := (*C.px4_msgs__msg__IridiumsbdStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__IridiumsbdStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__IridiumsbdStatus)(v.AsCStruct())
+		IridiumsbdStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func IridiumsbdStatus__Array_to_Go(goSlice []IridiumsbdStatus, cSlice []CIridiumsbdStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		IridiumsbdStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func IridiumsbdStatus__Array_to_C(cSlice []CIridiumsbdStatus, goSlice []IridiumsbdStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__IridiumsbdStatus)(goSlice[i].AsCStruct())
+		IridiumsbdStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

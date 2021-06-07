@@ -17,7 +17,7 @@ func TestTranslateROS2ServiceNameToType(t *testing.T) {
 			srv, ok := ros2_type_dispatcher.TranslateROS2ServiceTypeNameToType("std_srvs/Empty")
 			So(ok, ShouldBeTrue)
 			So(srv, ShouldNotBeNil)
-			So(srv, ShouldHaveSameTypeAs, std_srvs_srv.Empty)
+			So(srv, ShouldHaveSameTypeAs, std_srvs_srv.EmptyTypeSupport)
 		})
 		Convey("Translating the name of a non-imported message should not work", func() {
 			srv, ok := ros2_type_dispatcher.TranslateROS2ServiceTypeNameToType("std_srvs/ThisServiceDoesNotExist")

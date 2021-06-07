@@ -15,7 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/Inertia", &Inertia{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/Inertia", InertiaTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewInertia
@@ -52,51 +52,65 @@ type Inertia struct {
 // NewInertia creates a new Inertia with default values.
 func NewInertia() *Inertia {
 	self := Inertia{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Inertia) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Com.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *Inertia) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__Inertia())
-}
-func (t *Inertia) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__Inertia
-	return (unsafe.Pointer)(C.geometry_msgs__msg__Inertia__create())
-}
-func (t *Inertia) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.geometry_msgs__msg__Inertia__destroy((*C.geometry_msgs__msg__Inertia)(pointer_to_free))
-}
-func (t *Inertia) AsCStruct() unsafe.Pointer {
-	mem := (*C.geometry_msgs__msg__Inertia)(t.PrepareMemory())
-	mem.m = C.double(t.M)
-	mem.com = *(*C.geometry_msgs__msg__Vector3)(t.Com.AsCStruct())
-	mem.ixx = C.double(t.Ixx)
-	mem.ixy = C.double(t.Ixy)
-	mem.ixz = C.double(t.Ixz)
-	mem.iyy = C.double(t.Iyy)
-	mem.iyz = C.double(t.Iyz)
-	mem.izz = C.double(t.Izz)
-	return unsafe.Pointer(mem)
-}
-func (t *Inertia) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.geometry_msgs__msg__Inertia)(ros2_message_buffer)
-	t.M = float64(mem.m)
-	t.Com.AsGoStruct(unsafe.Pointer(&mem.com))
-	t.Ixx = float64(mem.ixx)
-	t.Ixy = float64(mem.ixy)
-	t.Ixz = float64(mem.ixz)
-	t.Iyy = float64(mem.iyy)
-	t.Iyz = float64(mem.iyz)
-	t.Izz = float64(mem.izz)
-}
-func (t *Inertia) Clone() ros2types.ROS2Msg {
+func (t *Inertia) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Inertia) SetDefaults() {
+	t.Com.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var InertiaTypeSupport types.MessageTypeSupport = _InertiaTypeSupport{}
+
+type _InertiaTypeSupport struct{}
+
+func (t _InertiaTypeSupport) New() types.Message {
+	return NewInertia()
+}
+
+func (t _InertiaTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__Inertia
+	return (unsafe.Pointer)(C.geometry_msgs__msg__Inertia__create())
+}
+
+func (t _InertiaTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.geometry_msgs__msg__Inertia__destroy((*C.geometry_msgs__msg__Inertia)(pointer_to_free))
+}
+
+func (t _InertiaTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Inertia)
+	mem := (*C.geometry_msgs__msg__Inertia)(dst)
+	mem.m = C.double(m.M)
+	Vector3TypeSupport.AsCStruct(unsafe.Pointer(&mem.com), &m.Com)
+	mem.ixx = C.double(m.Ixx)
+	mem.ixy = C.double(m.Ixy)
+	mem.ixz = C.double(m.Ixz)
+	mem.iyy = C.double(m.Iyy)
+	mem.iyz = C.double(m.Iyz)
+	mem.izz = C.double(m.Izz)
+}
+
+func (t _InertiaTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Inertia)
+	mem := (*C.geometry_msgs__msg__Inertia)(ros2_message_buffer)
+	m.M = float64(mem.m)
+	Vector3TypeSupport.AsGoStruct(&m.Com, unsafe.Pointer(&mem.com))
+	m.Ixx = float64(mem.ixx)
+	m.Ixy = float64(mem.ixy)
+	m.Ixz = float64(mem.ixz)
+	m.Iyy = float64(mem.iyy)
+	m.Iyz = float64(mem.iyz)
+	m.Izz = float64(mem.izz)
+}
+
+func (t _InertiaTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__Inertia())
 }
 
 type CInertia = C.geometry_msgs__msg__Inertia
@@ -111,8 +125,7 @@ func Inertia__Sequence_to_Go(goSlice *[]Inertia, cSlice CInertia__Sequence) {
 		cIdx := (*C.geometry_msgs__msg__Inertia__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Inertia * uintptr(i)),
 		))
-		(*goSlice)[i] = Inertia{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		InertiaTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Inertia__Sequence_to_C(cSlice *CInertia__Sequence, goSlice []Inertia) {
@@ -127,18 +140,16 @@ func Inertia__Sequence_to_C(cSlice *CInertia__Sequence, goSlice []Inertia) {
 		cIdx := (*C.geometry_msgs__msg__Inertia)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Inertia * uintptr(i)),
 		))
-		*cIdx = *(*C.geometry_msgs__msg__Inertia)(v.AsCStruct())
+		InertiaTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Inertia__Array_to_Go(goSlice []Inertia, cSlice []CInertia) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		InertiaTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Inertia__Array_to_C(cSlice []CInertia, goSlice []Inertia) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.geometry_msgs__msg__Inertia)(goSlice[i].AsCStruct())
+		InertiaTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

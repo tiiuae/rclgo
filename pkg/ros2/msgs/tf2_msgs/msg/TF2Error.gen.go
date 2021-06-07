@@ -15,7 +15,7 @@ package tf2_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("tf2_msgs/TF2Error", &TF2Error{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("tf2_msgs/TF2Error", TF2ErrorTypeSupport)
 }
 const (
 	TF2Error_NO_ERROR uint8 = 0
@@ -50,45 +50,58 @@ const (
 // function instead.
 type TF2Error struct {
 	Error uint8 `yaml:"error"`
-	ErrorString rosidl_runtime_c.String `yaml:"error_string"`
+	ErrorString string `yaml:"error_string"`
 }
 
 // NewTF2Error creates a new TF2Error with default values.
 func NewTF2Error() *TF2Error {
 	self := TF2Error{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *TF2Error) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.ErrorString.SetDefaults("")
-	
-	return t
-}
-
-func (t *TF2Error) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__tf2_msgs__msg__TF2Error())
-}
-func (t *TF2Error) PrepareMemory() unsafe.Pointer { //returns *C.tf2_msgs__msg__TF2Error
-	return (unsafe.Pointer)(C.tf2_msgs__msg__TF2Error__create())
-}
-func (t *TF2Error) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.tf2_msgs__msg__TF2Error__destroy((*C.tf2_msgs__msg__TF2Error)(pointer_to_free))
-}
-func (t *TF2Error) AsCStruct() unsafe.Pointer {
-	mem := (*C.tf2_msgs__msg__TF2Error)(t.PrepareMemory())
-	mem.error = C.uint8_t(t.Error)
-	mem.error_string = *(*C.rosidl_runtime_c__String)(t.ErrorString.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *TF2Error) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.tf2_msgs__msg__TF2Error)(ros2_message_buffer)
-	t.Error = uint8(mem.error)
-	t.ErrorString.AsGoStruct(unsafe.Pointer(&mem.error_string))
-}
-func (t *TF2Error) Clone() ros2types.ROS2Msg {
+func (t *TF2Error) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *TF2Error) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TF2ErrorTypeSupport types.MessageTypeSupport = _TF2ErrorTypeSupport{}
+
+type _TF2ErrorTypeSupport struct{}
+
+func (t _TF2ErrorTypeSupport) New() types.Message {
+	return NewTF2Error()
+}
+
+func (t _TF2ErrorTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.tf2_msgs__msg__TF2Error
+	return (unsafe.Pointer)(C.tf2_msgs__msg__TF2Error__create())
+}
+
+func (t _TF2ErrorTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.tf2_msgs__msg__TF2Error__destroy((*C.tf2_msgs__msg__TF2Error)(pointer_to_free))
+}
+
+func (t _TF2ErrorTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*TF2Error)
+	mem := (*C.tf2_msgs__msg__TF2Error)(dst)
+	mem.error = C.uint8_t(m.Error)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.error_string), m.ErrorString)
+}
+
+func (t _TF2ErrorTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*TF2Error)
+	mem := (*C.tf2_msgs__msg__TF2Error)(ros2_message_buffer)
+	m.Error = uint8(mem.error)
+	rosidl_runtime_c.StringAsGoStruct(&m.ErrorString, unsafe.Pointer(&mem.error_string))
+}
+
+func (t _TF2ErrorTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__tf2_msgs__msg__TF2Error())
 }
 
 type CTF2Error = C.tf2_msgs__msg__TF2Error
@@ -103,8 +116,7 @@ func TF2Error__Sequence_to_Go(goSlice *[]TF2Error, cSlice CTF2Error__Sequence) {
 		cIdx := (*C.tf2_msgs__msg__TF2Error__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_tf2_msgs__msg__TF2Error * uintptr(i)),
 		))
-		(*goSlice)[i] = TF2Error{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TF2ErrorTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func TF2Error__Sequence_to_C(cSlice *CTF2Error__Sequence, goSlice []TF2Error) {
@@ -119,18 +131,16 @@ func TF2Error__Sequence_to_C(cSlice *CTF2Error__Sequence, goSlice []TF2Error) {
 		cIdx := (*C.tf2_msgs__msg__TF2Error)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_tf2_msgs__msg__TF2Error * uintptr(i)),
 		))
-		*cIdx = *(*C.tf2_msgs__msg__TF2Error)(v.AsCStruct())
+		TF2ErrorTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func TF2Error__Array_to_Go(goSlice []TF2Error, cSlice []CTF2Error) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TF2ErrorTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func TF2Error__Array_to_C(cSlice []CTF2Error, goSlice []TF2Error) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.tf2_msgs__msg__TF2Error)(goSlice[i].AsCStruct())
+		TF2ErrorTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

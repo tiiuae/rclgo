@@ -15,7 +15,7 @@ package visualization_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	geometry_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/geometry_msgs/msg"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
@@ -38,7 +38,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("visualization_msgs/InteractiveMarkerPose", &InteractiveMarkerPose{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("visualization_msgs/InteractiveMarkerPose", InteractiveMarkerPoseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewInteractiveMarkerPose
@@ -46,49 +46,62 @@ func init() {
 type InteractiveMarkerPose struct {
 	Header std_msgs_msg.Header `yaml:"header"`// Time/frame info.
 	Pose geometry_msgs_msg.Pose `yaml:"pose"`// Initial pose. Also, defines the pivot point for rotations.
-	Name rosidl_runtime_c.String `yaml:"name"`// Identifying string. Must be globally unique inthe topic that this message is sent through.
+	Name string `yaml:"name"`// Identifying string. Must be globally unique inthe topic that this message is sent through.
 }
 
 // NewInteractiveMarkerPose creates a new InteractiveMarkerPose with default values.
 func NewInteractiveMarkerPose() *InteractiveMarkerPose {
 	self := InteractiveMarkerPose{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *InteractiveMarkerPose) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.Pose.SetDefaults(nil)
-	t.Name.SetDefaults("")
-	
-	return t
-}
-
-func (t *InteractiveMarkerPose) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__visualization_msgs__msg__InteractiveMarkerPose())
-}
-func (t *InteractiveMarkerPose) PrepareMemory() unsafe.Pointer { //returns *C.visualization_msgs__msg__InteractiveMarkerPose
-	return (unsafe.Pointer)(C.visualization_msgs__msg__InteractiveMarkerPose__create())
-}
-func (t *InteractiveMarkerPose) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.visualization_msgs__msg__InteractiveMarkerPose__destroy((*C.visualization_msgs__msg__InteractiveMarkerPose)(pointer_to_free))
-}
-func (t *InteractiveMarkerPose) AsCStruct() unsafe.Pointer {
-	mem := (*C.visualization_msgs__msg__InteractiveMarkerPose)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.pose = *(*C.geometry_msgs__msg__Pose)(t.Pose.AsCStruct())
-	mem.name = *(*C.rosidl_runtime_c__String)(t.Name.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *InteractiveMarkerPose) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.visualization_msgs__msg__InteractiveMarkerPose)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.Pose.AsGoStruct(unsafe.Pointer(&mem.pose))
-	t.Name.AsGoStruct(unsafe.Pointer(&mem.name))
-}
-func (t *InteractiveMarkerPose) Clone() ros2types.ROS2Msg {
+func (t *InteractiveMarkerPose) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *InteractiveMarkerPose) SetDefaults() {
+	t.Header.SetDefaults()
+	t.Pose.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var InteractiveMarkerPoseTypeSupport types.MessageTypeSupport = _InteractiveMarkerPoseTypeSupport{}
+
+type _InteractiveMarkerPoseTypeSupport struct{}
+
+func (t _InteractiveMarkerPoseTypeSupport) New() types.Message {
+	return NewInteractiveMarkerPose()
+}
+
+func (t _InteractiveMarkerPoseTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.visualization_msgs__msg__InteractiveMarkerPose
+	return (unsafe.Pointer)(C.visualization_msgs__msg__InteractiveMarkerPose__create())
+}
+
+func (t _InteractiveMarkerPoseTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.visualization_msgs__msg__InteractiveMarkerPose__destroy((*C.visualization_msgs__msg__InteractiveMarkerPose)(pointer_to_free))
+}
+
+func (t _InteractiveMarkerPoseTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*InteractiveMarkerPose)
+	mem := (*C.visualization_msgs__msg__InteractiveMarkerPose)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	geometry_msgs_msg.PoseTypeSupport.AsCStruct(unsafe.Pointer(&mem.pose), &m.Pose)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.name), m.Name)
+}
+
+func (t _InteractiveMarkerPoseTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*InteractiveMarkerPose)
+	mem := (*C.visualization_msgs__msg__InteractiveMarkerPose)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	geometry_msgs_msg.PoseTypeSupport.AsGoStruct(&m.Pose, unsafe.Pointer(&mem.pose))
+	rosidl_runtime_c.StringAsGoStruct(&m.Name, unsafe.Pointer(&mem.name))
+}
+
+func (t _InteractiveMarkerPoseTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__visualization_msgs__msg__InteractiveMarkerPose())
 }
 
 type CInteractiveMarkerPose = C.visualization_msgs__msg__InteractiveMarkerPose
@@ -103,8 +116,7 @@ func InteractiveMarkerPose__Sequence_to_Go(goSlice *[]InteractiveMarkerPose, cSl
 		cIdx := (*C.visualization_msgs__msg__InteractiveMarkerPose__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_visualization_msgs__msg__InteractiveMarkerPose * uintptr(i)),
 		))
-		(*goSlice)[i] = InteractiveMarkerPose{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		InteractiveMarkerPoseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func InteractiveMarkerPose__Sequence_to_C(cSlice *CInteractiveMarkerPose__Sequence, goSlice []InteractiveMarkerPose) {
@@ -119,18 +131,16 @@ func InteractiveMarkerPose__Sequence_to_C(cSlice *CInteractiveMarkerPose__Sequen
 		cIdx := (*C.visualization_msgs__msg__InteractiveMarkerPose)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_visualization_msgs__msg__InteractiveMarkerPose * uintptr(i)),
 		))
-		*cIdx = *(*C.visualization_msgs__msg__InteractiveMarkerPose)(v.AsCStruct())
+		InteractiveMarkerPoseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func InteractiveMarkerPose__Array_to_Go(goSlice []InteractiveMarkerPose, cSlice []CInteractiveMarkerPose) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		InteractiveMarkerPoseTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func InteractiveMarkerPose__Array_to_C(cSlice []CInteractiveMarkerPose, goSlice []InteractiveMarkerPose) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.visualization_msgs__msg__InteractiveMarkerPose)(goSlice[i].AsCStruct())
+		InteractiveMarkerPoseTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

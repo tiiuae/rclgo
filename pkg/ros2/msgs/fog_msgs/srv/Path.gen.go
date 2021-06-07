@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("fog_msgs/Path", Path)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("fog_msgs/Path", PathTypeSupport)
 }
 
-type _Path struct {
-	req,resp ros2types.ROS2Msg
+type _PathTypeSupport struct {}
+
+func (s _PathTypeSupport) Request() types.MessageTypeSupport {
+	return Path_RequestTypeSupport
 }
 
-func (s *_Path) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _PathTypeSupport) Response() types.MessageTypeSupport {
+	return Path_ResponseTypeSupport
 }
 
-func (s *_Path) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_Path) TypeSupport() unsafe.Pointer {
+func (s _PathTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__fog_msgs__srv__Path())
 }
 
 // Modifying this variable is undefined behavior.
-var Path ros2types.Service = &_Path{
-	req: &Path_Request{},
-	resp: &Path_Response{},
-}
+var PathTypeSupport types.ServiceTypeSupport = _PathTypeSupport{}

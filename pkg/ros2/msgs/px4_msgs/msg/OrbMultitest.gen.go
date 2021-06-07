@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/OrbMultitest", &OrbMultitest{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/OrbMultitest", OrbMultitestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewOrbMultitest
@@ -46,38 +46,52 @@ type OrbMultitest struct {
 // NewOrbMultitest creates a new OrbMultitest with default values.
 func NewOrbMultitest() *OrbMultitest {
 	self := OrbMultitest{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *OrbMultitest) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *OrbMultitest) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__OrbMultitest())
-}
-func (t *OrbMultitest) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__OrbMultitest
-	return (unsafe.Pointer)(C.px4_msgs__msg__OrbMultitest__create())
-}
-func (t *OrbMultitest) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__OrbMultitest__destroy((*C.px4_msgs__msg__OrbMultitest)(pointer_to_free))
-}
-func (t *OrbMultitest) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__OrbMultitest)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.val = C.int32_t(t.Val)
-	return unsafe.Pointer(mem)
-}
-func (t *OrbMultitest) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__OrbMultitest)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Val = int32(mem.val)
-}
-func (t *OrbMultitest) Clone() ros2types.ROS2Msg {
+func (t *OrbMultitest) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *OrbMultitest) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var OrbMultitestTypeSupport types.MessageTypeSupport = _OrbMultitestTypeSupport{}
+
+type _OrbMultitestTypeSupport struct{}
+
+func (t _OrbMultitestTypeSupport) New() types.Message {
+	return NewOrbMultitest()
+}
+
+func (t _OrbMultitestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__OrbMultitest
+	return (unsafe.Pointer)(C.px4_msgs__msg__OrbMultitest__create())
+}
+
+func (t _OrbMultitestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__OrbMultitest__destroy((*C.px4_msgs__msg__OrbMultitest)(pointer_to_free))
+}
+
+func (t _OrbMultitestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*OrbMultitest)
+	mem := (*C.px4_msgs__msg__OrbMultitest)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.val = C.int32_t(m.Val)
+}
+
+func (t _OrbMultitestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*OrbMultitest)
+	mem := (*C.px4_msgs__msg__OrbMultitest)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Val = int32(mem.val)
+}
+
+func (t _OrbMultitestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__OrbMultitest())
 }
 
 type COrbMultitest = C.px4_msgs__msg__OrbMultitest
@@ -92,8 +106,7 @@ func OrbMultitest__Sequence_to_Go(goSlice *[]OrbMultitest, cSlice COrbMultitest_
 		cIdx := (*C.px4_msgs__msg__OrbMultitest__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__OrbMultitest * uintptr(i)),
 		))
-		(*goSlice)[i] = OrbMultitest{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		OrbMultitestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func OrbMultitest__Sequence_to_C(cSlice *COrbMultitest__Sequence, goSlice []OrbMultitest) {
@@ -108,18 +121,16 @@ func OrbMultitest__Sequence_to_C(cSlice *COrbMultitest__Sequence, goSlice []OrbM
 		cIdx := (*C.px4_msgs__msg__OrbMultitest)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__OrbMultitest * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__OrbMultitest)(v.AsCStruct())
+		OrbMultitestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func OrbMultitest__Array_to_Go(goSlice []OrbMultitest, cSlice []COrbMultitest) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		OrbMultitestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func OrbMultitest__Array_to_C(cSlice []COrbMultitest, goSlice []OrbMultitest) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__OrbMultitest)(goSlice[i].AsCStruct())
+		OrbMultitestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

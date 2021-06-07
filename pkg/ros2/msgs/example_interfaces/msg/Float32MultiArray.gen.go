@@ -15,7 +15,7 @@ package example_interfaces_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("example_interfaces/Float32MultiArray", &Float32MultiArray{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("example_interfaces/Float32MultiArray", Float32MultiArrayTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewFloat32MultiArray
@@ -47,39 +47,53 @@ type Float32MultiArray struct {
 // NewFloat32MultiArray creates a new Float32MultiArray with default values.
 func NewFloat32MultiArray() *Float32MultiArray {
 	self := Float32MultiArray{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Float32MultiArray) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Layout.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *Float32MultiArray) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__example_interfaces__msg__Float32MultiArray())
-}
-func (t *Float32MultiArray) PrepareMemory() unsafe.Pointer { //returns *C.example_interfaces__msg__Float32MultiArray
-	return (unsafe.Pointer)(C.example_interfaces__msg__Float32MultiArray__create())
-}
-func (t *Float32MultiArray) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.example_interfaces__msg__Float32MultiArray__destroy((*C.example_interfaces__msg__Float32MultiArray)(pointer_to_free))
-}
-func (t *Float32MultiArray) AsCStruct() unsafe.Pointer {
-	mem := (*C.example_interfaces__msg__Float32MultiArray)(t.PrepareMemory())
-	mem.layout = *(*C.example_interfaces__msg__MultiArrayLayout)(t.Layout.AsCStruct())
-	rosidl_runtime_c.Float32__Sequence_to_C((*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.data)), t.Data)
-	return unsafe.Pointer(mem)
-}
-func (t *Float32MultiArray) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.example_interfaces__msg__Float32MultiArray)(ros2_message_buffer)
-	t.Layout.AsGoStruct(unsafe.Pointer(&mem.layout))
-	rosidl_runtime_c.Float32__Sequence_to_Go(&t.Data, *(*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.data)))
-}
-func (t *Float32MultiArray) Clone() ros2types.ROS2Msg {
+func (t *Float32MultiArray) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Float32MultiArray) SetDefaults() {
+	t.Layout.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var Float32MultiArrayTypeSupport types.MessageTypeSupport = _Float32MultiArrayTypeSupport{}
+
+type _Float32MultiArrayTypeSupport struct{}
+
+func (t _Float32MultiArrayTypeSupport) New() types.Message {
+	return NewFloat32MultiArray()
+}
+
+func (t _Float32MultiArrayTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.example_interfaces__msg__Float32MultiArray
+	return (unsafe.Pointer)(C.example_interfaces__msg__Float32MultiArray__create())
+}
+
+func (t _Float32MultiArrayTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.example_interfaces__msg__Float32MultiArray__destroy((*C.example_interfaces__msg__Float32MultiArray)(pointer_to_free))
+}
+
+func (t _Float32MultiArrayTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Float32MultiArray)
+	mem := (*C.example_interfaces__msg__Float32MultiArray)(dst)
+	MultiArrayLayoutTypeSupport.AsCStruct(unsafe.Pointer(&mem.layout), &m.Layout)
+	rosidl_runtime_c.Float32__Sequence_to_C((*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.data)), m.Data)
+}
+
+func (t _Float32MultiArrayTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Float32MultiArray)
+	mem := (*C.example_interfaces__msg__Float32MultiArray)(ros2_message_buffer)
+	MultiArrayLayoutTypeSupport.AsGoStruct(&m.Layout, unsafe.Pointer(&mem.layout))
+	rosidl_runtime_c.Float32__Sequence_to_Go(&m.Data, *(*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.data)))
+}
+
+func (t _Float32MultiArrayTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__example_interfaces__msg__Float32MultiArray())
 }
 
 type CFloat32MultiArray = C.example_interfaces__msg__Float32MultiArray
@@ -94,8 +108,7 @@ func Float32MultiArray__Sequence_to_Go(goSlice *[]Float32MultiArray, cSlice CFlo
 		cIdx := (*C.example_interfaces__msg__Float32MultiArray__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__Float32MultiArray * uintptr(i)),
 		))
-		(*goSlice)[i] = Float32MultiArray{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		Float32MultiArrayTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Float32MultiArray__Sequence_to_C(cSlice *CFloat32MultiArray__Sequence, goSlice []Float32MultiArray) {
@@ -110,18 +123,16 @@ func Float32MultiArray__Sequence_to_C(cSlice *CFloat32MultiArray__Sequence, goSl
 		cIdx := (*C.example_interfaces__msg__Float32MultiArray)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__Float32MultiArray * uintptr(i)),
 		))
-		*cIdx = *(*C.example_interfaces__msg__Float32MultiArray)(v.AsCStruct())
+		Float32MultiArrayTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Float32MultiArray__Array_to_Go(goSlice []Float32MultiArray, cSlice []CFloat32MultiArray) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		Float32MultiArrayTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Float32MultiArray__Array_to_C(cSlice []CFloat32MultiArray, goSlice []Float32MultiArray) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.example_interfaces__msg__Float32MultiArray)(goSlice[i].AsCStruct())
+		Float32MultiArrayTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

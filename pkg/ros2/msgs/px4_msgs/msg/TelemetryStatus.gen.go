@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/TelemetryStatus", &TelemetryStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/TelemetryStatus", TelemetryStatusTypeSupport)
 }
 const (
 	TelemetryStatus_LINK_TYPE_GENERIC uint8 = 0
@@ -89,108 +89,122 @@ type TelemetryStatus struct {
 // NewTelemetryStatus creates a new TelemetryStatus with default values.
 func NewTelemetryStatus() *TelemetryStatus {
 	self := TelemetryStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *TelemetryStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *TelemetryStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__TelemetryStatus())
-}
-func (t *TelemetryStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__TelemetryStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__TelemetryStatus__create())
-}
-func (t *TelemetryStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__TelemetryStatus__destroy((*C.px4_msgs__msg__TelemetryStatus)(pointer_to_free))
-}
-func (t *TelemetryStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__TelemetryStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem._type = C.uint8_t(t.Type)
-	mem.mode = C.uint8_t(t.Mode)
-	mem.flow_control = C.bool(t.FlowControl)
-	mem.forwarding = C.bool(t.Forwarding)
-	mem.mavlink_v2 = C.bool(t.MavlinkV2)
-	mem.ftp = C.bool(t.Ftp)
-	mem.streams = C.uint8_t(t.Streams)
-	mem.data_rate = C.float(t.DataRate)
-	mem.rate_multiplier = C.float(t.RateMultiplier)
-	mem.tx_rate_avg = C.float(t.TxRateAvg)
-	mem.tx_error_rate_avg = C.float(t.TxErrorRateAvg)
-	mem.tx_message_count = C.uint32_t(t.TxMessageCount)
-	mem.tx_buffer_overruns = C.uint32_t(t.TxBufferOverruns)
-	mem.rx_rate_avg = C.float(t.RxRateAvg)
-	mem.rx_message_count = C.uint32_t(t.RxMessageCount)
-	mem.rx_message_count_supported = C.uint32_t(t.RxMessageCountSupported)
-	mem.rx_message_lost_count = C.uint32_t(t.RxMessageLostCount)
-	mem.rx_buffer_overruns = C.uint32_t(t.RxBufferOverruns)
-	mem.rx_parse_errors = C.uint32_t(t.RxParseErrors)
-	mem.rx_packet_drop_count = C.uint32_t(t.RxPacketDropCount)
-	mem.rx_message_lost_rate = C.float(t.RxMessageLostRate)
-	mem.heartbeat_type_antenna_tracker = C.bool(t.HeartbeatTypeAntennaTracker)
-	mem.heartbeat_type_gcs = C.bool(t.HeartbeatTypeGcs)
-	mem.heartbeat_type_onboard_controller = C.bool(t.HeartbeatTypeOnboardController)
-	mem.heartbeat_type_gimbal = C.bool(t.HeartbeatTypeGimbal)
-	mem.heartbeat_type_adsb = C.bool(t.HeartbeatTypeAdsb)
-	mem.heartbeat_type_camera = C.bool(t.HeartbeatTypeCamera)
-	mem.heartbeat_component_telemetry_radio = C.bool(t.HeartbeatComponentTelemetryRadio)
-	mem.heartbeat_component_log = C.bool(t.HeartbeatComponentLog)
-	mem.heartbeat_component_osd = C.bool(t.HeartbeatComponentOsd)
-	mem.heartbeat_component_obstacle_avoidance = C.bool(t.HeartbeatComponentObstacleAvoidance)
-	mem.heartbeat_component_vio = C.bool(t.HeartbeatComponentVio)
-	mem.heartbeat_component_pairing_manager = C.bool(t.HeartbeatComponentPairingManager)
-	mem.heartbeat_component_udp_bridge = C.bool(t.HeartbeatComponentUdpBridge)
-	mem.heartbeat_component_uart_bridge = C.bool(t.HeartbeatComponentUartBridge)
-	mem.avoidance_system_healthy = C.bool(t.AvoidanceSystemHealthy)
-	return unsafe.Pointer(mem)
-}
-func (t *TelemetryStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__TelemetryStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Type = uint8(mem._type)
-	t.Mode = uint8(mem.mode)
-	t.FlowControl = bool(mem.flow_control)
-	t.Forwarding = bool(mem.forwarding)
-	t.MavlinkV2 = bool(mem.mavlink_v2)
-	t.Ftp = bool(mem.ftp)
-	t.Streams = uint8(mem.streams)
-	t.DataRate = float32(mem.data_rate)
-	t.RateMultiplier = float32(mem.rate_multiplier)
-	t.TxRateAvg = float32(mem.tx_rate_avg)
-	t.TxErrorRateAvg = float32(mem.tx_error_rate_avg)
-	t.TxMessageCount = uint32(mem.tx_message_count)
-	t.TxBufferOverruns = uint32(mem.tx_buffer_overruns)
-	t.RxRateAvg = float32(mem.rx_rate_avg)
-	t.RxMessageCount = uint32(mem.rx_message_count)
-	t.RxMessageCountSupported = uint32(mem.rx_message_count_supported)
-	t.RxMessageLostCount = uint32(mem.rx_message_lost_count)
-	t.RxBufferOverruns = uint32(mem.rx_buffer_overruns)
-	t.RxParseErrors = uint32(mem.rx_parse_errors)
-	t.RxPacketDropCount = uint32(mem.rx_packet_drop_count)
-	t.RxMessageLostRate = float32(mem.rx_message_lost_rate)
-	t.HeartbeatTypeAntennaTracker = bool(mem.heartbeat_type_antenna_tracker)
-	t.HeartbeatTypeGcs = bool(mem.heartbeat_type_gcs)
-	t.HeartbeatTypeOnboardController = bool(mem.heartbeat_type_onboard_controller)
-	t.HeartbeatTypeGimbal = bool(mem.heartbeat_type_gimbal)
-	t.HeartbeatTypeAdsb = bool(mem.heartbeat_type_adsb)
-	t.HeartbeatTypeCamera = bool(mem.heartbeat_type_camera)
-	t.HeartbeatComponentTelemetryRadio = bool(mem.heartbeat_component_telemetry_radio)
-	t.HeartbeatComponentLog = bool(mem.heartbeat_component_log)
-	t.HeartbeatComponentOsd = bool(mem.heartbeat_component_osd)
-	t.HeartbeatComponentObstacleAvoidance = bool(mem.heartbeat_component_obstacle_avoidance)
-	t.HeartbeatComponentVio = bool(mem.heartbeat_component_vio)
-	t.HeartbeatComponentPairingManager = bool(mem.heartbeat_component_pairing_manager)
-	t.HeartbeatComponentUdpBridge = bool(mem.heartbeat_component_udp_bridge)
-	t.HeartbeatComponentUartBridge = bool(mem.heartbeat_component_uart_bridge)
-	t.AvoidanceSystemHealthy = bool(mem.avoidance_system_healthy)
-}
-func (t *TelemetryStatus) Clone() ros2types.ROS2Msg {
+func (t *TelemetryStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *TelemetryStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TelemetryStatusTypeSupport types.MessageTypeSupport = _TelemetryStatusTypeSupport{}
+
+type _TelemetryStatusTypeSupport struct{}
+
+func (t _TelemetryStatusTypeSupport) New() types.Message {
+	return NewTelemetryStatus()
+}
+
+func (t _TelemetryStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__TelemetryStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__TelemetryStatus__create())
+}
+
+func (t _TelemetryStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__TelemetryStatus__destroy((*C.px4_msgs__msg__TelemetryStatus)(pointer_to_free))
+}
+
+func (t _TelemetryStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*TelemetryStatus)
+	mem := (*C.px4_msgs__msg__TelemetryStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem._type = C.uint8_t(m.Type)
+	mem.mode = C.uint8_t(m.Mode)
+	mem.flow_control = C.bool(m.FlowControl)
+	mem.forwarding = C.bool(m.Forwarding)
+	mem.mavlink_v2 = C.bool(m.MavlinkV2)
+	mem.ftp = C.bool(m.Ftp)
+	mem.streams = C.uint8_t(m.Streams)
+	mem.data_rate = C.float(m.DataRate)
+	mem.rate_multiplier = C.float(m.RateMultiplier)
+	mem.tx_rate_avg = C.float(m.TxRateAvg)
+	mem.tx_error_rate_avg = C.float(m.TxErrorRateAvg)
+	mem.tx_message_count = C.uint32_t(m.TxMessageCount)
+	mem.tx_buffer_overruns = C.uint32_t(m.TxBufferOverruns)
+	mem.rx_rate_avg = C.float(m.RxRateAvg)
+	mem.rx_message_count = C.uint32_t(m.RxMessageCount)
+	mem.rx_message_count_supported = C.uint32_t(m.RxMessageCountSupported)
+	mem.rx_message_lost_count = C.uint32_t(m.RxMessageLostCount)
+	mem.rx_buffer_overruns = C.uint32_t(m.RxBufferOverruns)
+	mem.rx_parse_errors = C.uint32_t(m.RxParseErrors)
+	mem.rx_packet_drop_count = C.uint32_t(m.RxPacketDropCount)
+	mem.rx_message_lost_rate = C.float(m.RxMessageLostRate)
+	mem.heartbeat_type_antenna_tracker = C.bool(m.HeartbeatTypeAntennaTracker)
+	mem.heartbeat_type_gcs = C.bool(m.HeartbeatTypeGcs)
+	mem.heartbeat_type_onboard_controller = C.bool(m.HeartbeatTypeOnboardController)
+	mem.heartbeat_type_gimbal = C.bool(m.HeartbeatTypeGimbal)
+	mem.heartbeat_type_adsb = C.bool(m.HeartbeatTypeAdsb)
+	mem.heartbeat_type_camera = C.bool(m.HeartbeatTypeCamera)
+	mem.heartbeat_component_telemetry_radio = C.bool(m.HeartbeatComponentTelemetryRadio)
+	mem.heartbeat_component_log = C.bool(m.HeartbeatComponentLog)
+	mem.heartbeat_component_osd = C.bool(m.HeartbeatComponentOsd)
+	mem.heartbeat_component_obstacle_avoidance = C.bool(m.HeartbeatComponentObstacleAvoidance)
+	mem.heartbeat_component_vio = C.bool(m.HeartbeatComponentVio)
+	mem.heartbeat_component_pairing_manager = C.bool(m.HeartbeatComponentPairingManager)
+	mem.heartbeat_component_udp_bridge = C.bool(m.HeartbeatComponentUdpBridge)
+	mem.heartbeat_component_uart_bridge = C.bool(m.HeartbeatComponentUartBridge)
+	mem.avoidance_system_healthy = C.bool(m.AvoidanceSystemHealthy)
+}
+
+func (t _TelemetryStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*TelemetryStatus)
+	mem := (*C.px4_msgs__msg__TelemetryStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Type = uint8(mem._type)
+	m.Mode = uint8(mem.mode)
+	m.FlowControl = bool(mem.flow_control)
+	m.Forwarding = bool(mem.forwarding)
+	m.MavlinkV2 = bool(mem.mavlink_v2)
+	m.Ftp = bool(mem.ftp)
+	m.Streams = uint8(mem.streams)
+	m.DataRate = float32(mem.data_rate)
+	m.RateMultiplier = float32(mem.rate_multiplier)
+	m.TxRateAvg = float32(mem.tx_rate_avg)
+	m.TxErrorRateAvg = float32(mem.tx_error_rate_avg)
+	m.TxMessageCount = uint32(mem.tx_message_count)
+	m.TxBufferOverruns = uint32(mem.tx_buffer_overruns)
+	m.RxRateAvg = float32(mem.rx_rate_avg)
+	m.RxMessageCount = uint32(mem.rx_message_count)
+	m.RxMessageCountSupported = uint32(mem.rx_message_count_supported)
+	m.RxMessageLostCount = uint32(mem.rx_message_lost_count)
+	m.RxBufferOverruns = uint32(mem.rx_buffer_overruns)
+	m.RxParseErrors = uint32(mem.rx_parse_errors)
+	m.RxPacketDropCount = uint32(mem.rx_packet_drop_count)
+	m.RxMessageLostRate = float32(mem.rx_message_lost_rate)
+	m.HeartbeatTypeAntennaTracker = bool(mem.heartbeat_type_antenna_tracker)
+	m.HeartbeatTypeGcs = bool(mem.heartbeat_type_gcs)
+	m.HeartbeatTypeOnboardController = bool(mem.heartbeat_type_onboard_controller)
+	m.HeartbeatTypeGimbal = bool(mem.heartbeat_type_gimbal)
+	m.HeartbeatTypeAdsb = bool(mem.heartbeat_type_adsb)
+	m.HeartbeatTypeCamera = bool(mem.heartbeat_type_camera)
+	m.HeartbeatComponentTelemetryRadio = bool(mem.heartbeat_component_telemetry_radio)
+	m.HeartbeatComponentLog = bool(mem.heartbeat_component_log)
+	m.HeartbeatComponentOsd = bool(mem.heartbeat_component_osd)
+	m.HeartbeatComponentObstacleAvoidance = bool(mem.heartbeat_component_obstacle_avoidance)
+	m.HeartbeatComponentVio = bool(mem.heartbeat_component_vio)
+	m.HeartbeatComponentPairingManager = bool(mem.heartbeat_component_pairing_manager)
+	m.HeartbeatComponentUdpBridge = bool(mem.heartbeat_component_udp_bridge)
+	m.HeartbeatComponentUartBridge = bool(mem.heartbeat_component_uart_bridge)
+	m.AvoidanceSystemHealthy = bool(mem.avoidance_system_healthy)
+}
+
+func (t _TelemetryStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__TelemetryStatus())
 }
 
 type CTelemetryStatus = C.px4_msgs__msg__TelemetryStatus
@@ -205,8 +219,7 @@ func TelemetryStatus__Sequence_to_Go(goSlice *[]TelemetryStatus, cSlice CTelemet
 		cIdx := (*C.px4_msgs__msg__TelemetryStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__TelemetryStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = TelemetryStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TelemetryStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func TelemetryStatus__Sequence_to_C(cSlice *CTelemetryStatus__Sequence, goSlice []TelemetryStatus) {
@@ -221,18 +234,16 @@ func TelemetryStatus__Sequence_to_C(cSlice *CTelemetryStatus__Sequence, goSlice 
 		cIdx := (*C.px4_msgs__msg__TelemetryStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__TelemetryStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__TelemetryStatus)(v.AsCStruct())
+		TelemetryStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func TelemetryStatus__Array_to_Go(goSlice []TelemetryStatus, cSlice []CTelemetryStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TelemetryStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func TelemetryStatus__Array_to_C(cSlice []CTelemetryStatus, goSlice []TelemetryStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__TelemetryStatus)(goSlice[i].AsCStruct())
+		TelemetryStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

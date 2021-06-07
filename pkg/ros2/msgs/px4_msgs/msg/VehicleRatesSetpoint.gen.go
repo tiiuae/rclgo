@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleRatesSetpoint", &VehicleRatesSetpoint{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleRatesSetpoint", VehicleRatesSetpointTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewVehicleRatesSetpoint
@@ -50,46 +50,60 @@ type VehicleRatesSetpoint struct {
 // NewVehicleRatesSetpoint creates a new VehicleRatesSetpoint with default values.
 func NewVehicleRatesSetpoint() *VehicleRatesSetpoint {
 	self := VehicleRatesSetpoint{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *VehicleRatesSetpoint) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *VehicleRatesSetpoint) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleRatesSetpoint())
-}
-func (t *VehicleRatesSetpoint) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleRatesSetpoint
-	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleRatesSetpoint__create())
-}
-func (t *VehicleRatesSetpoint) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__VehicleRatesSetpoint__destroy((*C.px4_msgs__msg__VehicleRatesSetpoint)(pointer_to_free))
-}
-func (t *VehicleRatesSetpoint) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__VehicleRatesSetpoint)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.roll = C.float(t.Roll)
-	mem.pitch = C.float(t.Pitch)
-	mem.yaw = C.float(t.Yaw)
-	cSlice_thrust_body := mem.thrust_body[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_thrust_body)), t.ThrustBody[:])
-	return unsafe.Pointer(mem)
-}
-func (t *VehicleRatesSetpoint) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__VehicleRatesSetpoint)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Roll = float32(mem.roll)
-	t.Pitch = float32(mem.pitch)
-	t.Yaw = float32(mem.yaw)
-	cSlice_thrust_body := mem.thrust_body[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.ThrustBody[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_thrust_body)))
-}
-func (t *VehicleRatesSetpoint) Clone() ros2types.ROS2Msg {
+func (t *VehicleRatesSetpoint) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *VehicleRatesSetpoint) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VehicleRatesSetpointTypeSupport types.MessageTypeSupport = _VehicleRatesSetpointTypeSupport{}
+
+type _VehicleRatesSetpointTypeSupport struct{}
+
+func (t _VehicleRatesSetpointTypeSupport) New() types.Message {
+	return NewVehicleRatesSetpoint()
+}
+
+func (t _VehicleRatesSetpointTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleRatesSetpoint
+	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleRatesSetpoint__create())
+}
+
+func (t _VehicleRatesSetpointTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__VehicleRatesSetpoint__destroy((*C.px4_msgs__msg__VehicleRatesSetpoint)(pointer_to_free))
+}
+
+func (t _VehicleRatesSetpointTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*VehicleRatesSetpoint)
+	mem := (*C.px4_msgs__msg__VehicleRatesSetpoint)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.roll = C.float(m.Roll)
+	mem.pitch = C.float(m.Pitch)
+	mem.yaw = C.float(m.Yaw)
+	cSlice_thrust_body := mem.thrust_body[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_thrust_body)), m.ThrustBody[:])
+}
+
+func (t _VehicleRatesSetpointTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*VehicleRatesSetpoint)
+	mem := (*C.px4_msgs__msg__VehicleRatesSetpoint)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Roll = float32(mem.roll)
+	m.Pitch = float32(mem.pitch)
+	m.Yaw = float32(mem.yaw)
+	cSlice_thrust_body := mem.thrust_body[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.ThrustBody[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_thrust_body)))
+}
+
+func (t _VehicleRatesSetpointTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleRatesSetpoint())
 }
 
 type CVehicleRatesSetpoint = C.px4_msgs__msg__VehicleRatesSetpoint
@@ -104,8 +118,7 @@ func VehicleRatesSetpoint__Sequence_to_Go(goSlice *[]VehicleRatesSetpoint, cSlic
 		cIdx := (*C.px4_msgs__msg__VehicleRatesSetpoint__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleRatesSetpoint * uintptr(i)),
 		))
-		(*goSlice)[i] = VehicleRatesSetpoint{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VehicleRatesSetpointTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func VehicleRatesSetpoint__Sequence_to_C(cSlice *CVehicleRatesSetpoint__Sequence, goSlice []VehicleRatesSetpoint) {
@@ -120,18 +133,16 @@ func VehicleRatesSetpoint__Sequence_to_C(cSlice *CVehicleRatesSetpoint__Sequence
 		cIdx := (*C.px4_msgs__msg__VehicleRatesSetpoint)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleRatesSetpoint * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__VehicleRatesSetpoint)(v.AsCStruct())
+		VehicleRatesSetpointTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func VehicleRatesSetpoint__Array_to_Go(goSlice []VehicleRatesSetpoint, cSlice []CVehicleRatesSetpoint) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VehicleRatesSetpointTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func VehicleRatesSetpoint__Array_to_C(cSlice []CVehicleRatesSetpoint, goSlice []VehicleRatesSetpoint) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__VehicleRatesSetpoint)(goSlice[i].AsCStruct())
+		VehicleRatesSetpointTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

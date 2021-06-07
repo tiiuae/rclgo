@@ -15,7 +15,7 @@ package turtlesim_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("turtlesim/Pose", &Pose{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("turtlesim/Pose", PoseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPose
@@ -49,44 +49,58 @@ type Pose struct {
 // NewPose creates a new Pose with default values.
 func NewPose() *Pose {
 	self := Pose{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Pose) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Pose) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__turtlesim__msg__Pose())
-}
-func (t *Pose) PrepareMemory() unsafe.Pointer { //returns *C.turtlesim__msg__Pose
-	return (unsafe.Pointer)(C.turtlesim__msg__Pose__create())
-}
-func (t *Pose) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.turtlesim__msg__Pose__destroy((*C.turtlesim__msg__Pose)(pointer_to_free))
-}
-func (t *Pose) AsCStruct() unsafe.Pointer {
-	mem := (*C.turtlesim__msg__Pose)(t.PrepareMemory())
-	mem.x = C.float(t.X)
-	mem.y = C.float(t.Y)
-	mem.theta = C.float(t.Theta)
-	mem.linear_velocity = C.float(t.LinearVelocity)
-	mem.angular_velocity = C.float(t.AngularVelocity)
-	return unsafe.Pointer(mem)
-}
-func (t *Pose) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.turtlesim__msg__Pose)(ros2_message_buffer)
-	t.X = float32(mem.x)
-	t.Y = float32(mem.y)
-	t.Theta = float32(mem.theta)
-	t.LinearVelocity = float32(mem.linear_velocity)
-	t.AngularVelocity = float32(mem.angular_velocity)
-}
-func (t *Pose) Clone() ros2types.ROS2Msg {
+func (t *Pose) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Pose) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var PoseTypeSupport types.MessageTypeSupport = _PoseTypeSupport{}
+
+type _PoseTypeSupport struct{}
+
+func (t _PoseTypeSupport) New() types.Message {
+	return NewPose()
+}
+
+func (t _PoseTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.turtlesim__msg__Pose
+	return (unsafe.Pointer)(C.turtlesim__msg__Pose__create())
+}
+
+func (t _PoseTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.turtlesim__msg__Pose__destroy((*C.turtlesim__msg__Pose)(pointer_to_free))
+}
+
+func (t _PoseTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Pose)
+	mem := (*C.turtlesim__msg__Pose)(dst)
+	mem.x = C.float(m.X)
+	mem.y = C.float(m.Y)
+	mem.theta = C.float(m.Theta)
+	mem.linear_velocity = C.float(m.LinearVelocity)
+	mem.angular_velocity = C.float(m.AngularVelocity)
+}
+
+func (t _PoseTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Pose)
+	mem := (*C.turtlesim__msg__Pose)(ros2_message_buffer)
+	m.X = float32(mem.x)
+	m.Y = float32(mem.y)
+	m.Theta = float32(mem.theta)
+	m.LinearVelocity = float32(mem.linear_velocity)
+	m.AngularVelocity = float32(mem.angular_velocity)
+}
+
+func (t _PoseTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__turtlesim__msg__Pose())
 }
 
 type CPose = C.turtlesim__msg__Pose
@@ -101,8 +115,7 @@ func Pose__Sequence_to_Go(goSlice *[]Pose, cSlice CPose__Sequence) {
 		cIdx := (*C.turtlesim__msg__Pose__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_turtlesim__msg__Pose * uintptr(i)),
 		))
-		(*goSlice)[i] = Pose{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		PoseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Pose__Sequence_to_C(cSlice *CPose__Sequence, goSlice []Pose) {
@@ -117,18 +130,16 @@ func Pose__Sequence_to_C(cSlice *CPose__Sequence, goSlice []Pose) {
 		cIdx := (*C.turtlesim__msg__Pose)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_turtlesim__msg__Pose * uintptr(i)),
 		))
-		*cIdx = *(*C.turtlesim__msg__Pose)(v.AsCStruct())
+		PoseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Pose__Array_to_Go(goSlice []Pose, cSlice []CPose) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		PoseTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Pose__Array_to_C(cSlice []CPose, goSlice []Pose) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.turtlesim__msg__Pose)(goSlice[i].AsCStruct())
+		PoseTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

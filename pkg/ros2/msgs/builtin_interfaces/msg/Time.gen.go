@@ -15,7 +15,7 @@ package builtin_interfaces_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("builtin_interfaces/Time", &Time{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("builtin_interfaces/Time", TimeTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTime
@@ -46,38 +46,52 @@ type Time struct {
 // NewTime creates a new Time with default values.
 func NewTime() *Time {
 	self := Time{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Time) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Time) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__builtin_interfaces__msg__Time())
-}
-func (t *Time) PrepareMemory() unsafe.Pointer { //returns *C.builtin_interfaces__msg__Time
-	return (unsafe.Pointer)(C.builtin_interfaces__msg__Time__create())
-}
-func (t *Time) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.builtin_interfaces__msg__Time__destroy((*C.builtin_interfaces__msg__Time)(pointer_to_free))
-}
-func (t *Time) AsCStruct() unsafe.Pointer {
-	mem := (*C.builtin_interfaces__msg__Time)(t.PrepareMemory())
-	mem.sec = C.int32_t(t.Sec)
-	mem.nanosec = C.uint32_t(t.Nanosec)
-	return unsafe.Pointer(mem)
-}
-func (t *Time) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.builtin_interfaces__msg__Time)(ros2_message_buffer)
-	t.Sec = int32(mem.sec)
-	t.Nanosec = uint32(mem.nanosec)
-}
-func (t *Time) Clone() ros2types.ROS2Msg {
+func (t *Time) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Time) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TimeTypeSupport types.MessageTypeSupport = _TimeTypeSupport{}
+
+type _TimeTypeSupport struct{}
+
+func (t _TimeTypeSupport) New() types.Message {
+	return NewTime()
+}
+
+func (t _TimeTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.builtin_interfaces__msg__Time
+	return (unsafe.Pointer)(C.builtin_interfaces__msg__Time__create())
+}
+
+func (t _TimeTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.builtin_interfaces__msg__Time__destroy((*C.builtin_interfaces__msg__Time)(pointer_to_free))
+}
+
+func (t _TimeTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Time)
+	mem := (*C.builtin_interfaces__msg__Time)(dst)
+	mem.sec = C.int32_t(m.Sec)
+	mem.nanosec = C.uint32_t(m.Nanosec)
+}
+
+func (t _TimeTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Time)
+	mem := (*C.builtin_interfaces__msg__Time)(ros2_message_buffer)
+	m.Sec = int32(mem.sec)
+	m.Nanosec = uint32(mem.nanosec)
+}
+
+func (t _TimeTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__builtin_interfaces__msg__Time())
 }
 
 type CTime = C.builtin_interfaces__msg__Time
@@ -92,8 +106,7 @@ func Time__Sequence_to_Go(goSlice *[]Time, cSlice CTime__Sequence) {
 		cIdx := (*C.builtin_interfaces__msg__Time__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_builtin_interfaces__msg__Time * uintptr(i)),
 		))
-		(*goSlice)[i] = Time{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TimeTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Time__Sequence_to_C(cSlice *CTime__Sequence, goSlice []Time) {
@@ -108,18 +121,16 @@ func Time__Sequence_to_C(cSlice *CTime__Sequence, goSlice []Time) {
 		cIdx := (*C.builtin_interfaces__msg__Time)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_builtin_interfaces__msg__Time * uintptr(i)),
 		))
-		*cIdx = *(*C.builtin_interfaces__msg__Time)(v.AsCStruct())
+		TimeTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Time__Array_to_Go(goSlice []Time, cSlice []CTime) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TimeTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Time__Array_to_C(cSlice []CTime, goSlice []Time) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.builtin_interfaces__msg__Time)(goSlice[i].AsCStruct())
+		TimeTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,13 +34,13 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("std_msgs/MultiArrayDimension", &MultiArrayDimension{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("std_msgs/MultiArrayDimension", MultiArrayDimensionTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewMultiArrayDimension
 // function instead.
 type MultiArrayDimension struct {
-	Label rosidl_runtime_c.String `yaml:"label"`// label of given dimension
+	Label string `yaml:"label"`// label of given dimension
 	Size uint32 `yaml:"size"`// size of given dimension (in type units)
 	Stride uint32 `yaml:"stride"`// stride of given dimension
 }
@@ -48,41 +48,54 @@ type MultiArrayDimension struct {
 // NewMultiArrayDimension creates a new MultiArrayDimension with default values.
 func NewMultiArrayDimension() *MultiArrayDimension {
 	self := MultiArrayDimension{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *MultiArrayDimension) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Label.SetDefaults("")
-	
-	return t
-}
-
-func (t *MultiArrayDimension) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__std_msgs__msg__MultiArrayDimension())
-}
-func (t *MultiArrayDimension) PrepareMemory() unsafe.Pointer { //returns *C.std_msgs__msg__MultiArrayDimension
-	return (unsafe.Pointer)(C.std_msgs__msg__MultiArrayDimension__create())
-}
-func (t *MultiArrayDimension) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.std_msgs__msg__MultiArrayDimension__destroy((*C.std_msgs__msg__MultiArrayDimension)(pointer_to_free))
-}
-func (t *MultiArrayDimension) AsCStruct() unsafe.Pointer {
-	mem := (*C.std_msgs__msg__MultiArrayDimension)(t.PrepareMemory())
-	mem.label = *(*C.rosidl_runtime_c__String)(t.Label.AsCStruct())
-	mem.size = C.uint32_t(t.Size)
-	mem.stride = C.uint32_t(t.Stride)
-	return unsafe.Pointer(mem)
-}
-func (t *MultiArrayDimension) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.std_msgs__msg__MultiArrayDimension)(ros2_message_buffer)
-	t.Label.AsGoStruct(unsafe.Pointer(&mem.label))
-	t.Size = uint32(mem.size)
-	t.Stride = uint32(mem.stride)
-}
-func (t *MultiArrayDimension) Clone() ros2types.ROS2Msg {
+func (t *MultiArrayDimension) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *MultiArrayDimension) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var MultiArrayDimensionTypeSupport types.MessageTypeSupport = _MultiArrayDimensionTypeSupport{}
+
+type _MultiArrayDimensionTypeSupport struct{}
+
+func (t _MultiArrayDimensionTypeSupport) New() types.Message {
+	return NewMultiArrayDimension()
+}
+
+func (t _MultiArrayDimensionTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.std_msgs__msg__MultiArrayDimension
+	return (unsafe.Pointer)(C.std_msgs__msg__MultiArrayDimension__create())
+}
+
+func (t _MultiArrayDimensionTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.std_msgs__msg__MultiArrayDimension__destroy((*C.std_msgs__msg__MultiArrayDimension)(pointer_to_free))
+}
+
+func (t _MultiArrayDimensionTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*MultiArrayDimension)
+	mem := (*C.std_msgs__msg__MultiArrayDimension)(dst)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.label), m.Label)
+	mem.size = C.uint32_t(m.Size)
+	mem.stride = C.uint32_t(m.Stride)
+}
+
+func (t _MultiArrayDimensionTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*MultiArrayDimension)
+	mem := (*C.std_msgs__msg__MultiArrayDimension)(ros2_message_buffer)
+	rosidl_runtime_c.StringAsGoStruct(&m.Label, unsafe.Pointer(&mem.label))
+	m.Size = uint32(mem.size)
+	m.Stride = uint32(mem.stride)
+}
+
+func (t _MultiArrayDimensionTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__std_msgs__msg__MultiArrayDimension())
 }
 
 type CMultiArrayDimension = C.std_msgs__msg__MultiArrayDimension
@@ -97,8 +110,7 @@ func MultiArrayDimension__Sequence_to_Go(goSlice *[]MultiArrayDimension, cSlice 
 		cIdx := (*C.std_msgs__msg__MultiArrayDimension__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__MultiArrayDimension * uintptr(i)),
 		))
-		(*goSlice)[i] = MultiArrayDimension{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		MultiArrayDimensionTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func MultiArrayDimension__Sequence_to_C(cSlice *CMultiArrayDimension__Sequence, goSlice []MultiArrayDimension) {
@@ -113,18 +125,16 @@ func MultiArrayDimension__Sequence_to_C(cSlice *CMultiArrayDimension__Sequence, 
 		cIdx := (*C.std_msgs__msg__MultiArrayDimension)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__MultiArrayDimension * uintptr(i)),
 		))
-		*cIdx = *(*C.std_msgs__msg__MultiArrayDimension)(v.AsCStruct())
+		MultiArrayDimensionTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func MultiArrayDimension__Array_to_Go(goSlice []MultiArrayDimension, cSlice []CMultiArrayDimension) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		MultiArrayDimensionTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func MultiArrayDimension__Array_to_C(cSlice []CMultiArrayDimension, goSlice []MultiArrayDimension) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.std_msgs__msg__MultiArrayDimension)(goSlice[i].AsCStruct())
+		MultiArrayDimensionTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

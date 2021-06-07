@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EstimatorOpticalFlowVel", &EstimatorOpticalFlowVel{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EstimatorOpticalFlowVel", EstimatorOpticalFlowVelTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewEstimatorOpticalFlowVel
@@ -52,58 +52,72 @@ type EstimatorOpticalFlowVel struct {
 // NewEstimatorOpticalFlowVel creates a new EstimatorOpticalFlowVel with default values.
 func NewEstimatorOpticalFlowVel() *EstimatorOpticalFlowVel {
 	self := EstimatorOpticalFlowVel{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *EstimatorOpticalFlowVel) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *EstimatorOpticalFlowVel) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EstimatorOpticalFlowVel())
-}
-func (t *EstimatorOpticalFlowVel) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EstimatorOpticalFlowVel
-	return (unsafe.Pointer)(C.px4_msgs__msg__EstimatorOpticalFlowVel__create())
-}
-func (t *EstimatorOpticalFlowVel) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__EstimatorOpticalFlowVel__destroy((*C.px4_msgs__msg__EstimatorOpticalFlowVel)(pointer_to_free))
-}
-func (t *EstimatorOpticalFlowVel) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__EstimatorOpticalFlowVel)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	cSlice_vel_body := mem.vel_body[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_vel_body)), t.VelBody[:])
-	cSlice_vel_ne := mem.vel_ne[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_vel_ne)), t.VelNe[:])
-	cSlice_flow_uncompensated_integral := mem.flow_uncompensated_integral[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_flow_uncompensated_integral)), t.FlowUncompensatedIntegral[:])
-	cSlice_flow_compensated_integral := mem.flow_compensated_integral[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_flow_compensated_integral)), t.FlowCompensatedIntegral[:])
-	cSlice_gyro_rate_integral := mem.gyro_rate_integral[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_rate_integral)), t.GyroRateIntegral[:])
-	return unsafe.Pointer(mem)
-}
-func (t *EstimatorOpticalFlowVel) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__EstimatorOpticalFlowVel)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	cSlice_vel_body := mem.vel_body[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.VelBody[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_vel_body)))
-	cSlice_vel_ne := mem.vel_ne[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.VelNe[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_vel_ne)))
-	cSlice_flow_uncompensated_integral := mem.flow_uncompensated_integral[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.FlowUncompensatedIntegral[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_flow_uncompensated_integral)))
-	cSlice_flow_compensated_integral := mem.flow_compensated_integral[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.FlowCompensatedIntegral[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_flow_compensated_integral)))
-	cSlice_gyro_rate_integral := mem.gyro_rate_integral[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.GyroRateIntegral[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_rate_integral)))
-}
-func (t *EstimatorOpticalFlowVel) Clone() ros2types.ROS2Msg {
+func (t *EstimatorOpticalFlowVel) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *EstimatorOpticalFlowVel) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var EstimatorOpticalFlowVelTypeSupport types.MessageTypeSupport = _EstimatorOpticalFlowVelTypeSupport{}
+
+type _EstimatorOpticalFlowVelTypeSupport struct{}
+
+func (t _EstimatorOpticalFlowVelTypeSupport) New() types.Message {
+	return NewEstimatorOpticalFlowVel()
+}
+
+func (t _EstimatorOpticalFlowVelTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EstimatorOpticalFlowVel
+	return (unsafe.Pointer)(C.px4_msgs__msg__EstimatorOpticalFlowVel__create())
+}
+
+func (t _EstimatorOpticalFlowVelTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__EstimatorOpticalFlowVel__destroy((*C.px4_msgs__msg__EstimatorOpticalFlowVel)(pointer_to_free))
+}
+
+func (t _EstimatorOpticalFlowVelTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*EstimatorOpticalFlowVel)
+	mem := (*C.px4_msgs__msg__EstimatorOpticalFlowVel)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	cSlice_vel_body := mem.vel_body[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_vel_body)), m.VelBody[:])
+	cSlice_vel_ne := mem.vel_ne[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_vel_ne)), m.VelNe[:])
+	cSlice_flow_uncompensated_integral := mem.flow_uncompensated_integral[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_flow_uncompensated_integral)), m.FlowUncompensatedIntegral[:])
+	cSlice_flow_compensated_integral := mem.flow_compensated_integral[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_flow_compensated_integral)), m.FlowCompensatedIntegral[:])
+	cSlice_gyro_rate_integral := mem.gyro_rate_integral[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_rate_integral)), m.GyroRateIntegral[:])
+}
+
+func (t _EstimatorOpticalFlowVelTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*EstimatorOpticalFlowVel)
+	mem := (*C.px4_msgs__msg__EstimatorOpticalFlowVel)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	cSlice_vel_body := mem.vel_body[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.VelBody[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_vel_body)))
+	cSlice_vel_ne := mem.vel_ne[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.VelNe[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_vel_ne)))
+	cSlice_flow_uncompensated_integral := mem.flow_uncompensated_integral[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.FlowUncompensatedIntegral[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_flow_uncompensated_integral)))
+	cSlice_flow_compensated_integral := mem.flow_compensated_integral[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.FlowCompensatedIntegral[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_flow_compensated_integral)))
+	cSlice_gyro_rate_integral := mem.gyro_rate_integral[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.GyroRateIntegral[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_rate_integral)))
+}
+
+func (t _EstimatorOpticalFlowVelTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EstimatorOpticalFlowVel())
 }
 
 type CEstimatorOpticalFlowVel = C.px4_msgs__msg__EstimatorOpticalFlowVel
@@ -118,8 +132,7 @@ func EstimatorOpticalFlowVel__Sequence_to_Go(goSlice *[]EstimatorOpticalFlowVel,
 		cIdx := (*C.px4_msgs__msg__EstimatorOpticalFlowVel__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EstimatorOpticalFlowVel * uintptr(i)),
 		))
-		(*goSlice)[i] = EstimatorOpticalFlowVel{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		EstimatorOpticalFlowVelTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func EstimatorOpticalFlowVel__Sequence_to_C(cSlice *CEstimatorOpticalFlowVel__Sequence, goSlice []EstimatorOpticalFlowVel) {
@@ -134,18 +147,16 @@ func EstimatorOpticalFlowVel__Sequence_to_C(cSlice *CEstimatorOpticalFlowVel__Se
 		cIdx := (*C.px4_msgs__msg__EstimatorOpticalFlowVel)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EstimatorOpticalFlowVel * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__EstimatorOpticalFlowVel)(v.AsCStruct())
+		EstimatorOpticalFlowVelTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func EstimatorOpticalFlowVel__Array_to_Go(goSlice []EstimatorOpticalFlowVel, cSlice []CEstimatorOpticalFlowVel) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		EstimatorOpticalFlowVelTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func EstimatorOpticalFlowVel__Array_to_C(cSlice []CEstimatorOpticalFlowVel, goSlice []EstimatorOpticalFlowVel) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__EstimatorOpticalFlowVel)(goSlice[i].AsCStruct())
+		EstimatorOpticalFlowVelTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

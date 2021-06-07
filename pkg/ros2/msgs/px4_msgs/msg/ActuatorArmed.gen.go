@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/ActuatorArmed", &ActuatorArmed{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/ActuatorArmed", ActuatorArmedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewActuatorArmed
@@ -53,52 +53,66 @@ type ActuatorArmed struct {
 // NewActuatorArmed creates a new ActuatorArmed with default values.
 func NewActuatorArmed() *ActuatorArmed {
 	self := ActuatorArmed{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *ActuatorArmed) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *ActuatorArmed) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__ActuatorArmed())
-}
-func (t *ActuatorArmed) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__ActuatorArmed
-	return (unsafe.Pointer)(C.px4_msgs__msg__ActuatorArmed__create())
-}
-func (t *ActuatorArmed) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__ActuatorArmed__destroy((*C.px4_msgs__msg__ActuatorArmed)(pointer_to_free))
-}
-func (t *ActuatorArmed) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__ActuatorArmed)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.armed = C.bool(t.Armed)
-	mem.prearmed = C.bool(t.Prearmed)
-	mem.ready_to_arm = C.bool(t.ReadyToArm)
-	mem.lockdown = C.bool(t.Lockdown)
-	mem.manual_lockdown = C.bool(t.ManualLockdown)
-	mem.force_failsafe = C.bool(t.ForceFailsafe)
-	mem.in_esc_calibration_mode = C.bool(t.InEscCalibrationMode)
-	mem.soft_stop = C.bool(t.SoftStop)
-	return unsafe.Pointer(mem)
-}
-func (t *ActuatorArmed) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__ActuatorArmed)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Armed = bool(mem.armed)
-	t.Prearmed = bool(mem.prearmed)
-	t.ReadyToArm = bool(mem.ready_to_arm)
-	t.Lockdown = bool(mem.lockdown)
-	t.ManualLockdown = bool(mem.manual_lockdown)
-	t.ForceFailsafe = bool(mem.force_failsafe)
-	t.InEscCalibrationMode = bool(mem.in_esc_calibration_mode)
-	t.SoftStop = bool(mem.soft_stop)
-}
-func (t *ActuatorArmed) Clone() ros2types.ROS2Msg {
+func (t *ActuatorArmed) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *ActuatorArmed) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ActuatorArmedTypeSupport types.MessageTypeSupport = _ActuatorArmedTypeSupport{}
+
+type _ActuatorArmedTypeSupport struct{}
+
+func (t _ActuatorArmedTypeSupport) New() types.Message {
+	return NewActuatorArmed()
+}
+
+func (t _ActuatorArmedTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__ActuatorArmed
+	return (unsafe.Pointer)(C.px4_msgs__msg__ActuatorArmed__create())
+}
+
+func (t _ActuatorArmedTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__ActuatorArmed__destroy((*C.px4_msgs__msg__ActuatorArmed)(pointer_to_free))
+}
+
+func (t _ActuatorArmedTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*ActuatorArmed)
+	mem := (*C.px4_msgs__msg__ActuatorArmed)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.armed = C.bool(m.Armed)
+	mem.prearmed = C.bool(m.Prearmed)
+	mem.ready_to_arm = C.bool(m.ReadyToArm)
+	mem.lockdown = C.bool(m.Lockdown)
+	mem.manual_lockdown = C.bool(m.ManualLockdown)
+	mem.force_failsafe = C.bool(m.ForceFailsafe)
+	mem.in_esc_calibration_mode = C.bool(m.InEscCalibrationMode)
+	mem.soft_stop = C.bool(m.SoftStop)
+}
+
+func (t _ActuatorArmedTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*ActuatorArmed)
+	mem := (*C.px4_msgs__msg__ActuatorArmed)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Armed = bool(mem.armed)
+	m.Prearmed = bool(mem.prearmed)
+	m.ReadyToArm = bool(mem.ready_to_arm)
+	m.Lockdown = bool(mem.lockdown)
+	m.ManualLockdown = bool(mem.manual_lockdown)
+	m.ForceFailsafe = bool(mem.force_failsafe)
+	m.InEscCalibrationMode = bool(mem.in_esc_calibration_mode)
+	m.SoftStop = bool(mem.soft_stop)
+}
+
+func (t _ActuatorArmedTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__ActuatorArmed())
 }
 
 type CActuatorArmed = C.px4_msgs__msg__ActuatorArmed
@@ -113,8 +127,7 @@ func ActuatorArmed__Sequence_to_Go(goSlice *[]ActuatorArmed, cSlice CActuatorArm
 		cIdx := (*C.px4_msgs__msg__ActuatorArmed__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__ActuatorArmed * uintptr(i)),
 		))
-		(*goSlice)[i] = ActuatorArmed{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ActuatorArmedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func ActuatorArmed__Sequence_to_C(cSlice *CActuatorArmed__Sequence, goSlice []ActuatorArmed) {
@@ -129,18 +142,16 @@ func ActuatorArmed__Sequence_to_C(cSlice *CActuatorArmed__Sequence, goSlice []Ac
 		cIdx := (*C.px4_msgs__msg__ActuatorArmed)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__ActuatorArmed * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__ActuatorArmed)(v.AsCStruct())
+		ActuatorArmedTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func ActuatorArmed__Array_to_Go(goSlice []ActuatorArmed, cSlice []CActuatorArmed) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ActuatorArmedTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func ActuatorArmed__Array_to_C(cSlice []CActuatorArmed, goSlice []ActuatorArmed) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__ActuatorArmed)(goSlice[i].AsCStruct())
+		ActuatorArmedTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

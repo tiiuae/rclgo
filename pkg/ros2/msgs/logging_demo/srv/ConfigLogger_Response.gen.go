@@ -15,7 +15,7 @@ package logging_demo_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("logging_demo/ConfigLogger_Response", &ConfigLogger_Response{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("logging_demo/ConfigLogger_Response", ConfigLogger_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewConfigLogger_Response
@@ -45,36 +45,50 @@ type ConfigLogger_Response struct {
 // NewConfigLogger_Response creates a new ConfigLogger_Response with default values.
 func NewConfigLogger_Response() *ConfigLogger_Response {
 	self := ConfigLogger_Response{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *ConfigLogger_Response) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *ConfigLogger_Response) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__logging_demo__srv__ConfigLogger_Response())
-}
-func (t *ConfigLogger_Response) PrepareMemory() unsafe.Pointer { //returns *C.logging_demo__srv__ConfigLogger_Response
-	return (unsafe.Pointer)(C.logging_demo__srv__ConfigLogger_Response__create())
-}
-func (t *ConfigLogger_Response) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.logging_demo__srv__ConfigLogger_Response__destroy((*C.logging_demo__srv__ConfigLogger_Response)(pointer_to_free))
-}
-func (t *ConfigLogger_Response) AsCStruct() unsafe.Pointer {
-	mem := (*C.logging_demo__srv__ConfigLogger_Response)(t.PrepareMemory())
-	mem.success = C.bool(t.Success)
-	return unsafe.Pointer(mem)
-}
-func (t *ConfigLogger_Response) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.logging_demo__srv__ConfigLogger_Response)(ros2_message_buffer)
-	t.Success = bool(mem.success)
-}
-func (t *ConfigLogger_Response) Clone() ros2types.ROS2Msg {
+func (t *ConfigLogger_Response) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *ConfigLogger_Response) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ConfigLogger_ResponseTypeSupport types.MessageTypeSupport = _ConfigLogger_ResponseTypeSupport{}
+
+type _ConfigLogger_ResponseTypeSupport struct{}
+
+func (t _ConfigLogger_ResponseTypeSupport) New() types.Message {
+	return NewConfigLogger_Response()
+}
+
+func (t _ConfigLogger_ResponseTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.logging_demo__srv__ConfigLogger_Response
+	return (unsafe.Pointer)(C.logging_demo__srv__ConfigLogger_Response__create())
+}
+
+func (t _ConfigLogger_ResponseTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.logging_demo__srv__ConfigLogger_Response__destroy((*C.logging_demo__srv__ConfigLogger_Response)(pointer_to_free))
+}
+
+func (t _ConfigLogger_ResponseTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*ConfigLogger_Response)
+	mem := (*C.logging_demo__srv__ConfigLogger_Response)(dst)
+	mem.success = C.bool(m.Success)
+}
+
+func (t _ConfigLogger_ResponseTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*ConfigLogger_Response)
+	mem := (*C.logging_demo__srv__ConfigLogger_Response)(ros2_message_buffer)
+	m.Success = bool(mem.success)
+}
+
+func (t _ConfigLogger_ResponseTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__logging_demo__srv__ConfigLogger_Response())
 }
 
 type CConfigLogger_Response = C.logging_demo__srv__ConfigLogger_Response
@@ -89,8 +103,7 @@ func ConfigLogger_Response__Sequence_to_Go(goSlice *[]ConfigLogger_Response, cSl
 		cIdx := (*C.logging_demo__srv__ConfigLogger_Response__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_logging_demo__srv__ConfigLogger_Response * uintptr(i)),
 		))
-		(*goSlice)[i] = ConfigLogger_Response{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ConfigLogger_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func ConfigLogger_Response__Sequence_to_C(cSlice *CConfigLogger_Response__Sequence, goSlice []ConfigLogger_Response) {
@@ -105,18 +118,16 @@ func ConfigLogger_Response__Sequence_to_C(cSlice *CConfigLogger_Response__Sequen
 		cIdx := (*C.logging_demo__srv__ConfigLogger_Response)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_logging_demo__srv__ConfigLogger_Response * uintptr(i)),
 		))
-		*cIdx = *(*C.logging_demo__srv__ConfigLogger_Response)(v.AsCStruct())
+		ConfigLogger_ResponseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func ConfigLogger_Response__Array_to_Go(goSlice []ConfigLogger_Response, cSlice []CConfigLogger_Response) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ConfigLogger_ResponseTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func ConfigLogger_Response__Array_to_C(cSlice []CConfigLogger_Response, goSlice []ConfigLogger_Response) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.logging_demo__srv__ConfigLogger_Response)(goSlice[i].AsCStruct())
+		ConfigLogger_ResponseTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

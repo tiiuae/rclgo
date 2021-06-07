@@ -15,7 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/Twist", &Twist{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/Twist", TwistTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTwist
@@ -46,40 +46,54 @@ type Twist struct {
 // NewTwist creates a new Twist with default values.
 func NewTwist() *Twist {
 	self := Twist{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Twist) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Linear.SetDefaults(nil)
-	t.Angular.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *Twist) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__Twist())
-}
-func (t *Twist) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__Twist
-	return (unsafe.Pointer)(C.geometry_msgs__msg__Twist__create())
-}
-func (t *Twist) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.geometry_msgs__msg__Twist__destroy((*C.geometry_msgs__msg__Twist)(pointer_to_free))
-}
-func (t *Twist) AsCStruct() unsafe.Pointer {
-	mem := (*C.geometry_msgs__msg__Twist)(t.PrepareMemory())
-	mem.linear = *(*C.geometry_msgs__msg__Vector3)(t.Linear.AsCStruct())
-	mem.angular = *(*C.geometry_msgs__msg__Vector3)(t.Angular.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *Twist) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.geometry_msgs__msg__Twist)(ros2_message_buffer)
-	t.Linear.AsGoStruct(unsafe.Pointer(&mem.linear))
-	t.Angular.AsGoStruct(unsafe.Pointer(&mem.angular))
-}
-func (t *Twist) Clone() ros2types.ROS2Msg {
+func (t *Twist) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Twist) SetDefaults() {
+	t.Linear.SetDefaults()
+	t.Angular.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TwistTypeSupport types.MessageTypeSupport = _TwistTypeSupport{}
+
+type _TwistTypeSupport struct{}
+
+func (t _TwistTypeSupport) New() types.Message {
+	return NewTwist()
+}
+
+func (t _TwistTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__Twist
+	return (unsafe.Pointer)(C.geometry_msgs__msg__Twist__create())
+}
+
+func (t _TwistTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.geometry_msgs__msg__Twist__destroy((*C.geometry_msgs__msg__Twist)(pointer_to_free))
+}
+
+func (t _TwistTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Twist)
+	mem := (*C.geometry_msgs__msg__Twist)(dst)
+	Vector3TypeSupport.AsCStruct(unsafe.Pointer(&mem.linear), &m.Linear)
+	Vector3TypeSupport.AsCStruct(unsafe.Pointer(&mem.angular), &m.Angular)
+}
+
+func (t _TwistTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Twist)
+	mem := (*C.geometry_msgs__msg__Twist)(ros2_message_buffer)
+	Vector3TypeSupport.AsGoStruct(&m.Linear, unsafe.Pointer(&mem.linear))
+	Vector3TypeSupport.AsGoStruct(&m.Angular, unsafe.Pointer(&mem.angular))
+}
+
+func (t _TwistTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__Twist())
 }
 
 type CTwist = C.geometry_msgs__msg__Twist
@@ -94,8 +108,7 @@ func Twist__Sequence_to_Go(goSlice *[]Twist, cSlice CTwist__Sequence) {
 		cIdx := (*C.geometry_msgs__msg__Twist__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Twist * uintptr(i)),
 		))
-		(*goSlice)[i] = Twist{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TwistTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Twist__Sequence_to_C(cSlice *CTwist__Sequence, goSlice []Twist) {
@@ -110,18 +123,16 @@ func Twist__Sequence_to_C(cSlice *CTwist__Sequence, goSlice []Twist) {
 		cIdx := (*C.geometry_msgs__msg__Twist)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Twist * uintptr(i)),
 		))
-		*cIdx = *(*C.geometry_msgs__msg__Twist)(v.AsCStruct())
+		TwistTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Twist__Array_to_Go(goSlice []Twist, cSlice []CTwist) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TwistTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Twist__Array_to_C(cSlice []CTwist, goSlice []Twist) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.geometry_msgs__msg__Twist)(goSlice[i].AsCStruct())
+		TwistTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

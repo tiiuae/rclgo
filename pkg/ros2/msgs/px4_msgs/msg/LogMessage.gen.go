@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/LogMessage", &LogMessage{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/LogMessage", LogMessageTypeSupport)
 }
 const (
 	LogMessage_ORB_QUEUE_LENGTH uint8 = 4
@@ -51,42 +51,56 @@ type LogMessage struct {
 // NewLogMessage creates a new LogMessage with default values.
 func NewLogMessage() *LogMessage {
 	self := LogMessage{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *LogMessage) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *LogMessage) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__LogMessage())
-}
-func (t *LogMessage) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__LogMessage
-	return (unsafe.Pointer)(C.px4_msgs__msg__LogMessage__create())
-}
-func (t *LogMessage) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__LogMessage__destroy((*C.px4_msgs__msg__LogMessage)(pointer_to_free))
-}
-func (t *LogMessage) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__LogMessage)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.severity = C.uint8_t(t.Severity)
-	cSlice_text := mem.text[:]
-	rosidl_runtime_c.Char__Array_to_C(*(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_text)), t.Text[:])
-	return unsafe.Pointer(mem)
-}
-func (t *LogMessage) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__LogMessage)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Severity = uint8(mem.severity)
-	cSlice_text := mem.text[:]
-	rosidl_runtime_c.Char__Array_to_Go(t.Text[:], *(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_text)))
-}
-func (t *LogMessage) Clone() ros2types.ROS2Msg {
+func (t *LogMessage) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *LogMessage) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var LogMessageTypeSupport types.MessageTypeSupport = _LogMessageTypeSupport{}
+
+type _LogMessageTypeSupport struct{}
+
+func (t _LogMessageTypeSupport) New() types.Message {
+	return NewLogMessage()
+}
+
+func (t _LogMessageTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__LogMessage
+	return (unsafe.Pointer)(C.px4_msgs__msg__LogMessage__create())
+}
+
+func (t _LogMessageTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__LogMessage__destroy((*C.px4_msgs__msg__LogMessage)(pointer_to_free))
+}
+
+func (t _LogMessageTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*LogMessage)
+	mem := (*C.px4_msgs__msg__LogMessage)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.severity = C.uint8_t(m.Severity)
+	cSlice_text := mem.text[:]
+	rosidl_runtime_c.Char__Array_to_C(*(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_text)), m.Text[:])
+}
+
+func (t _LogMessageTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*LogMessage)
+	mem := (*C.px4_msgs__msg__LogMessage)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Severity = uint8(mem.severity)
+	cSlice_text := mem.text[:]
+	rosidl_runtime_c.Char__Array_to_Go(m.Text[:], *(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_text)))
+}
+
+func (t _LogMessageTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__LogMessage())
 }
 
 type CLogMessage = C.px4_msgs__msg__LogMessage
@@ -101,8 +115,7 @@ func LogMessage__Sequence_to_Go(goSlice *[]LogMessage, cSlice CLogMessage__Seque
 		cIdx := (*C.px4_msgs__msg__LogMessage__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__LogMessage * uintptr(i)),
 		))
-		(*goSlice)[i] = LogMessage{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		LogMessageTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func LogMessage__Sequence_to_C(cSlice *CLogMessage__Sequence, goSlice []LogMessage) {
@@ -117,18 +130,16 @@ func LogMessage__Sequence_to_C(cSlice *CLogMessage__Sequence, goSlice []LogMessa
 		cIdx := (*C.px4_msgs__msg__LogMessage)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__LogMessage * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__LogMessage)(v.AsCStruct())
+		LogMessageTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func LogMessage__Array_to_Go(goSlice []LogMessage, cSlice []CLogMessage) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		LogMessageTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func LogMessage__Array_to_C(cSlice []CLogMessage, goSlice []LogMessage) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__LogMessage)(goSlice[i].AsCStruct())
+		LogMessageTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

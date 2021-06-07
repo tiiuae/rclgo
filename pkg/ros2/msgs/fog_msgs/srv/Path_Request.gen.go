@@ -15,7 +15,7 @@ package fog_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	nav_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/nav_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("fog_msgs/Path_Request", &Path_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("fog_msgs/Path_Request", Path_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPath_Request
@@ -47,37 +47,51 @@ type Path_Request struct {
 // NewPath_Request creates a new Path_Request with default values.
 func NewPath_Request() *Path_Request {
 	self := Path_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Path_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Path.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *Path_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__fog_msgs__srv__Path_Request())
-}
-func (t *Path_Request) PrepareMemory() unsafe.Pointer { //returns *C.fog_msgs__srv__Path_Request
-	return (unsafe.Pointer)(C.fog_msgs__srv__Path_Request__create())
-}
-func (t *Path_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.fog_msgs__srv__Path_Request__destroy((*C.fog_msgs__srv__Path_Request)(pointer_to_free))
-}
-func (t *Path_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.fog_msgs__srv__Path_Request)(t.PrepareMemory())
-	mem.path = *(*C.nav_msgs__msg__Path)(t.Path.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *Path_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.fog_msgs__srv__Path_Request)(ros2_message_buffer)
-	t.Path.AsGoStruct(unsafe.Pointer(&mem.path))
-}
-func (t *Path_Request) Clone() ros2types.ROS2Msg {
+func (t *Path_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Path_Request) SetDefaults() {
+	t.Path.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var Path_RequestTypeSupport types.MessageTypeSupport = _Path_RequestTypeSupport{}
+
+type _Path_RequestTypeSupport struct{}
+
+func (t _Path_RequestTypeSupport) New() types.Message {
+	return NewPath_Request()
+}
+
+func (t _Path_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.fog_msgs__srv__Path_Request
+	return (unsafe.Pointer)(C.fog_msgs__srv__Path_Request__create())
+}
+
+func (t _Path_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.fog_msgs__srv__Path_Request__destroy((*C.fog_msgs__srv__Path_Request)(pointer_to_free))
+}
+
+func (t _Path_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Path_Request)
+	mem := (*C.fog_msgs__srv__Path_Request)(dst)
+	nav_msgs_msg.PathTypeSupport.AsCStruct(unsafe.Pointer(&mem.path), &m.Path)
+}
+
+func (t _Path_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Path_Request)
+	mem := (*C.fog_msgs__srv__Path_Request)(ros2_message_buffer)
+	nav_msgs_msg.PathTypeSupport.AsGoStruct(&m.Path, unsafe.Pointer(&mem.path))
+}
+
+func (t _Path_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__fog_msgs__srv__Path_Request())
 }
 
 type CPath_Request = C.fog_msgs__srv__Path_Request
@@ -92,8 +106,7 @@ func Path_Request__Sequence_to_Go(goSlice *[]Path_Request, cSlice CPath_Request_
 		cIdx := (*C.fog_msgs__srv__Path_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_fog_msgs__srv__Path_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = Path_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		Path_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Path_Request__Sequence_to_C(cSlice *CPath_Request__Sequence, goSlice []Path_Request) {
@@ -108,18 +121,16 @@ func Path_Request__Sequence_to_C(cSlice *CPath_Request__Sequence, goSlice []Path
 		cIdx := (*C.fog_msgs__srv__Path_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_fog_msgs__srv__Path_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.fog_msgs__srv__Path_Request)(v.AsCStruct())
+		Path_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Path_Request__Array_to_Go(goSlice []Path_Request, cSlice []CPath_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		Path_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Path_Request__Array_to_C(cSlice []CPath_Request, goSlice []Path_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.fog_msgs__srv__Path_Request)(goSlice[i].AsCStruct())
+		Path_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

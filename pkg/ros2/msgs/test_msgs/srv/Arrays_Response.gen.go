@@ -15,7 +15,7 @@ package test_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	test_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/test_msgs/msg"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
@@ -36,7 +36,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("test_msgs/Arrays_Response", &Arrays_Response{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("test_msgs/Arrays_Response", Arrays_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewArrays_Response
@@ -55,7 +55,7 @@ type Arrays_Response struct {
 	Uint32Values [3]uint32 `yaml:"uint32_values"`
 	Int64Values [3]int64 `yaml:"int64_values"`
 	Uint64Values [3]uint64 `yaml:"uint64_values"`
-	StringValues [3]rosidl_runtime_c.String `yaml:"string_values"`
+	StringValues [3]string `yaml:"string_values"`
 	BasicTypesValues [3]test_msgs_msg.BasicTypes `yaml:"basic_types_values"`
 	ConstantsValues [3]test_msgs_msg.Constants `yaml:"constants_values"`
 	DefaultsValues [3]test_msgs_msg.Defaults `yaml:"defaults_values"`
@@ -72,192 +72,201 @@ type Arrays_Response struct {
 	Uint32ValuesDefault [3]uint32 `yaml:"uint32_values_default"`
 	Int64ValuesDefault [3]int64 `yaml:"int64_values_default"`
 	Uint64ValuesDefault [3]uint64 `yaml:"uint64_values_default"`
-	StringValuesDefault [3]rosidl_runtime_c.String `yaml:"string_values_default"`
+	StringValuesDefault [3]string `yaml:"string_values_default"`
 }
 
 // NewArrays_Response creates a new Arrays_Response with default values.
 func NewArrays_Response() *Arrays_Response {
 	self := Arrays_Response{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Arrays_Response) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.StringValues[0].SetDefaults(nil)
-	t.StringValues[1].SetDefaults(nil)
-	t.StringValues[2].SetDefaults(nil)
-	t.BasicTypesValues[0].SetDefaults(nil)
-	t.BasicTypesValues[1].SetDefaults(nil)
-	t.BasicTypesValues[2].SetDefaults(nil)
-	t.ConstantsValues[0].SetDefaults(nil)
-	t.ConstantsValues[1].SetDefaults(nil)
-	t.ConstantsValues[2].SetDefaults(nil)
-	t.DefaultsValues[0].SetDefaults(nil)
-	t.DefaultsValues[1].SetDefaults(nil)
-	t.DefaultsValues[2].SetDefaults(nil)
-	t.BoolValuesDefault = [3]bool{false, true, false}
-	t.ByteValuesDefault = [3]byte{0, 1, 255}
-	t.CharValuesDefault = [3]byte{0, 1, 127}
-	t.Float32ValuesDefault = [3]float32{1.125, 0.0, -1.125}
-	t.Float64ValuesDefault = [3]float64{3.1415, 0.0, -3.1415}
-	t.Int8ValuesDefault = [3]int8{0, 127, -128}
-	t.Uint8ValuesDefault = [3]uint8{0, 1, 255}
-	t.Int16ValuesDefault = [3]int16{0, 32767, -32768}
-	t.Uint16ValuesDefault = [3]uint16{0, 1, 65535}
-	t.Int32ValuesDefault = [3]int32{0, 2147483647, -2147483648}
-	t.Uint32ValuesDefault = [3]uint32{0, 1, 4294967295}
-	t.Int64ValuesDefault = [3]int64{0, 9223372036854775807, -9223372036854775808}
-	t.Uint64ValuesDefault = [3]uint64{0, 1, 18446744073709551615}
-	t.StringValuesDefault[0].SetDefaults("")
-	t.StringValuesDefault[1].SetDefaults("max value")
-	t.StringValuesDefault[2].SetDefaults("min value")
-	
-	return t
-}
-
-func (t *Arrays_Response) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__srv__Arrays_Response())
-}
-func (t *Arrays_Response) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__srv__Arrays_Response
-	return (unsafe.Pointer)(C.test_msgs__srv__Arrays_Response__create())
-}
-func (t *Arrays_Response) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.test_msgs__srv__Arrays_Response__destroy((*C.test_msgs__srv__Arrays_Response)(pointer_to_free))
-}
-func (t *Arrays_Response) AsCStruct() unsafe.Pointer {
-	mem := (*C.test_msgs__srv__Arrays_Response)(t.PrepareMemory())
-	cSlice_bool_values := mem.bool_values[:]
-	rosidl_runtime_c.Bool__Array_to_C(*(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_bool_values)), t.BoolValues[:])
-	cSlice_byte_values := mem.byte_values[:]
-	rosidl_runtime_c.Byte__Array_to_C(*(*[]rosidl_runtime_c.CByte)(unsafe.Pointer(&cSlice_byte_values)), t.ByteValues[:])
-	cSlice_char_values := mem.char_values[:]
-	rosidl_runtime_c.Char__Array_to_C(*(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_char_values)), t.CharValues[:])
-	cSlice_float32_values := mem.float32_values[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_float32_values)), t.Float32Values[:])
-	cSlice_float64_values := mem.float64_values[:]
-	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_float64_values)), t.Float64Values[:])
-	cSlice_int8_values := mem.int8_values[:]
-	rosidl_runtime_c.Int8__Array_to_C(*(*[]rosidl_runtime_c.CInt8)(unsafe.Pointer(&cSlice_int8_values)), t.Int8Values[:])
-	cSlice_uint8_values := mem.uint8_values[:]
-	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_uint8_values)), t.Uint8Values[:])
-	cSlice_int16_values := mem.int16_values[:]
-	rosidl_runtime_c.Int16__Array_to_C(*(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_int16_values)), t.Int16Values[:])
-	cSlice_uint16_values := mem.uint16_values[:]
-	rosidl_runtime_c.Uint16__Array_to_C(*(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_uint16_values)), t.Uint16Values[:])
-	cSlice_int32_values := mem.int32_values[:]
-	rosidl_runtime_c.Int32__Array_to_C(*(*[]rosidl_runtime_c.CInt32)(unsafe.Pointer(&cSlice_int32_values)), t.Int32Values[:])
-	cSlice_uint32_values := mem.uint32_values[:]
-	rosidl_runtime_c.Uint32__Array_to_C(*(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_uint32_values)), t.Uint32Values[:])
-	cSlice_int64_values := mem.int64_values[:]
-	rosidl_runtime_c.Int64__Array_to_C(*(*[]rosidl_runtime_c.CInt64)(unsafe.Pointer(&cSlice_int64_values)), t.Int64Values[:])
-	cSlice_uint64_values := mem.uint64_values[:]
-	rosidl_runtime_c.Uint64__Array_to_C(*(*[]rosidl_runtime_c.CUint64)(unsafe.Pointer(&cSlice_uint64_values)), t.Uint64Values[:])
-	cSlice_string_values := mem.string_values[:]
-	rosidl_runtime_c.String__Array_to_C(*(*[]rosidl_runtime_c.CString)(unsafe.Pointer(&cSlice_string_values)), t.StringValues[:])
-	cSlice_basic_types_values := mem.basic_types_values[:]
-	test_msgs_msg.BasicTypes__Array_to_C(*(*[]test_msgs_msg.CBasicTypes)(unsafe.Pointer(&cSlice_basic_types_values)), t.BasicTypesValues[:])
-	cSlice_constants_values := mem.constants_values[:]
-	test_msgs_msg.Constants__Array_to_C(*(*[]test_msgs_msg.CConstants)(unsafe.Pointer(&cSlice_constants_values)), t.ConstantsValues[:])
-	cSlice_defaults_values := mem.defaults_values[:]
-	test_msgs_msg.Defaults__Array_to_C(*(*[]test_msgs_msg.CDefaults)(unsafe.Pointer(&cSlice_defaults_values)), t.DefaultsValues[:])
-	cSlice_bool_values_default := mem.bool_values_default[:]
-	rosidl_runtime_c.Bool__Array_to_C(*(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_bool_values_default)), t.BoolValuesDefault[:])
-	cSlice_byte_values_default := mem.byte_values_default[:]
-	rosidl_runtime_c.Byte__Array_to_C(*(*[]rosidl_runtime_c.CByte)(unsafe.Pointer(&cSlice_byte_values_default)), t.ByteValuesDefault[:])
-	cSlice_char_values_default := mem.char_values_default[:]
-	rosidl_runtime_c.Char__Array_to_C(*(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_char_values_default)), t.CharValuesDefault[:])
-	cSlice_float32_values_default := mem.float32_values_default[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_float32_values_default)), t.Float32ValuesDefault[:])
-	cSlice_float64_values_default := mem.float64_values_default[:]
-	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_float64_values_default)), t.Float64ValuesDefault[:])
-	cSlice_int8_values_default := mem.int8_values_default[:]
-	rosidl_runtime_c.Int8__Array_to_C(*(*[]rosidl_runtime_c.CInt8)(unsafe.Pointer(&cSlice_int8_values_default)), t.Int8ValuesDefault[:])
-	cSlice_uint8_values_default := mem.uint8_values_default[:]
-	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_uint8_values_default)), t.Uint8ValuesDefault[:])
-	cSlice_int16_values_default := mem.int16_values_default[:]
-	rosidl_runtime_c.Int16__Array_to_C(*(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_int16_values_default)), t.Int16ValuesDefault[:])
-	cSlice_uint16_values_default := mem.uint16_values_default[:]
-	rosidl_runtime_c.Uint16__Array_to_C(*(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_uint16_values_default)), t.Uint16ValuesDefault[:])
-	cSlice_int32_values_default := mem.int32_values_default[:]
-	rosidl_runtime_c.Int32__Array_to_C(*(*[]rosidl_runtime_c.CInt32)(unsafe.Pointer(&cSlice_int32_values_default)), t.Int32ValuesDefault[:])
-	cSlice_uint32_values_default := mem.uint32_values_default[:]
-	rosidl_runtime_c.Uint32__Array_to_C(*(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_uint32_values_default)), t.Uint32ValuesDefault[:])
-	cSlice_int64_values_default := mem.int64_values_default[:]
-	rosidl_runtime_c.Int64__Array_to_C(*(*[]rosidl_runtime_c.CInt64)(unsafe.Pointer(&cSlice_int64_values_default)), t.Int64ValuesDefault[:])
-	cSlice_uint64_values_default := mem.uint64_values_default[:]
-	rosidl_runtime_c.Uint64__Array_to_C(*(*[]rosidl_runtime_c.CUint64)(unsafe.Pointer(&cSlice_uint64_values_default)), t.Uint64ValuesDefault[:])
-	cSlice_string_values_default := mem.string_values_default[:]
-	rosidl_runtime_c.String__Array_to_C(*(*[]rosidl_runtime_c.CString)(unsafe.Pointer(&cSlice_string_values_default)), t.StringValuesDefault[:])
-	return unsafe.Pointer(mem)
-}
-func (t *Arrays_Response) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.test_msgs__srv__Arrays_Response)(ros2_message_buffer)
-	cSlice_bool_values := mem.bool_values[:]
-	rosidl_runtime_c.Bool__Array_to_Go(t.BoolValues[:], *(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_bool_values)))
-	cSlice_byte_values := mem.byte_values[:]
-	rosidl_runtime_c.Byte__Array_to_Go(t.ByteValues[:], *(*[]rosidl_runtime_c.CByte)(unsafe.Pointer(&cSlice_byte_values)))
-	cSlice_char_values := mem.char_values[:]
-	rosidl_runtime_c.Char__Array_to_Go(t.CharValues[:], *(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_char_values)))
-	cSlice_float32_values := mem.float32_values[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Float32Values[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_float32_values)))
-	cSlice_float64_values := mem.float64_values[:]
-	rosidl_runtime_c.Float64__Array_to_Go(t.Float64Values[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_float64_values)))
-	cSlice_int8_values := mem.int8_values[:]
-	rosidl_runtime_c.Int8__Array_to_Go(t.Int8Values[:], *(*[]rosidl_runtime_c.CInt8)(unsafe.Pointer(&cSlice_int8_values)))
-	cSlice_uint8_values := mem.uint8_values[:]
-	rosidl_runtime_c.Uint8__Array_to_Go(t.Uint8Values[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_uint8_values)))
-	cSlice_int16_values := mem.int16_values[:]
-	rosidl_runtime_c.Int16__Array_to_Go(t.Int16Values[:], *(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_int16_values)))
-	cSlice_uint16_values := mem.uint16_values[:]
-	rosidl_runtime_c.Uint16__Array_to_Go(t.Uint16Values[:], *(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_uint16_values)))
-	cSlice_int32_values := mem.int32_values[:]
-	rosidl_runtime_c.Int32__Array_to_Go(t.Int32Values[:], *(*[]rosidl_runtime_c.CInt32)(unsafe.Pointer(&cSlice_int32_values)))
-	cSlice_uint32_values := mem.uint32_values[:]
-	rosidl_runtime_c.Uint32__Array_to_Go(t.Uint32Values[:], *(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_uint32_values)))
-	cSlice_int64_values := mem.int64_values[:]
-	rosidl_runtime_c.Int64__Array_to_Go(t.Int64Values[:], *(*[]rosidl_runtime_c.CInt64)(unsafe.Pointer(&cSlice_int64_values)))
-	cSlice_uint64_values := mem.uint64_values[:]
-	rosidl_runtime_c.Uint64__Array_to_Go(t.Uint64Values[:], *(*[]rosidl_runtime_c.CUint64)(unsafe.Pointer(&cSlice_uint64_values)))
-	cSlice_string_values := mem.string_values[:]
-	rosidl_runtime_c.String__Array_to_Go(t.StringValues[:], *(*[]rosidl_runtime_c.CString)(unsafe.Pointer(&cSlice_string_values)))
-	cSlice_basic_types_values := mem.basic_types_values[:]
-	test_msgs_msg.BasicTypes__Array_to_Go(t.BasicTypesValues[:], *(*[]test_msgs_msg.CBasicTypes)(unsafe.Pointer(&cSlice_basic_types_values)))
-	cSlice_constants_values := mem.constants_values[:]
-	test_msgs_msg.Constants__Array_to_Go(t.ConstantsValues[:], *(*[]test_msgs_msg.CConstants)(unsafe.Pointer(&cSlice_constants_values)))
-	cSlice_defaults_values := mem.defaults_values[:]
-	test_msgs_msg.Defaults__Array_to_Go(t.DefaultsValues[:], *(*[]test_msgs_msg.CDefaults)(unsafe.Pointer(&cSlice_defaults_values)))
-	cSlice_bool_values_default := mem.bool_values_default[:]
-	rosidl_runtime_c.Bool__Array_to_Go(t.BoolValuesDefault[:], *(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_bool_values_default)))
-	cSlice_byte_values_default := mem.byte_values_default[:]
-	rosidl_runtime_c.Byte__Array_to_Go(t.ByteValuesDefault[:], *(*[]rosidl_runtime_c.CByte)(unsafe.Pointer(&cSlice_byte_values_default)))
-	cSlice_char_values_default := mem.char_values_default[:]
-	rosidl_runtime_c.Char__Array_to_Go(t.CharValuesDefault[:], *(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_char_values_default)))
-	cSlice_float32_values_default := mem.float32_values_default[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Float32ValuesDefault[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_float32_values_default)))
-	cSlice_float64_values_default := mem.float64_values_default[:]
-	rosidl_runtime_c.Float64__Array_to_Go(t.Float64ValuesDefault[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_float64_values_default)))
-	cSlice_int8_values_default := mem.int8_values_default[:]
-	rosidl_runtime_c.Int8__Array_to_Go(t.Int8ValuesDefault[:], *(*[]rosidl_runtime_c.CInt8)(unsafe.Pointer(&cSlice_int8_values_default)))
-	cSlice_uint8_values_default := mem.uint8_values_default[:]
-	rosidl_runtime_c.Uint8__Array_to_Go(t.Uint8ValuesDefault[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_uint8_values_default)))
-	cSlice_int16_values_default := mem.int16_values_default[:]
-	rosidl_runtime_c.Int16__Array_to_Go(t.Int16ValuesDefault[:], *(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_int16_values_default)))
-	cSlice_uint16_values_default := mem.uint16_values_default[:]
-	rosidl_runtime_c.Uint16__Array_to_Go(t.Uint16ValuesDefault[:], *(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_uint16_values_default)))
-	cSlice_int32_values_default := mem.int32_values_default[:]
-	rosidl_runtime_c.Int32__Array_to_Go(t.Int32ValuesDefault[:], *(*[]rosidl_runtime_c.CInt32)(unsafe.Pointer(&cSlice_int32_values_default)))
-	cSlice_uint32_values_default := mem.uint32_values_default[:]
-	rosidl_runtime_c.Uint32__Array_to_Go(t.Uint32ValuesDefault[:], *(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_uint32_values_default)))
-	cSlice_int64_values_default := mem.int64_values_default[:]
-	rosidl_runtime_c.Int64__Array_to_Go(t.Int64ValuesDefault[:], *(*[]rosidl_runtime_c.CInt64)(unsafe.Pointer(&cSlice_int64_values_default)))
-	cSlice_uint64_values_default := mem.uint64_values_default[:]
-	rosidl_runtime_c.Uint64__Array_to_Go(t.Uint64ValuesDefault[:], *(*[]rosidl_runtime_c.CUint64)(unsafe.Pointer(&cSlice_uint64_values_default)))
-	cSlice_string_values_default := mem.string_values_default[:]
-	rosidl_runtime_c.String__Array_to_Go(t.StringValuesDefault[:], *(*[]rosidl_runtime_c.CString)(unsafe.Pointer(&cSlice_string_values_default)))
-}
-func (t *Arrays_Response) Clone() ros2types.ROS2Msg {
+func (t *Arrays_Response) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Arrays_Response) SetDefaults() {
+	t.BasicTypesValues[0].SetDefaults()
+	t.BasicTypesValues[1].SetDefaults()
+	t.BasicTypesValues[2].SetDefaults()
+	t.ConstantsValues[0].SetDefaults()
+	t.ConstantsValues[1].SetDefaults()
+	t.ConstantsValues[2].SetDefaults()
+	t.DefaultsValues[0].SetDefaults()
+	t.DefaultsValues[1].SetDefaults()
+	t.DefaultsValues[2].SetDefaults()
+	t.BoolValuesDefault = [3]bool{false,true,false}
+	t.ByteValuesDefault = [3]byte{0,1,255}
+	t.CharValuesDefault = [3]byte{0,1,127}
+	t.Float32ValuesDefault = [3]float32{1.125,0.0,-1.125}
+	t.Float64ValuesDefault = [3]float64{3.1415,0.0,-3.1415}
+	t.Int8ValuesDefault = [3]int8{0,127,-128}
+	t.Uint8ValuesDefault = [3]uint8{0,1,255}
+	t.Int16ValuesDefault = [3]int16{0,32767,-32768}
+	t.Uint16ValuesDefault = [3]uint16{0,1,65535}
+	t.Int32ValuesDefault = [3]int32{0,2147483647,-2147483648}
+	t.Uint32ValuesDefault = [3]uint32{0,1,4294967295}
+	t.Int64ValuesDefault = [3]int64{0,9223372036854775807,-9223372036854775808}
+	t.Uint64ValuesDefault = [3]uint64{0,1,18446744073709551615}
+	t.StringValuesDefault = [3]string{"","max value","min value"}
+	
+}
+
+// Modifying this variable is undefined behavior.
+var Arrays_ResponseTypeSupport types.MessageTypeSupport = _Arrays_ResponseTypeSupport{}
+
+type _Arrays_ResponseTypeSupport struct{}
+
+func (t _Arrays_ResponseTypeSupport) New() types.Message {
+	return NewArrays_Response()
+}
+
+func (t _Arrays_ResponseTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__srv__Arrays_Response
+	return (unsafe.Pointer)(C.test_msgs__srv__Arrays_Response__create())
+}
+
+func (t _Arrays_ResponseTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.test_msgs__srv__Arrays_Response__destroy((*C.test_msgs__srv__Arrays_Response)(pointer_to_free))
+}
+
+func (t _Arrays_ResponseTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Arrays_Response)
+	mem := (*C.test_msgs__srv__Arrays_Response)(dst)
+	cSlice_bool_values := mem.bool_values[:]
+	rosidl_runtime_c.Bool__Array_to_C(*(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_bool_values)), m.BoolValues[:])
+	cSlice_byte_values := mem.byte_values[:]
+	rosidl_runtime_c.Byte__Array_to_C(*(*[]rosidl_runtime_c.CByte)(unsafe.Pointer(&cSlice_byte_values)), m.ByteValues[:])
+	cSlice_char_values := mem.char_values[:]
+	rosidl_runtime_c.Char__Array_to_C(*(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_char_values)), m.CharValues[:])
+	cSlice_float32_values := mem.float32_values[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_float32_values)), m.Float32Values[:])
+	cSlice_float64_values := mem.float64_values[:]
+	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_float64_values)), m.Float64Values[:])
+	cSlice_int8_values := mem.int8_values[:]
+	rosidl_runtime_c.Int8__Array_to_C(*(*[]rosidl_runtime_c.CInt8)(unsafe.Pointer(&cSlice_int8_values)), m.Int8Values[:])
+	cSlice_uint8_values := mem.uint8_values[:]
+	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_uint8_values)), m.Uint8Values[:])
+	cSlice_int16_values := mem.int16_values[:]
+	rosidl_runtime_c.Int16__Array_to_C(*(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_int16_values)), m.Int16Values[:])
+	cSlice_uint16_values := mem.uint16_values[:]
+	rosidl_runtime_c.Uint16__Array_to_C(*(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_uint16_values)), m.Uint16Values[:])
+	cSlice_int32_values := mem.int32_values[:]
+	rosidl_runtime_c.Int32__Array_to_C(*(*[]rosidl_runtime_c.CInt32)(unsafe.Pointer(&cSlice_int32_values)), m.Int32Values[:])
+	cSlice_uint32_values := mem.uint32_values[:]
+	rosidl_runtime_c.Uint32__Array_to_C(*(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_uint32_values)), m.Uint32Values[:])
+	cSlice_int64_values := mem.int64_values[:]
+	rosidl_runtime_c.Int64__Array_to_C(*(*[]rosidl_runtime_c.CInt64)(unsafe.Pointer(&cSlice_int64_values)), m.Int64Values[:])
+	cSlice_uint64_values := mem.uint64_values[:]
+	rosidl_runtime_c.Uint64__Array_to_C(*(*[]rosidl_runtime_c.CUint64)(unsafe.Pointer(&cSlice_uint64_values)), m.Uint64Values[:])
+	cSlice_string_values := mem.string_values[:]
+	rosidl_runtime_c.String__Array_to_C(*(*[]rosidl_runtime_c.CString)(unsafe.Pointer(&cSlice_string_values)), m.StringValues[:])
+	cSlice_basic_types_values := mem.basic_types_values[:]
+	test_msgs_msg.BasicTypes__Array_to_C(*(*[]test_msgs_msg.CBasicTypes)(unsafe.Pointer(&cSlice_basic_types_values)), m.BasicTypesValues[:])
+	cSlice_constants_values := mem.constants_values[:]
+	test_msgs_msg.Constants__Array_to_C(*(*[]test_msgs_msg.CConstants)(unsafe.Pointer(&cSlice_constants_values)), m.ConstantsValues[:])
+	cSlice_defaults_values := mem.defaults_values[:]
+	test_msgs_msg.Defaults__Array_to_C(*(*[]test_msgs_msg.CDefaults)(unsafe.Pointer(&cSlice_defaults_values)), m.DefaultsValues[:])
+	cSlice_bool_values_default := mem.bool_values_default[:]
+	rosidl_runtime_c.Bool__Array_to_C(*(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_bool_values_default)), m.BoolValuesDefault[:])
+	cSlice_byte_values_default := mem.byte_values_default[:]
+	rosidl_runtime_c.Byte__Array_to_C(*(*[]rosidl_runtime_c.CByte)(unsafe.Pointer(&cSlice_byte_values_default)), m.ByteValuesDefault[:])
+	cSlice_char_values_default := mem.char_values_default[:]
+	rosidl_runtime_c.Char__Array_to_C(*(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_char_values_default)), m.CharValuesDefault[:])
+	cSlice_float32_values_default := mem.float32_values_default[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_float32_values_default)), m.Float32ValuesDefault[:])
+	cSlice_float64_values_default := mem.float64_values_default[:]
+	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_float64_values_default)), m.Float64ValuesDefault[:])
+	cSlice_int8_values_default := mem.int8_values_default[:]
+	rosidl_runtime_c.Int8__Array_to_C(*(*[]rosidl_runtime_c.CInt8)(unsafe.Pointer(&cSlice_int8_values_default)), m.Int8ValuesDefault[:])
+	cSlice_uint8_values_default := mem.uint8_values_default[:]
+	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_uint8_values_default)), m.Uint8ValuesDefault[:])
+	cSlice_int16_values_default := mem.int16_values_default[:]
+	rosidl_runtime_c.Int16__Array_to_C(*(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_int16_values_default)), m.Int16ValuesDefault[:])
+	cSlice_uint16_values_default := mem.uint16_values_default[:]
+	rosidl_runtime_c.Uint16__Array_to_C(*(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_uint16_values_default)), m.Uint16ValuesDefault[:])
+	cSlice_int32_values_default := mem.int32_values_default[:]
+	rosidl_runtime_c.Int32__Array_to_C(*(*[]rosidl_runtime_c.CInt32)(unsafe.Pointer(&cSlice_int32_values_default)), m.Int32ValuesDefault[:])
+	cSlice_uint32_values_default := mem.uint32_values_default[:]
+	rosidl_runtime_c.Uint32__Array_to_C(*(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_uint32_values_default)), m.Uint32ValuesDefault[:])
+	cSlice_int64_values_default := mem.int64_values_default[:]
+	rosidl_runtime_c.Int64__Array_to_C(*(*[]rosidl_runtime_c.CInt64)(unsafe.Pointer(&cSlice_int64_values_default)), m.Int64ValuesDefault[:])
+	cSlice_uint64_values_default := mem.uint64_values_default[:]
+	rosidl_runtime_c.Uint64__Array_to_C(*(*[]rosidl_runtime_c.CUint64)(unsafe.Pointer(&cSlice_uint64_values_default)), m.Uint64ValuesDefault[:])
+	cSlice_string_values_default := mem.string_values_default[:]
+	rosidl_runtime_c.String__Array_to_C(*(*[]rosidl_runtime_c.CString)(unsafe.Pointer(&cSlice_string_values_default)), m.StringValuesDefault[:])
+}
+
+func (t _Arrays_ResponseTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Arrays_Response)
+	mem := (*C.test_msgs__srv__Arrays_Response)(ros2_message_buffer)
+	cSlice_bool_values := mem.bool_values[:]
+	rosidl_runtime_c.Bool__Array_to_Go(m.BoolValues[:], *(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_bool_values)))
+	cSlice_byte_values := mem.byte_values[:]
+	rosidl_runtime_c.Byte__Array_to_Go(m.ByteValues[:], *(*[]rosidl_runtime_c.CByte)(unsafe.Pointer(&cSlice_byte_values)))
+	cSlice_char_values := mem.char_values[:]
+	rosidl_runtime_c.Char__Array_to_Go(m.CharValues[:], *(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_char_values)))
+	cSlice_float32_values := mem.float32_values[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Float32Values[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_float32_values)))
+	cSlice_float64_values := mem.float64_values[:]
+	rosidl_runtime_c.Float64__Array_to_Go(m.Float64Values[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_float64_values)))
+	cSlice_int8_values := mem.int8_values[:]
+	rosidl_runtime_c.Int8__Array_to_Go(m.Int8Values[:], *(*[]rosidl_runtime_c.CInt8)(unsafe.Pointer(&cSlice_int8_values)))
+	cSlice_uint8_values := mem.uint8_values[:]
+	rosidl_runtime_c.Uint8__Array_to_Go(m.Uint8Values[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_uint8_values)))
+	cSlice_int16_values := mem.int16_values[:]
+	rosidl_runtime_c.Int16__Array_to_Go(m.Int16Values[:], *(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_int16_values)))
+	cSlice_uint16_values := mem.uint16_values[:]
+	rosidl_runtime_c.Uint16__Array_to_Go(m.Uint16Values[:], *(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_uint16_values)))
+	cSlice_int32_values := mem.int32_values[:]
+	rosidl_runtime_c.Int32__Array_to_Go(m.Int32Values[:], *(*[]rosidl_runtime_c.CInt32)(unsafe.Pointer(&cSlice_int32_values)))
+	cSlice_uint32_values := mem.uint32_values[:]
+	rosidl_runtime_c.Uint32__Array_to_Go(m.Uint32Values[:], *(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_uint32_values)))
+	cSlice_int64_values := mem.int64_values[:]
+	rosidl_runtime_c.Int64__Array_to_Go(m.Int64Values[:], *(*[]rosidl_runtime_c.CInt64)(unsafe.Pointer(&cSlice_int64_values)))
+	cSlice_uint64_values := mem.uint64_values[:]
+	rosidl_runtime_c.Uint64__Array_to_Go(m.Uint64Values[:], *(*[]rosidl_runtime_c.CUint64)(unsafe.Pointer(&cSlice_uint64_values)))
+	cSlice_string_values := mem.string_values[:]
+	rosidl_runtime_c.String__Array_to_Go(m.StringValues[:], *(*[]rosidl_runtime_c.CString)(unsafe.Pointer(&cSlice_string_values)))
+	cSlice_basic_types_values := mem.basic_types_values[:]
+	test_msgs_msg.BasicTypes__Array_to_Go(m.BasicTypesValues[:], *(*[]test_msgs_msg.CBasicTypes)(unsafe.Pointer(&cSlice_basic_types_values)))
+	cSlice_constants_values := mem.constants_values[:]
+	test_msgs_msg.Constants__Array_to_Go(m.ConstantsValues[:], *(*[]test_msgs_msg.CConstants)(unsafe.Pointer(&cSlice_constants_values)))
+	cSlice_defaults_values := mem.defaults_values[:]
+	test_msgs_msg.Defaults__Array_to_Go(m.DefaultsValues[:], *(*[]test_msgs_msg.CDefaults)(unsafe.Pointer(&cSlice_defaults_values)))
+	cSlice_bool_values_default := mem.bool_values_default[:]
+	rosidl_runtime_c.Bool__Array_to_Go(m.BoolValuesDefault[:], *(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_bool_values_default)))
+	cSlice_byte_values_default := mem.byte_values_default[:]
+	rosidl_runtime_c.Byte__Array_to_Go(m.ByteValuesDefault[:], *(*[]rosidl_runtime_c.CByte)(unsafe.Pointer(&cSlice_byte_values_default)))
+	cSlice_char_values_default := mem.char_values_default[:]
+	rosidl_runtime_c.Char__Array_to_Go(m.CharValuesDefault[:], *(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_char_values_default)))
+	cSlice_float32_values_default := mem.float32_values_default[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Float32ValuesDefault[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_float32_values_default)))
+	cSlice_float64_values_default := mem.float64_values_default[:]
+	rosidl_runtime_c.Float64__Array_to_Go(m.Float64ValuesDefault[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_float64_values_default)))
+	cSlice_int8_values_default := mem.int8_values_default[:]
+	rosidl_runtime_c.Int8__Array_to_Go(m.Int8ValuesDefault[:], *(*[]rosidl_runtime_c.CInt8)(unsafe.Pointer(&cSlice_int8_values_default)))
+	cSlice_uint8_values_default := mem.uint8_values_default[:]
+	rosidl_runtime_c.Uint8__Array_to_Go(m.Uint8ValuesDefault[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_uint8_values_default)))
+	cSlice_int16_values_default := mem.int16_values_default[:]
+	rosidl_runtime_c.Int16__Array_to_Go(m.Int16ValuesDefault[:], *(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_int16_values_default)))
+	cSlice_uint16_values_default := mem.uint16_values_default[:]
+	rosidl_runtime_c.Uint16__Array_to_Go(m.Uint16ValuesDefault[:], *(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_uint16_values_default)))
+	cSlice_int32_values_default := mem.int32_values_default[:]
+	rosidl_runtime_c.Int32__Array_to_Go(m.Int32ValuesDefault[:], *(*[]rosidl_runtime_c.CInt32)(unsafe.Pointer(&cSlice_int32_values_default)))
+	cSlice_uint32_values_default := mem.uint32_values_default[:]
+	rosidl_runtime_c.Uint32__Array_to_Go(m.Uint32ValuesDefault[:], *(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_uint32_values_default)))
+	cSlice_int64_values_default := mem.int64_values_default[:]
+	rosidl_runtime_c.Int64__Array_to_Go(m.Int64ValuesDefault[:], *(*[]rosidl_runtime_c.CInt64)(unsafe.Pointer(&cSlice_int64_values_default)))
+	cSlice_uint64_values_default := mem.uint64_values_default[:]
+	rosidl_runtime_c.Uint64__Array_to_Go(m.Uint64ValuesDefault[:], *(*[]rosidl_runtime_c.CUint64)(unsafe.Pointer(&cSlice_uint64_values_default)))
+	cSlice_string_values_default := mem.string_values_default[:]
+	rosidl_runtime_c.String__Array_to_Go(m.StringValuesDefault[:], *(*[]rosidl_runtime_c.CString)(unsafe.Pointer(&cSlice_string_values_default)))
+}
+
+func (t _Arrays_ResponseTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__srv__Arrays_Response())
 }
 
 type CArrays_Response = C.test_msgs__srv__Arrays_Response
@@ -272,8 +281,7 @@ func Arrays_Response__Sequence_to_Go(goSlice *[]Arrays_Response, cSlice CArrays_
 		cIdx := (*C.test_msgs__srv__Arrays_Response__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__srv__Arrays_Response * uintptr(i)),
 		))
-		(*goSlice)[i] = Arrays_Response{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		Arrays_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Arrays_Response__Sequence_to_C(cSlice *CArrays_Response__Sequence, goSlice []Arrays_Response) {
@@ -288,18 +296,16 @@ func Arrays_Response__Sequence_to_C(cSlice *CArrays_Response__Sequence, goSlice 
 		cIdx := (*C.test_msgs__srv__Arrays_Response)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__srv__Arrays_Response * uintptr(i)),
 		))
-		*cIdx = *(*C.test_msgs__srv__Arrays_Response)(v.AsCStruct())
+		Arrays_ResponseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Arrays_Response__Array_to_Go(goSlice []Arrays_Response, cSlice []CArrays_Response) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		Arrays_ResponseTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Arrays_Response__Array_to_C(cSlice []CArrays_Response, goSlice []Arrays_Response) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.test_msgs__srv__Arrays_Response)(goSlice[i].AsCStruct())
+		Arrays_ResponseTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/PositionSetpointTriplet", &PositionSetpointTriplet{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/PositionSetpointTriplet", PositionSetpointTripletTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPositionSetpointTriplet
@@ -48,45 +48,59 @@ type PositionSetpointTriplet struct {
 // NewPositionSetpointTriplet creates a new PositionSetpointTriplet with default values.
 func NewPositionSetpointTriplet() *PositionSetpointTriplet {
 	self := PositionSetpointTriplet{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *PositionSetpointTriplet) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Previous.SetDefaults(nil)
-	t.Current.SetDefaults(nil)
-	t.Next.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *PositionSetpointTriplet) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__PositionSetpointTriplet())
-}
-func (t *PositionSetpointTriplet) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__PositionSetpointTriplet
-	return (unsafe.Pointer)(C.px4_msgs__msg__PositionSetpointTriplet__create())
-}
-func (t *PositionSetpointTriplet) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__PositionSetpointTriplet__destroy((*C.px4_msgs__msg__PositionSetpointTriplet)(pointer_to_free))
-}
-func (t *PositionSetpointTriplet) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__PositionSetpointTriplet)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.previous = *(*C.px4_msgs__msg__PositionSetpoint)(t.Previous.AsCStruct())
-	mem.current = *(*C.px4_msgs__msg__PositionSetpoint)(t.Current.AsCStruct())
-	mem.next = *(*C.px4_msgs__msg__PositionSetpoint)(t.Next.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *PositionSetpointTriplet) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__PositionSetpointTriplet)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Previous.AsGoStruct(unsafe.Pointer(&mem.previous))
-	t.Current.AsGoStruct(unsafe.Pointer(&mem.current))
-	t.Next.AsGoStruct(unsafe.Pointer(&mem.next))
-}
-func (t *PositionSetpointTriplet) Clone() ros2types.ROS2Msg {
+func (t *PositionSetpointTriplet) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *PositionSetpointTriplet) SetDefaults() {
+	t.Previous.SetDefaults()
+	t.Current.SetDefaults()
+	t.Next.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var PositionSetpointTripletTypeSupport types.MessageTypeSupport = _PositionSetpointTripletTypeSupport{}
+
+type _PositionSetpointTripletTypeSupport struct{}
+
+func (t _PositionSetpointTripletTypeSupport) New() types.Message {
+	return NewPositionSetpointTriplet()
+}
+
+func (t _PositionSetpointTripletTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__PositionSetpointTriplet
+	return (unsafe.Pointer)(C.px4_msgs__msg__PositionSetpointTriplet__create())
+}
+
+func (t _PositionSetpointTripletTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__PositionSetpointTriplet__destroy((*C.px4_msgs__msg__PositionSetpointTriplet)(pointer_to_free))
+}
+
+func (t _PositionSetpointTripletTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*PositionSetpointTriplet)
+	mem := (*C.px4_msgs__msg__PositionSetpointTriplet)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	PositionSetpointTypeSupport.AsCStruct(unsafe.Pointer(&mem.previous), &m.Previous)
+	PositionSetpointTypeSupport.AsCStruct(unsafe.Pointer(&mem.current), &m.Current)
+	PositionSetpointTypeSupport.AsCStruct(unsafe.Pointer(&mem.next), &m.Next)
+}
+
+func (t _PositionSetpointTripletTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*PositionSetpointTriplet)
+	mem := (*C.px4_msgs__msg__PositionSetpointTriplet)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	PositionSetpointTypeSupport.AsGoStruct(&m.Previous, unsafe.Pointer(&mem.previous))
+	PositionSetpointTypeSupport.AsGoStruct(&m.Current, unsafe.Pointer(&mem.current))
+	PositionSetpointTypeSupport.AsGoStruct(&m.Next, unsafe.Pointer(&mem.next))
+}
+
+func (t _PositionSetpointTripletTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__PositionSetpointTriplet())
 }
 
 type CPositionSetpointTriplet = C.px4_msgs__msg__PositionSetpointTriplet
@@ -101,8 +115,7 @@ func PositionSetpointTriplet__Sequence_to_Go(goSlice *[]PositionSetpointTriplet,
 		cIdx := (*C.px4_msgs__msg__PositionSetpointTriplet__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__PositionSetpointTriplet * uintptr(i)),
 		))
-		(*goSlice)[i] = PositionSetpointTriplet{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		PositionSetpointTripletTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func PositionSetpointTriplet__Sequence_to_C(cSlice *CPositionSetpointTriplet__Sequence, goSlice []PositionSetpointTriplet) {
@@ -117,18 +130,16 @@ func PositionSetpointTriplet__Sequence_to_C(cSlice *CPositionSetpointTriplet__Se
 		cIdx := (*C.px4_msgs__msg__PositionSetpointTriplet)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__PositionSetpointTriplet * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__PositionSetpointTriplet)(v.AsCStruct())
+		PositionSetpointTripletTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func PositionSetpointTriplet__Array_to_Go(goSlice []PositionSetpointTriplet, cSlice []CPositionSetpointTriplet) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		PositionSetpointTripletTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func PositionSetpointTriplet__Array_to_C(cSlice []CPositionSetpointTriplet, goSlice []PositionSetpointTriplet) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__PositionSetpointTriplet)(goSlice[i].AsCStruct())
+		PositionSetpointTripletTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

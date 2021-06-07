@@ -15,7 +15,7 @@ package visualization_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("visualization_msgs/InteractiveMarkerUpdate", &InteractiveMarkerUpdate{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("visualization_msgs/InteractiveMarkerUpdate", InteractiveMarkerUpdateTypeSupport)
 }
 const (
 	InteractiveMarkerUpdate_KEEP_ALIVE uint8 = 0// Type holds the purpose of this message.  It must be one of UPDATE or KEEP_ALIVE.UPDATE: Incremental update to previous state.The sequence number must be 1 higher than forthe previous update.KEEP_ALIVE: Indicates the that the server is still living.The sequence number does not increase.No payload data should be filled out (markers, poses, or erases).
@@ -44,58 +44,71 @@ const (
 // Do not create instances of this type directly. Always use NewInteractiveMarkerUpdate
 // function instead.
 type InteractiveMarkerUpdate struct {
-	ServerId rosidl_runtime_c.String `yaml:"server_id"`// Identifying string. Must be unique in the topic namespacethat this server works on.
+	ServerId string `yaml:"server_id"`// Identifying string. Must be unique in the topic namespacethat this server works on.
 	SeqNum uint64 `yaml:"seq_num"`// Sequence number.The client will use this to detect if it has missed an update.
 	Type uint8 `yaml:"type"`
 	Markers []InteractiveMarker `yaml:"markers"`// Markers to be added or updated
 	Poses []InteractiveMarkerPose `yaml:"poses"`// Poses of markers that should be moved
-	Erases []rosidl_runtime_c.String `yaml:"erases"`// Names of markers to be erased
+	Erases []string `yaml:"erases"`// Names of markers to be erased
 }
 
 // NewInteractiveMarkerUpdate creates a new InteractiveMarkerUpdate with default values.
 func NewInteractiveMarkerUpdate() *InteractiveMarkerUpdate {
 	self := InteractiveMarkerUpdate{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *InteractiveMarkerUpdate) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.ServerId.SetDefaults("")
-	
-	return t
-}
-
-func (t *InteractiveMarkerUpdate) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__visualization_msgs__msg__InteractiveMarkerUpdate())
-}
-func (t *InteractiveMarkerUpdate) PrepareMemory() unsafe.Pointer { //returns *C.visualization_msgs__msg__InteractiveMarkerUpdate
-	return (unsafe.Pointer)(C.visualization_msgs__msg__InteractiveMarkerUpdate__create())
-}
-func (t *InteractiveMarkerUpdate) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.visualization_msgs__msg__InteractiveMarkerUpdate__destroy((*C.visualization_msgs__msg__InteractiveMarkerUpdate)(pointer_to_free))
-}
-func (t *InteractiveMarkerUpdate) AsCStruct() unsafe.Pointer {
-	mem := (*C.visualization_msgs__msg__InteractiveMarkerUpdate)(t.PrepareMemory())
-	mem.server_id = *(*C.rosidl_runtime_c__String)(t.ServerId.AsCStruct())
-	mem.seq_num = C.uint64_t(t.SeqNum)
-	mem._type = C.uint8_t(t.Type)
-	InteractiveMarker__Sequence_to_C(&mem.markers, t.Markers)
-	InteractiveMarkerPose__Sequence_to_C(&mem.poses, t.Poses)
-	rosidl_runtime_c.String__Sequence_to_C((*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.erases)), t.Erases)
-	return unsafe.Pointer(mem)
-}
-func (t *InteractiveMarkerUpdate) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.visualization_msgs__msg__InteractiveMarkerUpdate)(ros2_message_buffer)
-	t.ServerId.AsGoStruct(unsafe.Pointer(&mem.server_id))
-	t.SeqNum = uint64(mem.seq_num)
-	t.Type = uint8(mem._type)
-	InteractiveMarker__Sequence_to_Go(&t.Markers, mem.markers)
-	InteractiveMarkerPose__Sequence_to_Go(&t.Poses, mem.poses)
-	rosidl_runtime_c.String__Sequence_to_Go(&t.Erases, *(*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.erases)))
-}
-func (t *InteractiveMarkerUpdate) Clone() ros2types.ROS2Msg {
+func (t *InteractiveMarkerUpdate) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *InteractiveMarkerUpdate) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var InteractiveMarkerUpdateTypeSupport types.MessageTypeSupport = _InteractiveMarkerUpdateTypeSupport{}
+
+type _InteractiveMarkerUpdateTypeSupport struct{}
+
+func (t _InteractiveMarkerUpdateTypeSupport) New() types.Message {
+	return NewInteractiveMarkerUpdate()
+}
+
+func (t _InteractiveMarkerUpdateTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.visualization_msgs__msg__InteractiveMarkerUpdate
+	return (unsafe.Pointer)(C.visualization_msgs__msg__InteractiveMarkerUpdate__create())
+}
+
+func (t _InteractiveMarkerUpdateTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.visualization_msgs__msg__InteractiveMarkerUpdate__destroy((*C.visualization_msgs__msg__InteractiveMarkerUpdate)(pointer_to_free))
+}
+
+func (t _InteractiveMarkerUpdateTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*InteractiveMarkerUpdate)
+	mem := (*C.visualization_msgs__msg__InteractiveMarkerUpdate)(dst)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.server_id), m.ServerId)
+	mem.seq_num = C.uint64_t(m.SeqNum)
+	mem._type = C.uint8_t(m.Type)
+	InteractiveMarker__Sequence_to_C(&mem.markers, m.Markers)
+	InteractiveMarkerPose__Sequence_to_C(&mem.poses, m.Poses)
+	rosidl_runtime_c.String__Sequence_to_C((*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.erases)), m.Erases)
+}
+
+func (t _InteractiveMarkerUpdateTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*InteractiveMarkerUpdate)
+	mem := (*C.visualization_msgs__msg__InteractiveMarkerUpdate)(ros2_message_buffer)
+	rosidl_runtime_c.StringAsGoStruct(&m.ServerId, unsafe.Pointer(&mem.server_id))
+	m.SeqNum = uint64(mem.seq_num)
+	m.Type = uint8(mem._type)
+	InteractiveMarker__Sequence_to_Go(&m.Markers, mem.markers)
+	InteractiveMarkerPose__Sequence_to_Go(&m.Poses, mem.poses)
+	rosidl_runtime_c.String__Sequence_to_Go(&m.Erases, *(*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.erases)))
+}
+
+func (t _InteractiveMarkerUpdateTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__visualization_msgs__msg__InteractiveMarkerUpdate())
 }
 
 type CInteractiveMarkerUpdate = C.visualization_msgs__msg__InteractiveMarkerUpdate
@@ -110,8 +123,7 @@ func InteractiveMarkerUpdate__Sequence_to_Go(goSlice *[]InteractiveMarkerUpdate,
 		cIdx := (*C.visualization_msgs__msg__InteractiveMarkerUpdate__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_visualization_msgs__msg__InteractiveMarkerUpdate * uintptr(i)),
 		))
-		(*goSlice)[i] = InteractiveMarkerUpdate{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		InteractiveMarkerUpdateTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func InteractiveMarkerUpdate__Sequence_to_C(cSlice *CInteractiveMarkerUpdate__Sequence, goSlice []InteractiveMarkerUpdate) {
@@ -126,18 +138,16 @@ func InteractiveMarkerUpdate__Sequence_to_C(cSlice *CInteractiveMarkerUpdate__Se
 		cIdx := (*C.visualization_msgs__msg__InteractiveMarkerUpdate)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_visualization_msgs__msg__InteractiveMarkerUpdate * uintptr(i)),
 		))
-		*cIdx = *(*C.visualization_msgs__msg__InteractiveMarkerUpdate)(v.AsCStruct())
+		InteractiveMarkerUpdateTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func InteractiveMarkerUpdate__Array_to_Go(goSlice []InteractiveMarkerUpdate, cSlice []CInteractiveMarkerUpdate) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		InteractiveMarkerUpdateTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func InteractiveMarkerUpdate__Array_to_C(cSlice []CInteractiveMarkerUpdate, goSlice []InteractiveMarkerUpdate) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.visualization_msgs__msg__InteractiveMarkerUpdate)(goSlice[i].AsCStruct())
+		InteractiveMarkerUpdateTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

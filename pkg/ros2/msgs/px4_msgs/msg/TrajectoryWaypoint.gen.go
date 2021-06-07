@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/TrajectoryWaypoint", &TrajectoryWaypoint{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/TrajectoryWaypoint", TrajectoryWaypointTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTrajectoryWaypoint
@@ -53,56 +53,70 @@ type TrajectoryWaypoint struct {
 // NewTrajectoryWaypoint creates a new TrajectoryWaypoint with default values.
 func NewTrajectoryWaypoint() *TrajectoryWaypoint {
 	self := TrajectoryWaypoint{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *TrajectoryWaypoint) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *TrajectoryWaypoint) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__TrajectoryWaypoint())
-}
-func (t *TrajectoryWaypoint) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__TrajectoryWaypoint
-	return (unsafe.Pointer)(C.px4_msgs__msg__TrajectoryWaypoint__create())
-}
-func (t *TrajectoryWaypoint) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__TrajectoryWaypoint__destroy((*C.px4_msgs__msg__TrajectoryWaypoint)(pointer_to_free))
-}
-func (t *TrajectoryWaypoint) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__TrajectoryWaypoint)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	cSlice_position := mem.position[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_position)), t.Position[:])
-	cSlice_velocity := mem.velocity[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_velocity)), t.Velocity[:])
-	cSlice_acceleration := mem.acceleration[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_acceleration)), t.Acceleration[:])
-	mem.yaw = C.float(t.Yaw)
-	mem.yaw_speed = C.float(t.YawSpeed)
-	mem.point_valid = C.bool(t.PointValid)
-	mem._type = C.uint8_t(t.Type)
-	return unsafe.Pointer(mem)
-}
-func (t *TrajectoryWaypoint) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__TrajectoryWaypoint)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	cSlice_position := mem.position[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Position[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_position)))
-	cSlice_velocity := mem.velocity[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Velocity[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_velocity)))
-	cSlice_acceleration := mem.acceleration[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Acceleration[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_acceleration)))
-	t.Yaw = float32(mem.yaw)
-	t.YawSpeed = float32(mem.yaw_speed)
-	t.PointValid = bool(mem.point_valid)
-	t.Type = uint8(mem._type)
-}
-func (t *TrajectoryWaypoint) Clone() ros2types.ROS2Msg {
+func (t *TrajectoryWaypoint) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *TrajectoryWaypoint) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TrajectoryWaypointTypeSupport types.MessageTypeSupport = _TrajectoryWaypointTypeSupport{}
+
+type _TrajectoryWaypointTypeSupport struct{}
+
+func (t _TrajectoryWaypointTypeSupport) New() types.Message {
+	return NewTrajectoryWaypoint()
+}
+
+func (t _TrajectoryWaypointTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__TrajectoryWaypoint
+	return (unsafe.Pointer)(C.px4_msgs__msg__TrajectoryWaypoint__create())
+}
+
+func (t _TrajectoryWaypointTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__TrajectoryWaypoint__destroy((*C.px4_msgs__msg__TrajectoryWaypoint)(pointer_to_free))
+}
+
+func (t _TrajectoryWaypointTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*TrajectoryWaypoint)
+	mem := (*C.px4_msgs__msg__TrajectoryWaypoint)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	cSlice_position := mem.position[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_position)), m.Position[:])
+	cSlice_velocity := mem.velocity[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_velocity)), m.Velocity[:])
+	cSlice_acceleration := mem.acceleration[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_acceleration)), m.Acceleration[:])
+	mem.yaw = C.float(m.Yaw)
+	mem.yaw_speed = C.float(m.YawSpeed)
+	mem.point_valid = C.bool(m.PointValid)
+	mem._type = C.uint8_t(m.Type)
+}
+
+func (t _TrajectoryWaypointTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*TrajectoryWaypoint)
+	mem := (*C.px4_msgs__msg__TrajectoryWaypoint)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	cSlice_position := mem.position[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Position[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_position)))
+	cSlice_velocity := mem.velocity[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Velocity[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_velocity)))
+	cSlice_acceleration := mem.acceleration[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Acceleration[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_acceleration)))
+	m.Yaw = float32(mem.yaw)
+	m.YawSpeed = float32(mem.yaw_speed)
+	m.PointValid = bool(mem.point_valid)
+	m.Type = uint8(mem._type)
+}
+
+func (t _TrajectoryWaypointTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__TrajectoryWaypoint())
 }
 
 type CTrajectoryWaypoint = C.px4_msgs__msg__TrajectoryWaypoint
@@ -117,8 +131,7 @@ func TrajectoryWaypoint__Sequence_to_Go(goSlice *[]TrajectoryWaypoint, cSlice CT
 		cIdx := (*C.px4_msgs__msg__TrajectoryWaypoint__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__TrajectoryWaypoint * uintptr(i)),
 		))
-		(*goSlice)[i] = TrajectoryWaypoint{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TrajectoryWaypointTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func TrajectoryWaypoint__Sequence_to_C(cSlice *CTrajectoryWaypoint__Sequence, goSlice []TrajectoryWaypoint) {
@@ -133,18 +146,16 @@ func TrajectoryWaypoint__Sequence_to_C(cSlice *CTrajectoryWaypoint__Sequence, go
 		cIdx := (*C.px4_msgs__msg__TrajectoryWaypoint)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__TrajectoryWaypoint * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__TrajectoryWaypoint)(v.AsCStruct())
+		TrajectoryWaypointTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func TrajectoryWaypoint__Array_to_Go(goSlice []TrajectoryWaypoint, cSlice []CTrajectoryWaypoint) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TrajectoryWaypointTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func TrajectoryWaypoint__Array_to_C(cSlice []CTrajectoryWaypoint, goSlice []TrajectoryWaypoint) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__TrajectoryWaypoint)(goSlice[i].AsCStruct())
+		TrajectoryWaypointTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

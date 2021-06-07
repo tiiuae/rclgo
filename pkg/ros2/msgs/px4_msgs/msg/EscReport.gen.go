@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EscReport", &EscReport{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EscReport", EscReportTypeSupport)
 }
 const (
 	EscReport_FAILURE_NONE uint8 = 0
@@ -63,52 +63,66 @@ type EscReport struct {
 // NewEscReport creates a new EscReport with default values.
 func NewEscReport() *EscReport {
 	self := EscReport{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *EscReport) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *EscReport) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EscReport())
-}
-func (t *EscReport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EscReport
-	return (unsafe.Pointer)(C.px4_msgs__msg__EscReport__create())
-}
-func (t *EscReport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__EscReport__destroy((*C.px4_msgs__msg__EscReport)(pointer_to_free))
-}
-func (t *EscReport) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__EscReport)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.esc_errorcount = C.uint32_t(t.EscErrorcount)
-	mem.esc_rpm = C.int32_t(t.EscRpm)
-	mem.esc_voltage = C.float(t.EscVoltage)
-	mem.esc_current = C.float(t.EscCurrent)
-	mem.esc_temperature = C.uint8_t(t.EscTemperature)
-	mem.esc_address = C.uint8_t(t.EscAddress)
-	mem.esc_state = C.uint8_t(t.EscState)
-	mem.failures = C.uint8_t(t.Failures)
-	return unsafe.Pointer(mem)
-}
-func (t *EscReport) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__EscReport)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.EscErrorcount = uint32(mem.esc_errorcount)
-	t.EscRpm = int32(mem.esc_rpm)
-	t.EscVoltage = float32(mem.esc_voltage)
-	t.EscCurrent = float32(mem.esc_current)
-	t.EscTemperature = uint8(mem.esc_temperature)
-	t.EscAddress = uint8(mem.esc_address)
-	t.EscState = uint8(mem.esc_state)
-	t.Failures = uint8(mem.failures)
-}
-func (t *EscReport) Clone() ros2types.ROS2Msg {
+func (t *EscReport) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *EscReport) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var EscReportTypeSupport types.MessageTypeSupport = _EscReportTypeSupport{}
+
+type _EscReportTypeSupport struct{}
+
+func (t _EscReportTypeSupport) New() types.Message {
+	return NewEscReport()
+}
+
+func (t _EscReportTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EscReport
+	return (unsafe.Pointer)(C.px4_msgs__msg__EscReport__create())
+}
+
+func (t _EscReportTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__EscReport__destroy((*C.px4_msgs__msg__EscReport)(pointer_to_free))
+}
+
+func (t _EscReportTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*EscReport)
+	mem := (*C.px4_msgs__msg__EscReport)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.esc_errorcount = C.uint32_t(m.EscErrorcount)
+	mem.esc_rpm = C.int32_t(m.EscRpm)
+	mem.esc_voltage = C.float(m.EscVoltage)
+	mem.esc_current = C.float(m.EscCurrent)
+	mem.esc_temperature = C.uint8_t(m.EscTemperature)
+	mem.esc_address = C.uint8_t(m.EscAddress)
+	mem.esc_state = C.uint8_t(m.EscState)
+	mem.failures = C.uint8_t(m.Failures)
+}
+
+func (t _EscReportTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*EscReport)
+	mem := (*C.px4_msgs__msg__EscReport)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.EscErrorcount = uint32(mem.esc_errorcount)
+	m.EscRpm = int32(mem.esc_rpm)
+	m.EscVoltage = float32(mem.esc_voltage)
+	m.EscCurrent = float32(mem.esc_current)
+	m.EscTemperature = uint8(mem.esc_temperature)
+	m.EscAddress = uint8(mem.esc_address)
+	m.EscState = uint8(mem.esc_state)
+	m.Failures = uint8(mem.failures)
+}
+
+func (t _EscReportTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EscReport())
 }
 
 type CEscReport = C.px4_msgs__msg__EscReport
@@ -123,8 +137,7 @@ func EscReport__Sequence_to_Go(goSlice *[]EscReport, cSlice CEscReport__Sequence
 		cIdx := (*C.px4_msgs__msg__EscReport__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EscReport * uintptr(i)),
 		))
-		(*goSlice)[i] = EscReport{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		EscReportTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func EscReport__Sequence_to_C(cSlice *CEscReport__Sequence, goSlice []EscReport) {
@@ -139,18 +152,16 @@ func EscReport__Sequence_to_C(cSlice *CEscReport__Sequence, goSlice []EscReport)
 		cIdx := (*C.px4_msgs__msg__EscReport)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EscReport * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__EscReport)(v.AsCStruct())
+		EscReportTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func EscReport__Array_to_Go(goSlice []EscReport, cSlice []CEscReport) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		EscReportTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func EscReport__Array_to_C(cSlice []CEscReport, goSlice []EscReport) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__EscReport)(goSlice[i].AsCStruct())
+		EscReportTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

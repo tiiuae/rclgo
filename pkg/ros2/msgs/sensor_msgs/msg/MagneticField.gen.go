@@ -15,7 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	geometry_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/geometry_msgs/msg"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
@@ -38,7 +38,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/MagneticField", &MagneticField{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/MagneticField", MagneticFieldTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewMagneticField
@@ -52,44 +52,58 @@ type MagneticField struct {
 // NewMagneticField creates a new MagneticField with default values.
 func NewMagneticField() *MagneticField {
 	self := MagneticField{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *MagneticField) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.MagneticField.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *MagneticField) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__MagneticField())
-}
-func (t *MagneticField) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__MagneticField
-	return (unsafe.Pointer)(C.sensor_msgs__msg__MagneticField__create())
-}
-func (t *MagneticField) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__msg__MagneticField__destroy((*C.sensor_msgs__msg__MagneticField)(pointer_to_free))
-}
-func (t *MagneticField) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__msg__MagneticField)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.magnetic_field = *(*C.geometry_msgs__msg__Vector3)(t.MagneticField.AsCStruct())
-	cSlice_magnetic_field_covariance := mem.magnetic_field_covariance[:]
-	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_magnetic_field_covariance)), t.MagneticFieldCovariance[:])
-	return unsafe.Pointer(mem)
-}
-func (t *MagneticField) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__msg__MagneticField)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.MagneticField.AsGoStruct(unsafe.Pointer(&mem.magnetic_field))
-	cSlice_magnetic_field_covariance := mem.magnetic_field_covariance[:]
-	rosidl_runtime_c.Float64__Array_to_Go(t.MagneticFieldCovariance[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_magnetic_field_covariance)))
-}
-func (t *MagneticField) Clone() ros2types.ROS2Msg {
+func (t *MagneticField) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *MagneticField) SetDefaults() {
+	t.Header.SetDefaults()
+	t.MagneticField.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var MagneticFieldTypeSupport types.MessageTypeSupport = _MagneticFieldTypeSupport{}
+
+type _MagneticFieldTypeSupport struct{}
+
+func (t _MagneticFieldTypeSupport) New() types.Message {
+	return NewMagneticField()
+}
+
+func (t _MagneticFieldTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__MagneticField
+	return (unsafe.Pointer)(C.sensor_msgs__msg__MagneticField__create())
+}
+
+func (t _MagneticFieldTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__msg__MagneticField__destroy((*C.sensor_msgs__msg__MagneticField)(pointer_to_free))
+}
+
+func (t _MagneticFieldTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*MagneticField)
+	mem := (*C.sensor_msgs__msg__MagneticField)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	geometry_msgs_msg.Vector3TypeSupport.AsCStruct(unsafe.Pointer(&mem.magnetic_field), &m.MagneticField)
+	cSlice_magnetic_field_covariance := mem.magnetic_field_covariance[:]
+	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_magnetic_field_covariance)), m.MagneticFieldCovariance[:])
+}
+
+func (t _MagneticFieldTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*MagneticField)
+	mem := (*C.sensor_msgs__msg__MagneticField)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	geometry_msgs_msg.Vector3TypeSupport.AsGoStruct(&m.MagneticField, unsafe.Pointer(&mem.magnetic_field))
+	cSlice_magnetic_field_covariance := mem.magnetic_field_covariance[:]
+	rosidl_runtime_c.Float64__Array_to_Go(m.MagneticFieldCovariance[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_magnetic_field_covariance)))
+}
+
+func (t _MagneticFieldTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__MagneticField())
 }
 
 type CMagneticField = C.sensor_msgs__msg__MagneticField
@@ -104,8 +118,7 @@ func MagneticField__Sequence_to_Go(goSlice *[]MagneticField, cSlice CMagneticFie
 		cIdx := (*C.sensor_msgs__msg__MagneticField__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__MagneticField * uintptr(i)),
 		))
-		(*goSlice)[i] = MagneticField{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		MagneticFieldTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func MagneticField__Sequence_to_C(cSlice *CMagneticField__Sequence, goSlice []MagneticField) {
@@ -120,18 +133,16 @@ func MagneticField__Sequence_to_C(cSlice *CMagneticField__Sequence, goSlice []Ma
 		cIdx := (*C.sensor_msgs__msg__MagneticField)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__MagneticField * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__msg__MagneticField)(v.AsCStruct())
+		MagneticFieldTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func MagneticField__Array_to_Go(goSlice []MagneticField, cSlice []CMagneticField) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		MagneticFieldTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func MagneticField__Array_to_C(cSlice []CMagneticField, goSlice []MagneticField) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__msg__MagneticField)(goSlice[i].AsCStruct())
+		MagneticFieldTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

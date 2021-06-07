@@ -15,7 +15,7 @@ package rcl_interfaces_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,52 +34,65 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("rcl_interfaces/SetParametersResult", &SetParametersResult{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("rcl_interfaces/SetParametersResult", SetParametersResultTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSetParametersResult
 // function instead.
 type SetParametersResult struct {
 	Successful bool `yaml:"successful"`// A true value of the same index indicates that the parameter was setsuccessfully. A false value indicates the change was rejected.
-	Reason rosidl_runtime_c.String `yaml:"reason"`// Reason why the setting was either successful or a failure. This should only beused for logging and user interfaces.
+	Reason string `yaml:"reason"`// Reason why the setting was either successful or a failure. This should only beused for logging and user interfaces.
 }
 
 // NewSetParametersResult creates a new SetParametersResult with default values.
 func NewSetParametersResult() *SetParametersResult {
 	self := SetParametersResult{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SetParametersResult) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Reason.SetDefaults("")
-	
-	return t
-}
-
-func (t *SetParametersResult) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__rcl_interfaces__msg__SetParametersResult())
-}
-func (t *SetParametersResult) PrepareMemory() unsafe.Pointer { //returns *C.rcl_interfaces__msg__SetParametersResult
-	return (unsafe.Pointer)(C.rcl_interfaces__msg__SetParametersResult__create())
-}
-func (t *SetParametersResult) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.rcl_interfaces__msg__SetParametersResult__destroy((*C.rcl_interfaces__msg__SetParametersResult)(pointer_to_free))
-}
-func (t *SetParametersResult) AsCStruct() unsafe.Pointer {
-	mem := (*C.rcl_interfaces__msg__SetParametersResult)(t.PrepareMemory())
-	mem.successful = C.bool(t.Successful)
-	mem.reason = *(*C.rosidl_runtime_c__String)(t.Reason.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *SetParametersResult) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.rcl_interfaces__msg__SetParametersResult)(ros2_message_buffer)
-	t.Successful = bool(mem.successful)
-	t.Reason.AsGoStruct(unsafe.Pointer(&mem.reason))
-}
-func (t *SetParametersResult) Clone() ros2types.ROS2Msg {
+func (t *SetParametersResult) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SetParametersResult) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SetParametersResultTypeSupport types.MessageTypeSupport = _SetParametersResultTypeSupport{}
+
+type _SetParametersResultTypeSupport struct{}
+
+func (t _SetParametersResultTypeSupport) New() types.Message {
+	return NewSetParametersResult()
+}
+
+func (t _SetParametersResultTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.rcl_interfaces__msg__SetParametersResult
+	return (unsafe.Pointer)(C.rcl_interfaces__msg__SetParametersResult__create())
+}
+
+func (t _SetParametersResultTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.rcl_interfaces__msg__SetParametersResult__destroy((*C.rcl_interfaces__msg__SetParametersResult)(pointer_to_free))
+}
+
+func (t _SetParametersResultTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*SetParametersResult)
+	mem := (*C.rcl_interfaces__msg__SetParametersResult)(dst)
+	mem.successful = C.bool(m.Successful)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.reason), m.Reason)
+}
+
+func (t _SetParametersResultTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*SetParametersResult)
+	mem := (*C.rcl_interfaces__msg__SetParametersResult)(ros2_message_buffer)
+	m.Successful = bool(mem.successful)
+	rosidl_runtime_c.StringAsGoStruct(&m.Reason, unsafe.Pointer(&mem.reason))
+}
+
+func (t _SetParametersResultTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__rcl_interfaces__msg__SetParametersResult())
 }
 
 type CSetParametersResult = C.rcl_interfaces__msg__SetParametersResult
@@ -94,8 +107,7 @@ func SetParametersResult__Sequence_to_Go(goSlice *[]SetParametersResult, cSlice 
 		cIdx := (*C.rcl_interfaces__msg__SetParametersResult__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rcl_interfaces__msg__SetParametersResult * uintptr(i)),
 		))
-		(*goSlice)[i] = SetParametersResult{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SetParametersResultTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SetParametersResult__Sequence_to_C(cSlice *CSetParametersResult__Sequence, goSlice []SetParametersResult) {
@@ -110,18 +122,16 @@ func SetParametersResult__Sequence_to_C(cSlice *CSetParametersResult__Sequence, 
 		cIdx := (*C.rcl_interfaces__msg__SetParametersResult)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rcl_interfaces__msg__SetParametersResult * uintptr(i)),
 		))
-		*cIdx = *(*C.rcl_interfaces__msg__SetParametersResult)(v.AsCStruct())
+		SetParametersResultTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SetParametersResult__Array_to_Go(goSlice []SetParametersResult, cSlice []CSetParametersResult) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SetParametersResultTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SetParametersResult__Array_to_C(cSlice []CSetParametersResult, goSlice []SetParametersResult) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.rcl_interfaces__msg__SetParametersResult)(goSlice[i].AsCStruct())
+		SetParametersResultTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

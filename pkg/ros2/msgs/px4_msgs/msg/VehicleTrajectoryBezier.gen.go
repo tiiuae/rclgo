@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleTrajectoryBezier", &VehicleTrajectoryBezier{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleTrajectoryBezier", VehicleTrajectoryBezierTypeSupport)
 }
 const (
 	VehicleTrajectoryBezier_POINT_0 uint8 = 0
@@ -55,45 +55,59 @@ type VehicleTrajectoryBezier struct {
 // NewVehicleTrajectoryBezier creates a new VehicleTrajectoryBezier with default values.
 func NewVehicleTrajectoryBezier() *VehicleTrajectoryBezier {
 	self := VehicleTrajectoryBezier{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *VehicleTrajectoryBezier) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.ControlPoints[0].SetDefaults(nil)
-	t.ControlPoints[1].SetDefaults(nil)
-	t.ControlPoints[2].SetDefaults(nil)
-	t.ControlPoints[3].SetDefaults(nil)
-	t.ControlPoints[4].SetDefaults(nil)
-	
-	return t
-}
-
-func (t *VehicleTrajectoryBezier) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleTrajectoryBezier())
-}
-func (t *VehicleTrajectoryBezier) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleTrajectoryBezier
-	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleTrajectoryBezier__create())
-}
-func (t *VehicleTrajectoryBezier) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__VehicleTrajectoryBezier__destroy((*C.px4_msgs__msg__VehicleTrajectoryBezier)(pointer_to_free))
-}
-func (t *VehicleTrajectoryBezier) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__VehicleTrajectoryBezier)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	TrajectoryBezier__Array_to_C(mem.control_points[:], t.ControlPoints[:])
-	mem.bezier_order = C.uint8_t(t.BezierOrder)
-	return unsafe.Pointer(mem)
-}
-func (t *VehicleTrajectoryBezier) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__VehicleTrajectoryBezier)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	TrajectoryBezier__Array_to_Go(t.ControlPoints[:], mem.control_points[:])
-	t.BezierOrder = uint8(mem.bezier_order)
-}
-func (t *VehicleTrajectoryBezier) Clone() ros2types.ROS2Msg {
+func (t *VehicleTrajectoryBezier) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *VehicleTrajectoryBezier) SetDefaults() {
+	t.ControlPoints[0].SetDefaults()
+	t.ControlPoints[1].SetDefaults()
+	t.ControlPoints[2].SetDefaults()
+	t.ControlPoints[3].SetDefaults()
+	t.ControlPoints[4].SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VehicleTrajectoryBezierTypeSupport types.MessageTypeSupport = _VehicleTrajectoryBezierTypeSupport{}
+
+type _VehicleTrajectoryBezierTypeSupport struct{}
+
+func (t _VehicleTrajectoryBezierTypeSupport) New() types.Message {
+	return NewVehicleTrajectoryBezier()
+}
+
+func (t _VehicleTrajectoryBezierTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleTrajectoryBezier
+	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleTrajectoryBezier__create())
+}
+
+func (t _VehicleTrajectoryBezierTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__VehicleTrajectoryBezier__destroy((*C.px4_msgs__msg__VehicleTrajectoryBezier)(pointer_to_free))
+}
+
+func (t _VehicleTrajectoryBezierTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*VehicleTrajectoryBezier)
+	mem := (*C.px4_msgs__msg__VehicleTrajectoryBezier)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	TrajectoryBezier__Array_to_C(mem.control_points[:], m.ControlPoints[:])
+	mem.bezier_order = C.uint8_t(m.BezierOrder)
+}
+
+func (t _VehicleTrajectoryBezierTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*VehicleTrajectoryBezier)
+	mem := (*C.px4_msgs__msg__VehicleTrajectoryBezier)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	TrajectoryBezier__Array_to_Go(m.ControlPoints[:], mem.control_points[:])
+	m.BezierOrder = uint8(mem.bezier_order)
+}
+
+func (t _VehicleTrajectoryBezierTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleTrajectoryBezier())
 }
 
 type CVehicleTrajectoryBezier = C.px4_msgs__msg__VehicleTrajectoryBezier
@@ -108,8 +122,7 @@ func VehicleTrajectoryBezier__Sequence_to_Go(goSlice *[]VehicleTrajectoryBezier,
 		cIdx := (*C.px4_msgs__msg__VehicleTrajectoryBezier__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleTrajectoryBezier * uintptr(i)),
 		))
-		(*goSlice)[i] = VehicleTrajectoryBezier{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VehicleTrajectoryBezierTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func VehicleTrajectoryBezier__Sequence_to_C(cSlice *CVehicleTrajectoryBezier__Sequence, goSlice []VehicleTrajectoryBezier) {
@@ -124,18 +137,16 @@ func VehicleTrajectoryBezier__Sequence_to_C(cSlice *CVehicleTrajectoryBezier__Se
 		cIdx := (*C.px4_msgs__msg__VehicleTrajectoryBezier)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleTrajectoryBezier * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__VehicleTrajectoryBezier)(v.AsCStruct())
+		VehicleTrajectoryBezierTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func VehicleTrajectoryBezier__Array_to_Go(goSlice []VehicleTrajectoryBezier, cSlice []CVehicleTrajectoryBezier) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VehicleTrajectoryBezierTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func VehicleTrajectoryBezier__Array_to_C(cSlice []CVehicleTrajectoryBezier, goSlice []VehicleTrajectoryBezier) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__VehicleTrajectoryBezier)(goSlice[i].AsCStruct())
+		VehicleTrajectoryBezierTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

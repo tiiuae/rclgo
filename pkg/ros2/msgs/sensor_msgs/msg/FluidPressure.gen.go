@@ -15,7 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/FluidPressure", &FluidPressure{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/FluidPressure", FluidPressureTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewFluidPressure
@@ -49,41 +49,55 @@ type FluidPressure struct {
 // NewFluidPressure creates a new FluidPressure with default values.
 func NewFluidPressure() *FluidPressure {
 	self := FluidPressure{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *FluidPressure) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *FluidPressure) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__FluidPressure())
-}
-func (t *FluidPressure) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__FluidPressure
-	return (unsafe.Pointer)(C.sensor_msgs__msg__FluidPressure__create())
-}
-func (t *FluidPressure) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__msg__FluidPressure__destroy((*C.sensor_msgs__msg__FluidPressure)(pointer_to_free))
-}
-func (t *FluidPressure) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__msg__FluidPressure)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.fluid_pressure = C.double(t.FluidPressure)
-	mem.variance = C.double(t.Variance)
-	return unsafe.Pointer(mem)
-}
-func (t *FluidPressure) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__msg__FluidPressure)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.FluidPressure = float64(mem.fluid_pressure)
-	t.Variance = float64(mem.variance)
-}
-func (t *FluidPressure) Clone() ros2types.ROS2Msg {
+func (t *FluidPressure) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *FluidPressure) SetDefaults() {
+	t.Header.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var FluidPressureTypeSupport types.MessageTypeSupport = _FluidPressureTypeSupport{}
+
+type _FluidPressureTypeSupport struct{}
+
+func (t _FluidPressureTypeSupport) New() types.Message {
+	return NewFluidPressure()
+}
+
+func (t _FluidPressureTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__FluidPressure
+	return (unsafe.Pointer)(C.sensor_msgs__msg__FluidPressure__create())
+}
+
+func (t _FluidPressureTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__msg__FluidPressure__destroy((*C.sensor_msgs__msg__FluidPressure)(pointer_to_free))
+}
+
+func (t _FluidPressureTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*FluidPressure)
+	mem := (*C.sensor_msgs__msg__FluidPressure)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	mem.fluid_pressure = C.double(m.FluidPressure)
+	mem.variance = C.double(m.Variance)
+}
+
+func (t _FluidPressureTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*FluidPressure)
+	mem := (*C.sensor_msgs__msg__FluidPressure)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	m.FluidPressure = float64(mem.fluid_pressure)
+	m.Variance = float64(mem.variance)
+}
+
+func (t _FluidPressureTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__FluidPressure())
 }
 
 type CFluidPressure = C.sensor_msgs__msg__FluidPressure
@@ -98,8 +112,7 @@ func FluidPressure__Sequence_to_Go(goSlice *[]FluidPressure, cSlice CFluidPressu
 		cIdx := (*C.sensor_msgs__msg__FluidPressure__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__FluidPressure * uintptr(i)),
 		))
-		(*goSlice)[i] = FluidPressure{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		FluidPressureTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func FluidPressure__Sequence_to_C(cSlice *CFluidPressure__Sequence, goSlice []FluidPressure) {
@@ -114,18 +127,16 @@ func FluidPressure__Sequence_to_C(cSlice *CFluidPressure__Sequence, goSlice []Fl
 		cIdx := (*C.sensor_msgs__msg__FluidPressure)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__FluidPressure * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__msg__FluidPressure)(v.AsCStruct())
+		FluidPressureTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func FluidPressure__Array_to_Go(goSlice []FluidPressure, cSlice []CFluidPressure) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		FluidPressureTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func FluidPressure__Array_to_C(cSlice []CFluidPressure, goSlice []FluidPressure) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__msg__FluidPressure)(goSlice[i].AsCStruct())
+		FluidPressureTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/QshellRetval", &QshellRetval{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/QshellRetval", QshellRetvalTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewQshellRetval
@@ -47,40 +47,54 @@ type QshellRetval struct {
 // NewQshellRetval creates a new QshellRetval with default values.
 func NewQshellRetval() *QshellRetval {
 	self := QshellRetval{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *QshellRetval) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *QshellRetval) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__QshellRetval())
-}
-func (t *QshellRetval) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__QshellRetval
-	return (unsafe.Pointer)(C.px4_msgs__msg__QshellRetval__create())
-}
-func (t *QshellRetval) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__QshellRetval__destroy((*C.px4_msgs__msg__QshellRetval)(pointer_to_free))
-}
-func (t *QshellRetval) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__QshellRetval)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.return_value = C.int32_t(t.ReturnValue)
-	mem.return_sequence = C.uint32_t(t.ReturnSequence)
-	return unsafe.Pointer(mem)
-}
-func (t *QshellRetval) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__QshellRetval)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.ReturnValue = int32(mem.return_value)
-	t.ReturnSequence = uint32(mem.return_sequence)
-}
-func (t *QshellRetval) Clone() ros2types.ROS2Msg {
+func (t *QshellRetval) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *QshellRetval) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var QshellRetvalTypeSupport types.MessageTypeSupport = _QshellRetvalTypeSupport{}
+
+type _QshellRetvalTypeSupport struct{}
+
+func (t _QshellRetvalTypeSupport) New() types.Message {
+	return NewQshellRetval()
+}
+
+func (t _QshellRetvalTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__QshellRetval
+	return (unsafe.Pointer)(C.px4_msgs__msg__QshellRetval__create())
+}
+
+func (t _QshellRetvalTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__QshellRetval__destroy((*C.px4_msgs__msg__QshellRetval)(pointer_to_free))
+}
+
+func (t _QshellRetvalTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*QshellRetval)
+	mem := (*C.px4_msgs__msg__QshellRetval)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.return_value = C.int32_t(m.ReturnValue)
+	mem.return_sequence = C.uint32_t(m.ReturnSequence)
+}
+
+func (t _QshellRetvalTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*QshellRetval)
+	mem := (*C.px4_msgs__msg__QshellRetval)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.ReturnValue = int32(mem.return_value)
+	m.ReturnSequence = uint32(mem.return_sequence)
+}
+
+func (t _QshellRetvalTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__QshellRetval())
 }
 
 type CQshellRetval = C.px4_msgs__msg__QshellRetval
@@ -95,8 +109,7 @@ func QshellRetval__Sequence_to_Go(goSlice *[]QshellRetval, cSlice CQshellRetval_
 		cIdx := (*C.px4_msgs__msg__QshellRetval__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__QshellRetval * uintptr(i)),
 		))
-		(*goSlice)[i] = QshellRetval{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		QshellRetvalTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func QshellRetval__Sequence_to_C(cSlice *CQshellRetval__Sequence, goSlice []QshellRetval) {
@@ -111,18 +124,16 @@ func QshellRetval__Sequence_to_C(cSlice *CQshellRetval__Sequence, goSlice []Qshe
 		cIdx := (*C.px4_msgs__msg__QshellRetval)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__QshellRetval * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__QshellRetval)(v.AsCStruct())
+		QshellRetvalTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func QshellRetval__Array_to_Go(goSlice []QshellRetval, cSlice []CQshellRetval) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		QshellRetvalTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func QshellRetval__Array_to_C(cSlice []CQshellRetval, goSlice []QshellRetval) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__QshellRetval)(goSlice[i].AsCStruct())
+		QshellRetvalTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

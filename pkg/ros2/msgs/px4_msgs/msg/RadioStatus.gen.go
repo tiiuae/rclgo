@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/RadioStatus", &RadioStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/RadioStatus", RadioStatusTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewRadioStatus
@@ -52,50 +52,64 @@ type RadioStatus struct {
 // NewRadioStatus creates a new RadioStatus with default values.
 func NewRadioStatus() *RadioStatus {
 	self := RadioStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *RadioStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *RadioStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__RadioStatus())
-}
-func (t *RadioStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__RadioStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__RadioStatus__create())
-}
-func (t *RadioStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__RadioStatus__destroy((*C.px4_msgs__msg__RadioStatus)(pointer_to_free))
-}
-func (t *RadioStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__RadioStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.rssi = C.uint8_t(t.Rssi)
-	mem.remote_rssi = C.uint8_t(t.RemoteRssi)
-	mem.txbuf = C.uint8_t(t.Txbuf)
-	mem.noise = C.uint8_t(t.Noise)
-	mem.remote_noise = C.uint8_t(t.RemoteNoise)
-	mem.rxerrors = C.uint16_t(t.Rxerrors)
-	mem.fix = C.uint16_t(t.Fix)
-	return unsafe.Pointer(mem)
-}
-func (t *RadioStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__RadioStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Rssi = uint8(mem.rssi)
-	t.RemoteRssi = uint8(mem.remote_rssi)
-	t.Txbuf = uint8(mem.txbuf)
-	t.Noise = uint8(mem.noise)
-	t.RemoteNoise = uint8(mem.remote_noise)
-	t.Rxerrors = uint16(mem.rxerrors)
-	t.Fix = uint16(mem.fix)
-}
-func (t *RadioStatus) Clone() ros2types.ROS2Msg {
+func (t *RadioStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *RadioStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var RadioStatusTypeSupport types.MessageTypeSupport = _RadioStatusTypeSupport{}
+
+type _RadioStatusTypeSupport struct{}
+
+func (t _RadioStatusTypeSupport) New() types.Message {
+	return NewRadioStatus()
+}
+
+func (t _RadioStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__RadioStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__RadioStatus__create())
+}
+
+func (t _RadioStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__RadioStatus__destroy((*C.px4_msgs__msg__RadioStatus)(pointer_to_free))
+}
+
+func (t _RadioStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*RadioStatus)
+	mem := (*C.px4_msgs__msg__RadioStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.rssi = C.uint8_t(m.Rssi)
+	mem.remote_rssi = C.uint8_t(m.RemoteRssi)
+	mem.txbuf = C.uint8_t(m.Txbuf)
+	mem.noise = C.uint8_t(m.Noise)
+	mem.remote_noise = C.uint8_t(m.RemoteNoise)
+	mem.rxerrors = C.uint16_t(m.Rxerrors)
+	mem.fix = C.uint16_t(m.Fix)
+}
+
+func (t _RadioStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*RadioStatus)
+	mem := (*C.px4_msgs__msg__RadioStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Rssi = uint8(mem.rssi)
+	m.RemoteRssi = uint8(mem.remote_rssi)
+	m.Txbuf = uint8(mem.txbuf)
+	m.Noise = uint8(mem.noise)
+	m.RemoteNoise = uint8(mem.remote_noise)
+	m.Rxerrors = uint16(mem.rxerrors)
+	m.Fix = uint16(mem.fix)
+}
+
+func (t _RadioStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__RadioStatus())
 }
 
 type CRadioStatus = C.px4_msgs__msg__RadioStatus
@@ -110,8 +124,7 @@ func RadioStatus__Sequence_to_Go(goSlice *[]RadioStatus, cSlice CRadioStatus__Se
 		cIdx := (*C.px4_msgs__msg__RadioStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__RadioStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = RadioStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		RadioStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func RadioStatus__Sequence_to_C(cSlice *CRadioStatus__Sequence, goSlice []RadioStatus) {
@@ -126,18 +139,16 @@ func RadioStatus__Sequence_to_C(cSlice *CRadioStatus__Sequence, goSlice []RadioS
 		cIdx := (*C.px4_msgs__msg__RadioStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__RadioStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__RadioStatus)(v.AsCStruct())
+		RadioStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func RadioStatus__Array_to_Go(goSlice []RadioStatus, cSlice []CRadioStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		RadioStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func RadioStatus__Array_to_C(cSlice []CRadioStatus, goSlice []RadioStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__RadioStatus)(goSlice[i].AsCStruct())
+		RadioStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package visualization_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	builtin_interfaces_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/builtin_interfaces/msg"
 	geometry_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/geometry_msgs/msg"
@@ -40,7 +40,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("visualization_msgs/Marker", &Marker{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("visualization_msgs/Marker", MarkerTypeSupport)
 }
 const (
 	Marker_ARROW int32 = 0
@@ -65,7 +65,7 @@ const (
 // function instead.
 type Marker struct {
 	Header std_msgs_msg.Header `yaml:"header"`// Header for timestamp and frame id.
-	Ns rosidl_runtime_c.String `yaml:"ns"`// Header for timestamp and frame id.Namespace in which to place the object.Used in conjunction with id to create a unique name for the object.
+	Ns string `yaml:"ns"`// Header for timestamp and frame id.Namespace in which to place the object.Used in conjunction with id to create a unique name for the object.
 	Id int32 `yaml:"id"`// Header for timestamp and frame id.Namespace in which to place the object.Used in conjunction with id to create a unique name for the object.Object ID used in conjunction with the namespace for manipulating and deleting the object later.
 	Type int32 `yaml:"type"`// Header for timestamp and frame id.Namespace in which to place the object.Used in conjunction with id to create a unique name for the object.Object ID used in conjunction with the namespace for manipulating and deleting the object later.Type of object.
 	Action int32 `yaml:"action"`// Header for timestamp and frame id.Namespace in which to place the object.Used in conjunction with id to create a unique name for the object.Object ID used in conjunction with the namespace for manipulating and deleting the object later.Type of object.Action to take; one of:- 0 add/modify an object- 1 (deprecated)- 2 deletes an object- 3 deletes all objects
@@ -76,80 +76,91 @@ type Marker struct {
 	FrameLocked bool `yaml:"frame_locked"`// Header for timestamp and frame id.Namespace in which to place the object.Used in conjunction with id to create a unique name for the object.Object ID used in conjunction with the namespace for manipulating and deleting the object later.Type of object.Action to take; one of:- 0 add/modify an object- 1 (deprecated)- 2 deletes an object- 3 deletes all objectsPose of the object with respect the frame_id specified in the header.Scale of the object; 1,1,1 means default (usually 1 meter square).Color of the object; in the range: [0.0-1.0]How long the object should last before being automatically deleted.0 indicates forever.If this marker should be frame-locked, i.e. retransformed into its frame every timestep.
 	Points []geometry_msgs_msg.Point `yaml:"points"`// Only used if the type specified has some use for them (eg. POINTS, LINE_STRIP, etc.)
 	Colors []std_msgs_msg.ColorRGBA `yaml:"colors"`// Only used if the type specified has some use for them (eg. POINTS, LINE_STRIP, etc.)Only used if the type specified has some use for them (eg. POINTS, LINE_STRIP, etc.)The number of colors provided must either be 0 or equal to the number of points provided.NOTE: alpha is not yet used
-	Text rosidl_runtime_c.String `yaml:"text"`// Only used for text markers
-	MeshResource rosidl_runtime_c.String `yaml:"mesh_resource"`// Only used for MESH_RESOURCE markers.
+	Text string `yaml:"text"`// Only used for text markers
+	MeshResource string `yaml:"mesh_resource"`// Only used for MESH_RESOURCE markers.
 	MeshUseEmbeddedMaterials bool `yaml:"mesh_use_embedded_materials"`// Only used for MESH_RESOURCE markers.
 }
 
 // NewMarker creates a new Marker with default values.
 func NewMarker() *Marker {
 	self := Marker{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Marker) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.Ns.SetDefaults("")
-	t.Pose.SetDefaults(nil)
-	t.Scale.SetDefaults(nil)
-	t.Color.SetDefaults(nil)
-	t.Lifetime.SetDefaults(nil)
-	t.Text.SetDefaults("")
-	t.MeshResource.SetDefaults("")
-	
-	return t
-}
-
-func (t *Marker) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__visualization_msgs__msg__Marker())
-}
-func (t *Marker) PrepareMemory() unsafe.Pointer { //returns *C.visualization_msgs__msg__Marker
-	return (unsafe.Pointer)(C.visualization_msgs__msg__Marker__create())
-}
-func (t *Marker) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.visualization_msgs__msg__Marker__destroy((*C.visualization_msgs__msg__Marker)(pointer_to_free))
-}
-func (t *Marker) AsCStruct() unsafe.Pointer {
-	mem := (*C.visualization_msgs__msg__Marker)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.ns = *(*C.rosidl_runtime_c__String)(t.Ns.AsCStruct())
-	mem.id = C.int32_t(t.Id)
-	mem._type = C.int32_t(t.Type)
-	mem.action = C.int32_t(t.Action)
-	mem.pose = *(*C.geometry_msgs__msg__Pose)(t.Pose.AsCStruct())
-	mem.scale = *(*C.geometry_msgs__msg__Vector3)(t.Scale.AsCStruct())
-	mem.color = *(*C.std_msgs__msg__ColorRGBA)(t.Color.AsCStruct())
-	mem.lifetime = *(*C.builtin_interfaces__msg__Duration)(t.Lifetime.AsCStruct())
-	mem.frame_locked = C.bool(t.FrameLocked)
-	geometry_msgs_msg.Point__Sequence_to_C((*geometry_msgs_msg.CPoint__Sequence)(unsafe.Pointer(&mem.points)), t.Points)
-	std_msgs_msg.ColorRGBA__Sequence_to_C((*std_msgs_msg.CColorRGBA__Sequence)(unsafe.Pointer(&mem.colors)), t.Colors)
-	mem.text = *(*C.rosidl_runtime_c__String)(t.Text.AsCStruct())
-	mem.mesh_resource = *(*C.rosidl_runtime_c__String)(t.MeshResource.AsCStruct())
-	mem.mesh_use_embedded_materials = C.bool(t.MeshUseEmbeddedMaterials)
-	return unsafe.Pointer(mem)
-}
-func (t *Marker) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.visualization_msgs__msg__Marker)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.Ns.AsGoStruct(unsafe.Pointer(&mem.ns))
-	t.Id = int32(mem.id)
-	t.Type = int32(mem._type)
-	t.Action = int32(mem.action)
-	t.Pose.AsGoStruct(unsafe.Pointer(&mem.pose))
-	t.Scale.AsGoStruct(unsafe.Pointer(&mem.scale))
-	t.Color.AsGoStruct(unsafe.Pointer(&mem.color))
-	t.Lifetime.AsGoStruct(unsafe.Pointer(&mem.lifetime))
-	t.FrameLocked = bool(mem.frame_locked)
-	geometry_msgs_msg.Point__Sequence_to_Go(&t.Points, *(*geometry_msgs_msg.CPoint__Sequence)(unsafe.Pointer(&mem.points)))
-	std_msgs_msg.ColorRGBA__Sequence_to_Go(&t.Colors, *(*std_msgs_msg.CColorRGBA__Sequence)(unsafe.Pointer(&mem.colors)))
-	t.Text.AsGoStruct(unsafe.Pointer(&mem.text))
-	t.MeshResource.AsGoStruct(unsafe.Pointer(&mem.mesh_resource))
-	t.MeshUseEmbeddedMaterials = bool(mem.mesh_use_embedded_materials)
-}
-func (t *Marker) Clone() ros2types.ROS2Msg {
+func (t *Marker) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Marker) SetDefaults() {
+	t.Header.SetDefaults()
+	t.Pose.SetDefaults()
+	t.Scale.SetDefaults()
+	t.Color.SetDefaults()
+	t.Lifetime.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var MarkerTypeSupport types.MessageTypeSupport = _MarkerTypeSupport{}
+
+type _MarkerTypeSupport struct{}
+
+func (t _MarkerTypeSupport) New() types.Message {
+	return NewMarker()
+}
+
+func (t _MarkerTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.visualization_msgs__msg__Marker
+	return (unsafe.Pointer)(C.visualization_msgs__msg__Marker__create())
+}
+
+func (t _MarkerTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.visualization_msgs__msg__Marker__destroy((*C.visualization_msgs__msg__Marker)(pointer_to_free))
+}
+
+func (t _MarkerTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Marker)
+	mem := (*C.visualization_msgs__msg__Marker)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.ns), m.Ns)
+	mem.id = C.int32_t(m.Id)
+	mem._type = C.int32_t(m.Type)
+	mem.action = C.int32_t(m.Action)
+	geometry_msgs_msg.PoseTypeSupport.AsCStruct(unsafe.Pointer(&mem.pose), &m.Pose)
+	geometry_msgs_msg.Vector3TypeSupport.AsCStruct(unsafe.Pointer(&mem.scale), &m.Scale)
+	std_msgs_msg.ColorRGBATypeSupport.AsCStruct(unsafe.Pointer(&mem.color), &m.Color)
+	builtin_interfaces_msg.DurationTypeSupport.AsCStruct(unsafe.Pointer(&mem.lifetime), &m.Lifetime)
+	mem.frame_locked = C.bool(m.FrameLocked)
+	geometry_msgs_msg.Point__Sequence_to_C((*geometry_msgs_msg.CPoint__Sequence)(unsafe.Pointer(&mem.points)), m.Points)
+	std_msgs_msg.ColorRGBA__Sequence_to_C((*std_msgs_msg.CColorRGBA__Sequence)(unsafe.Pointer(&mem.colors)), m.Colors)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.text), m.Text)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.mesh_resource), m.MeshResource)
+	mem.mesh_use_embedded_materials = C.bool(m.MeshUseEmbeddedMaterials)
+}
+
+func (t _MarkerTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Marker)
+	mem := (*C.visualization_msgs__msg__Marker)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	rosidl_runtime_c.StringAsGoStruct(&m.Ns, unsafe.Pointer(&mem.ns))
+	m.Id = int32(mem.id)
+	m.Type = int32(mem._type)
+	m.Action = int32(mem.action)
+	geometry_msgs_msg.PoseTypeSupport.AsGoStruct(&m.Pose, unsafe.Pointer(&mem.pose))
+	geometry_msgs_msg.Vector3TypeSupport.AsGoStruct(&m.Scale, unsafe.Pointer(&mem.scale))
+	std_msgs_msg.ColorRGBATypeSupport.AsGoStruct(&m.Color, unsafe.Pointer(&mem.color))
+	builtin_interfaces_msg.DurationTypeSupport.AsGoStruct(&m.Lifetime, unsafe.Pointer(&mem.lifetime))
+	m.FrameLocked = bool(mem.frame_locked)
+	geometry_msgs_msg.Point__Sequence_to_Go(&m.Points, *(*geometry_msgs_msg.CPoint__Sequence)(unsafe.Pointer(&mem.points)))
+	std_msgs_msg.ColorRGBA__Sequence_to_Go(&m.Colors, *(*std_msgs_msg.CColorRGBA__Sequence)(unsafe.Pointer(&mem.colors)))
+	rosidl_runtime_c.StringAsGoStruct(&m.Text, unsafe.Pointer(&mem.text))
+	rosidl_runtime_c.StringAsGoStruct(&m.MeshResource, unsafe.Pointer(&mem.mesh_resource))
+	m.MeshUseEmbeddedMaterials = bool(mem.mesh_use_embedded_materials)
+}
+
+func (t _MarkerTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__visualization_msgs__msg__Marker())
 }
 
 type CMarker = C.visualization_msgs__msg__Marker
@@ -164,8 +175,7 @@ func Marker__Sequence_to_Go(goSlice *[]Marker, cSlice CMarker__Sequence) {
 		cIdx := (*C.visualization_msgs__msg__Marker__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_visualization_msgs__msg__Marker * uintptr(i)),
 		))
-		(*goSlice)[i] = Marker{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		MarkerTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Marker__Sequence_to_C(cSlice *CMarker__Sequence, goSlice []Marker) {
@@ -180,18 +190,16 @@ func Marker__Sequence_to_C(cSlice *CMarker__Sequence, goSlice []Marker) {
 		cIdx := (*C.visualization_msgs__msg__Marker)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_visualization_msgs__msg__Marker * uintptr(i)),
 		))
-		*cIdx = *(*C.visualization_msgs__msg__Marker)(v.AsCStruct())
+		MarkerTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Marker__Array_to_Go(goSlice []Marker, cSlice []CMarker) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		MarkerTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Marker__Array_to_C(cSlice []CMarker, goSlice []Marker) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.visualization_msgs__msg__Marker)(goSlice[i].AsCStruct())
+		MarkerTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

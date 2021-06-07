@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EstimatorStatus", &EstimatorStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EstimatorStatus", EstimatorStatusTypeSupport)
 }
 const (
 	EstimatorStatus_GPS_CHECK_FAIL_GPS_FIX uint8 = 0// 0 : insufficient fix type (no 3D solution). bits are true when corresponding test has failed
@@ -116,108 +116,122 @@ type EstimatorStatus struct {
 // NewEstimatorStatus creates a new EstimatorStatus with default values.
 func NewEstimatorStatus() *EstimatorStatus {
 	self := EstimatorStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *EstimatorStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *EstimatorStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EstimatorStatus())
-}
-func (t *EstimatorStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EstimatorStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__EstimatorStatus__create())
-}
-func (t *EstimatorStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__EstimatorStatus__destroy((*C.px4_msgs__msg__EstimatorStatus)(pointer_to_free))
-}
-func (t *EstimatorStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__EstimatorStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	cSlice_vibe := mem.vibe[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_vibe)), t.Vibe[:])
-	cSlice_output_tracking_error := mem.output_tracking_error[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_output_tracking_error)), t.OutputTrackingError[:])
-	mem.gps_check_fail_flags = C.uint16_t(t.GpsCheckFailFlags)
-	mem.control_mode_flags = C.uint32_t(t.ControlModeFlags)
-	mem.filter_fault_flags = C.uint32_t(t.FilterFaultFlags)
-	mem.pos_horiz_accuracy = C.float(t.PosHorizAccuracy)
-	mem.pos_vert_accuracy = C.float(t.PosVertAccuracy)
-	mem.innovation_check_flags = C.uint16_t(t.InnovationCheckFlags)
-	mem.mag_test_ratio = C.float(t.MagTestRatio)
-	mem.vel_test_ratio = C.float(t.VelTestRatio)
-	mem.pos_test_ratio = C.float(t.PosTestRatio)
-	mem.hgt_test_ratio = C.float(t.HgtTestRatio)
-	mem.tas_test_ratio = C.float(t.TasTestRatio)
-	mem.hagl_test_ratio = C.float(t.HaglTestRatio)
-	mem.beta_test_ratio = C.float(t.BetaTestRatio)
-	mem.solution_status_flags = C.uint16_t(t.SolutionStatusFlags)
-	mem.reset_count_vel_ne = C.uint8_t(t.ResetCountVelNe)
-	mem.reset_count_vel_d = C.uint8_t(t.ResetCountVelD)
-	mem.reset_count_pos_ne = C.uint8_t(t.ResetCountPosNe)
-	mem.reset_count_pod_d = C.uint8_t(t.ResetCountPodD)
-	mem.reset_count_quat = C.uint8_t(t.ResetCountQuat)
-	mem.time_slip = C.float(t.TimeSlip)
-	mem.pre_flt_fail_innov_heading = C.bool(t.PreFltFailInnovHeading)
-	mem.pre_flt_fail_innov_vel_horiz = C.bool(t.PreFltFailInnovVelHoriz)
-	mem.pre_flt_fail_innov_vel_vert = C.bool(t.PreFltFailInnovVelVert)
-	mem.pre_flt_fail_innov_height = C.bool(t.PreFltFailInnovHeight)
-	mem.pre_flt_fail_mag_field_disturbed = C.bool(t.PreFltFailMagFieldDisturbed)
-	mem.accel_device_id = C.uint32_t(t.AccelDeviceId)
-	mem.gyro_device_id = C.uint32_t(t.GyroDeviceId)
-	mem.baro_device_id = C.uint32_t(t.BaroDeviceId)
-	mem.mag_device_id = C.uint32_t(t.MagDeviceId)
-	mem.health_flags = C.uint8_t(t.HealthFlags)
-	mem.timeout_flags = C.uint8_t(t.TimeoutFlags)
-	return unsafe.Pointer(mem)
-}
-func (t *EstimatorStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__EstimatorStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	cSlice_vibe := mem.vibe[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Vibe[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_vibe)))
-	cSlice_output_tracking_error := mem.output_tracking_error[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.OutputTrackingError[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_output_tracking_error)))
-	t.GpsCheckFailFlags = uint16(mem.gps_check_fail_flags)
-	t.ControlModeFlags = uint32(mem.control_mode_flags)
-	t.FilterFaultFlags = uint32(mem.filter_fault_flags)
-	t.PosHorizAccuracy = float32(mem.pos_horiz_accuracy)
-	t.PosVertAccuracy = float32(mem.pos_vert_accuracy)
-	t.InnovationCheckFlags = uint16(mem.innovation_check_flags)
-	t.MagTestRatio = float32(mem.mag_test_ratio)
-	t.VelTestRatio = float32(mem.vel_test_ratio)
-	t.PosTestRatio = float32(mem.pos_test_ratio)
-	t.HgtTestRatio = float32(mem.hgt_test_ratio)
-	t.TasTestRatio = float32(mem.tas_test_ratio)
-	t.HaglTestRatio = float32(mem.hagl_test_ratio)
-	t.BetaTestRatio = float32(mem.beta_test_ratio)
-	t.SolutionStatusFlags = uint16(mem.solution_status_flags)
-	t.ResetCountVelNe = uint8(mem.reset_count_vel_ne)
-	t.ResetCountVelD = uint8(mem.reset_count_vel_d)
-	t.ResetCountPosNe = uint8(mem.reset_count_pos_ne)
-	t.ResetCountPodD = uint8(mem.reset_count_pod_d)
-	t.ResetCountQuat = uint8(mem.reset_count_quat)
-	t.TimeSlip = float32(mem.time_slip)
-	t.PreFltFailInnovHeading = bool(mem.pre_flt_fail_innov_heading)
-	t.PreFltFailInnovVelHoriz = bool(mem.pre_flt_fail_innov_vel_horiz)
-	t.PreFltFailInnovVelVert = bool(mem.pre_flt_fail_innov_vel_vert)
-	t.PreFltFailInnovHeight = bool(mem.pre_flt_fail_innov_height)
-	t.PreFltFailMagFieldDisturbed = bool(mem.pre_flt_fail_mag_field_disturbed)
-	t.AccelDeviceId = uint32(mem.accel_device_id)
-	t.GyroDeviceId = uint32(mem.gyro_device_id)
-	t.BaroDeviceId = uint32(mem.baro_device_id)
-	t.MagDeviceId = uint32(mem.mag_device_id)
-	t.HealthFlags = uint8(mem.health_flags)
-	t.TimeoutFlags = uint8(mem.timeout_flags)
-}
-func (t *EstimatorStatus) Clone() ros2types.ROS2Msg {
+func (t *EstimatorStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *EstimatorStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var EstimatorStatusTypeSupport types.MessageTypeSupport = _EstimatorStatusTypeSupport{}
+
+type _EstimatorStatusTypeSupport struct{}
+
+func (t _EstimatorStatusTypeSupport) New() types.Message {
+	return NewEstimatorStatus()
+}
+
+func (t _EstimatorStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EstimatorStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__EstimatorStatus__create())
+}
+
+func (t _EstimatorStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__EstimatorStatus__destroy((*C.px4_msgs__msg__EstimatorStatus)(pointer_to_free))
+}
+
+func (t _EstimatorStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*EstimatorStatus)
+	mem := (*C.px4_msgs__msg__EstimatorStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	cSlice_vibe := mem.vibe[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_vibe)), m.Vibe[:])
+	cSlice_output_tracking_error := mem.output_tracking_error[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_output_tracking_error)), m.OutputTrackingError[:])
+	mem.gps_check_fail_flags = C.uint16_t(m.GpsCheckFailFlags)
+	mem.control_mode_flags = C.uint32_t(m.ControlModeFlags)
+	mem.filter_fault_flags = C.uint32_t(m.FilterFaultFlags)
+	mem.pos_horiz_accuracy = C.float(m.PosHorizAccuracy)
+	mem.pos_vert_accuracy = C.float(m.PosVertAccuracy)
+	mem.innovation_check_flags = C.uint16_t(m.InnovationCheckFlags)
+	mem.mag_test_ratio = C.float(m.MagTestRatio)
+	mem.vel_test_ratio = C.float(m.VelTestRatio)
+	mem.pos_test_ratio = C.float(m.PosTestRatio)
+	mem.hgt_test_ratio = C.float(m.HgtTestRatio)
+	mem.tas_test_ratio = C.float(m.TasTestRatio)
+	mem.hagl_test_ratio = C.float(m.HaglTestRatio)
+	mem.beta_test_ratio = C.float(m.BetaTestRatio)
+	mem.solution_status_flags = C.uint16_t(m.SolutionStatusFlags)
+	mem.reset_count_vel_ne = C.uint8_t(m.ResetCountVelNe)
+	mem.reset_count_vel_d = C.uint8_t(m.ResetCountVelD)
+	mem.reset_count_pos_ne = C.uint8_t(m.ResetCountPosNe)
+	mem.reset_count_pod_d = C.uint8_t(m.ResetCountPodD)
+	mem.reset_count_quat = C.uint8_t(m.ResetCountQuat)
+	mem.time_slip = C.float(m.TimeSlip)
+	mem.pre_flt_fail_innov_heading = C.bool(m.PreFltFailInnovHeading)
+	mem.pre_flt_fail_innov_vel_horiz = C.bool(m.PreFltFailInnovVelHoriz)
+	mem.pre_flt_fail_innov_vel_vert = C.bool(m.PreFltFailInnovVelVert)
+	mem.pre_flt_fail_innov_height = C.bool(m.PreFltFailInnovHeight)
+	mem.pre_flt_fail_mag_field_disturbed = C.bool(m.PreFltFailMagFieldDisturbed)
+	mem.accel_device_id = C.uint32_t(m.AccelDeviceId)
+	mem.gyro_device_id = C.uint32_t(m.GyroDeviceId)
+	mem.baro_device_id = C.uint32_t(m.BaroDeviceId)
+	mem.mag_device_id = C.uint32_t(m.MagDeviceId)
+	mem.health_flags = C.uint8_t(m.HealthFlags)
+	mem.timeout_flags = C.uint8_t(m.TimeoutFlags)
+}
+
+func (t _EstimatorStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*EstimatorStatus)
+	mem := (*C.px4_msgs__msg__EstimatorStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	cSlice_vibe := mem.vibe[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Vibe[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_vibe)))
+	cSlice_output_tracking_error := mem.output_tracking_error[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.OutputTrackingError[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_output_tracking_error)))
+	m.GpsCheckFailFlags = uint16(mem.gps_check_fail_flags)
+	m.ControlModeFlags = uint32(mem.control_mode_flags)
+	m.FilterFaultFlags = uint32(mem.filter_fault_flags)
+	m.PosHorizAccuracy = float32(mem.pos_horiz_accuracy)
+	m.PosVertAccuracy = float32(mem.pos_vert_accuracy)
+	m.InnovationCheckFlags = uint16(mem.innovation_check_flags)
+	m.MagTestRatio = float32(mem.mag_test_ratio)
+	m.VelTestRatio = float32(mem.vel_test_ratio)
+	m.PosTestRatio = float32(mem.pos_test_ratio)
+	m.HgtTestRatio = float32(mem.hgt_test_ratio)
+	m.TasTestRatio = float32(mem.tas_test_ratio)
+	m.HaglTestRatio = float32(mem.hagl_test_ratio)
+	m.BetaTestRatio = float32(mem.beta_test_ratio)
+	m.SolutionStatusFlags = uint16(mem.solution_status_flags)
+	m.ResetCountVelNe = uint8(mem.reset_count_vel_ne)
+	m.ResetCountVelD = uint8(mem.reset_count_vel_d)
+	m.ResetCountPosNe = uint8(mem.reset_count_pos_ne)
+	m.ResetCountPodD = uint8(mem.reset_count_pod_d)
+	m.ResetCountQuat = uint8(mem.reset_count_quat)
+	m.TimeSlip = float32(mem.time_slip)
+	m.PreFltFailInnovHeading = bool(mem.pre_flt_fail_innov_heading)
+	m.PreFltFailInnovVelHoriz = bool(mem.pre_flt_fail_innov_vel_horiz)
+	m.PreFltFailInnovVelVert = bool(mem.pre_flt_fail_innov_vel_vert)
+	m.PreFltFailInnovHeight = bool(mem.pre_flt_fail_innov_height)
+	m.PreFltFailMagFieldDisturbed = bool(mem.pre_flt_fail_mag_field_disturbed)
+	m.AccelDeviceId = uint32(mem.accel_device_id)
+	m.GyroDeviceId = uint32(mem.gyro_device_id)
+	m.BaroDeviceId = uint32(mem.baro_device_id)
+	m.MagDeviceId = uint32(mem.mag_device_id)
+	m.HealthFlags = uint8(mem.health_flags)
+	m.TimeoutFlags = uint8(mem.timeout_flags)
+}
+
+func (t _EstimatorStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EstimatorStatus())
 }
 
 type CEstimatorStatus = C.px4_msgs__msg__EstimatorStatus
@@ -232,8 +246,7 @@ func EstimatorStatus__Sequence_to_Go(goSlice *[]EstimatorStatus, cSlice CEstimat
 		cIdx := (*C.px4_msgs__msg__EstimatorStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EstimatorStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = EstimatorStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		EstimatorStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func EstimatorStatus__Sequence_to_C(cSlice *CEstimatorStatus__Sequence, goSlice []EstimatorStatus) {
@@ -248,18 +261,16 @@ func EstimatorStatus__Sequence_to_C(cSlice *CEstimatorStatus__Sequence, goSlice 
 		cIdx := (*C.px4_msgs__msg__EstimatorStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EstimatorStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__EstimatorStatus)(v.AsCStruct())
+		EstimatorStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func EstimatorStatus__Array_to_Go(goSlice []EstimatorStatus, cSlice []CEstimatorStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		EstimatorStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func EstimatorStatus__Array_to_C(cSlice []CEstimatorStatus, goSlice []EstimatorStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__EstimatorStatus)(goSlice[i].AsCStruct())
+		EstimatorStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

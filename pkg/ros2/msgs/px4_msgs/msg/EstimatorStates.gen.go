@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EstimatorStates", &EstimatorStates{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EstimatorStates", EstimatorStatesTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewEstimatorStates
@@ -50,48 +50,62 @@ type EstimatorStates struct {
 // NewEstimatorStates creates a new EstimatorStates with default values.
 func NewEstimatorStates() *EstimatorStates {
 	self := EstimatorStates{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *EstimatorStates) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *EstimatorStates) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EstimatorStates())
-}
-func (t *EstimatorStates) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EstimatorStates
-	return (unsafe.Pointer)(C.px4_msgs__msg__EstimatorStates__create())
-}
-func (t *EstimatorStates) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__EstimatorStates__destroy((*C.px4_msgs__msg__EstimatorStates)(pointer_to_free))
-}
-func (t *EstimatorStates) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__EstimatorStates)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	cSlice_states := mem.states[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_states)), t.States[:])
-	mem.n_states = C.uint8_t(t.NStates)
-	cSlice_covariances := mem.covariances[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_covariances)), t.Covariances[:])
-	return unsafe.Pointer(mem)
-}
-func (t *EstimatorStates) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__EstimatorStates)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	cSlice_states := mem.states[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.States[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_states)))
-	t.NStates = uint8(mem.n_states)
-	cSlice_covariances := mem.covariances[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Covariances[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_covariances)))
-}
-func (t *EstimatorStates) Clone() ros2types.ROS2Msg {
+func (t *EstimatorStates) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *EstimatorStates) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var EstimatorStatesTypeSupport types.MessageTypeSupport = _EstimatorStatesTypeSupport{}
+
+type _EstimatorStatesTypeSupport struct{}
+
+func (t _EstimatorStatesTypeSupport) New() types.Message {
+	return NewEstimatorStates()
+}
+
+func (t _EstimatorStatesTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EstimatorStates
+	return (unsafe.Pointer)(C.px4_msgs__msg__EstimatorStates__create())
+}
+
+func (t _EstimatorStatesTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__EstimatorStates__destroy((*C.px4_msgs__msg__EstimatorStates)(pointer_to_free))
+}
+
+func (t _EstimatorStatesTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*EstimatorStates)
+	mem := (*C.px4_msgs__msg__EstimatorStates)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	cSlice_states := mem.states[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_states)), m.States[:])
+	mem.n_states = C.uint8_t(m.NStates)
+	cSlice_covariances := mem.covariances[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_covariances)), m.Covariances[:])
+}
+
+func (t _EstimatorStatesTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*EstimatorStates)
+	mem := (*C.px4_msgs__msg__EstimatorStates)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	cSlice_states := mem.states[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.States[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_states)))
+	m.NStates = uint8(mem.n_states)
+	cSlice_covariances := mem.covariances[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Covariances[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_covariances)))
+}
+
+func (t _EstimatorStatesTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EstimatorStates())
 }
 
 type CEstimatorStates = C.px4_msgs__msg__EstimatorStates
@@ -106,8 +120,7 @@ func EstimatorStates__Sequence_to_Go(goSlice *[]EstimatorStates, cSlice CEstimat
 		cIdx := (*C.px4_msgs__msg__EstimatorStates__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EstimatorStates * uintptr(i)),
 		))
-		(*goSlice)[i] = EstimatorStates{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		EstimatorStatesTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func EstimatorStates__Sequence_to_C(cSlice *CEstimatorStates__Sequence, goSlice []EstimatorStates) {
@@ -122,18 +135,16 @@ func EstimatorStates__Sequence_to_C(cSlice *CEstimatorStates__Sequence, goSlice 
 		cIdx := (*C.px4_msgs__msg__EstimatorStates)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EstimatorStates * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__EstimatorStates)(v.AsCStruct())
+		EstimatorStatesTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func EstimatorStates__Array_to_Go(goSlice []EstimatorStates, cSlice []CEstimatorStates) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		EstimatorStatesTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func EstimatorStates__Array_to_C(cSlice []CEstimatorStates, goSlice []EstimatorStates) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__EstimatorStates)(goSlice[i].AsCStruct())
+		EstimatorStatesTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package map_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("map_msgs/GetMapROI_Request", &GetMapROI_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("map_msgs/GetMapROI_Request", GetMapROI_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewGetMapROI_Request
@@ -48,42 +48,56 @@ type GetMapROI_Request struct {
 // NewGetMapROI_Request creates a new GetMapROI_Request with default values.
 func NewGetMapROI_Request() *GetMapROI_Request {
 	self := GetMapROI_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *GetMapROI_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *GetMapROI_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__map_msgs__srv__GetMapROI_Request())
-}
-func (t *GetMapROI_Request) PrepareMemory() unsafe.Pointer { //returns *C.map_msgs__srv__GetMapROI_Request
-	return (unsafe.Pointer)(C.map_msgs__srv__GetMapROI_Request__create())
-}
-func (t *GetMapROI_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.map_msgs__srv__GetMapROI_Request__destroy((*C.map_msgs__srv__GetMapROI_Request)(pointer_to_free))
-}
-func (t *GetMapROI_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.map_msgs__srv__GetMapROI_Request)(t.PrepareMemory())
-	mem.x = C.double(t.X)
-	mem.y = C.double(t.Y)
-	mem.l_x = C.double(t.LX)
-	mem.l_y = C.double(t.LY)
-	return unsafe.Pointer(mem)
-}
-func (t *GetMapROI_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.map_msgs__srv__GetMapROI_Request)(ros2_message_buffer)
-	t.X = float64(mem.x)
-	t.Y = float64(mem.y)
-	t.LX = float64(mem.l_x)
-	t.LY = float64(mem.l_y)
-}
-func (t *GetMapROI_Request) Clone() ros2types.ROS2Msg {
+func (t *GetMapROI_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *GetMapROI_Request) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var GetMapROI_RequestTypeSupport types.MessageTypeSupport = _GetMapROI_RequestTypeSupport{}
+
+type _GetMapROI_RequestTypeSupport struct{}
+
+func (t _GetMapROI_RequestTypeSupport) New() types.Message {
+	return NewGetMapROI_Request()
+}
+
+func (t _GetMapROI_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.map_msgs__srv__GetMapROI_Request
+	return (unsafe.Pointer)(C.map_msgs__srv__GetMapROI_Request__create())
+}
+
+func (t _GetMapROI_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.map_msgs__srv__GetMapROI_Request__destroy((*C.map_msgs__srv__GetMapROI_Request)(pointer_to_free))
+}
+
+func (t _GetMapROI_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*GetMapROI_Request)
+	mem := (*C.map_msgs__srv__GetMapROI_Request)(dst)
+	mem.x = C.double(m.X)
+	mem.y = C.double(m.Y)
+	mem.l_x = C.double(m.LX)
+	mem.l_y = C.double(m.LY)
+}
+
+func (t _GetMapROI_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*GetMapROI_Request)
+	mem := (*C.map_msgs__srv__GetMapROI_Request)(ros2_message_buffer)
+	m.X = float64(mem.x)
+	m.Y = float64(mem.y)
+	m.LX = float64(mem.l_x)
+	m.LY = float64(mem.l_y)
+}
+
+func (t _GetMapROI_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__map_msgs__srv__GetMapROI_Request())
 }
 
 type CGetMapROI_Request = C.map_msgs__srv__GetMapROI_Request
@@ -98,8 +112,7 @@ func GetMapROI_Request__Sequence_to_Go(goSlice *[]GetMapROI_Request, cSlice CGet
 		cIdx := (*C.map_msgs__srv__GetMapROI_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_map_msgs__srv__GetMapROI_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = GetMapROI_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		GetMapROI_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func GetMapROI_Request__Sequence_to_C(cSlice *CGetMapROI_Request__Sequence, goSlice []GetMapROI_Request) {
@@ -114,18 +127,16 @@ func GetMapROI_Request__Sequence_to_C(cSlice *CGetMapROI_Request__Sequence, goSl
 		cIdx := (*C.map_msgs__srv__GetMapROI_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_map_msgs__srv__GetMapROI_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.map_msgs__srv__GetMapROI_Request)(v.AsCStruct())
+		GetMapROI_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func GetMapROI_Request__Array_to_Go(goSlice []GetMapROI_Request, cSlice []CGetMapROI_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		GetMapROI_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func GetMapROI_Request__Array_to_C(cSlice []CGetMapROI_Request, goSlice []GetMapROI_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.map_msgs__srv__GetMapROI_Request)(goSlice[i].AsCStruct())
+		GetMapROI_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

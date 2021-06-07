@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("composition_interfaces/LoadNode", LoadNode)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("composition_interfaces/LoadNode", LoadNodeTypeSupport)
 }
 
-type _LoadNode struct {
-	req,resp ros2types.ROS2Msg
+type _LoadNodeTypeSupport struct {}
+
+func (s _LoadNodeTypeSupport) Request() types.MessageTypeSupport {
+	return LoadNode_RequestTypeSupport
 }
 
-func (s *_LoadNode) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _LoadNodeTypeSupport) Response() types.MessageTypeSupport {
+	return LoadNode_ResponseTypeSupport
 }
 
-func (s *_LoadNode) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_LoadNode) TypeSupport() unsafe.Pointer {
+func (s _LoadNodeTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__composition_interfaces__srv__LoadNode())
 }
 
 // Modifying this variable is undefined behavior.
-var LoadNode ros2types.Service = &_LoadNode{
-	req: &LoadNode_Request{},
-	resp: &LoadNode_Response{},
-}
+var LoadNodeTypeSupport types.ServiceTypeSupport = _LoadNodeTypeSupport{}

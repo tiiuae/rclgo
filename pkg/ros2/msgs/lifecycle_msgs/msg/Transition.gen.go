@@ -15,7 +15,7 @@ package lifecycle_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("lifecycle_msgs/Transition", &Transition{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("lifecycle_msgs/Transition", TransitionTypeSupport)
 }
 const (
 	Transition_TRANSITION_CREATE uint8 = 0// This transition will instantiate the node, but will not run any code beyondthe constructor.
@@ -73,45 +73,58 @@ const (
 // function instead.
 type Transition struct {
 	Id uint8 `yaml:"id"`// The transition id from above definitions.
-	Label rosidl_runtime_c.String `yaml:"label"`// A text label of the transition.
+	Label string `yaml:"label"`// A text label of the transition.
 }
 
 // NewTransition creates a new Transition with default values.
 func NewTransition() *Transition {
 	self := Transition{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Transition) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Label.SetDefaults("")
-	
-	return t
-}
-
-func (t *Transition) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__lifecycle_msgs__msg__Transition())
-}
-func (t *Transition) PrepareMemory() unsafe.Pointer { //returns *C.lifecycle_msgs__msg__Transition
-	return (unsafe.Pointer)(C.lifecycle_msgs__msg__Transition__create())
-}
-func (t *Transition) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.lifecycle_msgs__msg__Transition__destroy((*C.lifecycle_msgs__msg__Transition)(pointer_to_free))
-}
-func (t *Transition) AsCStruct() unsafe.Pointer {
-	mem := (*C.lifecycle_msgs__msg__Transition)(t.PrepareMemory())
-	mem.id = C.uint8_t(t.Id)
-	mem.label = *(*C.rosidl_runtime_c__String)(t.Label.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *Transition) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.lifecycle_msgs__msg__Transition)(ros2_message_buffer)
-	t.Id = uint8(mem.id)
-	t.Label.AsGoStruct(unsafe.Pointer(&mem.label))
-}
-func (t *Transition) Clone() ros2types.ROS2Msg {
+func (t *Transition) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Transition) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TransitionTypeSupport types.MessageTypeSupport = _TransitionTypeSupport{}
+
+type _TransitionTypeSupport struct{}
+
+func (t _TransitionTypeSupport) New() types.Message {
+	return NewTransition()
+}
+
+func (t _TransitionTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.lifecycle_msgs__msg__Transition
+	return (unsafe.Pointer)(C.lifecycle_msgs__msg__Transition__create())
+}
+
+func (t _TransitionTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.lifecycle_msgs__msg__Transition__destroy((*C.lifecycle_msgs__msg__Transition)(pointer_to_free))
+}
+
+func (t _TransitionTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Transition)
+	mem := (*C.lifecycle_msgs__msg__Transition)(dst)
+	mem.id = C.uint8_t(m.Id)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.label), m.Label)
+}
+
+func (t _TransitionTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Transition)
+	mem := (*C.lifecycle_msgs__msg__Transition)(ros2_message_buffer)
+	m.Id = uint8(mem.id)
+	rosidl_runtime_c.StringAsGoStruct(&m.Label, unsafe.Pointer(&mem.label))
+}
+
+func (t _TransitionTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__lifecycle_msgs__msg__Transition())
 }
 
 type CTransition = C.lifecycle_msgs__msg__Transition
@@ -126,8 +139,7 @@ func Transition__Sequence_to_Go(goSlice *[]Transition, cSlice CTransition__Seque
 		cIdx := (*C.lifecycle_msgs__msg__Transition__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_lifecycle_msgs__msg__Transition * uintptr(i)),
 		))
-		(*goSlice)[i] = Transition{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TransitionTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Transition__Sequence_to_C(cSlice *CTransition__Sequence, goSlice []Transition) {
@@ -142,18 +154,16 @@ func Transition__Sequence_to_C(cSlice *CTransition__Sequence, goSlice []Transiti
 		cIdx := (*C.lifecycle_msgs__msg__Transition)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_lifecycle_msgs__msg__Transition * uintptr(i)),
 		))
-		*cIdx = *(*C.lifecycle_msgs__msg__Transition)(v.AsCStruct())
+		TransitionTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Transition__Array_to_Go(goSlice []Transition, cSlice []CTransition) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TransitionTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Transition__Array_to_C(cSlice []CTransition, goSlice []Transition) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.lifecycle_msgs__msg__Transition)(goSlice[i].AsCStruct())
+		TransitionTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

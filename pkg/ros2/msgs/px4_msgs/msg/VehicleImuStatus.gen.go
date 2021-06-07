@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleImuStatus", &VehicleImuStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleImuStatus", VehicleImuStatusTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewVehicleImuStatus
@@ -62,74 +62,88 @@ type VehicleImuStatus struct {
 // NewVehicleImuStatus creates a new VehicleImuStatus with default values.
 func NewVehicleImuStatus() *VehicleImuStatus {
 	self := VehicleImuStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *VehicleImuStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *VehicleImuStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleImuStatus())
-}
-func (t *VehicleImuStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleImuStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleImuStatus__create())
-}
-func (t *VehicleImuStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__VehicleImuStatus__destroy((*C.px4_msgs__msg__VehicleImuStatus)(pointer_to_free))
-}
-func (t *VehicleImuStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__VehicleImuStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.accel_device_id = C.uint32_t(t.AccelDeviceId)
-	mem.gyro_device_id = C.uint32_t(t.GyroDeviceId)
-	cSlice_accel_clipping := mem.accel_clipping[:]
-	rosidl_runtime_c.Uint32__Array_to_C(*(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_accel_clipping)), t.AccelClipping[:])
-	mem.accel_error_count = C.uint32_t(t.AccelErrorCount)
-	mem.gyro_error_count = C.uint32_t(t.GyroErrorCount)
-	mem.accel_rate_hz = C.float(t.AccelRateHz)
-	mem.gyro_rate_hz = C.float(t.GyroRateHz)
-	mem.accel_raw_rate_hz = C.float(t.AccelRawRateHz)
-	mem.gyro_raw_rate_hz = C.float(t.GyroRawRateHz)
-	mem.accel_vibration_metric = C.float(t.AccelVibrationMetric)
-	mem.gyro_vibration_metric = C.float(t.GyroVibrationMetric)
-	mem.gyro_coning_vibration = C.float(t.GyroConingVibration)
-	cSlice_mean_accel := mem.mean_accel[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_mean_accel)), t.MeanAccel[:])
-	cSlice_mean_gyro := mem.mean_gyro[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_mean_gyro)), t.MeanGyro[:])
-	mem.temperature_accel = C.float(t.TemperatureAccel)
-	mem.temperature_gyro = C.float(t.TemperatureGyro)
-	return unsafe.Pointer(mem)
-}
-func (t *VehicleImuStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__VehicleImuStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.AccelDeviceId = uint32(mem.accel_device_id)
-	t.GyroDeviceId = uint32(mem.gyro_device_id)
-	cSlice_accel_clipping := mem.accel_clipping[:]
-	rosidl_runtime_c.Uint32__Array_to_Go(t.AccelClipping[:], *(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_accel_clipping)))
-	t.AccelErrorCount = uint32(mem.accel_error_count)
-	t.GyroErrorCount = uint32(mem.gyro_error_count)
-	t.AccelRateHz = float32(mem.accel_rate_hz)
-	t.GyroRateHz = float32(mem.gyro_rate_hz)
-	t.AccelRawRateHz = float32(mem.accel_raw_rate_hz)
-	t.GyroRawRateHz = float32(mem.gyro_raw_rate_hz)
-	t.AccelVibrationMetric = float32(mem.accel_vibration_metric)
-	t.GyroVibrationMetric = float32(mem.gyro_vibration_metric)
-	t.GyroConingVibration = float32(mem.gyro_coning_vibration)
-	cSlice_mean_accel := mem.mean_accel[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.MeanAccel[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_mean_accel)))
-	cSlice_mean_gyro := mem.mean_gyro[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.MeanGyro[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_mean_gyro)))
-	t.TemperatureAccel = float32(mem.temperature_accel)
-	t.TemperatureGyro = float32(mem.temperature_gyro)
-}
-func (t *VehicleImuStatus) Clone() ros2types.ROS2Msg {
+func (t *VehicleImuStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *VehicleImuStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VehicleImuStatusTypeSupport types.MessageTypeSupport = _VehicleImuStatusTypeSupport{}
+
+type _VehicleImuStatusTypeSupport struct{}
+
+func (t _VehicleImuStatusTypeSupport) New() types.Message {
+	return NewVehicleImuStatus()
+}
+
+func (t _VehicleImuStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleImuStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleImuStatus__create())
+}
+
+func (t _VehicleImuStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__VehicleImuStatus__destroy((*C.px4_msgs__msg__VehicleImuStatus)(pointer_to_free))
+}
+
+func (t _VehicleImuStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*VehicleImuStatus)
+	mem := (*C.px4_msgs__msg__VehicleImuStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.accel_device_id = C.uint32_t(m.AccelDeviceId)
+	mem.gyro_device_id = C.uint32_t(m.GyroDeviceId)
+	cSlice_accel_clipping := mem.accel_clipping[:]
+	rosidl_runtime_c.Uint32__Array_to_C(*(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_accel_clipping)), m.AccelClipping[:])
+	mem.accel_error_count = C.uint32_t(m.AccelErrorCount)
+	mem.gyro_error_count = C.uint32_t(m.GyroErrorCount)
+	mem.accel_rate_hz = C.float(m.AccelRateHz)
+	mem.gyro_rate_hz = C.float(m.GyroRateHz)
+	mem.accel_raw_rate_hz = C.float(m.AccelRawRateHz)
+	mem.gyro_raw_rate_hz = C.float(m.GyroRawRateHz)
+	mem.accel_vibration_metric = C.float(m.AccelVibrationMetric)
+	mem.gyro_vibration_metric = C.float(m.GyroVibrationMetric)
+	mem.gyro_coning_vibration = C.float(m.GyroConingVibration)
+	cSlice_mean_accel := mem.mean_accel[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_mean_accel)), m.MeanAccel[:])
+	cSlice_mean_gyro := mem.mean_gyro[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_mean_gyro)), m.MeanGyro[:])
+	mem.temperature_accel = C.float(m.TemperatureAccel)
+	mem.temperature_gyro = C.float(m.TemperatureGyro)
+}
+
+func (t _VehicleImuStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*VehicleImuStatus)
+	mem := (*C.px4_msgs__msg__VehicleImuStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.AccelDeviceId = uint32(mem.accel_device_id)
+	m.GyroDeviceId = uint32(mem.gyro_device_id)
+	cSlice_accel_clipping := mem.accel_clipping[:]
+	rosidl_runtime_c.Uint32__Array_to_Go(m.AccelClipping[:], *(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_accel_clipping)))
+	m.AccelErrorCount = uint32(mem.accel_error_count)
+	m.GyroErrorCount = uint32(mem.gyro_error_count)
+	m.AccelRateHz = float32(mem.accel_rate_hz)
+	m.GyroRateHz = float32(mem.gyro_rate_hz)
+	m.AccelRawRateHz = float32(mem.accel_raw_rate_hz)
+	m.GyroRawRateHz = float32(mem.gyro_raw_rate_hz)
+	m.AccelVibrationMetric = float32(mem.accel_vibration_metric)
+	m.GyroVibrationMetric = float32(mem.gyro_vibration_metric)
+	m.GyroConingVibration = float32(mem.gyro_coning_vibration)
+	cSlice_mean_accel := mem.mean_accel[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.MeanAccel[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_mean_accel)))
+	cSlice_mean_gyro := mem.mean_gyro[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.MeanGyro[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_mean_gyro)))
+	m.TemperatureAccel = float32(mem.temperature_accel)
+	m.TemperatureGyro = float32(mem.temperature_gyro)
+}
+
+func (t _VehicleImuStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleImuStatus())
 }
 
 type CVehicleImuStatus = C.px4_msgs__msg__VehicleImuStatus
@@ -144,8 +158,7 @@ func VehicleImuStatus__Sequence_to_Go(goSlice *[]VehicleImuStatus, cSlice CVehic
 		cIdx := (*C.px4_msgs__msg__VehicleImuStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleImuStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = VehicleImuStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VehicleImuStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func VehicleImuStatus__Sequence_to_C(cSlice *CVehicleImuStatus__Sequence, goSlice []VehicleImuStatus) {
@@ -160,18 +173,16 @@ func VehicleImuStatus__Sequence_to_C(cSlice *CVehicleImuStatus__Sequence, goSlic
 		cIdx := (*C.px4_msgs__msg__VehicleImuStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleImuStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__VehicleImuStatus)(v.AsCStruct())
+		VehicleImuStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func VehicleImuStatus__Array_to_Go(goSlice []VehicleImuStatus, cSlice []CVehicleImuStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VehicleImuStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func VehicleImuStatus__Array_to_C(cSlice []CVehicleImuStatus, goSlice []VehicleImuStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__VehicleImuStatus)(goSlice[i].AsCStruct())
+		VehicleImuStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

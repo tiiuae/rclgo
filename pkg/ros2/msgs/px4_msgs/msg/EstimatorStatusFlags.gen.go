@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EstimatorStatusFlags", &EstimatorStatusFlags{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EstimatorStatusFlags", EstimatorStatusFlagsTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewEstimatorStatusFlags
@@ -107,160 +107,174 @@ type EstimatorStatusFlags struct {
 // NewEstimatorStatusFlags creates a new EstimatorStatusFlags with default values.
 func NewEstimatorStatusFlags() *EstimatorStatusFlags {
 	self := EstimatorStatusFlags{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *EstimatorStatusFlags) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *EstimatorStatusFlags) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EstimatorStatusFlags())
-}
-func (t *EstimatorStatusFlags) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EstimatorStatusFlags
-	return (unsafe.Pointer)(C.px4_msgs__msg__EstimatorStatusFlags__create())
-}
-func (t *EstimatorStatusFlags) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__EstimatorStatusFlags__destroy((*C.px4_msgs__msg__EstimatorStatusFlags)(pointer_to_free))
-}
-func (t *EstimatorStatusFlags) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__EstimatorStatusFlags)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	mem.control_status_changes = C.uint32_t(t.ControlStatusChanges)
-	mem.cs_tilt_align = C.bool(t.CsTiltAlign)
-	mem.cs_yaw_align = C.bool(t.CsYawAlign)
-	mem.cs_gps = C.bool(t.CsGps)
-	mem.cs_opt_flow = C.bool(t.CsOptFlow)
-	mem.cs_mag_hdg = C.bool(t.CsMagHdg)
-	mem.cs_mag_3d = C.bool(t.CsMag3d)
-	mem.cs_mag_dec = C.bool(t.CsMagDec)
-	mem.cs_in_air = C.bool(t.CsInAir)
-	mem.cs_wind = C.bool(t.CsWind)
-	mem.cs_baro_hgt = C.bool(t.CsBaroHgt)
-	mem.cs_rng_hgt = C.bool(t.CsRngHgt)
-	mem.cs_gps_hgt = C.bool(t.CsGpsHgt)
-	mem.cs_ev_pos = C.bool(t.CsEvPos)
-	mem.cs_ev_yaw = C.bool(t.CsEvYaw)
-	mem.cs_ev_hgt = C.bool(t.CsEvHgt)
-	mem.cs_fuse_beta = C.bool(t.CsFuseBeta)
-	mem.cs_mag_field_disturbed = C.bool(t.CsMagFieldDisturbed)
-	mem.cs_fixed_wing = C.bool(t.CsFixedWing)
-	mem.cs_mag_fault = C.bool(t.CsMagFault)
-	mem.cs_fuse_aspd = C.bool(t.CsFuseAspd)
-	mem.cs_gnd_effect = C.bool(t.CsGndEffect)
-	mem.cs_rng_stuck = C.bool(t.CsRngStuck)
-	mem.cs_gps_yaw = C.bool(t.CsGpsYaw)
-	mem.cs_mag_aligned_in_flight = C.bool(t.CsMagAlignedInFlight)
-	mem.cs_ev_vel = C.bool(t.CsEvVel)
-	mem.cs_synthetic_mag_z = C.bool(t.CsSyntheticMagZ)
-	mem.cs_vehicle_at_rest = C.bool(t.CsVehicleAtRest)
-	mem.fault_status_changes = C.uint32_t(t.FaultStatusChanges)
-	mem.fs_bad_mag_x = C.bool(t.FsBadMagX)
-	mem.fs_bad_mag_y = C.bool(t.FsBadMagY)
-	mem.fs_bad_mag_z = C.bool(t.FsBadMagZ)
-	mem.fs_bad_hdg = C.bool(t.FsBadHdg)
-	mem.fs_bad_mag_decl = C.bool(t.FsBadMagDecl)
-	mem.fs_bad_airspeed = C.bool(t.FsBadAirspeed)
-	mem.fs_bad_sideslip = C.bool(t.FsBadSideslip)
-	mem.fs_bad_optflow_x = C.bool(t.FsBadOptflowX)
-	mem.fs_bad_optflow_y = C.bool(t.FsBadOptflowY)
-	mem.fs_bad_vel_n = C.bool(t.FsBadVelN)
-	mem.fs_bad_vel_e = C.bool(t.FsBadVelE)
-	mem.fs_bad_vel_d = C.bool(t.FsBadVelD)
-	mem.fs_bad_pos_n = C.bool(t.FsBadPosN)
-	mem.fs_bad_pos_e = C.bool(t.FsBadPosE)
-	mem.fs_bad_pos_d = C.bool(t.FsBadPosD)
-	mem.fs_bad_acc_bias = C.bool(t.FsBadAccBias)
-	mem.fs_bad_acc_vertical = C.bool(t.FsBadAccVertical)
-	mem.fs_bad_acc_clipping = C.bool(t.FsBadAccClipping)
-	mem.innovation_fault_status_changes = C.uint32_t(t.InnovationFaultStatusChanges)
-	mem.reject_hor_vel = C.bool(t.RejectHorVel)
-	mem.reject_ver_vel = C.bool(t.RejectVerVel)
-	mem.reject_hor_pos = C.bool(t.RejectHorPos)
-	mem.reject_ver_pos = C.bool(t.RejectVerPos)
-	mem.reject_mag_x = C.bool(t.RejectMagX)
-	mem.reject_mag_y = C.bool(t.RejectMagY)
-	mem.reject_mag_z = C.bool(t.RejectMagZ)
-	mem.reject_yaw = C.bool(t.RejectYaw)
-	mem.reject_airspeed = C.bool(t.RejectAirspeed)
-	mem.reject_sideslip = C.bool(t.RejectSideslip)
-	mem.reject_hagl = C.bool(t.RejectHagl)
-	mem.reject_optflow_x = C.bool(t.RejectOptflowX)
-	mem.reject_optflow_y = C.bool(t.RejectOptflowY)
-	return unsafe.Pointer(mem)
-}
-func (t *EstimatorStatusFlags) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__EstimatorStatusFlags)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	t.ControlStatusChanges = uint32(mem.control_status_changes)
-	t.CsTiltAlign = bool(mem.cs_tilt_align)
-	t.CsYawAlign = bool(mem.cs_yaw_align)
-	t.CsGps = bool(mem.cs_gps)
-	t.CsOptFlow = bool(mem.cs_opt_flow)
-	t.CsMagHdg = bool(mem.cs_mag_hdg)
-	t.CsMag3d = bool(mem.cs_mag_3d)
-	t.CsMagDec = bool(mem.cs_mag_dec)
-	t.CsInAir = bool(mem.cs_in_air)
-	t.CsWind = bool(mem.cs_wind)
-	t.CsBaroHgt = bool(mem.cs_baro_hgt)
-	t.CsRngHgt = bool(mem.cs_rng_hgt)
-	t.CsGpsHgt = bool(mem.cs_gps_hgt)
-	t.CsEvPos = bool(mem.cs_ev_pos)
-	t.CsEvYaw = bool(mem.cs_ev_yaw)
-	t.CsEvHgt = bool(mem.cs_ev_hgt)
-	t.CsFuseBeta = bool(mem.cs_fuse_beta)
-	t.CsMagFieldDisturbed = bool(mem.cs_mag_field_disturbed)
-	t.CsFixedWing = bool(mem.cs_fixed_wing)
-	t.CsMagFault = bool(mem.cs_mag_fault)
-	t.CsFuseAspd = bool(mem.cs_fuse_aspd)
-	t.CsGndEffect = bool(mem.cs_gnd_effect)
-	t.CsRngStuck = bool(mem.cs_rng_stuck)
-	t.CsGpsYaw = bool(mem.cs_gps_yaw)
-	t.CsMagAlignedInFlight = bool(mem.cs_mag_aligned_in_flight)
-	t.CsEvVel = bool(mem.cs_ev_vel)
-	t.CsSyntheticMagZ = bool(mem.cs_synthetic_mag_z)
-	t.CsVehicleAtRest = bool(mem.cs_vehicle_at_rest)
-	t.FaultStatusChanges = uint32(mem.fault_status_changes)
-	t.FsBadMagX = bool(mem.fs_bad_mag_x)
-	t.FsBadMagY = bool(mem.fs_bad_mag_y)
-	t.FsBadMagZ = bool(mem.fs_bad_mag_z)
-	t.FsBadHdg = bool(mem.fs_bad_hdg)
-	t.FsBadMagDecl = bool(mem.fs_bad_mag_decl)
-	t.FsBadAirspeed = bool(mem.fs_bad_airspeed)
-	t.FsBadSideslip = bool(mem.fs_bad_sideslip)
-	t.FsBadOptflowX = bool(mem.fs_bad_optflow_x)
-	t.FsBadOptflowY = bool(mem.fs_bad_optflow_y)
-	t.FsBadVelN = bool(mem.fs_bad_vel_n)
-	t.FsBadVelE = bool(mem.fs_bad_vel_e)
-	t.FsBadVelD = bool(mem.fs_bad_vel_d)
-	t.FsBadPosN = bool(mem.fs_bad_pos_n)
-	t.FsBadPosE = bool(mem.fs_bad_pos_e)
-	t.FsBadPosD = bool(mem.fs_bad_pos_d)
-	t.FsBadAccBias = bool(mem.fs_bad_acc_bias)
-	t.FsBadAccVertical = bool(mem.fs_bad_acc_vertical)
-	t.FsBadAccClipping = bool(mem.fs_bad_acc_clipping)
-	t.InnovationFaultStatusChanges = uint32(mem.innovation_fault_status_changes)
-	t.RejectHorVel = bool(mem.reject_hor_vel)
-	t.RejectVerVel = bool(mem.reject_ver_vel)
-	t.RejectHorPos = bool(mem.reject_hor_pos)
-	t.RejectVerPos = bool(mem.reject_ver_pos)
-	t.RejectMagX = bool(mem.reject_mag_x)
-	t.RejectMagY = bool(mem.reject_mag_y)
-	t.RejectMagZ = bool(mem.reject_mag_z)
-	t.RejectYaw = bool(mem.reject_yaw)
-	t.RejectAirspeed = bool(mem.reject_airspeed)
-	t.RejectSideslip = bool(mem.reject_sideslip)
-	t.RejectHagl = bool(mem.reject_hagl)
-	t.RejectOptflowX = bool(mem.reject_optflow_x)
-	t.RejectOptflowY = bool(mem.reject_optflow_y)
-}
-func (t *EstimatorStatusFlags) Clone() ros2types.ROS2Msg {
+func (t *EstimatorStatusFlags) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *EstimatorStatusFlags) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var EstimatorStatusFlagsTypeSupport types.MessageTypeSupport = _EstimatorStatusFlagsTypeSupport{}
+
+type _EstimatorStatusFlagsTypeSupport struct{}
+
+func (t _EstimatorStatusFlagsTypeSupport) New() types.Message {
+	return NewEstimatorStatusFlags()
+}
+
+func (t _EstimatorStatusFlagsTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EstimatorStatusFlags
+	return (unsafe.Pointer)(C.px4_msgs__msg__EstimatorStatusFlags__create())
+}
+
+func (t _EstimatorStatusFlagsTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__EstimatorStatusFlags__destroy((*C.px4_msgs__msg__EstimatorStatusFlags)(pointer_to_free))
+}
+
+func (t _EstimatorStatusFlagsTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*EstimatorStatusFlags)
+	mem := (*C.px4_msgs__msg__EstimatorStatusFlags)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	mem.control_status_changes = C.uint32_t(m.ControlStatusChanges)
+	mem.cs_tilt_align = C.bool(m.CsTiltAlign)
+	mem.cs_yaw_align = C.bool(m.CsYawAlign)
+	mem.cs_gps = C.bool(m.CsGps)
+	mem.cs_opt_flow = C.bool(m.CsOptFlow)
+	mem.cs_mag_hdg = C.bool(m.CsMagHdg)
+	mem.cs_mag_3d = C.bool(m.CsMag3d)
+	mem.cs_mag_dec = C.bool(m.CsMagDec)
+	mem.cs_in_air = C.bool(m.CsInAir)
+	mem.cs_wind = C.bool(m.CsWind)
+	mem.cs_baro_hgt = C.bool(m.CsBaroHgt)
+	mem.cs_rng_hgt = C.bool(m.CsRngHgt)
+	mem.cs_gps_hgt = C.bool(m.CsGpsHgt)
+	mem.cs_ev_pos = C.bool(m.CsEvPos)
+	mem.cs_ev_yaw = C.bool(m.CsEvYaw)
+	mem.cs_ev_hgt = C.bool(m.CsEvHgt)
+	mem.cs_fuse_beta = C.bool(m.CsFuseBeta)
+	mem.cs_mag_field_disturbed = C.bool(m.CsMagFieldDisturbed)
+	mem.cs_fixed_wing = C.bool(m.CsFixedWing)
+	mem.cs_mag_fault = C.bool(m.CsMagFault)
+	mem.cs_fuse_aspd = C.bool(m.CsFuseAspd)
+	mem.cs_gnd_effect = C.bool(m.CsGndEffect)
+	mem.cs_rng_stuck = C.bool(m.CsRngStuck)
+	mem.cs_gps_yaw = C.bool(m.CsGpsYaw)
+	mem.cs_mag_aligned_in_flight = C.bool(m.CsMagAlignedInFlight)
+	mem.cs_ev_vel = C.bool(m.CsEvVel)
+	mem.cs_synthetic_mag_z = C.bool(m.CsSyntheticMagZ)
+	mem.cs_vehicle_at_rest = C.bool(m.CsVehicleAtRest)
+	mem.fault_status_changes = C.uint32_t(m.FaultStatusChanges)
+	mem.fs_bad_mag_x = C.bool(m.FsBadMagX)
+	mem.fs_bad_mag_y = C.bool(m.FsBadMagY)
+	mem.fs_bad_mag_z = C.bool(m.FsBadMagZ)
+	mem.fs_bad_hdg = C.bool(m.FsBadHdg)
+	mem.fs_bad_mag_decl = C.bool(m.FsBadMagDecl)
+	mem.fs_bad_airspeed = C.bool(m.FsBadAirspeed)
+	mem.fs_bad_sideslip = C.bool(m.FsBadSideslip)
+	mem.fs_bad_optflow_x = C.bool(m.FsBadOptflowX)
+	mem.fs_bad_optflow_y = C.bool(m.FsBadOptflowY)
+	mem.fs_bad_vel_n = C.bool(m.FsBadVelN)
+	mem.fs_bad_vel_e = C.bool(m.FsBadVelE)
+	mem.fs_bad_vel_d = C.bool(m.FsBadVelD)
+	mem.fs_bad_pos_n = C.bool(m.FsBadPosN)
+	mem.fs_bad_pos_e = C.bool(m.FsBadPosE)
+	mem.fs_bad_pos_d = C.bool(m.FsBadPosD)
+	mem.fs_bad_acc_bias = C.bool(m.FsBadAccBias)
+	mem.fs_bad_acc_vertical = C.bool(m.FsBadAccVertical)
+	mem.fs_bad_acc_clipping = C.bool(m.FsBadAccClipping)
+	mem.innovation_fault_status_changes = C.uint32_t(m.InnovationFaultStatusChanges)
+	mem.reject_hor_vel = C.bool(m.RejectHorVel)
+	mem.reject_ver_vel = C.bool(m.RejectVerVel)
+	mem.reject_hor_pos = C.bool(m.RejectHorPos)
+	mem.reject_ver_pos = C.bool(m.RejectVerPos)
+	mem.reject_mag_x = C.bool(m.RejectMagX)
+	mem.reject_mag_y = C.bool(m.RejectMagY)
+	mem.reject_mag_z = C.bool(m.RejectMagZ)
+	mem.reject_yaw = C.bool(m.RejectYaw)
+	mem.reject_airspeed = C.bool(m.RejectAirspeed)
+	mem.reject_sideslip = C.bool(m.RejectSideslip)
+	mem.reject_hagl = C.bool(m.RejectHagl)
+	mem.reject_optflow_x = C.bool(m.RejectOptflowX)
+	mem.reject_optflow_y = C.bool(m.RejectOptflowY)
+}
+
+func (t _EstimatorStatusFlagsTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*EstimatorStatusFlags)
+	mem := (*C.px4_msgs__msg__EstimatorStatusFlags)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	m.ControlStatusChanges = uint32(mem.control_status_changes)
+	m.CsTiltAlign = bool(mem.cs_tilt_align)
+	m.CsYawAlign = bool(mem.cs_yaw_align)
+	m.CsGps = bool(mem.cs_gps)
+	m.CsOptFlow = bool(mem.cs_opt_flow)
+	m.CsMagHdg = bool(mem.cs_mag_hdg)
+	m.CsMag3d = bool(mem.cs_mag_3d)
+	m.CsMagDec = bool(mem.cs_mag_dec)
+	m.CsInAir = bool(mem.cs_in_air)
+	m.CsWind = bool(mem.cs_wind)
+	m.CsBaroHgt = bool(mem.cs_baro_hgt)
+	m.CsRngHgt = bool(mem.cs_rng_hgt)
+	m.CsGpsHgt = bool(mem.cs_gps_hgt)
+	m.CsEvPos = bool(mem.cs_ev_pos)
+	m.CsEvYaw = bool(mem.cs_ev_yaw)
+	m.CsEvHgt = bool(mem.cs_ev_hgt)
+	m.CsFuseBeta = bool(mem.cs_fuse_beta)
+	m.CsMagFieldDisturbed = bool(mem.cs_mag_field_disturbed)
+	m.CsFixedWing = bool(mem.cs_fixed_wing)
+	m.CsMagFault = bool(mem.cs_mag_fault)
+	m.CsFuseAspd = bool(mem.cs_fuse_aspd)
+	m.CsGndEffect = bool(mem.cs_gnd_effect)
+	m.CsRngStuck = bool(mem.cs_rng_stuck)
+	m.CsGpsYaw = bool(mem.cs_gps_yaw)
+	m.CsMagAlignedInFlight = bool(mem.cs_mag_aligned_in_flight)
+	m.CsEvVel = bool(mem.cs_ev_vel)
+	m.CsSyntheticMagZ = bool(mem.cs_synthetic_mag_z)
+	m.CsVehicleAtRest = bool(mem.cs_vehicle_at_rest)
+	m.FaultStatusChanges = uint32(mem.fault_status_changes)
+	m.FsBadMagX = bool(mem.fs_bad_mag_x)
+	m.FsBadMagY = bool(mem.fs_bad_mag_y)
+	m.FsBadMagZ = bool(mem.fs_bad_mag_z)
+	m.FsBadHdg = bool(mem.fs_bad_hdg)
+	m.FsBadMagDecl = bool(mem.fs_bad_mag_decl)
+	m.FsBadAirspeed = bool(mem.fs_bad_airspeed)
+	m.FsBadSideslip = bool(mem.fs_bad_sideslip)
+	m.FsBadOptflowX = bool(mem.fs_bad_optflow_x)
+	m.FsBadOptflowY = bool(mem.fs_bad_optflow_y)
+	m.FsBadVelN = bool(mem.fs_bad_vel_n)
+	m.FsBadVelE = bool(mem.fs_bad_vel_e)
+	m.FsBadVelD = bool(mem.fs_bad_vel_d)
+	m.FsBadPosN = bool(mem.fs_bad_pos_n)
+	m.FsBadPosE = bool(mem.fs_bad_pos_e)
+	m.FsBadPosD = bool(mem.fs_bad_pos_d)
+	m.FsBadAccBias = bool(mem.fs_bad_acc_bias)
+	m.FsBadAccVertical = bool(mem.fs_bad_acc_vertical)
+	m.FsBadAccClipping = bool(mem.fs_bad_acc_clipping)
+	m.InnovationFaultStatusChanges = uint32(mem.innovation_fault_status_changes)
+	m.RejectHorVel = bool(mem.reject_hor_vel)
+	m.RejectVerVel = bool(mem.reject_ver_vel)
+	m.RejectHorPos = bool(mem.reject_hor_pos)
+	m.RejectVerPos = bool(mem.reject_ver_pos)
+	m.RejectMagX = bool(mem.reject_mag_x)
+	m.RejectMagY = bool(mem.reject_mag_y)
+	m.RejectMagZ = bool(mem.reject_mag_z)
+	m.RejectYaw = bool(mem.reject_yaw)
+	m.RejectAirspeed = bool(mem.reject_airspeed)
+	m.RejectSideslip = bool(mem.reject_sideslip)
+	m.RejectHagl = bool(mem.reject_hagl)
+	m.RejectOptflowX = bool(mem.reject_optflow_x)
+	m.RejectOptflowY = bool(mem.reject_optflow_y)
+}
+
+func (t _EstimatorStatusFlagsTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EstimatorStatusFlags())
 }
 
 type CEstimatorStatusFlags = C.px4_msgs__msg__EstimatorStatusFlags
@@ -275,8 +289,7 @@ func EstimatorStatusFlags__Sequence_to_Go(goSlice *[]EstimatorStatusFlags, cSlic
 		cIdx := (*C.px4_msgs__msg__EstimatorStatusFlags__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EstimatorStatusFlags * uintptr(i)),
 		))
-		(*goSlice)[i] = EstimatorStatusFlags{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		EstimatorStatusFlagsTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func EstimatorStatusFlags__Sequence_to_C(cSlice *CEstimatorStatusFlags__Sequence, goSlice []EstimatorStatusFlags) {
@@ -291,18 +304,16 @@ func EstimatorStatusFlags__Sequence_to_C(cSlice *CEstimatorStatusFlags__Sequence
 		cIdx := (*C.px4_msgs__msg__EstimatorStatusFlags)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EstimatorStatusFlags * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__EstimatorStatusFlags)(v.AsCStruct())
+		EstimatorStatusFlagsTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func EstimatorStatusFlags__Array_to_Go(goSlice []EstimatorStatusFlags, cSlice []CEstimatorStatusFlags) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		EstimatorStatusFlagsTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func EstimatorStatusFlags__Array_to_C(cSlice []CEstimatorStatusFlags, goSlice []EstimatorStatusFlags) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__EstimatorStatusFlags)(goSlice[i].AsCStruct())
+		EstimatorStatusFlagsTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

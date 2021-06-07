@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/OrbitStatus", &OrbitStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/OrbitStatus", OrbitStatusTypeSupport)
 }
 const (
 	OrbitStatus_ORBIT_YAW_BEHAVIOUR_HOLD_FRONT_TO_CIRCLE_CENTER uint8 = 0// ORBIT_YAW_BEHAVIOUR
@@ -58,48 +58,62 @@ type OrbitStatus struct {
 // NewOrbitStatus creates a new OrbitStatus with default values.
 func NewOrbitStatus() *OrbitStatus {
 	self := OrbitStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *OrbitStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *OrbitStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__OrbitStatus())
-}
-func (t *OrbitStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__OrbitStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__OrbitStatus__create())
-}
-func (t *OrbitStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__OrbitStatus__destroy((*C.px4_msgs__msg__OrbitStatus)(pointer_to_free))
-}
-func (t *OrbitStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__OrbitStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.radius = C.float(t.Radius)
-	mem.frame = C.uint8_t(t.Frame)
-	mem.x = C.double(t.X)
-	mem.y = C.double(t.Y)
-	mem.z = C.float(t.Z)
-	mem.yaw_behaviour = C.uint8_t(t.YawBehaviour)
-	return unsafe.Pointer(mem)
-}
-func (t *OrbitStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__OrbitStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Radius = float32(mem.radius)
-	t.Frame = uint8(mem.frame)
-	t.X = float64(mem.x)
-	t.Y = float64(mem.y)
-	t.Z = float32(mem.z)
-	t.YawBehaviour = uint8(mem.yaw_behaviour)
-}
-func (t *OrbitStatus) Clone() ros2types.ROS2Msg {
+func (t *OrbitStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *OrbitStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var OrbitStatusTypeSupport types.MessageTypeSupport = _OrbitStatusTypeSupport{}
+
+type _OrbitStatusTypeSupport struct{}
+
+func (t _OrbitStatusTypeSupport) New() types.Message {
+	return NewOrbitStatus()
+}
+
+func (t _OrbitStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__OrbitStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__OrbitStatus__create())
+}
+
+func (t _OrbitStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__OrbitStatus__destroy((*C.px4_msgs__msg__OrbitStatus)(pointer_to_free))
+}
+
+func (t _OrbitStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*OrbitStatus)
+	mem := (*C.px4_msgs__msg__OrbitStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.radius = C.float(m.Radius)
+	mem.frame = C.uint8_t(m.Frame)
+	mem.x = C.double(m.X)
+	mem.y = C.double(m.Y)
+	mem.z = C.float(m.Z)
+	mem.yaw_behaviour = C.uint8_t(m.YawBehaviour)
+}
+
+func (t _OrbitStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*OrbitStatus)
+	mem := (*C.px4_msgs__msg__OrbitStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Radius = float32(mem.radius)
+	m.Frame = uint8(mem.frame)
+	m.X = float64(mem.x)
+	m.Y = float64(mem.y)
+	m.Z = float32(mem.z)
+	m.YawBehaviour = uint8(mem.yaw_behaviour)
+}
+
+func (t _OrbitStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__OrbitStatus())
 }
 
 type COrbitStatus = C.px4_msgs__msg__OrbitStatus
@@ -114,8 +128,7 @@ func OrbitStatus__Sequence_to_Go(goSlice *[]OrbitStatus, cSlice COrbitStatus__Se
 		cIdx := (*C.px4_msgs__msg__OrbitStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__OrbitStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = OrbitStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		OrbitStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func OrbitStatus__Sequence_to_C(cSlice *COrbitStatus__Sequence, goSlice []OrbitStatus) {
@@ -130,18 +143,16 @@ func OrbitStatus__Sequence_to_C(cSlice *COrbitStatus__Sequence, goSlice []OrbitS
 		cIdx := (*C.px4_msgs__msg__OrbitStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__OrbitStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__OrbitStatus)(v.AsCStruct())
+		OrbitStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func OrbitStatus__Array_to_Go(goSlice []OrbitStatus, cSlice []COrbitStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		OrbitStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func OrbitStatus__Array_to_C(cSlice []COrbitStatus, goSlice []OrbitStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__OrbitStatus)(goSlice[i].AsCStruct())
+		OrbitStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

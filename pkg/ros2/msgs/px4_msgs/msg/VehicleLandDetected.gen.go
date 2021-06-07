@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleLandDetected", &VehicleLandDetected{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleLandDetected", VehicleLandDetectedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewVehicleLandDetected
@@ -51,48 +51,62 @@ type VehicleLandDetected struct {
 // NewVehicleLandDetected creates a new VehicleLandDetected with default values.
 func NewVehicleLandDetected() *VehicleLandDetected {
 	self := VehicleLandDetected{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *VehicleLandDetected) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *VehicleLandDetected) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleLandDetected())
-}
-func (t *VehicleLandDetected) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleLandDetected
-	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleLandDetected__create())
-}
-func (t *VehicleLandDetected) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__VehicleLandDetected__destroy((*C.px4_msgs__msg__VehicleLandDetected)(pointer_to_free))
-}
-func (t *VehicleLandDetected) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__VehicleLandDetected)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.alt_max = C.float(t.AltMax)
-	mem.freefall = C.bool(t.Freefall)
-	mem.ground_contact = C.bool(t.GroundContact)
-	mem.maybe_landed = C.bool(t.MaybeLanded)
-	mem.landed = C.bool(t.Landed)
-	mem.in_ground_effect = C.bool(t.InGroundEffect)
-	return unsafe.Pointer(mem)
-}
-func (t *VehicleLandDetected) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__VehicleLandDetected)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.AltMax = float32(mem.alt_max)
-	t.Freefall = bool(mem.freefall)
-	t.GroundContact = bool(mem.ground_contact)
-	t.MaybeLanded = bool(mem.maybe_landed)
-	t.Landed = bool(mem.landed)
-	t.InGroundEffect = bool(mem.in_ground_effect)
-}
-func (t *VehicleLandDetected) Clone() ros2types.ROS2Msg {
+func (t *VehicleLandDetected) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *VehicleLandDetected) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VehicleLandDetectedTypeSupport types.MessageTypeSupport = _VehicleLandDetectedTypeSupport{}
+
+type _VehicleLandDetectedTypeSupport struct{}
+
+func (t _VehicleLandDetectedTypeSupport) New() types.Message {
+	return NewVehicleLandDetected()
+}
+
+func (t _VehicleLandDetectedTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleLandDetected
+	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleLandDetected__create())
+}
+
+func (t _VehicleLandDetectedTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__VehicleLandDetected__destroy((*C.px4_msgs__msg__VehicleLandDetected)(pointer_to_free))
+}
+
+func (t _VehicleLandDetectedTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*VehicleLandDetected)
+	mem := (*C.px4_msgs__msg__VehicleLandDetected)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.alt_max = C.float(m.AltMax)
+	mem.freefall = C.bool(m.Freefall)
+	mem.ground_contact = C.bool(m.GroundContact)
+	mem.maybe_landed = C.bool(m.MaybeLanded)
+	mem.landed = C.bool(m.Landed)
+	mem.in_ground_effect = C.bool(m.InGroundEffect)
+}
+
+func (t _VehicleLandDetectedTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*VehicleLandDetected)
+	mem := (*C.px4_msgs__msg__VehicleLandDetected)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.AltMax = float32(mem.alt_max)
+	m.Freefall = bool(mem.freefall)
+	m.GroundContact = bool(mem.ground_contact)
+	m.MaybeLanded = bool(mem.maybe_landed)
+	m.Landed = bool(mem.landed)
+	m.InGroundEffect = bool(mem.in_ground_effect)
+}
+
+func (t _VehicleLandDetectedTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleLandDetected())
 }
 
 type CVehicleLandDetected = C.px4_msgs__msg__VehicleLandDetected
@@ -107,8 +121,7 @@ func VehicleLandDetected__Sequence_to_Go(goSlice *[]VehicleLandDetected, cSlice 
 		cIdx := (*C.px4_msgs__msg__VehicleLandDetected__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleLandDetected * uintptr(i)),
 		))
-		(*goSlice)[i] = VehicleLandDetected{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VehicleLandDetectedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func VehicleLandDetected__Sequence_to_C(cSlice *CVehicleLandDetected__Sequence, goSlice []VehicleLandDetected) {
@@ -123,18 +136,16 @@ func VehicleLandDetected__Sequence_to_C(cSlice *CVehicleLandDetected__Sequence, 
 		cIdx := (*C.px4_msgs__msg__VehicleLandDetected)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleLandDetected * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__VehicleLandDetected)(v.AsCStruct())
+		VehicleLandDetectedTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func VehicleLandDetected__Array_to_Go(goSlice []VehicleLandDetected, cSlice []CVehicleLandDetected) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VehicleLandDetectedTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func VehicleLandDetected__Array_to_C(cSlice []CVehicleLandDetected, goSlice []VehicleLandDetected) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__VehicleLandDetected)(goSlice[i].AsCStruct())
+		VehicleLandDetectedTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

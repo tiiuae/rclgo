@@ -15,7 +15,7 @@ package turtlesim_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("turtlesim/Spawn_Request", &Spawn_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("turtlesim/Spawn_Request", Spawn_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSpawn_Request
@@ -43,49 +43,62 @@ type Spawn_Request struct {
 	X float32 `yaml:"x"`
 	Y float32 `yaml:"y"`
 	Theta float32 `yaml:"theta"`
-	Name rosidl_runtime_c.String `yaml:"name"`// Optional.  A unique name will be created and returned if this is empty
+	Name string `yaml:"name"`// Optional.  A unique name will be created and returned if this is empty
 }
 
 // NewSpawn_Request creates a new Spawn_Request with default values.
 func NewSpawn_Request() *Spawn_Request {
 	self := Spawn_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Spawn_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Name.SetDefaults("")
-	
-	return t
-}
-
-func (t *Spawn_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__turtlesim__srv__Spawn_Request())
-}
-func (t *Spawn_Request) PrepareMemory() unsafe.Pointer { //returns *C.turtlesim__srv__Spawn_Request
-	return (unsafe.Pointer)(C.turtlesim__srv__Spawn_Request__create())
-}
-func (t *Spawn_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.turtlesim__srv__Spawn_Request__destroy((*C.turtlesim__srv__Spawn_Request)(pointer_to_free))
-}
-func (t *Spawn_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.turtlesim__srv__Spawn_Request)(t.PrepareMemory())
-	mem.x = C.float(t.X)
-	mem.y = C.float(t.Y)
-	mem.theta = C.float(t.Theta)
-	mem.name = *(*C.rosidl_runtime_c__String)(t.Name.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *Spawn_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.turtlesim__srv__Spawn_Request)(ros2_message_buffer)
-	t.X = float32(mem.x)
-	t.Y = float32(mem.y)
-	t.Theta = float32(mem.theta)
-	t.Name.AsGoStruct(unsafe.Pointer(&mem.name))
-}
-func (t *Spawn_Request) Clone() ros2types.ROS2Msg {
+func (t *Spawn_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Spawn_Request) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var Spawn_RequestTypeSupport types.MessageTypeSupport = _Spawn_RequestTypeSupport{}
+
+type _Spawn_RequestTypeSupport struct{}
+
+func (t _Spawn_RequestTypeSupport) New() types.Message {
+	return NewSpawn_Request()
+}
+
+func (t _Spawn_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.turtlesim__srv__Spawn_Request
+	return (unsafe.Pointer)(C.turtlesim__srv__Spawn_Request__create())
+}
+
+func (t _Spawn_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.turtlesim__srv__Spawn_Request__destroy((*C.turtlesim__srv__Spawn_Request)(pointer_to_free))
+}
+
+func (t _Spawn_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Spawn_Request)
+	mem := (*C.turtlesim__srv__Spawn_Request)(dst)
+	mem.x = C.float(m.X)
+	mem.y = C.float(m.Y)
+	mem.theta = C.float(m.Theta)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.name), m.Name)
+}
+
+func (t _Spawn_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Spawn_Request)
+	mem := (*C.turtlesim__srv__Spawn_Request)(ros2_message_buffer)
+	m.X = float32(mem.x)
+	m.Y = float32(mem.y)
+	m.Theta = float32(mem.theta)
+	rosidl_runtime_c.StringAsGoStruct(&m.Name, unsafe.Pointer(&mem.name))
+}
+
+func (t _Spawn_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__turtlesim__srv__Spawn_Request())
 }
 
 type CSpawn_Request = C.turtlesim__srv__Spawn_Request
@@ -100,8 +113,7 @@ func Spawn_Request__Sequence_to_Go(goSlice *[]Spawn_Request, cSlice CSpawn_Reque
 		cIdx := (*C.turtlesim__srv__Spawn_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_turtlesim__srv__Spawn_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = Spawn_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		Spawn_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Spawn_Request__Sequence_to_C(cSlice *CSpawn_Request__Sequence, goSlice []Spawn_Request) {
@@ -116,18 +128,16 @@ func Spawn_Request__Sequence_to_C(cSlice *CSpawn_Request__Sequence, goSlice []Sp
 		cIdx := (*C.turtlesim__srv__Spawn_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_turtlesim__srv__Spawn_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.turtlesim__srv__Spawn_Request)(v.AsCStruct())
+		Spawn_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Spawn_Request__Array_to_Go(goSlice []Spawn_Request, cSlice []CSpawn_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		Spawn_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Spawn_Request__Array_to_C(cSlice []CSpawn_Request, goSlice []Spawn_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.turtlesim__srv__Spawn_Request)(goSlice[i].AsCStruct())
+		Spawn_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

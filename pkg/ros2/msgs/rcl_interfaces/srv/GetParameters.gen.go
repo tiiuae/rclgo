@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("rcl_interfaces/GetParameters", GetParameters)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("rcl_interfaces/GetParameters", GetParametersTypeSupport)
 }
 
-type _GetParameters struct {
-	req,resp ros2types.ROS2Msg
+type _GetParametersTypeSupport struct {}
+
+func (s _GetParametersTypeSupport) Request() types.MessageTypeSupport {
+	return GetParameters_RequestTypeSupport
 }
 
-func (s *_GetParameters) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _GetParametersTypeSupport) Response() types.MessageTypeSupport {
+	return GetParameters_ResponseTypeSupport
 }
 
-func (s *_GetParameters) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_GetParameters) TypeSupport() unsafe.Pointer {
+func (s _GetParametersTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__rcl_interfaces__srv__GetParameters())
 }
 
 // Modifying this variable is undefined behavior.
-var GetParameters ros2types.Service = &_GetParameters{
-	req: &GetParameters_Request{},
-	resp: &GetParameters_Response{},
-}
+var GetParametersTypeSupport types.ServiceTypeSupport = _GetParametersTypeSupport{}

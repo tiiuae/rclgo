@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("map_msgs/ProjectedMapsInfo", ProjectedMapsInfo)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("map_msgs/ProjectedMapsInfo", ProjectedMapsInfoTypeSupport)
 }
 
-type _ProjectedMapsInfo struct {
-	req,resp ros2types.ROS2Msg
+type _ProjectedMapsInfoTypeSupport struct {}
+
+func (s _ProjectedMapsInfoTypeSupport) Request() types.MessageTypeSupport {
+	return ProjectedMapsInfo_RequestTypeSupport
 }
 
-func (s *_ProjectedMapsInfo) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _ProjectedMapsInfoTypeSupport) Response() types.MessageTypeSupport {
+	return ProjectedMapsInfo_ResponseTypeSupport
 }
 
-func (s *_ProjectedMapsInfo) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_ProjectedMapsInfo) TypeSupport() unsafe.Pointer {
+func (s _ProjectedMapsInfoTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__map_msgs__srv__ProjectedMapsInfo())
 }
 
 // Modifying this variable is undefined behavior.
-var ProjectedMapsInfo ros2types.Service = &_ProjectedMapsInfo{
-	req: &ProjectedMapsInfo_Request{},
-	resp: &ProjectedMapsInfo_Response{},
-}
+var ProjectedMapsInfoTypeSupport types.ServiceTypeSupport = _ProjectedMapsInfoTypeSupport{}

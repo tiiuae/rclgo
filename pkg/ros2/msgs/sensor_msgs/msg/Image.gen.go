@@ -15,7 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
@@ -36,7 +36,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/Image", &Image{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/Image", ImageTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewImage
@@ -45,7 +45,7 @@ type Image struct {
 	Header std_msgs_msg.Header `yaml:"header"`// Header timestamp should be acquisition time of image
 	Height uint32 `yaml:"height"`// image height, that is, number of rows
 	Width uint32 `yaml:"width"`// image width, that is, number of columns
-	Encoding rosidl_runtime_c.String `yaml:"encoding"`// Encoding of pixels -- channel meaning, ordering, size
+	Encoding string `yaml:"encoding"`// Encoding of pixels -- channel meaning, ordering, size
 	IsBigendian uint8 `yaml:"is_bigendian"`// is this data bigendian?
 	Step uint32 `yaml:"step"`// Full row length in bytes
 	Data []uint8 `yaml:"data"`// actual matrix data, size is (step * rows)
@@ -54,50 +54,63 @@ type Image struct {
 // NewImage creates a new Image with default values.
 func NewImage() *Image {
 	self := Image{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Image) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.Encoding.SetDefaults("")
-	
-	return t
-}
-
-func (t *Image) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__Image())
-}
-func (t *Image) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__Image
-	return (unsafe.Pointer)(C.sensor_msgs__msg__Image__create())
-}
-func (t *Image) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__msg__Image__destroy((*C.sensor_msgs__msg__Image)(pointer_to_free))
-}
-func (t *Image) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__msg__Image)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.height = C.uint32_t(t.Height)
-	mem.width = C.uint32_t(t.Width)
-	mem.encoding = *(*C.rosidl_runtime_c__String)(t.Encoding.AsCStruct())
-	mem.is_bigendian = C.uint8_t(t.IsBigendian)
-	mem.step = C.uint32_t(t.Step)
-	rosidl_runtime_c.Uint8__Sequence_to_C((*rosidl_runtime_c.CUint8__Sequence)(unsafe.Pointer(&mem.data)), t.Data)
-	return unsafe.Pointer(mem)
-}
-func (t *Image) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__msg__Image)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.Height = uint32(mem.height)
-	t.Width = uint32(mem.width)
-	t.Encoding.AsGoStruct(unsafe.Pointer(&mem.encoding))
-	t.IsBigendian = uint8(mem.is_bigendian)
-	t.Step = uint32(mem.step)
-	rosidl_runtime_c.Uint8__Sequence_to_Go(&t.Data, *(*rosidl_runtime_c.CUint8__Sequence)(unsafe.Pointer(&mem.data)))
-}
-func (t *Image) Clone() ros2types.ROS2Msg {
+func (t *Image) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Image) SetDefaults() {
+	t.Header.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ImageTypeSupport types.MessageTypeSupport = _ImageTypeSupport{}
+
+type _ImageTypeSupport struct{}
+
+func (t _ImageTypeSupport) New() types.Message {
+	return NewImage()
+}
+
+func (t _ImageTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__Image
+	return (unsafe.Pointer)(C.sensor_msgs__msg__Image__create())
+}
+
+func (t _ImageTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__msg__Image__destroy((*C.sensor_msgs__msg__Image)(pointer_to_free))
+}
+
+func (t _ImageTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Image)
+	mem := (*C.sensor_msgs__msg__Image)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	mem.height = C.uint32_t(m.Height)
+	mem.width = C.uint32_t(m.Width)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.encoding), m.Encoding)
+	mem.is_bigendian = C.uint8_t(m.IsBigendian)
+	mem.step = C.uint32_t(m.Step)
+	rosidl_runtime_c.Uint8__Sequence_to_C((*rosidl_runtime_c.CUint8__Sequence)(unsafe.Pointer(&mem.data)), m.Data)
+}
+
+func (t _ImageTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Image)
+	mem := (*C.sensor_msgs__msg__Image)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	m.Height = uint32(mem.height)
+	m.Width = uint32(mem.width)
+	rosidl_runtime_c.StringAsGoStruct(&m.Encoding, unsafe.Pointer(&mem.encoding))
+	m.IsBigendian = uint8(mem.is_bigendian)
+	m.Step = uint32(mem.step)
+	rosidl_runtime_c.Uint8__Sequence_to_Go(&m.Data, *(*rosidl_runtime_c.CUint8__Sequence)(unsafe.Pointer(&mem.data)))
+}
+
+func (t _ImageTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__Image())
 }
 
 type CImage = C.sensor_msgs__msg__Image
@@ -112,8 +125,7 @@ func Image__Sequence_to_Go(goSlice *[]Image, cSlice CImage__Sequence) {
 		cIdx := (*C.sensor_msgs__msg__Image__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__Image * uintptr(i)),
 		))
-		(*goSlice)[i] = Image{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ImageTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Image__Sequence_to_C(cSlice *CImage__Sequence, goSlice []Image) {
@@ -128,18 +140,16 @@ func Image__Sequence_to_C(cSlice *CImage__Sequence, goSlice []Image) {
 		cIdx := (*C.sensor_msgs__msg__Image)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__Image * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__msg__Image)(v.AsCStruct())
+		ImageTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Image__Array_to_Go(goSlice []Image, cSlice []CImage) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ImageTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Image__Array_to_C(cSlice []CImage, goSlice []Image) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__msg__Image)(goSlice[i].AsCStruct())
+		ImageTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

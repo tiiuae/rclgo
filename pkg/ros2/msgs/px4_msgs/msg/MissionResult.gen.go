@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/MissionResult", &MissionResult{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/MissionResult", MissionResultTypeSupport)
 }
 const (
 	MissionResult_MISSION_EXECUTION_MODE_NORMAL uint8 = 0// Execute the mission according to the planned items
@@ -64,64 +64,78 @@ type MissionResult struct {
 // NewMissionResult creates a new MissionResult with default values.
 func NewMissionResult() *MissionResult {
 	self := MissionResult{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *MissionResult) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *MissionResult) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__MissionResult())
-}
-func (t *MissionResult) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__MissionResult
-	return (unsafe.Pointer)(C.px4_msgs__msg__MissionResult__create())
-}
-func (t *MissionResult) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__MissionResult__destroy((*C.px4_msgs__msg__MissionResult)(pointer_to_free))
-}
-func (t *MissionResult) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__MissionResult)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.instance_count = C.uint32_t(t.InstanceCount)
-	mem.seq_reached = C.int32_t(t.SeqReached)
-	mem.seq_current = C.uint16_t(t.SeqCurrent)
-	mem.seq_total = C.uint16_t(t.SeqTotal)
-	mem.valid = C.bool(t.Valid)
-	mem.warning = C.bool(t.Warning)
-	mem.finished = C.bool(t.Finished)
-	mem.failure = C.bool(t.Failure)
-	mem.stay_in_failsafe = C.bool(t.StayInFailsafe)
-	mem.flight_termination = C.bool(t.FlightTermination)
-	mem.item_do_jump_changed = C.bool(t.ItemDoJumpChanged)
-	mem.item_changed_index = C.uint16_t(t.ItemChangedIndex)
-	mem.item_do_jump_remaining = C.uint16_t(t.ItemDoJumpRemaining)
-	mem.execution_mode = C.uint8_t(t.ExecutionMode)
-	return unsafe.Pointer(mem)
-}
-func (t *MissionResult) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__MissionResult)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.InstanceCount = uint32(mem.instance_count)
-	t.SeqReached = int32(mem.seq_reached)
-	t.SeqCurrent = uint16(mem.seq_current)
-	t.SeqTotal = uint16(mem.seq_total)
-	t.Valid = bool(mem.valid)
-	t.Warning = bool(mem.warning)
-	t.Finished = bool(mem.finished)
-	t.Failure = bool(mem.failure)
-	t.StayInFailsafe = bool(mem.stay_in_failsafe)
-	t.FlightTermination = bool(mem.flight_termination)
-	t.ItemDoJumpChanged = bool(mem.item_do_jump_changed)
-	t.ItemChangedIndex = uint16(mem.item_changed_index)
-	t.ItemDoJumpRemaining = uint16(mem.item_do_jump_remaining)
-	t.ExecutionMode = uint8(mem.execution_mode)
-}
-func (t *MissionResult) Clone() ros2types.ROS2Msg {
+func (t *MissionResult) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *MissionResult) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var MissionResultTypeSupport types.MessageTypeSupport = _MissionResultTypeSupport{}
+
+type _MissionResultTypeSupport struct{}
+
+func (t _MissionResultTypeSupport) New() types.Message {
+	return NewMissionResult()
+}
+
+func (t _MissionResultTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__MissionResult
+	return (unsafe.Pointer)(C.px4_msgs__msg__MissionResult__create())
+}
+
+func (t _MissionResultTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__MissionResult__destroy((*C.px4_msgs__msg__MissionResult)(pointer_to_free))
+}
+
+func (t _MissionResultTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*MissionResult)
+	mem := (*C.px4_msgs__msg__MissionResult)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.instance_count = C.uint32_t(m.InstanceCount)
+	mem.seq_reached = C.int32_t(m.SeqReached)
+	mem.seq_current = C.uint16_t(m.SeqCurrent)
+	mem.seq_total = C.uint16_t(m.SeqTotal)
+	mem.valid = C.bool(m.Valid)
+	mem.warning = C.bool(m.Warning)
+	mem.finished = C.bool(m.Finished)
+	mem.failure = C.bool(m.Failure)
+	mem.stay_in_failsafe = C.bool(m.StayInFailsafe)
+	mem.flight_termination = C.bool(m.FlightTermination)
+	mem.item_do_jump_changed = C.bool(m.ItemDoJumpChanged)
+	mem.item_changed_index = C.uint16_t(m.ItemChangedIndex)
+	mem.item_do_jump_remaining = C.uint16_t(m.ItemDoJumpRemaining)
+	mem.execution_mode = C.uint8_t(m.ExecutionMode)
+}
+
+func (t _MissionResultTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*MissionResult)
+	mem := (*C.px4_msgs__msg__MissionResult)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.InstanceCount = uint32(mem.instance_count)
+	m.SeqReached = int32(mem.seq_reached)
+	m.SeqCurrent = uint16(mem.seq_current)
+	m.SeqTotal = uint16(mem.seq_total)
+	m.Valid = bool(mem.valid)
+	m.Warning = bool(mem.warning)
+	m.Finished = bool(mem.finished)
+	m.Failure = bool(mem.failure)
+	m.StayInFailsafe = bool(mem.stay_in_failsafe)
+	m.FlightTermination = bool(mem.flight_termination)
+	m.ItemDoJumpChanged = bool(mem.item_do_jump_changed)
+	m.ItemChangedIndex = uint16(mem.item_changed_index)
+	m.ItemDoJumpRemaining = uint16(mem.item_do_jump_remaining)
+	m.ExecutionMode = uint8(mem.execution_mode)
+}
+
+func (t _MissionResultTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__MissionResult())
 }
 
 type CMissionResult = C.px4_msgs__msg__MissionResult
@@ -136,8 +150,7 @@ func MissionResult__Sequence_to_Go(goSlice *[]MissionResult, cSlice CMissionResu
 		cIdx := (*C.px4_msgs__msg__MissionResult__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__MissionResult * uintptr(i)),
 		))
-		(*goSlice)[i] = MissionResult{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		MissionResultTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func MissionResult__Sequence_to_C(cSlice *CMissionResult__Sequence, goSlice []MissionResult) {
@@ -152,18 +165,16 @@ func MissionResult__Sequence_to_C(cSlice *CMissionResult__Sequence, goSlice []Mi
 		cIdx := (*C.px4_msgs__msg__MissionResult)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__MissionResult * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__MissionResult)(v.AsCStruct())
+		MissionResultTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func MissionResult__Array_to_Go(goSlice []MissionResult, cSlice []CMissionResult) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		MissionResultTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func MissionResult__Array_to_C(cSlice []CMissionResult, goSlice []MissionResult) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__MissionResult)(goSlice[i].AsCStruct())
+		MissionResultTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

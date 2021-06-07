@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/DebugKeyValue", &DebugKeyValue{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/DebugKeyValue", DebugKeyValueTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewDebugKeyValue
@@ -48,42 +48,56 @@ type DebugKeyValue struct {
 // NewDebugKeyValue creates a new DebugKeyValue with default values.
 func NewDebugKeyValue() *DebugKeyValue {
 	self := DebugKeyValue{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *DebugKeyValue) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *DebugKeyValue) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__DebugKeyValue())
-}
-func (t *DebugKeyValue) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__DebugKeyValue
-	return (unsafe.Pointer)(C.px4_msgs__msg__DebugKeyValue__create())
-}
-func (t *DebugKeyValue) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__DebugKeyValue__destroy((*C.px4_msgs__msg__DebugKeyValue)(pointer_to_free))
-}
-func (t *DebugKeyValue) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__DebugKeyValue)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	cSlice_key := mem.key[:]
-	rosidl_runtime_c.Char__Array_to_C(*(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_key)), t.Key[:])
-	mem.value = C.float(t.Value)
-	return unsafe.Pointer(mem)
-}
-func (t *DebugKeyValue) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__DebugKeyValue)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	cSlice_key := mem.key[:]
-	rosidl_runtime_c.Char__Array_to_Go(t.Key[:], *(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_key)))
-	t.Value = float32(mem.value)
-}
-func (t *DebugKeyValue) Clone() ros2types.ROS2Msg {
+func (t *DebugKeyValue) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *DebugKeyValue) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var DebugKeyValueTypeSupport types.MessageTypeSupport = _DebugKeyValueTypeSupport{}
+
+type _DebugKeyValueTypeSupport struct{}
+
+func (t _DebugKeyValueTypeSupport) New() types.Message {
+	return NewDebugKeyValue()
+}
+
+func (t _DebugKeyValueTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__DebugKeyValue
+	return (unsafe.Pointer)(C.px4_msgs__msg__DebugKeyValue__create())
+}
+
+func (t _DebugKeyValueTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__DebugKeyValue__destroy((*C.px4_msgs__msg__DebugKeyValue)(pointer_to_free))
+}
+
+func (t _DebugKeyValueTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*DebugKeyValue)
+	mem := (*C.px4_msgs__msg__DebugKeyValue)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	cSlice_key := mem.key[:]
+	rosidl_runtime_c.Char__Array_to_C(*(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_key)), m.Key[:])
+	mem.value = C.float(m.Value)
+}
+
+func (t _DebugKeyValueTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*DebugKeyValue)
+	mem := (*C.px4_msgs__msg__DebugKeyValue)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	cSlice_key := mem.key[:]
+	rosidl_runtime_c.Char__Array_to_Go(m.Key[:], *(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_key)))
+	m.Value = float32(mem.value)
+}
+
+func (t _DebugKeyValueTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__DebugKeyValue())
 }
 
 type CDebugKeyValue = C.px4_msgs__msg__DebugKeyValue
@@ -98,8 +112,7 @@ func DebugKeyValue__Sequence_to_Go(goSlice *[]DebugKeyValue, cSlice CDebugKeyVal
 		cIdx := (*C.px4_msgs__msg__DebugKeyValue__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__DebugKeyValue * uintptr(i)),
 		))
-		(*goSlice)[i] = DebugKeyValue{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		DebugKeyValueTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func DebugKeyValue__Sequence_to_C(cSlice *CDebugKeyValue__Sequence, goSlice []DebugKeyValue) {
@@ -114,18 +127,16 @@ func DebugKeyValue__Sequence_to_C(cSlice *CDebugKeyValue__Sequence, goSlice []De
 		cIdx := (*C.px4_msgs__msg__DebugKeyValue)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__DebugKeyValue * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__DebugKeyValue)(v.AsCStruct())
+		DebugKeyValueTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func DebugKeyValue__Array_to_Go(goSlice []DebugKeyValue, cSlice []CDebugKeyValue) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		DebugKeyValueTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func DebugKeyValue__Array_to_C(cSlice []CDebugKeyValue, goSlice []DebugKeyValue) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__DebugKeyValue)(goSlice[i].AsCStruct())
+		DebugKeyValueTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

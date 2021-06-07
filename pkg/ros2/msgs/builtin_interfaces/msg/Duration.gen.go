@@ -15,7 +15,7 @@ package builtin_interfaces_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("builtin_interfaces/Duration", &Duration{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("builtin_interfaces/Duration", DurationTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewDuration
@@ -46,38 +46,52 @@ type Duration struct {
 // NewDuration creates a new Duration with default values.
 func NewDuration() *Duration {
 	self := Duration{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Duration) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Duration) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__builtin_interfaces__msg__Duration())
-}
-func (t *Duration) PrepareMemory() unsafe.Pointer { //returns *C.builtin_interfaces__msg__Duration
-	return (unsafe.Pointer)(C.builtin_interfaces__msg__Duration__create())
-}
-func (t *Duration) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.builtin_interfaces__msg__Duration__destroy((*C.builtin_interfaces__msg__Duration)(pointer_to_free))
-}
-func (t *Duration) AsCStruct() unsafe.Pointer {
-	mem := (*C.builtin_interfaces__msg__Duration)(t.PrepareMemory())
-	mem.sec = C.int32_t(t.Sec)
-	mem.nanosec = C.uint32_t(t.Nanosec)
-	return unsafe.Pointer(mem)
-}
-func (t *Duration) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.builtin_interfaces__msg__Duration)(ros2_message_buffer)
-	t.Sec = int32(mem.sec)
-	t.Nanosec = uint32(mem.nanosec)
-}
-func (t *Duration) Clone() ros2types.ROS2Msg {
+func (t *Duration) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Duration) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var DurationTypeSupport types.MessageTypeSupport = _DurationTypeSupport{}
+
+type _DurationTypeSupport struct{}
+
+func (t _DurationTypeSupport) New() types.Message {
+	return NewDuration()
+}
+
+func (t _DurationTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.builtin_interfaces__msg__Duration
+	return (unsafe.Pointer)(C.builtin_interfaces__msg__Duration__create())
+}
+
+func (t _DurationTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.builtin_interfaces__msg__Duration__destroy((*C.builtin_interfaces__msg__Duration)(pointer_to_free))
+}
+
+func (t _DurationTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Duration)
+	mem := (*C.builtin_interfaces__msg__Duration)(dst)
+	mem.sec = C.int32_t(m.Sec)
+	mem.nanosec = C.uint32_t(m.Nanosec)
+}
+
+func (t _DurationTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Duration)
+	mem := (*C.builtin_interfaces__msg__Duration)(ros2_message_buffer)
+	m.Sec = int32(mem.sec)
+	m.Nanosec = uint32(mem.nanosec)
+}
+
+func (t _DurationTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__builtin_interfaces__msg__Duration())
 }
 
 type CDuration = C.builtin_interfaces__msg__Duration
@@ -92,8 +106,7 @@ func Duration__Sequence_to_Go(goSlice *[]Duration, cSlice CDuration__Sequence) {
 		cIdx := (*C.builtin_interfaces__msg__Duration__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_builtin_interfaces__msg__Duration * uintptr(i)),
 		))
-		(*goSlice)[i] = Duration{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		DurationTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Duration__Sequence_to_C(cSlice *CDuration__Sequence, goSlice []Duration) {
@@ -108,18 +121,16 @@ func Duration__Sequence_to_C(cSlice *CDuration__Sequence, goSlice []Duration) {
 		cIdx := (*C.builtin_interfaces__msg__Duration)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_builtin_interfaces__msg__Duration * uintptr(i)),
 		))
-		*cIdx = *(*C.builtin_interfaces__msg__Duration)(v.AsCStruct())
+		DurationTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Duration__Array_to_Go(goSlice []Duration, cSlice []CDuration) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		DurationTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Duration__Array_to_C(cSlice []CDuration, goSlice []Duration) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.builtin_interfaces__msg__Duration)(goSlice[i].AsCStruct())
+		DurationTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

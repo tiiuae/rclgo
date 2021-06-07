@@ -15,7 +15,7 @@ package sensor_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,52 +34,65 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/SetCameraInfo_Response", &SetCameraInfo_Response{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/SetCameraInfo_Response", SetCameraInfo_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSetCameraInfo_Response
 // function instead.
 type SetCameraInfo_Response struct {
 	Success bool `yaml:"success"`// True if the call succeeded
-	StatusMessage rosidl_runtime_c.String `yaml:"status_message"`// Used to give details about success
+	StatusMessage string `yaml:"status_message"`// Used to give details about success
 }
 
 // NewSetCameraInfo_Response creates a new SetCameraInfo_Response with default values.
 func NewSetCameraInfo_Response() *SetCameraInfo_Response {
 	self := SetCameraInfo_Response{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SetCameraInfo_Response) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.StatusMessage.SetDefaults("")
-	
-	return t
-}
-
-func (t *SetCameraInfo_Response) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__srv__SetCameraInfo_Response())
-}
-func (t *SetCameraInfo_Response) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__srv__SetCameraInfo_Response
-	return (unsafe.Pointer)(C.sensor_msgs__srv__SetCameraInfo_Response__create())
-}
-func (t *SetCameraInfo_Response) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__srv__SetCameraInfo_Response__destroy((*C.sensor_msgs__srv__SetCameraInfo_Response)(pointer_to_free))
-}
-func (t *SetCameraInfo_Response) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__srv__SetCameraInfo_Response)(t.PrepareMemory())
-	mem.success = C.bool(t.Success)
-	mem.status_message = *(*C.rosidl_runtime_c__String)(t.StatusMessage.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *SetCameraInfo_Response) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__srv__SetCameraInfo_Response)(ros2_message_buffer)
-	t.Success = bool(mem.success)
-	t.StatusMessage.AsGoStruct(unsafe.Pointer(&mem.status_message))
-}
-func (t *SetCameraInfo_Response) Clone() ros2types.ROS2Msg {
+func (t *SetCameraInfo_Response) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SetCameraInfo_Response) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SetCameraInfo_ResponseTypeSupport types.MessageTypeSupport = _SetCameraInfo_ResponseTypeSupport{}
+
+type _SetCameraInfo_ResponseTypeSupport struct{}
+
+func (t _SetCameraInfo_ResponseTypeSupport) New() types.Message {
+	return NewSetCameraInfo_Response()
+}
+
+func (t _SetCameraInfo_ResponseTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__srv__SetCameraInfo_Response
+	return (unsafe.Pointer)(C.sensor_msgs__srv__SetCameraInfo_Response__create())
+}
+
+func (t _SetCameraInfo_ResponseTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__srv__SetCameraInfo_Response__destroy((*C.sensor_msgs__srv__SetCameraInfo_Response)(pointer_to_free))
+}
+
+func (t _SetCameraInfo_ResponseTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*SetCameraInfo_Response)
+	mem := (*C.sensor_msgs__srv__SetCameraInfo_Response)(dst)
+	mem.success = C.bool(m.Success)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.status_message), m.StatusMessage)
+}
+
+func (t _SetCameraInfo_ResponseTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*SetCameraInfo_Response)
+	mem := (*C.sensor_msgs__srv__SetCameraInfo_Response)(ros2_message_buffer)
+	m.Success = bool(mem.success)
+	rosidl_runtime_c.StringAsGoStruct(&m.StatusMessage, unsafe.Pointer(&mem.status_message))
+}
+
+func (t _SetCameraInfo_ResponseTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__srv__SetCameraInfo_Response())
 }
 
 type CSetCameraInfo_Response = C.sensor_msgs__srv__SetCameraInfo_Response
@@ -94,8 +107,7 @@ func SetCameraInfo_Response__Sequence_to_Go(goSlice *[]SetCameraInfo_Response, c
 		cIdx := (*C.sensor_msgs__srv__SetCameraInfo_Response__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__srv__SetCameraInfo_Response * uintptr(i)),
 		))
-		(*goSlice)[i] = SetCameraInfo_Response{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SetCameraInfo_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SetCameraInfo_Response__Sequence_to_C(cSlice *CSetCameraInfo_Response__Sequence, goSlice []SetCameraInfo_Response) {
@@ -110,18 +122,16 @@ func SetCameraInfo_Response__Sequence_to_C(cSlice *CSetCameraInfo_Response__Sequ
 		cIdx := (*C.sensor_msgs__srv__SetCameraInfo_Response)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__srv__SetCameraInfo_Response * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__srv__SetCameraInfo_Response)(v.AsCStruct())
+		SetCameraInfo_ResponseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SetCameraInfo_Response__Array_to_Go(goSlice []SetCameraInfo_Response, cSlice []CSetCameraInfo_Response) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SetCameraInfo_ResponseTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SetCameraInfo_Response__Array_to_C(cSlice []CSetCameraInfo_Response, goSlice []SetCameraInfo_Response) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__srv__SetCameraInfo_Response)(goSlice[i].AsCStruct())
+		SetCameraInfo_ResponseTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

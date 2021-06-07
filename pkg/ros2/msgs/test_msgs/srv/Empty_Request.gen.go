@@ -15,7 +15,7 @@ package test_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("test_msgs/Empty_Request", &Empty_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("test_msgs/Empty_Request", Empty_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewEmpty_Request
@@ -44,34 +44,46 @@ type Empty_Request struct {
 // NewEmpty_Request creates a new Empty_Request with default values.
 func NewEmpty_Request() *Empty_Request {
 	self := Empty_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Empty_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Empty_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__srv__Empty_Request())
-}
-func (t *Empty_Request) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__srv__Empty_Request
-	return (unsafe.Pointer)(C.test_msgs__srv__Empty_Request__create())
-}
-func (t *Empty_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.test_msgs__srv__Empty_Request__destroy((*C.test_msgs__srv__Empty_Request)(pointer_to_free))
-}
-func (t *Empty_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.test_msgs__srv__Empty_Request)(t.PrepareMemory())
-	return unsafe.Pointer(mem)
-}
-func (t *Empty_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	
-}
-func (t *Empty_Request) Clone() ros2types.ROS2Msg {
+func (t *Empty_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Empty_Request) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var Empty_RequestTypeSupport types.MessageTypeSupport = _Empty_RequestTypeSupport{}
+
+type _Empty_RequestTypeSupport struct{}
+
+func (t _Empty_RequestTypeSupport) New() types.Message {
+	return NewEmpty_Request()
+}
+
+func (t _Empty_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__srv__Empty_Request
+	return (unsafe.Pointer)(C.test_msgs__srv__Empty_Request__create())
+}
+
+func (t _Empty_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.test_msgs__srv__Empty_Request__destroy((*C.test_msgs__srv__Empty_Request)(pointer_to_free))
+}
+
+func (t _Empty_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	
+}
+
+func (t _Empty_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	
+}
+
+func (t _Empty_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__srv__Empty_Request())
 }
 
 type CEmpty_Request = C.test_msgs__srv__Empty_Request
@@ -86,8 +98,7 @@ func Empty_Request__Sequence_to_Go(goSlice *[]Empty_Request, cSlice CEmpty_Reque
 		cIdx := (*C.test_msgs__srv__Empty_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__srv__Empty_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = Empty_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		Empty_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Empty_Request__Sequence_to_C(cSlice *CEmpty_Request__Sequence, goSlice []Empty_Request) {
@@ -102,18 +113,16 @@ func Empty_Request__Sequence_to_C(cSlice *CEmpty_Request__Sequence, goSlice []Em
 		cIdx := (*C.test_msgs__srv__Empty_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__srv__Empty_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.test_msgs__srv__Empty_Request)(v.AsCStruct())
+		Empty_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Empty_Request__Array_to_Go(goSlice []Empty_Request, cSlice []CEmpty_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		Empty_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Empty_Request__Array_to_C(cSlice []CEmpty_Request, goSlice []Empty_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.test_msgs__srv__Empty_Request)(goSlice[i].AsCStruct())
+		Empty_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

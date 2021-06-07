@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleImu", &VehicleImu{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleImu", VehicleImuTypeSupport)
 }
 const (
 	VehicleImu_CLIPPING_X uint8 = 1
@@ -60,58 +60,72 @@ type VehicleImu struct {
 // NewVehicleImu creates a new VehicleImu with default values.
 func NewVehicleImu() *VehicleImu {
 	self := VehicleImu{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *VehicleImu) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *VehicleImu) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleImu())
-}
-func (t *VehicleImu) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleImu
-	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleImu__create())
-}
-func (t *VehicleImu) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__VehicleImu__destroy((*C.px4_msgs__msg__VehicleImu)(pointer_to_free))
-}
-func (t *VehicleImu) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__VehicleImu)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	mem.accel_device_id = C.uint32_t(t.AccelDeviceId)
-	mem.gyro_device_id = C.uint32_t(t.GyroDeviceId)
-	cSlice_delta_angle := mem.delta_angle[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_angle)), t.DeltaAngle[:])
-	cSlice_delta_velocity := mem.delta_velocity[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_velocity)), t.DeltaVelocity[:])
-	mem.delta_angle_dt = C.uint16_t(t.DeltaAngleDt)
-	mem.delta_velocity_dt = C.uint16_t(t.DeltaVelocityDt)
-	mem.delta_velocity_clipping = C.uint8_t(t.DeltaVelocityClipping)
-	mem.calibration_count = C.uint8_t(t.CalibrationCount)
-	return unsafe.Pointer(mem)
-}
-func (t *VehicleImu) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__VehicleImu)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	t.AccelDeviceId = uint32(mem.accel_device_id)
-	t.GyroDeviceId = uint32(mem.gyro_device_id)
-	cSlice_delta_angle := mem.delta_angle[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.DeltaAngle[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_angle)))
-	cSlice_delta_velocity := mem.delta_velocity[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.DeltaVelocity[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_velocity)))
-	t.DeltaAngleDt = uint16(mem.delta_angle_dt)
-	t.DeltaVelocityDt = uint16(mem.delta_velocity_dt)
-	t.DeltaVelocityClipping = uint8(mem.delta_velocity_clipping)
-	t.CalibrationCount = uint8(mem.calibration_count)
-}
-func (t *VehicleImu) Clone() ros2types.ROS2Msg {
+func (t *VehicleImu) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *VehicleImu) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VehicleImuTypeSupport types.MessageTypeSupport = _VehicleImuTypeSupport{}
+
+type _VehicleImuTypeSupport struct{}
+
+func (t _VehicleImuTypeSupport) New() types.Message {
+	return NewVehicleImu()
+}
+
+func (t _VehicleImuTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleImu
+	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleImu__create())
+}
+
+func (t _VehicleImuTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__VehicleImu__destroy((*C.px4_msgs__msg__VehicleImu)(pointer_to_free))
+}
+
+func (t _VehicleImuTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*VehicleImu)
+	mem := (*C.px4_msgs__msg__VehicleImu)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	mem.accel_device_id = C.uint32_t(m.AccelDeviceId)
+	mem.gyro_device_id = C.uint32_t(m.GyroDeviceId)
+	cSlice_delta_angle := mem.delta_angle[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_angle)), m.DeltaAngle[:])
+	cSlice_delta_velocity := mem.delta_velocity[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_velocity)), m.DeltaVelocity[:])
+	mem.delta_angle_dt = C.uint16_t(m.DeltaAngleDt)
+	mem.delta_velocity_dt = C.uint16_t(m.DeltaVelocityDt)
+	mem.delta_velocity_clipping = C.uint8_t(m.DeltaVelocityClipping)
+	mem.calibration_count = C.uint8_t(m.CalibrationCount)
+}
+
+func (t _VehicleImuTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*VehicleImu)
+	mem := (*C.px4_msgs__msg__VehicleImu)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	m.AccelDeviceId = uint32(mem.accel_device_id)
+	m.GyroDeviceId = uint32(mem.gyro_device_id)
+	cSlice_delta_angle := mem.delta_angle[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.DeltaAngle[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_angle)))
+	cSlice_delta_velocity := mem.delta_velocity[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.DeltaVelocity[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_velocity)))
+	m.DeltaAngleDt = uint16(mem.delta_angle_dt)
+	m.DeltaVelocityDt = uint16(mem.delta_velocity_dt)
+	m.DeltaVelocityClipping = uint8(mem.delta_velocity_clipping)
+	m.CalibrationCount = uint8(mem.calibration_count)
+}
+
+func (t _VehicleImuTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleImu())
 }
 
 type CVehicleImu = C.px4_msgs__msg__VehicleImu
@@ -126,8 +140,7 @@ func VehicleImu__Sequence_to_Go(goSlice *[]VehicleImu, cSlice CVehicleImu__Seque
 		cIdx := (*C.px4_msgs__msg__VehicleImu__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleImu * uintptr(i)),
 		))
-		(*goSlice)[i] = VehicleImu{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VehicleImuTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func VehicleImu__Sequence_to_C(cSlice *CVehicleImu__Sequence, goSlice []VehicleImu) {
@@ -142,18 +155,16 @@ func VehicleImu__Sequence_to_C(cSlice *CVehicleImu__Sequence, goSlice []VehicleI
 		cIdx := (*C.px4_msgs__msg__VehicleImu)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleImu * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__VehicleImu)(v.AsCStruct())
+		VehicleImuTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func VehicleImu__Array_to_Go(goSlice []VehicleImu, cSlice []CVehicleImu) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VehicleImuTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func VehicleImu__Array_to_C(cSlice []CVehicleImu, goSlice []VehicleImu) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__VehicleImu)(goSlice[i].AsCStruct())
+		VehicleImuTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

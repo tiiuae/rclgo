@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EkfGpsDrift", &EkfGpsDrift{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EkfGpsDrift", EkfGpsDriftTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewEkfGpsDrift
@@ -49,44 +49,58 @@ type EkfGpsDrift struct {
 // NewEkfGpsDrift creates a new EkfGpsDrift with default values.
 func NewEkfGpsDrift() *EkfGpsDrift {
 	self := EkfGpsDrift{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *EkfGpsDrift) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *EkfGpsDrift) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EkfGpsDrift())
-}
-func (t *EkfGpsDrift) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EkfGpsDrift
-	return (unsafe.Pointer)(C.px4_msgs__msg__EkfGpsDrift__create())
-}
-func (t *EkfGpsDrift) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__EkfGpsDrift__destroy((*C.px4_msgs__msg__EkfGpsDrift)(pointer_to_free))
-}
-func (t *EkfGpsDrift) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__EkfGpsDrift)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.hpos_drift_rate = C.float(t.HposDriftRate)
-	mem.vpos_drift_rate = C.float(t.VposDriftRate)
-	mem.hspd = C.float(t.Hspd)
-	mem.blocked = C.bool(t.Blocked)
-	return unsafe.Pointer(mem)
-}
-func (t *EkfGpsDrift) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__EkfGpsDrift)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.HposDriftRate = float32(mem.hpos_drift_rate)
-	t.VposDriftRate = float32(mem.vpos_drift_rate)
-	t.Hspd = float32(mem.hspd)
-	t.Blocked = bool(mem.blocked)
-}
-func (t *EkfGpsDrift) Clone() ros2types.ROS2Msg {
+func (t *EkfGpsDrift) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *EkfGpsDrift) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var EkfGpsDriftTypeSupport types.MessageTypeSupport = _EkfGpsDriftTypeSupport{}
+
+type _EkfGpsDriftTypeSupport struct{}
+
+func (t _EkfGpsDriftTypeSupport) New() types.Message {
+	return NewEkfGpsDrift()
+}
+
+func (t _EkfGpsDriftTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EkfGpsDrift
+	return (unsafe.Pointer)(C.px4_msgs__msg__EkfGpsDrift__create())
+}
+
+func (t _EkfGpsDriftTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__EkfGpsDrift__destroy((*C.px4_msgs__msg__EkfGpsDrift)(pointer_to_free))
+}
+
+func (t _EkfGpsDriftTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*EkfGpsDrift)
+	mem := (*C.px4_msgs__msg__EkfGpsDrift)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.hpos_drift_rate = C.float(m.HposDriftRate)
+	mem.vpos_drift_rate = C.float(m.VposDriftRate)
+	mem.hspd = C.float(m.Hspd)
+	mem.blocked = C.bool(m.Blocked)
+}
+
+func (t _EkfGpsDriftTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*EkfGpsDrift)
+	mem := (*C.px4_msgs__msg__EkfGpsDrift)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.HposDriftRate = float32(mem.hpos_drift_rate)
+	m.VposDriftRate = float32(mem.vpos_drift_rate)
+	m.Hspd = float32(mem.hspd)
+	m.Blocked = bool(mem.blocked)
+}
+
+func (t _EkfGpsDriftTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EkfGpsDrift())
 }
 
 type CEkfGpsDrift = C.px4_msgs__msg__EkfGpsDrift
@@ -101,8 +115,7 @@ func EkfGpsDrift__Sequence_to_Go(goSlice *[]EkfGpsDrift, cSlice CEkfGpsDrift__Se
 		cIdx := (*C.px4_msgs__msg__EkfGpsDrift__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EkfGpsDrift * uintptr(i)),
 		))
-		(*goSlice)[i] = EkfGpsDrift{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		EkfGpsDriftTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func EkfGpsDrift__Sequence_to_C(cSlice *CEkfGpsDrift__Sequence, goSlice []EkfGpsDrift) {
@@ -117,18 +130,16 @@ func EkfGpsDrift__Sequence_to_C(cSlice *CEkfGpsDrift__Sequence, goSlice []EkfGps
 		cIdx := (*C.px4_msgs__msg__EkfGpsDrift)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EkfGpsDrift * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__EkfGpsDrift)(v.AsCStruct())
+		EkfGpsDriftTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func EkfGpsDrift__Array_to_Go(goSlice []EkfGpsDrift, cSlice []CEkfGpsDrift) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		EkfGpsDriftTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func EkfGpsDrift__Array_to_C(cSlice []CEkfGpsDrift, goSlice []EkfGpsDrift) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__EkfGpsDrift)(goSlice[i].AsCStruct())
+		EkfGpsDriftTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

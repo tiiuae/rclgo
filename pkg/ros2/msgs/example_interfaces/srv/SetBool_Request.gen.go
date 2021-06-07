@@ -15,7 +15,7 @@ package example_interfaces_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("example_interfaces/SetBool_Request", &SetBool_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("example_interfaces/SetBool_Request", SetBool_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSetBool_Request
@@ -45,36 +45,50 @@ type SetBool_Request struct {
 // NewSetBool_Request creates a new SetBool_Request with default values.
 func NewSetBool_Request() *SetBool_Request {
 	self := SetBool_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SetBool_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *SetBool_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__example_interfaces__srv__SetBool_Request())
-}
-func (t *SetBool_Request) PrepareMemory() unsafe.Pointer { //returns *C.example_interfaces__srv__SetBool_Request
-	return (unsafe.Pointer)(C.example_interfaces__srv__SetBool_Request__create())
-}
-func (t *SetBool_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.example_interfaces__srv__SetBool_Request__destroy((*C.example_interfaces__srv__SetBool_Request)(pointer_to_free))
-}
-func (t *SetBool_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.example_interfaces__srv__SetBool_Request)(t.PrepareMemory())
-	mem.data = C.bool(t.Data)
-	return unsafe.Pointer(mem)
-}
-func (t *SetBool_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.example_interfaces__srv__SetBool_Request)(ros2_message_buffer)
-	t.Data = bool(mem.data)
-}
-func (t *SetBool_Request) Clone() ros2types.ROS2Msg {
+func (t *SetBool_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SetBool_Request) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SetBool_RequestTypeSupport types.MessageTypeSupport = _SetBool_RequestTypeSupport{}
+
+type _SetBool_RequestTypeSupport struct{}
+
+func (t _SetBool_RequestTypeSupport) New() types.Message {
+	return NewSetBool_Request()
+}
+
+func (t _SetBool_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.example_interfaces__srv__SetBool_Request
+	return (unsafe.Pointer)(C.example_interfaces__srv__SetBool_Request__create())
+}
+
+func (t _SetBool_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.example_interfaces__srv__SetBool_Request__destroy((*C.example_interfaces__srv__SetBool_Request)(pointer_to_free))
+}
+
+func (t _SetBool_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*SetBool_Request)
+	mem := (*C.example_interfaces__srv__SetBool_Request)(dst)
+	mem.data = C.bool(m.Data)
+}
+
+func (t _SetBool_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*SetBool_Request)
+	mem := (*C.example_interfaces__srv__SetBool_Request)(ros2_message_buffer)
+	m.Data = bool(mem.data)
+}
+
+func (t _SetBool_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__example_interfaces__srv__SetBool_Request())
 }
 
 type CSetBool_Request = C.example_interfaces__srv__SetBool_Request
@@ -89,8 +103,7 @@ func SetBool_Request__Sequence_to_Go(goSlice *[]SetBool_Request, cSlice CSetBool
 		cIdx := (*C.example_interfaces__srv__SetBool_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__srv__SetBool_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = SetBool_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SetBool_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SetBool_Request__Sequence_to_C(cSlice *CSetBool_Request__Sequence, goSlice []SetBool_Request) {
@@ -105,18 +118,16 @@ func SetBool_Request__Sequence_to_C(cSlice *CSetBool_Request__Sequence, goSlice 
 		cIdx := (*C.example_interfaces__srv__SetBool_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__srv__SetBool_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.example_interfaces__srv__SetBool_Request)(v.AsCStruct())
+		SetBool_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SetBool_Request__Array_to_Go(goSlice []SetBool_Request, cSlice []CSetBool_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SetBool_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SetBool_Request__Array_to_C(cSlice []CSetBool_Request, goSlice []SetBool_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.example_interfaces__srv__SetBool_Request)(goSlice[i].AsCStruct())
+		SetBool_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

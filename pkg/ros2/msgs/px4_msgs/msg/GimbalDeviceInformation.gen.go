@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/GimbalDeviceInformation", &GimbalDeviceInformation{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/GimbalDeviceInformation", GimbalDeviceInformationTypeSupport)
 }
 const (
 	GimbalDeviceInformation_GIMBAL_DEVICE_CAP_FLAGS_HAS_RETRACT uint32 = 1
@@ -75,72 +75,86 @@ type GimbalDeviceInformation struct {
 // NewGimbalDeviceInformation creates a new GimbalDeviceInformation with default values.
 func NewGimbalDeviceInformation() *GimbalDeviceInformation {
 	self := GimbalDeviceInformation{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *GimbalDeviceInformation) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *GimbalDeviceInformation) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__GimbalDeviceInformation())
-}
-func (t *GimbalDeviceInformation) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__GimbalDeviceInformation
-	return (unsafe.Pointer)(C.px4_msgs__msg__GimbalDeviceInformation__create())
-}
-func (t *GimbalDeviceInformation) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__GimbalDeviceInformation__destroy((*C.px4_msgs__msg__GimbalDeviceInformation)(pointer_to_free))
-}
-func (t *GimbalDeviceInformation) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__GimbalDeviceInformation)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	cSlice_vendor_name := mem.vendor_name[:]
-	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_vendor_name)), t.VendorName[:])
-	cSlice_model_name := mem.model_name[:]
-	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_model_name)), t.ModelName[:])
-	cSlice_custom_name := mem.custom_name[:]
-	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_custom_name)), t.CustomName[:])
-	mem.firmware_version = C.uint32_t(t.FirmwareVersion)
-	mem.hardware_version = C.uint32_t(t.HardwareVersion)
-	mem.uid = C.uint64_t(t.Uid)
-	mem.cap_flags = C.uint16_t(t.CapFlags)
-	mem.custom_cap_flags = C.uint16_t(t.CustomCapFlags)
-	mem.roll_min = C.float(t.RollMin)
-	mem.roll_max = C.float(t.RollMax)
-	mem.pitch_min = C.float(t.PitchMin)
-	mem.pitch_max = C.float(t.PitchMax)
-	mem.yaw_min = C.float(t.YawMin)
-	mem.yaw_max = C.float(t.YawMax)
-	mem.gimbal_device_compid = C.uint8_t(t.GimbalDeviceCompid)
-	return unsafe.Pointer(mem)
-}
-func (t *GimbalDeviceInformation) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__GimbalDeviceInformation)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	cSlice_vendor_name := mem.vendor_name[:]
-	rosidl_runtime_c.Uint8__Array_to_Go(t.VendorName[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_vendor_name)))
-	cSlice_model_name := mem.model_name[:]
-	rosidl_runtime_c.Uint8__Array_to_Go(t.ModelName[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_model_name)))
-	cSlice_custom_name := mem.custom_name[:]
-	rosidl_runtime_c.Uint8__Array_to_Go(t.CustomName[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_custom_name)))
-	t.FirmwareVersion = uint32(mem.firmware_version)
-	t.HardwareVersion = uint32(mem.hardware_version)
-	t.Uid = uint64(mem.uid)
-	t.CapFlags = uint16(mem.cap_flags)
-	t.CustomCapFlags = uint16(mem.custom_cap_flags)
-	t.RollMin = float32(mem.roll_min)
-	t.RollMax = float32(mem.roll_max)
-	t.PitchMin = float32(mem.pitch_min)
-	t.PitchMax = float32(mem.pitch_max)
-	t.YawMin = float32(mem.yaw_min)
-	t.YawMax = float32(mem.yaw_max)
-	t.GimbalDeviceCompid = uint8(mem.gimbal_device_compid)
-}
-func (t *GimbalDeviceInformation) Clone() ros2types.ROS2Msg {
+func (t *GimbalDeviceInformation) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *GimbalDeviceInformation) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var GimbalDeviceInformationTypeSupport types.MessageTypeSupport = _GimbalDeviceInformationTypeSupport{}
+
+type _GimbalDeviceInformationTypeSupport struct{}
+
+func (t _GimbalDeviceInformationTypeSupport) New() types.Message {
+	return NewGimbalDeviceInformation()
+}
+
+func (t _GimbalDeviceInformationTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__GimbalDeviceInformation
+	return (unsafe.Pointer)(C.px4_msgs__msg__GimbalDeviceInformation__create())
+}
+
+func (t _GimbalDeviceInformationTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__GimbalDeviceInformation__destroy((*C.px4_msgs__msg__GimbalDeviceInformation)(pointer_to_free))
+}
+
+func (t _GimbalDeviceInformationTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*GimbalDeviceInformation)
+	mem := (*C.px4_msgs__msg__GimbalDeviceInformation)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	cSlice_vendor_name := mem.vendor_name[:]
+	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_vendor_name)), m.VendorName[:])
+	cSlice_model_name := mem.model_name[:]
+	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_model_name)), m.ModelName[:])
+	cSlice_custom_name := mem.custom_name[:]
+	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_custom_name)), m.CustomName[:])
+	mem.firmware_version = C.uint32_t(m.FirmwareVersion)
+	mem.hardware_version = C.uint32_t(m.HardwareVersion)
+	mem.uid = C.uint64_t(m.Uid)
+	mem.cap_flags = C.uint16_t(m.CapFlags)
+	mem.custom_cap_flags = C.uint16_t(m.CustomCapFlags)
+	mem.roll_min = C.float(m.RollMin)
+	mem.roll_max = C.float(m.RollMax)
+	mem.pitch_min = C.float(m.PitchMin)
+	mem.pitch_max = C.float(m.PitchMax)
+	mem.yaw_min = C.float(m.YawMin)
+	mem.yaw_max = C.float(m.YawMax)
+	mem.gimbal_device_compid = C.uint8_t(m.GimbalDeviceCompid)
+}
+
+func (t _GimbalDeviceInformationTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*GimbalDeviceInformation)
+	mem := (*C.px4_msgs__msg__GimbalDeviceInformation)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	cSlice_vendor_name := mem.vendor_name[:]
+	rosidl_runtime_c.Uint8__Array_to_Go(m.VendorName[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_vendor_name)))
+	cSlice_model_name := mem.model_name[:]
+	rosidl_runtime_c.Uint8__Array_to_Go(m.ModelName[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_model_name)))
+	cSlice_custom_name := mem.custom_name[:]
+	rosidl_runtime_c.Uint8__Array_to_Go(m.CustomName[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_custom_name)))
+	m.FirmwareVersion = uint32(mem.firmware_version)
+	m.HardwareVersion = uint32(mem.hardware_version)
+	m.Uid = uint64(mem.uid)
+	m.CapFlags = uint16(mem.cap_flags)
+	m.CustomCapFlags = uint16(mem.custom_cap_flags)
+	m.RollMin = float32(mem.roll_min)
+	m.RollMax = float32(mem.roll_max)
+	m.PitchMin = float32(mem.pitch_min)
+	m.PitchMax = float32(mem.pitch_max)
+	m.YawMin = float32(mem.yaw_min)
+	m.YawMax = float32(mem.yaw_max)
+	m.GimbalDeviceCompid = uint8(mem.gimbal_device_compid)
+}
+
+func (t _GimbalDeviceInformationTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__GimbalDeviceInformation())
 }
 
 type CGimbalDeviceInformation = C.px4_msgs__msg__GimbalDeviceInformation
@@ -155,8 +169,7 @@ func GimbalDeviceInformation__Sequence_to_Go(goSlice *[]GimbalDeviceInformation,
 		cIdx := (*C.px4_msgs__msg__GimbalDeviceInformation__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__GimbalDeviceInformation * uintptr(i)),
 		))
-		(*goSlice)[i] = GimbalDeviceInformation{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		GimbalDeviceInformationTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func GimbalDeviceInformation__Sequence_to_C(cSlice *CGimbalDeviceInformation__Sequence, goSlice []GimbalDeviceInformation) {
@@ -171,18 +184,16 @@ func GimbalDeviceInformation__Sequence_to_C(cSlice *CGimbalDeviceInformation__Se
 		cIdx := (*C.px4_msgs__msg__GimbalDeviceInformation)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__GimbalDeviceInformation * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__GimbalDeviceInformation)(v.AsCStruct())
+		GimbalDeviceInformationTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func GimbalDeviceInformation__Array_to_Go(goSlice []GimbalDeviceInformation, cSlice []CGimbalDeviceInformation) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		GimbalDeviceInformationTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func GimbalDeviceInformation__Array_to_C(cSlice []CGimbalDeviceInformation, goSlice []GimbalDeviceInformation) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__GimbalDeviceInformation)(goSlice[i].AsCStruct())
+		GimbalDeviceInformationTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

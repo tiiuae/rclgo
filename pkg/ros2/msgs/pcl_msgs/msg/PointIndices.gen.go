@@ -15,7 +15,7 @@ package pcl_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
@@ -36,7 +36,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("pcl_msgs/PointIndices", &PointIndices{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("pcl_msgs/PointIndices", PointIndicesTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPointIndices
@@ -49,39 +49,53 @@ type PointIndices struct {
 // NewPointIndices creates a new PointIndices with default values.
 func NewPointIndices() *PointIndices {
 	self := PointIndices{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *PointIndices) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *PointIndices) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__pcl_msgs__msg__PointIndices())
-}
-func (t *PointIndices) PrepareMemory() unsafe.Pointer { //returns *C.pcl_msgs__msg__PointIndices
-	return (unsafe.Pointer)(C.pcl_msgs__msg__PointIndices__create())
-}
-func (t *PointIndices) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.pcl_msgs__msg__PointIndices__destroy((*C.pcl_msgs__msg__PointIndices)(pointer_to_free))
-}
-func (t *PointIndices) AsCStruct() unsafe.Pointer {
-	mem := (*C.pcl_msgs__msg__PointIndices)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	rosidl_runtime_c.Int32__Sequence_to_C((*rosidl_runtime_c.CInt32__Sequence)(unsafe.Pointer(&mem.indices)), t.Indices)
-	return unsafe.Pointer(mem)
-}
-func (t *PointIndices) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.pcl_msgs__msg__PointIndices)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	rosidl_runtime_c.Int32__Sequence_to_Go(&t.Indices, *(*rosidl_runtime_c.CInt32__Sequence)(unsafe.Pointer(&mem.indices)))
-}
-func (t *PointIndices) Clone() ros2types.ROS2Msg {
+func (t *PointIndices) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *PointIndices) SetDefaults() {
+	t.Header.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var PointIndicesTypeSupport types.MessageTypeSupport = _PointIndicesTypeSupport{}
+
+type _PointIndicesTypeSupport struct{}
+
+func (t _PointIndicesTypeSupport) New() types.Message {
+	return NewPointIndices()
+}
+
+func (t _PointIndicesTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.pcl_msgs__msg__PointIndices
+	return (unsafe.Pointer)(C.pcl_msgs__msg__PointIndices__create())
+}
+
+func (t _PointIndicesTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.pcl_msgs__msg__PointIndices__destroy((*C.pcl_msgs__msg__PointIndices)(pointer_to_free))
+}
+
+func (t _PointIndicesTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*PointIndices)
+	mem := (*C.pcl_msgs__msg__PointIndices)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	rosidl_runtime_c.Int32__Sequence_to_C((*rosidl_runtime_c.CInt32__Sequence)(unsafe.Pointer(&mem.indices)), m.Indices)
+}
+
+func (t _PointIndicesTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*PointIndices)
+	mem := (*C.pcl_msgs__msg__PointIndices)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	rosidl_runtime_c.Int32__Sequence_to_Go(&m.Indices, *(*rosidl_runtime_c.CInt32__Sequence)(unsafe.Pointer(&mem.indices)))
+}
+
+func (t _PointIndicesTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__pcl_msgs__msg__PointIndices())
 }
 
 type CPointIndices = C.pcl_msgs__msg__PointIndices
@@ -96,8 +110,7 @@ func PointIndices__Sequence_to_Go(goSlice *[]PointIndices, cSlice CPointIndices_
 		cIdx := (*C.pcl_msgs__msg__PointIndices__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_pcl_msgs__msg__PointIndices * uintptr(i)),
 		))
-		(*goSlice)[i] = PointIndices{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		PointIndicesTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func PointIndices__Sequence_to_C(cSlice *CPointIndices__Sequence, goSlice []PointIndices) {
@@ -112,18 +125,16 @@ func PointIndices__Sequence_to_C(cSlice *CPointIndices__Sequence, goSlice []Poin
 		cIdx := (*C.pcl_msgs__msg__PointIndices)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_pcl_msgs__msg__PointIndices * uintptr(i)),
 		))
-		*cIdx = *(*C.pcl_msgs__msg__PointIndices)(v.AsCStruct())
+		PointIndicesTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func PointIndices__Array_to_Go(goSlice []PointIndices, cSlice []CPointIndices) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		PointIndicesTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func PointIndices__Array_to_C(cSlice []CPointIndices, goSlice []PointIndices) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.pcl_msgs__msg__PointIndices)(goSlice[i].AsCStruct())
+		PointIndicesTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

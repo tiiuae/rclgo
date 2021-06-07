@@ -15,7 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/JoyFeedback", &JoyFeedback{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/JoyFeedback", JoyFeedbackTypeSupport)
 }
 const (
 	JoyFeedback_TYPE_LED uint8 = 0// Declare of the type of feedback
@@ -52,40 +52,54 @@ type JoyFeedback struct {
 // NewJoyFeedback creates a new JoyFeedback with default values.
 func NewJoyFeedback() *JoyFeedback {
 	self := JoyFeedback{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *JoyFeedback) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *JoyFeedback) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__JoyFeedback())
-}
-func (t *JoyFeedback) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__JoyFeedback
-	return (unsafe.Pointer)(C.sensor_msgs__msg__JoyFeedback__create())
-}
-func (t *JoyFeedback) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__msg__JoyFeedback__destroy((*C.sensor_msgs__msg__JoyFeedback)(pointer_to_free))
-}
-func (t *JoyFeedback) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__msg__JoyFeedback)(t.PrepareMemory())
-	mem._type = C.uint8_t(t.Type)
-	mem.id = C.uint8_t(t.Id)
-	mem.intensity = C.float(t.Intensity)
-	return unsafe.Pointer(mem)
-}
-func (t *JoyFeedback) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__msg__JoyFeedback)(ros2_message_buffer)
-	t.Type = uint8(mem._type)
-	t.Id = uint8(mem.id)
-	t.Intensity = float32(mem.intensity)
-}
-func (t *JoyFeedback) Clone() ros2types.ROS2Msg {
+func (t *JoyFeedback) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *JoyFeedback) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var JoyFeedbackTypeSupport types.MessageTypeSupport = _JoyFeedbackTypeSupport{}
+
+type _JoyFeedbackTypeSupport struct{}
+
+func (t _JoyFeedbackTypeSupport) New() types.Message {
+	return NewJoyFeedback()
+}
+
+func (t _JoyFeedbackTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__JoyFeedback
+	return (unsafe.Pointer)(C.sensor_msgs__msg__JoyFeedback__create())
+}
+
+func (t _JoyFeedbackTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__msg__JoyFeedback__destroy((*C.sensor_msgs__msg__JoyFeedback)(pointer_to_free))
+}
+
+func (t _JoyFeedbackTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*JoyFeedback)
+	mem := (*C.sensor_msgs__msg__JoyFeedback)(dst)
+	mem._type = C.uint8_t(m.Type)
+	mem.id = C.uint8_t(m.Id)
+	mem.intensity = C.float(m.Intensity)
+}
+
+func (t _JoyFeedbackTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*JoyFeedback)
+	mem := (*C.sensor_msgs__msg__JoyFeedback)(ros2_message_buffer)
+	m.Type = uint8(mem._type)
+	m.Id = uint8(mem.id)
+	m.Intensity = float32(mem.intensity)
+}
+
+func (t _JoyFeedbackTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__JoyFeedback())
 }
 
 type CJoyFeedback = C.sensor_msgs__msg__JoyFeedback
@@ -100,8 +114,7 @@ func JoyFeedback__Sequence_to_Go(goSlice *[]JoyFeedback, cSlice CJoyFeedback__Se
 		cIdx := (*C.sensor_msgs__msg__JoyFeedback__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__JoyFeedback * uintptr(i)),
 		))
-		(*goSlice)[i] = JoyFeedback{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		JoyFeedbackTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func JoyFeedback__Sequence_to_C(cSlice *CJoyFeedback__Sequence, goSlice []JoyFeedback) {
@@ -116,18 +129,16 @@ func JoyFeedback__Sequence_to_C(cSlice *CJoyFeedback__Sequence, goSlice []JoyFee
 		cIdx := (*C.sensor_msgs__msg__JoyFeedback)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__JoyFeedback * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__msg__JoyFeedback)(v.AsCStruct())
+		JoyFeedbackTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func JoyFeedback__Array_to_Go(goSlice []JoyFeedback, cSlice []CJoyFeedback) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		JoyFeedbackTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func JoyFeedback__Array_to_C(cSlice []CJoyFeedback, goSlice []JoyFeedback) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__msg__JoyFeedback)(goSlice[i].AsCStruct())
+		JoyFeedbackTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

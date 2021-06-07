@@ -15,7 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
@@ -36,57 +36,70 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/TransformStamped", &TransformStamped{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/TransformStamped", TransformStampedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTransformStamped
 // function instead.
 type TransformStamped struct {
 	Header std_msgs_msg.Header `yaml:"header"`// The frame id in the header is used as the reference frame of this transform.
-	ChildFrameId rosidl_runtime_c.String `yaml:"child_frame_id"`// The frame id of the child frame to which this transform points.
+	ChildFrameId string `yaml:"child_frame_id"`// The frame id of the child frame to which this transform points.
 	Transform Transform `yaml:"transform"`// Translation and rotation in 3-dimensions of child_frame_id from header.frame_id.
 }
 
 // NewTransformStamped creates a new TransformStamped with default values.
 func NewTransformStamped() *TransformStamped {
 	self := TransformStamped{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *TransformStamped) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.ChildFrameId.SetDefaults("")
-	t.Transform.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *TransformStamped) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__TransformStamped())
-}
-func (t *TransformStamped) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__TransformStamped
-	return (unsafe.Pointer)(C.geometry_msgs__msg__TransformStamped__create())
-}
-func (t *TransformStamped) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.geometry_msgs__msg__TransformStamped__destroy((*C.geometry_msgs__msg__TransformStamped)(pointer_to_free))
-}
-func (t *TransformStamped) AsCStruct() unsafe.Pointer {
-	mem := (*C.geometry_msgs__msg__TransformStamped)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.child_frame_id = *(*C.rosidl_runtime_c__String)(t.ChildFrameId.AsCStruct())
-	mem.transform = *(*C.geometry_msgs__msg__Transform)(t.Transform.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *TransformStamped) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.geometry_msgs__msg__TransformStamped)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.ChildFrameId.AsGoStruct(unsafe.Pointer(&mem.child_frame_id))
-	t.Transform.AsGoStruct(unsafe.Pointer(&mem.transform))
-}
-func (t *TransformStamped) Clone() ros2types.ROS2Msg {
+func (t *TransformStamped) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *TransformStamped) SetDefaults() {
+	t.Header.SetDefaults()
+	t.Transform.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TransformStampedTypeSupport types.MessageTypeSupport = _TransformStampedTypeSupport{}
+
+type _TransformStampedTypeSupport struct{}
+
+func (t _TransformStampedTypeSupport) New() types.Message {
+	return NewTransformStamped()
+}
+
+func (t _TransformStampedTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__TransformStamped
+	return (unsafe.Pointer)(C.geometry_msgs__msg__TransformStamped__create())
+}
+
+func (t _TransformStampedTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.geometry_msgs__msg__TransformStamped__destroy((*C.geometry_msgs__msg__TransformStamped)(pointer_to_free))
+}
+
+func (t _TransformStampedTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*TransformStamped)
+	mem := (*C.geometry_msgs__msg__TransformStamped)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.child_frame_id), m.ChildFrameId)
+	TransformTypeSupport.AsCStruct(unsafe.Pointer(&mem.transform), &m.Transform)
+}
+
+func (t _TransformStampedTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*TransformStamped)
+	mem := (*C.geometry_msgs__msg__TransformStamped)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	rosidl_runtime_c.StringAsGoStruct(&m.ChildFrameId, unsafe.Pointer(&mem.child_frame_id))
+	TransformTypeSupport.AsGoStruct(&m.Transform, unsafe.Pointer(&mem.transform))
+}
+
+func (t _TransformStampedTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__TransformStamped())
 }
 
 type CTransformStamped = C.geometry_msgs__msg__TransformStamped
@@ -101,8 +114,7 @@ func TransformStamped__Sequence_to_Go(goSlice *[]TransformStamped, cSlice CTrans
 		cIdx := (*C.geometry_msgs__msg__TransformStamped__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__TransformStamped * uintptr(i)),
 		))
-		(*goSlice)[i] = TransformStamped{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TransformStampedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func TransformStamped__Sequence_to_C(cSlice *CTransformStamped__Sequence, goSlice []TransformStamped) {
@@ -117,18 +129,16 @@ func TransformStamped__Sequence_to_C(cSlice *CTransformStamped__Sequence, goSlic
 		cIdx := (*C.geometry_msgs__msg__TransformStamped)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__TransformStamped * uintptr(i)),
 		))
-		*cIdx = *(*C.geometry_msgs__msg__TransformStamped)(v.AsCStruct())
+		TransformStampedTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func TransformStamped__Array_to_Go(goSlice []TransformStamped, cSlice []CTransformStamped) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TransformStampedTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func TransformStamped__Array_to_C(cSlice []CTransformStamped, goSlice []TransformStamped) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.geometry_msgs__msg__TransformStamped)(goSlice[i].AsCStruct())
+		TransformStampedTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

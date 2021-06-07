@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("test_msgs/Arrays", Arrays)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("test_msgs/Arrays", ArraysTypeSupport)
 }
 
-type _Arrays struct {
-	req,resp ros2types.ROS2Msg
+type _ArraysTypeSupport struct {}
+
+func (s _ArraysTypeSupport) Request() types.MessageTypeSupport {
+	return Arrays_RequestTypeSupport
 }
 
-func (s *_Arrays) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _ArraysTypeSupport) Response() types.MessageTypeSupport {
+	return Arrays_ResponseTypeSupport
 }
 
-func (s *_Arrays) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_Arrays) TypeSupport() unsafe.Pointer {
+func (s _ArraysTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__test_msgs__srv__Arrays())
 }
 
 // Modifying this variable is undefined behavior.
-var Arrays ros2types.Service = &_Arrays{
-	req: &Arrays_Request{},
-	resp: &Arrays_Response{},
-}
+var ArraysTypeSupport types.ServiceTypeSupport = _ArraysTypeSupport{}

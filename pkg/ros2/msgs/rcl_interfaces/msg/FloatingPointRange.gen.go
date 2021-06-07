@@ -15,7 +15,7 @@ package rcl_interfaces_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("rcl_interfaces/FloatingPointRange", &FloatingPointRange{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("rcl_interfaces/FloatingPointRange", FloatingPointRangeTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewFloatingPointRange
@@ -47,40 +47,54 @@ type FloatingPointRange struct {
 // NewFloatingPointRange creates a new FloatingPointRange with default values.
 func NewFloatingPointRange() *FloatingPointRange {
 	self := FloatingPointRange{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *FloatingPointRange) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *FloatingPointRange) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__rcl_interfaces__msg__FloatingPointRange())
-}
-func (t *FloatingPointRange) PrepareMemory() unsafe.Pointer { //returns *C.rcl_interfaces__msg__FloatingPointRange
-	return (unsafe.Pointer)(C.rcl_interfaces__msg__FloatingPointRange__create())
-}
-func (t *FloatingPointRange) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.rcl_interfaces__msg__FloatingPointRange__destroy((*C.rcl_interfaces__msg__FloatingPointRange)(pointer_to_free))
-}
-func (t *FloatingPointRange) AsCStruct() unsafe.Pointer {
-	mem := (*C.rcl_interfaces__msg__FloatingPointRange)(t.PrepareMemory())
-	mem.from_value = C.double(t.FromValue)
-	mem.to_value = C.double(t.ToValue)
-	mem.step = C.double(t.Step)
-	return unsafe.Pointer(mem)
-}
-func (t *FloatingPointRange) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.rcl_interfaces__msg__FloatingPointRange)(ros2_message_buffer)
-	t.FromValue = float64(mem.from_value)
-	t.ToValue = float64(mem.to_value)
-	t.Step = float64(mem.step)
-}
-func (t *FloatingPointRange) Clone() ros2types.ROS2Msg {
+func (t *FloatingPointRange) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *FloatingPointRange) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var FloatingPointRangeTypeSupport types.MessageTypeSupport = _FloatingPointRangeTypeSupport{}
+
+type _FloatingPointRangeTypeSupport struct{}
+
+func (t _FloatingPointRangeTypeSupport) New() types.Message {
+	return NewFloatingPointRange()
+}
+
+func (t _FloatingPointRangeTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.rcl_interfaces__msg__FloatingPointRange
+	return (unsafe.Pointer)(C.rcl_interfaces__msg__FloatingPointRange__create())
+}
+
+func (t _FloatingPointRangeTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.rcl_interfaces__msg__FloatingPointRange__destroy((*C.rcl_interfaces__msg__FloatingPointRange)(pointer_to_free))
+}
+
+func (t _FloatingPointRangeTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*FloatingPointRange)
+	mem := (*C.rcl_interfaces__msg__FloatingPointRange)(dst)
+	mem.from_value = C.double(m.FromValue)
+	mem.to_value = C.double(m.ToValue)
+	mem.step = C.double(m.Step)
+}
+
+func (t _FloatingPointRangeTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*FloatingPointRange)
+	mem := (*C.rcl_interfaces__msg__FloatingPointRange)(ros2_message_buffer)
+	m.FromValue = float64(mem.from_value)
+	m.ToValue = float64(mem.to_value)
+	m.Step = float64(mem.step)
+}
+
+func (t _FloatingPointRangeTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__rcl_interfaces__msg__FloatingPointRange())
 }
 
 type CFloatingPointRange = C.rcl_interfaces__msg__FloatingPointRange
@@ -95,8 +109,7 @@ func FloatingPointRange__Sequence_to_Go(goSlice *[]FloatingPointRange, cSlice CF
 		cIdx := (*C.rcl_interfaces__msg__FloatingPointRange__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rcl_interfaces__msg__FloatingPointRange * uintptr(i)),
 		))
-		(*goSlice)[i] = FloatingPointRange{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		FloatingPointRangeTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func FloatingPointRange__Sequence_to_C(cSlice *CFloatingPointRange__Sequence, goSlice []FloatingPointRange) {
@@ -111,18 +124,16 @@ func FloatingPointRange__Sequence_to_C(cSlice *CFloatingPointRange__Sequence, go
 		cIdx := (*C.rcl_interfaces__msg__FloatingPointRange)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rcl_interfaces__msg__FloatingPointRange * uintptr(i)),
 		))
-		*cIdx = *(*C.rcl_interfaces__msg__FloatingPointRange)(v.AsCStruct())
+		FloatingPointRangeTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func FloatingPointRange__Array_to_Go(goSlice []FloatingPointRange, cSlice []CFloatingPointRange) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		FloatingPointRangeTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func FloatingPointRange__Array_to_C(cSlice []CFloatingPointRange, goSlice []FloatingPointRange) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.rcl_interfaces__msg__FloatingPointRange)(goSlice[i].AsCStruct())
+		FloatingPointRangeTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

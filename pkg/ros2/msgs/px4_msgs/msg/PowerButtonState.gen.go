@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/PowerButtonState", &PowerButtonState{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/PowerButtonState", PowerButtonStateTypeSupport)
 }
 const (
 	PowerButtonState_PWR_BUTTON_STATE_IDEL uint8 = 0// Button went up without meeting shutdown button down time (delete event)
@@ -52,38 +52,52 @@ type PowerButtonState struct {
 // NewPowerButtonState creates a new PowerButtonState with default values.
 func NewPowerButtonState() *PowerButtonState {
 	self := PowerButtonState{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *PowerButtonState) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *PowerButtonState) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__PowerButtonState())
-}
-func (t *PowerButtonState) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__PowerButtonState
-	return (unsafe.Pointer)(C.px4_msgs__msg__PowerButtonState__create())
-}
-func (t *PowerButtonState) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__PowerButtonState__destroy((*C.px4_msgs__msg__PowerButtonState)(pointer_to_free))
-}
-func (t *PowerButtonState) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__PowerButtonState)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.event = C.uint8_t(t.Event)
-	return unsafe.Pointer(mem)
-}
-func (t *PowerButtonState) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__PowerButtonState)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Event = uint8(mem.event)
-}
-func (t *PowerButtonState) Clone() ros2types.ROS2Msg {
+func (t *PowerButtonState) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *PowerButtonState) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var PowerButtonStateTypeSupport types.MessageTypeSupport = _PowerButtonStateTypeSupport{}
+
+type _PowerButtonStateTypeSupport struct{}
+
+func (t _PowerButtonStateTypeSupport) New() types.Message {
+	return NewPowerButtonState()
+}
+
+func (t _PowerButtonStateTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__PowerButtonState
+	return (unsafe.Pointer)(C.px4_msgs__msg__PowerButtonState__create())
+}
+
+func (t _PowerButtonStateTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__PowerButtonState__destroy((*C.px4_msgs__msg__PowerButtonState)(pointer_to_free))
+}
+
+func (t _PowerButtonStateTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*PowerButtonState)
+	mem := (*C.px4_msgs__msg__PowerButtonState)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.event = C.uint8_t(m.Event)
+}
+
+func (t _PowerButtonStateTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*PowerButtonState)
+	mem := (*C.px4_msgs__msg__PowerButtonState)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Event = uint8(mem.event)
+}
+
+func (t _PowerButtonStateTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__PowerButtonState())
 }
 
 type CPowerButtonState = C.px4_msgs__msg__PowerButtonState
@@ -98,8 +112,7 @@ func PowerButtonState__Sequence_to_Go(goSlice *[]PowerButtonState, cSlice CPower
 		cIdx := (*C.px4_msgs__msg__PowerButtonState__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__PowerButtonState * uintptr(i)),
 		))
-		(*goSlice)[i] = PowerButtonState{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		PowerButtonStateTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func PowerButtonState__Sequence_to_C(cSlice *CPowerButtonState__Sequence, goSlice []PowerButtonState) {
@@ -114,18 +127,16 @@ func PowerButtonState__Sequence_to_C(cSlice *CPowerButtonState__Sequence, goSlic
 		cIdx := (*C.px4_msgs__msg__PowerButtonState)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__PowerButtonState * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__PowerButtonState)(v.AsCStruct())
+		PowerButtonStateTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func PowerButtonState__Array_to_Go(goSlice []PowerButtonState, cSlice []CPowerButtonState) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		PowerButtonStateTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func PowerButtonState__Array_to_C(cSlice []CPowerButtonState, goSlice []PowerButtonState) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__PowerButtonState)(goSlice[i].AsCStruct())
+		PowerButtonStateTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

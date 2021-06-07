@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/CollisionReport", &CollisionReport{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/CollisionReport", CollisionReportTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewCollisionReport
@@ -52,50 +52,64 @@ type CollisionReport struct {
 // NewCollisionReport creates a new CollisionReport with default values.
 func NewCollisionReport() *CollisionReport {
 	self := CollisionReport{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *CollisionReport) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *CollisionReport) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__CollisionReport())
-}
-func (t *CollisionReport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__CollisionReport
-	return (unsafe.Pointer)(C.px4_msgs__msg__CollisionReport__create())
-}
-func (t *CollisionReport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__CollisionReport__destroy((*C.px4_msgs__msg__CollisionReport)(pointer_to_free))
-}
-func (t *CollisionReport) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__CollisionReport)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.src = C.uint8_t(t.Src)
-	mem.id = C.uint32_t(t.Id)
-	mem.action = C.uint8_t(t.Action)
-	mem.threat_level = C.uint8_t(t.ThreatLevel)
-	mem.time_to_minimum_delta = C.float(t.TimeToMinimumDelta)
-	mem.altitude_minimum_delta = C.float(t.AltitudeMinimumDelta)
-	mem.horizontal_minimum_delta = C.float(t.HorizontalMinimumDelta)
-	return unsafe.Pointer(mem)
-}
-func (t *CollisionReport) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__CollisionReport)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Src = uint8(mem.src)
-	t.Id = uint32(mem.id)
-	t.Action = uint8(mem.action)
-	t.ThreatLevel = uint8(mem.threat_level)
-	t.TimeToMinimumDelta = float32(mem.time_to_minimum_delta)
-	t.AltitudeMinimumDelta = float32(mem.altitude_minimum_delta)
-	t.HorizontalMinimumDelta = float32(mem.horizontal_minimum_delta)
-}
-func (t *CollisionReport) Clone() ros2types.ROS2Msg {
+func (t *CollisionReport) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *CollisionReport) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var CollisionReportTypeSupport types.MessageTypeSupport = _CollisionReportTypeSupport{}
+
+type _CollisionReportTypeSupport struct{}
+
+func (t _CollisionReportTypeSupport) New() types.Message {
+	return NewCollisionReport()
+}
+
+func (t _CollisionReportTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__CollisionReport
+	return (unsafe.Pointer)(C.px4_msgs__msg__CollisionReport__create())
+}
+
+func (t _CollisionReportTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__CollisionReport__destroy((*C.px4_msgs__msg__CollisionReport)(pointer_to_free))
+}
+
+func (t _CollisionReportTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*CollisionReport)
+	mem := (*C.px4_msgs__msg__CollisionReport)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.src = C.uint8_t(m.Src)
+	mem.id = C.uint32_t(m.Id)
+	mem.action = C.uint8_t(m.Action)
+	mem.threat_level = C.uint8_t(m.ThreatLevel)
+	mem.time_to_minimum_delta = C.float(m.TimeToMinimumDelta)
+	mem.altitude_minimum_delta = C.float(m.AltitudeMinimumDelta)
+	mem.horizontal_minimum_delta = C.float(m.HorizontalMinimumDelta)
+}
+
+func (t _CollisionReportTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*CollisionReport)
+	mem := (*C.px4_msgs__msg__CollisionReport)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Src = uint8(mem.src)
+	m.Id = uint32(mem.id)
+	m.Action = uint8(mem.action)
+	m.ThreatLevel = uint8(mem.threat_level)
+	m.TimeToMinimumDelta = float32(mem.time_to_minimum_delta)
+	m.AltitudeMinimumDelta = float32(mem.altitude_minimum_delta)
+	m.HorizontalMinimumDelta = float32(mem.horizontal_minimum_delta)
+}
+
+func (t _CollisionReportTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__CollisionReport())
 }
 
 type CCollisionReport = C.px4_msgs__msg__CollisionReport
@@ -110,8 +124,7 @@ func CollisionReport__Sequence_to_Go(goSlice *[]CollisionReport, cSlice CCollisi
 		cIdx := (*C.px4_msgs__msg__CollisionReport__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__CollisionReport * uintptr(i)),
 		))
-		(*goSlice)[i] = CollisionReport{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		CollisionReportTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func CollisionReport__Sequence_to_C(cSlice *CCollisionReport__Sequence, goSlice []CollisionReport) {
@@ -126,18 +139,16 @@ func CollisionReport__Sequence_to_C(cSlice *CCollisionReport__Sequence, goSlice 
 		cIdx := (*C.px4_msgs__msg__CollisionReport)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__CollisionReport * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__CollisionReport)(v.AsCStruct())
+		CollisionReportTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func CollisionReport__Array_to_Go(goSlice []CollisionReport, cSlice []CCollisionReport) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		CollisionReportTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func CollisionReport__Array_to_C(cSlice []CCollisionReport, goSlice []CollisionReport) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__CollisionReport)(goSlice[i].AsCStruct())
+		CollisionReportTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package rcl_interfaces_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rcl_interfaces_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/rcl_interfaces/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("rcl_interfaces/SetParametersAtomically_Response", &SetParametersAtomically_Response{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("rcl_interfaces/SetParametersAtomically_Response", SetParametersAtomically_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSetParametersAtomically_Response
@@ -47,37 +47,51 @@ type SetParametersAtomically_Response struct {
 // NewSetParametersAtomically_Response creates a new SetParametersAtomically_Response with default values.
 func NewSetParametersAtomically_Response() *SetParametersAtomically_Response {
 	self := SetParametersAtomically_Response{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SetParametersAtomically_Response) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Result.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *SetParametersAtomically_Response) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__rcl_interfaces__srv__SetParametersAtomically_Response())
-}
-func (t *SetParametersAtomically_Response) PrepareMemory() unsafe.Pointer { //returns *C.rcl_interfaces__srv__SetParametersAtomically_Response
-	return (unsafe.Pointer)(C.rcl_interfaces__srv__SetParametersAtomically_Response__create())
-}
-func (t *SetParametersAtomically_Response) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.rcl_interfaces__srv__SetParametersAtomically_Response__destroy((*C.rcl_interfaces__srv__SetParametersAtomically_Response)(pointer_to_free))
-}
-func (t *SetParametersAtomically_Response) AsCStruct() unsafe.Pointer {
-	mem := (*C.rcl_interfaces__srv__SetParametersAtomically_Response)(t.PrepareMemory())
-	mem.result = *(*C.rcl_interfaces__msg__SetParametersResult)(t.Result.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *SetParametersAtomically_Response) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.rcl_interfaces__srv__SetParametersAtomically_Response)(ros2_message_buffer)
-	t.Result.AsGoStruct(unsafe.Pointer(&mem.result))
-}
-func (t *SetParametersAtomically_Response) Clone() ros2types.ROS2Msg {
+func (t *SetParametersAtomically_Response) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SetParametersAtomically_Response) SetDefaults() {
+	t.Result.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SetParametersAtomically_ResponseTypeSupport types.MessageTypeSupport = _SetParametersAtomically_ResponseTypeSupport{}
+
+type _SetParametersAtomically_ResponseTypeSupport struct{}
+
+func (t _SetParametersAtomically_ResponseTypeSupport) New() types.Message {
+	return NewSetParametersAtomically_Response()
+}
+
+func (t _SetParametersAtomically_ResponseTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.rcl_interfaces__srv__SetParametersAtomically_Response
+	return (unsafe.Pointer)(C.rcl_interfaces__srv__SetParametersAtomically_Response__create())
+}
+
+func (t _SetParametersAtomically_ResponseTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.rcl_interfaces__srv__SetParametersAtomically_Response__destroy((*C.rcl_interfaces__srv__SetParametersAtomically_Response)(pointer_to_free))
+}
+
+func (t _SetParametersAtomically_ResponseTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*SetParametersAtomically_Response)
+	mem := (*C.rcl_interfaces__srv__SetParametersAtomically_Response)(dst)
+	rcl_interfaces_msg.SetParametersResultTypeSupport.AsCStruct(unsafe.Pointer(&mem.result), &m.Result)
+}
+
+func (t _SetParametersAtomically_ResponseTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*SetParametersAtomically_Response)
+	mem := (*C.rcl_interfaces__srv__SetParametersAtomically_Response)(ros2_message_buffer)
+	rcl_interfaces_msg.SetParametersResultTypeSupport.AsGoStruct(&m.Result, unsafe.Pointer(&mem.result))
+}
+
+func (t _SetParametersAtomically_ResponseTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__rcl_interfaces__srv__SetParametersAtomically_Response())
 }
 
 type CSetParametersAtomically_Response = C.rcl_interfaces__srv__SetParametersAtomically_Response
@@ -92,8 +106,7 @@ func SetParametersAtomically_Response__Sequence_to_Go(goSlice *[]SetParametersAt
 		cIdx := (*C.rcl_interfaces__srv__SetParametersAtomically_Response__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rcl_interfaces__srv__SetParametersAtomically_Response * uintptr(i)),
 		))
-		(*goSlice)[i] = SetParametersAtomically_Response{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SetParametersAtomically_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SetParametersAtomically_Response__Sequence_to_C(cSlice *CSetParametersAtomically_Response__Sequence, goSlice []SetParametersAtomically_Response) {
@@ -108,18 +121,16 @@ func SetParametersAtomically_Response__Sequence_to_C(cSlice *CSetParametersAtomi
 		cIdx := (*C.rcl_interfaces__srv__SetParametersAtomically_Response)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rcl_interfaces__srv__SetParametersAtomically_Response * uintptr(i)),
 		))
-		*cIdx = *(*C.rcl_interfaces__srv__SetParametersAtomically_Response)(v.AsCStruct())
+		SetParametersAtomically_ResponseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SetParametersAtomically_Response__Array_to_Go(goSlice []SetParametersAtomically_Response, cSlice []CSetParametersAtomically_Response) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SetParametersAtomically_ResponseTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SetParametersAtomically_Response__Array_to_C(cSlice []CSetParametersAtomically_Response, goSlice []SetParametersAtomically_Response) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.rcl_interfaces__srv__SetParametersAtomically_Response)(goSlice[i].AsCStruct())
+		SetParametersAtomically_ResponseTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

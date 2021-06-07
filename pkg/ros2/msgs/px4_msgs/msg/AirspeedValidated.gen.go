@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/AirspeedValidated", &AirspeedValidated{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/AirspeedValidated", AirspeedValidatedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewAirspeedValidated
@@ -52,50 +52,64 @@ type AirspeedValidated struct {
 // NewAirspeedValidated creates a new AirspeedValidated with default values.
 func NewAirspeedValidated() *AirspeedValidated {
 	self := AirspeedValidated{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *AirspeedValidated) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *AirspeedValidated) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__AirspeedValidated())
-}
-func (t *AirspeedValidated) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__AirspeedValidated
-	return (unsafe.Pointer)(C.px4_msgs__msg__AirspeedValidated__create())
-}
-func (t *AirspeedValidated) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__AirspeedValidated__destroy((*C.px4_msgs__msg__AirspeedValidated)(pointer_to_free))
-}
-func (t *AirspeedValidated) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__AirspeedValidated)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.indicated_airspeed_m_s = C.float(t.IndicatedAirspeedMS)
-	mem.calibrated_airspeed_m_s = C.float(t.CalibratedAirspeedMS)
-	mem.true_airspeed_m_s = C.float(t.TrueAirspeedMS)
-	mem.calibrated_ground_minus_wind_m_s = C.float(t.CalibratedGroundMinusWindMS)
-	mem.true_ground_minus_wind_m_s = C.float(t.TrueGroundMinusWindMS)
-	mem.airspeed_sensor_measurement_valid = C.bool(t.AirspeedSensorMeasurementValid)
-	mem.selected_airspeed_index = C.int8_t(t.SelectedAirspeedIndex)
-	return unsafe.Pointer(mem)
-}
-func (t *AirspeedValidated) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__AirspeedValidated)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.IndicatedAirspeedMS = float32(mem.indicated_airspeed_m_s)
-	t.CalibratedAirspeedMS = float32(mem.calibrated_airspeed_m_s)
-	t.TrueAirspeedMS = float32(mem.true_airspeed_m_s)
-	t.CalibratedGroundMinusWindMS = float32(mem.calibrated_ground_minus_wind_m_s)
-	t.TrueGroundMinusWindMS = float32(mem.true_ground_minus_wind_m_s)
-	t.AirspeedSensorMeasurementValid = bool(mem.airspeed_sensor_measurement_valid)
-	t.SelectedAirspeedIndex = int8(mem.selected_airspeed_index)
-}
-func (t *AirspeedValidated) Clone() ros2types.ROS2Msg {
+func (t *AirspeedValidated) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *AirspeedValidated) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var AirspeedValidatedTypeSupport types.MessageTypeSupport = _AirspeedValidatedTypeSupport{}
+
+type _AirspeedValidatedTypeSupport struct{}
+
+func (t _AirspeedValidatedTypeSupport) New() types.Message {
+	return NewAirspeedValidated()
+}
+
+func (t _AirspeedValidatedTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__AirspeedValidated
+	return (unsafe.Pointer)(C.px4_msgs__msg__AirspeedValidated__create())
+}
+
+func (t _AirspeedValidatedTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__AirspeedValidated__destroy((*C.px4_msgs__msg__AirspeedValidated)(pointer_to_free))
+}
+
+func (t _AirspeedValidatedTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*AirspeedValidated)
+	mem := (*C.px4_msgs__msg__AirspeedValidated)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.indicated_airspeed_m_s = C.float(m.IndicatedAirspeedMS)
+	mem.calibrated_airspeed_m_s = C.float(m.CalibratedAirspeedMS)
+	mem.true_airspeed_m_s = C.float(m.TrueAirspeedMS)
+	mem.calibrated_ground_minus_wind_m_s = C.float(m.CalibratedGroundMinusWindMS)
+	mem.true_ground_minus_wind_m_s = C.float(m.TrueGroundMinusWindMS)
+	mem.airspeed_sensor_measurement_valid = C.bool(m.AirspeedSensorMeasurementValid)
+	mem.selected_airspeed_index = C.int8_t(m.SelectedAirspeedIndex)
+}
+
+func (t _AirspeedValidatedTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*AirspeedValidated)
+	mem := (*C.px4_msgs__msg__AirspeedValidated)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.IndicatedAirspeedMS = float32(mem.indicated_airspeed_m_s)
+	m.CalibratedAirspeedMS = float32(mem.calibrated_airspeed_m_s)
+	m.TrueAirspeedMS = float32(mem.true_airspeed_m_s)
+	m.CalibratedGroundMinusWindMS = float32(mem.calibrated_ground_minus_wind_m_s)
+	m.TrueGroundMinusWindMS = float32(mem.true_ground_minus_wind_m_s)
+	m.AirspeedSensorMeasurementValid = bool(mem.airspeed_sensor_measurement_valid)
+	m.SelectedAirspeedIndex = int8(mem.selected_airspeed_index)
+}
+
+func (t _AirspeedValidatedTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__AirspeedValidated())
 }
 
 type CAirspeedValidated = C.px4_msgs__msg__AirspeedValidated
@@ -110,8 +124,7 @@ func AirspeedValidated__Sequence_to_Go(goSlice *[]AirspeedValidated, cSlice CAir
 		cIdx := (*C.px4_msgs__msg__AirspeedValidated__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__AirspeedValidated * uintptr(i)),
 		))
-		(*goSlice)[i] = AirspeedValidated{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		AirspeedValidatedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func AirspeedValidated__Sequence_to_C(cSlice *CAirspeedValidated__Sequence, goSlice []AirspeedValidated) {
@@ -126,18 +139,16 @@ func AirspeedValidated__Sequence_to_C(cSlice *CAirspeedValidated__Sequence, goSl
 		cIdx := (*C.px4_msgs__msg__AirspeedValidated)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__AirspeedValidated * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__AirspeedValidated)(v.AsCStruct())
+		AirspeedValidatedTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func AirspeedValidated__Array_to_Go(goSlice []AirspeedValidated, cSlice []CAirspeedValidated) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		AirspeedValidatedTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func AirspeedValidated__Array_to_C(cSlice []CAirspeedValidated, goSlice []AirspeedValidated) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__AirspeedValidated)(goSlice[i].AsCStruct())
+		AirspeedValidatedTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

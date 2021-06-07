@@ -15,7 +15,7 @@ package example_interfaces_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("example_interfaces/UInt64", &UInt64{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("example_interfaces/UInt64", UInt64TypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewUInt64
@@ -45,36 +45,50 @@ type UInt64 struct {
 // NewUInt64 creates a new UInt64 with default values.
 func NewUInt64() *UInt64 {
 	self := UInt64{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *UInt64) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *UInt64) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__example_interfaces__msg__UInt64())
-}
-func (t *UInt64) PrepareMemory() unsafe.Pointer { //returns *C.example_interfaces__msg__UInt64
-	return (unsafe.Pointer)(C.example_interfaces__msg__UInt64__create())
-}
-func (t *UInt64) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.example_interfaces__msg__UInt64__destroy((*C.example_interfaces__msg__UInt64)(pointer_to_free))
-}
-func (t *UInt64) AsCStruct() unsafe.Pointer {
-	mem := (*C.example_interfaces__msg__UInt64)(t.PrepareMemory())
-	mem.data = C.uint64_t(t.Data)
-	return unsafe.Pointer(mem)
-}
-func (t *UInt64) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.example_interfaces__msg__UInt64)(ros2_message_buffer)
-	t.Data = uint64(mem.data)
-}
-func (t *UInt64) Clone() ros2types.ROS2Msg {
+func (t *UInt64) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *UInt64) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var UInt64TypeSupport types.MessageTypeSupport = _UInt64TypeSupport{}
+
+type _UInt64TypeSupport struct{}
+
+func (t _UInt64TypeSupport) New() types.Message {
+	return NewUInt64()
+}
+
+func (t _UInt64TypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.example_interfaces__msg__UInt64
+	return (unsafe.Pointer)(C.example_interfaces__msg__UInt64__create())
+}
+
+func (t _UInt64TypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.example_interfaces__msg__UInt64__destroy((*C.example_interfaces__msg__UInt64)(pointer_to_free))
+}
+
+func (t _UInt64TypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*UInt64)
+	mem := (*C.example_interfaces__msg__UInt64)(dst)
+	mem.data = C.uint64_t(m.Data)
+}
+
+func (t _UInt64TypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*UInt64)
+	mem := (*C.example_interfaces__msg__UInt64)(ros2_message_buffer)
+	m.Data = uint64(mem.data)
+}
+
+func (t _UInt64TypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__example_interfaces__msg__UInt64())
 }
 
 type CUInt64 = C.example_interfaces__msg__UInt64
@@ -89,8 +103,7 @@ func UInt64__Sequence_to_Go(goSlice *[]UInt64, cSlice CUInt64__Sequence) {
 		cIdx := (*C.example_interfaces__msg__UInt64__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__UInt64 * uintptr(i)),
 		))
-		(*goSlice)[i] = UInt64{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		UInt64TypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func UInt64__Sequence_to_C(cSlice *CUInt64__Sequence, goSlice []UInt64) {
@@ -105,18 +118,16 @@ func UInt64__Sequence_to_C(cSlice *CUInt64__Sequence, goSlice []UInt64) {
 		cIdx := (*C.example_interfaces__msg__UInt64)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__UInt64 * uintptr(i)),
 		))
-		*cIdx = *(*C.example_interfaces__msg__UInt64)(v.AsCStruct())
+		UInt64TypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func UInt64__Array_to_Go(goSlice []UInt64, cSlice []CUInt64) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		UInt64TypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func UInt64__Array_to_C(cSlice []CUInt64, goSlice []UInt64) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.example_interfaces__msg__UInt64)(goSlice[i].AsCStruct())
+		UInt64TypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/OrbTestMedium", &OrbTestMedium{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/OrbTestMedium", OrbTestMediumTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewOrbTestMedium
@@ -48,42 +48,56 @@ type OrbTestMedium struct {
 // NewOrbTestMedium creates a new OrbTestMedium with default values.
 func NewOrbTestMedium() *OrbTestMedium {
 	self := OrbTestMedium{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *OrbTestMedium) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *OrbTestMedium) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__OrbTestMedium())
-}
-func (t *OrbTestMedium) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__OrbTestMedium
-	return (unsafe.Pointer)(C.px4_msgs__msg__OrbTestMedium__create())
-}
-func (t *OrbTestMedium) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__OrbTestMedium__destroy((*C.px4_msgs__msg__OrbTestMedium)(pointer_to_free))
-}
-func (t *OrbTestMedium) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__OrbTestMedium)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.val = C.int32_t(t.Val)
-	cSlice_junk := mem.junk[:]
-	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_junk)), t.Junk[:])
-	return unsafe.Pointer(mem)
-}
-func (t *OrbTestMedium) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__OrbTestMedium)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Val = int32(mem.val)
-	cSlice_junk := mem.junk[:]
-	rosidl_runtime_c.Uint8__Array_to_Go(t.Junk[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_junk)))
-}
-func (t *OrbTestMedium) Clone() ros2types.ROS2Msg {
+func (t *OrbTestMedium) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *OrbTestMedium) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var OrbTestMediumTypeSupport types.MessageTypeSupport = _OrbTestMediumTypeSupport{}
+
+type _OrbTestMediumTypeSupport struct{}
+
+func (t _OrbTestMediumTypeSupport) New() types.Message {
+	return NewOrbTestMedium()
+}
+
+func (t _OrbTestMediumTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__OrbTestMedium
+	return (unsafe.Pointer)(C.px4_msgs__msg__OrbTestMedium__create())
+}
+
+func (t _OrbTestMediumTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__OrbTestMedium__destroy((*C.px4_msgs__msg__OrbTestMedium)(pointer_to_free))
+}
+
+func (t _OrbTestMediumTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*OrbTestMedium)
+	mem := (*C.px4_msgs__msg__OrbTestMedium)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.val = C.int32_t(m.Val)
+	cSlice_junk := mem.junk[:]
+	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_junk)), m.Junk[:])
+}
+
+func (t _OrbTestMediumTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*OrbTestMedium)
+	mem := (*C.px4_msgs__msg__OrbTestMedium)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Val = int32(mem.val)
+	cSlice_junk := mem.junk[:]
+	rosidl_runtime_c.Uint8__Array_to_Go(m.Junk[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_junk)))
+}
+
+func (t _OrbTestMediumTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__OrbTestMedium())
 }
 
 type COrbTestMedium = C.px4_msgs__msg__OrbTestMedium
@@ -98,8 +112,7 @@ func OrbTestMedium__Sequence_to_Go(goSlice *[]OrbTestMedium, cSlice COrbTestMedi
 		cIdx := (*C.px4_msgs__msg__OrbTestMedium__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__OrbTestMedium * uintptr(i)),
 		))
-		(*goSlice)[i] = OrbTestMedium{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		OrbTestMediumTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func OrbTestMedium__Sequence_to_C(cSlice *COrbTestMedium__Sequence, goSlice []OrbTestMedium) {
@@ -114,18 +127,16 @@ func OrbTestMedium__Sequence_to_C(cSlice *COrbTestMedium__Sequence, goSlice []Or
 		cIdx := (*C.px4_msgs__msg__OrbTestMedium)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__OrbTestMedium * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__OrbTestMedium)(v.AsCStruct())
+		OrbTestMediumTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func OrbTestMedium__Array_to_Go(goSlice []OrbTestMedium, cSlice []COrbTestMedium) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		OrbTestMediumTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func OrbTestMedium__Array_to_C(cSlice []COrbTestMedium, goSlice []OrbTestMedium) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__OrbTestMedium)(goSlice[i].AsCStruct())
+		OrbTestMediumTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

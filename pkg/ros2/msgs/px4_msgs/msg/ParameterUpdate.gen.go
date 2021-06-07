@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/ParameterUpdate", &ParameterUpdate{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/ParameterUpdate", ParameterUpdateTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewParameterUpdate
@@ -53,52 +53,66 @@ type ParameterUpdate struct {
 // NewParameterUpdate creates a new ParameterUpdate with default values.
 func NewParameterUpdate() *ParameterUpdate {
 	self := ParameterUpdate{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *ParameterUpdate) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *ParameterUpdate) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__ParameterUpdate())
-}
-func (t *ParameterUpdate) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__ParameterUpdate
-	return (unsafe.Pointer)(C.px4_msgs__msg__ParameterUpdate__create())
-}
-func (t *ParameterUpdate) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__ParameterUpdate__destroy((*C.px4_msgs__msg__ParameterUpdate)(pointer_to_free))
-}
-func (t *ParameterUpdate) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__ParameterUpdate)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.instance = C.uint32_t(t.Instance)
-	mem.get_count = C.uint32_t(t.GetCount)
-	mem.set_count = C.uint32_t(t.SetCount)
-	mem.find_count = C.uint32_t(t.FindCount)
-	mem.export_count = C.uint32_t(t.ExportCount)
-	mem.active = C.uint16_t(t.Active)
-	mem.changed = C.uint16_t(t.Changed)
-	mem.custom_default = C.uint16_t(t.CustomDefault)
-	return unsafe.Pointer(mem)
-}
-func (t *ParameterUpdate) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__ParameterUpdate)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Instance = uint32(mem.instance)
-	t.GetCount = uint32(mem.get_count)
-	t.SetCount = uint32(mem.set_count)
-	t.FindCount = uint32(mem.find_count)
-	t.ExportCount = uint32(mem.export_count)
-	t.Active = uint16(mem.active)
-	t.Changed = uint16(mem.changed)
-	t.CustomDefault = uint16(mem.custom_default)
-}
-func (t *ParameterUpdate) Clone() ros2types.ROS2Msg {
+func (t *ParameterUpdate) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *ParameterUpdate) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ParameterUpdateTypeSupport types.MessageTypeSupport = _ParameterUpdateTypeSupport{}
+
+type _ParameterUpdateTypeSupport struct{}
+
+func (t _ParameterUpdateTypeSupport) New() types.Message {
+	return NewParameterUpdate()
+}
+
+func (t _ParameterUpdateTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__ParameterUpdate
+	return (unsafe.Pointer)(C.px4_msgs__msg__ParameterUpdate__create())
+}
+
+func (t _ParameterUpdateTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__ParameterUpdate__destroy((*C.px4_msgs__msg__ParameterUpdate)(pointer_to_free))
+}
+
+func (t _ParameterUpdateTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*ParameterUpdate)
+	mem := (*C.px4_msgs__msg__ParameterUpdate)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.instance = C.uint32_t(m.Instance)
+	mem.get_count = C.uint32_t(m.GetCount)
+	mem.set_count = C.uint32_t(m.SetCount)
+	mem.find_count = C.uint32_t(m.FindCount)
+	mem.export_count = C.uint32_t(m.ExportCount)
+	mem.active = C.uint16_t(m.Active)
+	mem.changed = C.uint16_t(m.Changed)
+	mem.custom_default = C.uint16_t(m.CustomDefault)
+}
+
+func (t _ParameterUpdateTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*ParameterUpdate)
+	mem := (*C.px4_msgs__msg__ParameterUpdate)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Instance = uint32(mem.instance)
+	m.GetCount = uint32(mem.get_count)
+	m.SetCount = uint32(mem.set_count)
+	m.FindCount = uint32(mem.find_count)
+	m.ExportCount = uint32(mem.export_count)
+	m.Active = uint16(mem.active)
+	m.Changed = uint16(mem.changed)
+	m.CustomDefault = uint16(mem.custom_default)
+}
+
+func (t _ParameterUpdateTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__ParameterUpdate())
 }
 
 type CParameterUpdate = C.px4_msgs__msg__ParameterUpdate
@@ -113,8 +127,7 @@ func ParameterUpdate__Sequence_to_Go(goSlice *[]ParameterUpdate, cSlice CParamet
 		cIdx := (*C.px4_msgs__msg__ParameterUpdate__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__ParameterUpdate * uintptr(i)),
 		))
-		(*goSlice)[i] = ParameterUpdate{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ParameterUpdateTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func ParameterUpdate__Sequence_to_C(cSlice *CParameterUpdate__Sequence, goSlice []ParameterUpdate) {
@@ -129,18 +142,16 @@ func ParameterUpdate__Sequence_to_C(cSlice *CParameterUpdate__Sequence, goSlice 
 		cIdx := (*C.px4_msgs__msg__ParameterUpdate)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__ParameterUpdate * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__ParameterUpdate)(v.AsCStruct())
+		ParameterUpdateTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func ParameterUpdate__Array_to_Go(goSlice []ParameterUpdate, cSlice []CParameterUpdate) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ParameterUpdateTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func ParameterUpdate__Array_to_C(cSlice []CParameterUpdate, goSlice []ParameterUpdate) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__ParameterUpdate)(goSlice[i].AsCStruct())
+		ParameterUpdateTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

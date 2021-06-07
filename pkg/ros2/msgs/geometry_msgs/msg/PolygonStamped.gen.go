@@ -15,7 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/PolygonStamped", &PolygonStamped{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/PolygonStamped", PolygonStampedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPolygonStamped
@@ -48,40 +48,54 @@ type PolygonStamped struct {
 // NewPolygonStamped creates a new PolygonStamped with default values.
 func NewPolygonStamped() *PolygonStamped {
 	self := PolygonStamped{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *PolygonStamped) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.Polygon.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *PolygonStamped) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__PolygonStamped())
-}
-func (t *PolygonStamped) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__PolygonStamped
-	return (unsafe.Pointer)(C.geometry_msgs__msg__PolygonStamped__create())
-}
-func (t *PolygonStamped) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.geometry_msgs__msg__PolygonStamped__destroy((*C.geometry_msgs__msg__PolygonStamped)(pointer_to_free))
-}
-func (t *PolygonStamped) AsCStruct() unsafe.Pointer {
-	mem := (*C.geometry_msgs__msg__PolygonStamped)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.polygon = *(*C.geometry_msgs__msg__Polygon)(t.Polygon.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *PolygonStamped) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.geometry_msgs__msg__PolygonStamped)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.Polygon.AsGoStruct(unsafe.Pointer(&mem.polygon))
-}
-func (t *PolygonStamped) Clone() ros2types.ROS2Msg {
+func (t *PolygonStamped) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *PolygonStamped) SetDefaults() {
+	t.Header.SetDefaults()
+	t.Polygon.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var PolygonStampedTypeSupport types.MessageTypeSupport = _PolygonStampedTypeSupport{}
+
+type _PolygonStampedTypeSupport struct{}
+
+func (t _PolygonStampedTypeSupport) New() types.Message {
+	return NewPolygonStamped()
+}
+
+func (t _PolygonStampedTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__PolygonStamped
+	return (unsafe.Pointer)(C.geometry_msgs__msg__PolygonStamped__create())
+}
+
+func (t _PolygonStampedTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.geometry_msgs__msg__PolygonStamped__destroy((*C.geometry_msgs__msg__PolygonStamped)(pointer_to_free))
+}
+
+func (t _PolygonStampedTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*PolygonStamped)
+	mem := (*C.geometry_msgs__msg__PolygonStamped)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	PolygonTypeSupport.AsCStruct(unsafe.Pointer(&mem.polygon), &m.Polygon)
+}
+
+func (t _PolygonStampedTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*PolygonStamped)
+	mem := (*C.geometry_msgs__msg__PolygonStamped)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	PolygonTypeSupport.AsGoStruct(&m.Polygon, unsafe.Pointer(&mem.polygon))
+}
+
+func (t _PolygonStampedTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__PolygonStamped())
 }
 
 type CPolygonStamped = C.geometry_msgs__msg__PolygonStamped
@@ -96,8 +110,7 @@ func PolygonStamped__Sequence_to_Go(goSlice *[]PolygonStamped, cSlice CPolygonSt
 		cIdx := (*C.geometry_msgs__msg__PolygonStamped__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__PolygonStamped * uintptr(i)),
 		))
-		(*goSlice)[i] = PolygonStamped{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		PolygonStampedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func PolygonStamped__Sequence_to_C(cSlice *CPolygonStamped__Sequence, goSlice []PolygonStamped) {
@@ -112,18 +125,16 @@ func PolygonStamped__Sequence_to_C(cSlice *CPolygonStamped__Sequence, goSlice []
 		cIdx := (*C.geometry_msgs__msg__PolygonStamped)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__PolygonStamped * uintptr(i)),
 		))
-		*cIdx = *(*C.geometry_msgs__msg__PolygonStamped)(v.AsCStruct())
+		PolygonStampedTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func PolygonStamped__Array_to_Go(goSlice []PolygonStamped, cSlice []CPolygonStamped) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		PolygonStampedTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func PolygonStamped__Array_to_C(cSlice []CPolygonStamped, goSlice []PolygonStamped) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.geometry_msgs__msg__PolygonStamped)(goSlice[i].AsCStruct())
+		PolygonStampedTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

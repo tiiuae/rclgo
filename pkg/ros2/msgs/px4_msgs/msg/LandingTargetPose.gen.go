@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/LandingTargetPose", &LandingTargetPose{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/LandingTargetPose", LandingTargetPoseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewLandingTargetPose
@@ -61,68 +61,82 @@ type LandingTargetPose struct {
 // NewLandingTargetPose creates a new LandingTargetPose with default values.
 func NewLandingTargetPose() *LandingTargetPose {
 	self := LandingTargetPose{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *LandingTargetPose) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *LandingTargetPose) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__LandingTargetPose())
-}
-func (t *LandingTargetPose) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__LandingTargetPose
-	return (unsafe.Pointer)(C.px4_msgs__msg__LandingTargetPose__create())
-}
-func (t *LandingTargetPose) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__LandingTargetPose__destroy((*C.px4_msgs__msg__LandingTargetPose)(pointer_to_free))
-}
-func (t *LandingTargetPose) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__LandingTargetPose)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.is_static = C.bool(t.IsStatic)
-	mem.rel_pos_valid = C.bool(t.RelPosValid)
-	mem.rel_vel_valid = C.bool(t.RelVelValid)
-	mem.x_rel = C.float(t.XRel)
-	mem.y_rel = C.float(t.YRel)
-	mem.z_rel = C.float(t.ZRel)
-	mem.vx_rel = C.float(t.VxRel)
-	mem.vy_rel = C.float(t.VyRel)
-	mem.cov_x_rel = C.float(t.CovXRel)
-	mem.cov_y_rel = C.float(t.CovYRel)
-	mem.cov_vx_rel = C.float(t.CovVxRel)
-	mem.cov_vy_rel = C.float(t.CovVyRel)
-	mem.abs_pos_valid = C.bool(t.AbsPosValid)
-	mem.x_abs = C.float(t.XAbs)
-	mem.y_abs = C.float(t.YAbs)
-	mem.z_abs = C.float(t.ZAbs)
-	return unsafe.Pointer(mem)
-}
-func (t *LandingTargetPose) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__LandingTargetPose)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.IsStatic = bool(mem.is_static)
-	t.RelPosValid = bool(mem.rel_pos_valid)
-	t.RelVelValid = bool(mem.rel_vel_valid)
-	t.XRel = float32(mem.x_rel)
-	t.YRel = float32(mem.y_rel)
-	t.ZRel = float32(mem.z_rel)
-	t.VxRel = float32(mem.vx_rel)
-	t.VyRel = float32(mem.vy_rel)
-	t.CovXRel = float32(mem.cov_x_rel)
-	t.CovYRel = float32(mem.cov_y_rel)
-	t.CovVxRel = float32(mem.cov_vx_rel)
-	t.CovVyRel = float32(mem.cov_vy_rel)
-	t.AbsPosValid = bool(mem.abs_pos_valid)
-	t.XAbs = float32(mem.x_abs)
-	t.YAbs = float32(mem.y_abs)
-	t.ZAbs = float32(mem.z_abs)
-}
-func (t *LandingTargetPose) Clone() ros2types.ROS2Msg {
+func (t *LandingTargetPose) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *LandingTargetPose) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var LandingTargetPoseTypeSupport types.MessageTypeSupport = _LandingTargetPoseTypeSupport{}
+
+type _LandingTargetPoseTypeSupport struct{}
+
+func (t _LandingTargetPoseTypeSupport) New() types.Message {
+	return NewLandingTargetPose()
+}
+
+func (t _LandingTargetPoseTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__LandingTargetPose
+	return (unsafe.Pointer)(C.px4_msgs__msg__LandingTargetPose__create())
+}
+
+func (t _LandingTargetPoseTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__LandingTargetPose__destroy((*C.px4_msgs__msg__LandingTargetPose)(pointer_to_free))
+}
+
+func (t _LandingTargetPoseTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*LandingTargetPose)
+	mem := (*C.px4_msgs__msg__LandingTargetPose)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.is_static = C.bool(m.IsStatic)
+	mem.rel_pos_valid = C.bool(m.RelPosValid)
+	mem.rel_vel_valid = C.bool(m.RelVelValid)
+	mem.x_rel = C.float(m.XRel)
+	mem.y_rel = C.float(m.YRel)
+	mem.z_rel = C.float(m.ZRel)
+	mem.vx_rel = C.float(m.VxRel)
+	mem.vy_rel = C.float(m.VyRel)
+	mem.cov_x_rel = C.float(m.CovXRel)
+	mem.cov_y_rel = C.float(m.CovYRel)
+	mem.cov_vx_rel = C.float(m.CovVxRel)
+	mem.cov_vy_rel = C.float(m.CovVyRel)
+	mem.abs_pos_valid = C.bool(m.AbsPosValid)
+	mem.x_abs = C.float(m.XAbs)
+	mem.y_abs = C.float(m.YAbs)
+	mem.z_abs = C.float(m.ZAbs)
+}
+
+func (t _LandingTargetPoseTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*LandingTargetPose)
+	mem := (*C.px4_msgs__msg__LandingTargetPose)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.IsStatic = bool(mem.is_static)
+	m.RelPosValid = bool(mem.rel_pos_valid)
+	m.RelVelValid = bool(mem.rel_vel_valid)
+	m.XRel = float32(mem.x_rel)
+	m.YRel = float32(mem.y_rel)
+	m.ZRel = float32(mem.z_rel)
+	m.VxRel = float32(mem.vx_rel)
+	m.VyRel = float32(mem.vy_rel)
+	m.CovXRel = float32(mem.cov_x_rel)
+	m.CovYRel = float32(mem.cov_y_rel)
+	m.CovVxRel = float32(mem.cov_vx_rel)
+	m.CovVyRel = float32(mem.cov_vy_rel)
+	m.AbsPosValid = bool(mem.abs_pos_valid)
+	m.XAbs = float32(mem.x_abs)
+	m.YAbs = float32(mem.y_abs)
+	m.ZAbs = float32(mem.z_abs)
+}
+
+func (t _LandingTargetPoseTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__LandingTargetPose())
 }
 
 type CLandingTargetPose = C.px4_msgs__msg__LandingTargetPose
@@ -137,8 +151,7 @@ func LandingTargetPose__Sequence_to_Go(goSlice *[]LandingTargetPose, cSlice CLan
 		cIdx := (*C.px4_msgs__msg__LandingTargetPose__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__LandingTargetPose * uintptr(i)),
 		))
-		(*goSlice)[i] = LandingTargetPose{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		LandingTargetPoseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func LandingTargetPose__Sequence_to_C(cSlice *CLandingTargetPose__Sequence, goSlice []LandingTargetPose) {
@@ -153,18 +166,16 @@ func LandingTargetPose__Sequence_to_C(cSlice *CLandingTargetPose__Sequence, goSl
 		cIdx := (*C.px4_msgs__msg__LandingTargetPose)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__LandingTargetPose * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__LandingTargetPose)(v.AsCStruct())
+		LandingTargetPoseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func LandingTargetPose__Array_to_Go(goSlice []LandingTargetPose, cSlice []CLandingTargetPose) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		LandingTargetPoseTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func LandingTargetPose__Array_to_C(cSlice []CLandingTargetPose, goSlice []LandingTargetPose) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__LandingTargetPose)(goSlice[i].AsCStruct())
+		LandingTargetPoseTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

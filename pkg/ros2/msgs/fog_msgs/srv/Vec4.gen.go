@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("fog_msgs/Vec4", Vec4)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("fog_msgs/Vec4", Vec4TypeSupport)
 }
 
-type _Vec4 struct {
-	req,resp ros2types.ROS2Msg
+type _Vec4TypeSupport struct {}
+
+func (s _Vec4TypeSupport) Request() types.MessageTypeSupport {
+	return Vec4_RequestTypeSupport
 }
 
-func (s *_Vec4) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _Vec4TypeSupport) Response() types.MessageTypeSupport {
+	return Vec4_ResponseTypeSupport
 }
 
-func (s *_Vec4) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_Vec4) TypeSupport() unsafe.Pointer {
+func (s _Vec4TypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__fog_msgs__srv__Vec4())
 }
 
 // Modifying this variable is undefined behavior.
-var Vec4 ros2types.Service = &_Vec4{
-	req: &Vec4_Request{},
-	resp: &Vec4_Response{},
-}
+var Vec4TypeSupport types.ServiceTypeSupport = _Vec4TypeSupport{}

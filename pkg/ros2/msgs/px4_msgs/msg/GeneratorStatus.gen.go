@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/GeneratorStatus", &GeneratorStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/GeneratorStatus", GeneratorStatusTypeSupport)
 }
 const (
 	GeneratorStatus_STATUS_FLAG_OFF uint64 = 1// Generator is off.
@@ -81,58 +81,72 @@ type GeneratorStatus struct {
 // NewGeneratorStatus creates a new GeneratorStatus with default values.
 func NewGeneratorStatus() *GeneratorStatus {
 	self := GeneratorStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *GeneratorStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *GeneratorStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__GeneratorStatus())
-}
-func (t *GeneratorStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__GeneratorStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__GeneratorStatus__create())
-}
-func (t *GeneratorStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__GeneratorStatus__destroy((*C.px4_msgs__msg__GeneratorStatus)(pointer_to_free))
-}
-func (t *GeneratorStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__GeneratorStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.status = C.uint64_t(t.Status)
-	mem.battery_current = C.float(t.BatteryCurrent)
-	mem.load_current = C.float(t.LoadCurrent)
-	mem.power_generated = C.float(t.PowerGenerated)
-	mem.bus_voltage = C.float(t.BusVoltage)
-	mem.bat_current_setpoint = C.float(t.BatCurrentSetpoint)
-	mem.runtime = C.uint32_t(t.Runtime)
-	mem.time_until_maintenance = C.int32_t(t.TimeUntilMaintenance)
-	mem.generator_speed = C.uint16_t(t.GeneratorSpeed)
-	mem.rectifier_temperature = C.int16_t(t.RectifierTemperature)
-	mem.generator_temperature = C.int16_t(t.GeneratorTemperature)
-	return unsafe.Pointer(mem)
-}
-func (t *GeneratorStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__GeneratorStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Status = uint64(mem.status)
-	t.BatteryCurrent = float32(mem.battery_current)
-	t.LoadCurrent = float32(mem.load_current)
-	t.PowerGenerated = float32(mem.power_generated)
-	t.BusVoltage = float32(mem.bus_voltage)
-	t.BatCurrentSetpoint = float32(mem.bat_current_setpoint)
-	t.Runtime = uint32(mem.runtime)
-	t.TimeUntilMaintenance = int32(mem.time_until_maintenance)
-	t.GeneratorSpeed = uint16(mem.generator_speed)
-	t.RectifierTemperature = int16(mem.rectifier_temperature)
-	t.GeneratorTemperature = int16(mem.generator_temperature)
-}
-func (t *GeneratorStatus) Clone() ros2types.ROS2Msg {
+func (t *GeneratorStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *GeneratorStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var GeneratorStatusTypeSupport types.MessageTypeSupport = _GeneratorStatusTypeSupport{}
+
+type _GeneratorStatusTypeSupport struct{}
+
+func (t _GeneratorStatusTypeSupport) New() types.Message {
+	return NewGeneratorStatus()
+}
+
+func (t _GeneratorStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__GeneratorStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__GeneratorStatus__create())
+}
+
+func (t _GeneratorStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__GeneratorStatus__destroy((*C.px4_msgs__msg__GeneratorStatus)(pointer_to_free))
+}
+
+func (t _GeneratorStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*GeneratorStatus)
+	mem := (*C.px4_msgs__msg__GeneratorStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.status = C.uint64_t(m.Status)
+	mem.battery_current = C.float(m.BatteryCurrent)
+	mem.load_current = C.float(m.LoadCurrent)
+	mem.power_generated = C.float(m.PowerGenerated)
+	mem.bus_voltage = C.float(m.BusVoltage)
+	mem.bat_current_setpoint = C.float(m.BatCurrentSetpoint)
+	mem.runtime = C.uint32_t(m.Runtime)
+	mem.time_until_maintenance = C.int32_t(m.TimeUntilMaintenance)
+	mem.generator_speed = C.uint16_t(m.GeneratorSpeed)
+	mem.rectifier_temperature = C.int16_t(m.RectifierTemperature)
+	mem.generator_temperature = C.int16_t(m.GeneratorTemperature)
+}
+
+func (t _GeneratorStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*GeneratorStatus)
+	mem := (*C.px4_msgs__msg__GeneratorStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Status = uint64(mem.status)
+	m.BatteryCurrent = float32(mem.battery_current)
+	m.LoadCurrent = float32(mem.load_current)
+	m.PowerGenerated = float32(mem.power_generated)
+	m.BusVoltage = float32(mem.bus_voltage)
+	m.BatCurrentSetpoint = float32(mem.bat_current_setpoint)
+	m.Runtime = uint32(mem.runtime)
+	m.TimeUntilMaintenance = int32(mem.time_until_maintenance)
+	m.GeneratorSpeed = uint16(mem.generator_speed)
+	m.RectifierTemperature = int16(mem.rectifier_temperature)
+	m.GeneratorTemperature = int16(mem.generator_temperature)
+}
+
+func (t _GeneratorStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__GeneratorStatus())
 }
 
 type CGeneratorStatus = C.px4_msgs__msg__GeneratorStatus
@@ -147,8 +161,7 @@ func GeneratorStatus__Sequence_to_Go(goSlice *[]GeneratorStatus, cSlice CGenerat
 		cIdx := (*C.px4_msgs__msg__GeneratorStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__GeneratorStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = GeneratorStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		GeneratorStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func GeneratorStatus__Sequence_to_C(cSlice *CGeneratorStatus__Sequence, goSlice []GeneratorStatus) {
@@ -163,18 +176,16 @@ func GeneratorStatus__Sequence_to_C(cSlice *CGeneratorStatus__Sequence, goSlice 
 		cIdx := (*C.px4_msgs__msg__GeneratorStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__GeneratorStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__GeneratorStatus)(v.AsCStruct())
+		GeneratorStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func GeneratorStatus__Array_to_Go(goSlice []GeneratorStatus, cSlice []CGeneratorStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		GeneratorStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func GeneratorStatus__Array_to_C(cSlice []CGeneratorStatus, goSlice []GeneratorStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__GeneratorStatus)(goSlice[i].AsCStruct())
+		GeneratorStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

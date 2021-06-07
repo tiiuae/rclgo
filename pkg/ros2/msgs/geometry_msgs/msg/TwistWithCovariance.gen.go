@@ -15,7 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/TwistWithCovariance", &TwistWithCovariance{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/TwistWithCovariance", TwistWithCovarianceTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTwistWithCovariance
@@ -47,41 +47,55 @@ type TwistWithCovariance struct {
 // NewTwistWithCovariance creates a new TwistWithCovariance with default values.
 func NewTwistWithCovariance() *TwistWithCovariance {
 	self := TwistWithCovariance{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *TwistWithCovariance) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Twist.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *TwistWithCovariance) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__TwistWithCovariance())
-}
-func (t *TwistWithCovariance) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__TwistWithCovariance
-	return (unsafe.Pointer)(C.geometry_msgs__msg__TwistWithCovariance__create())
-}
-func (t *TwistWithCovariance) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.geometry_msgs__msg__TwistWithCovariance__destroy((*C.geometry_msgs__msg__TwistWithCovariance)(pointer_to_free))
-}
-func (t *TwistWithCovariance) AsCStruct() unsafe.Pointer {
-	mem := (*C.geometry_msgs__msg__TwistWithCovariance)(t.PrepareMemory())
-	mem.twist = *(*C.geometry_msgs__msg__Twist)(t.Twist.AsCStruct())
-	cSlice_covariance := mem.covariance[:]
-	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_covariance)), t.Covariance[:])
-	return unsafe.Pointer(mem)
-}
-func (t *TwistWithCovariance) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.geometry_msgs__msg__TwistWithCovariance)(ros2_message_buffer)
-	t.Twist.AsGoStruct(unsafe.Pointer(&mem.twist))
-	cSlice_covariance := mem.covariance[:]
-	rosidl_runtime_c.Float64__Array_to_Go(t.Covariance[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_covariance)))
-}
-func (t *TwistWithCovariance) Clone() ros2types.ROS2Msg {
+func (t *TwistWithCovariance) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *TwistWithCovariance) SetDefaults() {
+	t.Twist.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TwistWithCovarianceTypeSupport types.MessageTypeSupport = _TwistWithCovarianceTypeSupport{}
+
+type _TwistWithCovarianceTypeSupport struct{}
+
+func (t _TwistWithCovarianceTypeSupport) New() types.Message {
+	return NewTwistWithCovariance()
+}
+
+func (t _TwistWithCovarianceTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__TwistWithCovariance
+	return (unsafe.Pointer)(C.geometry_msgs__msg__TwistWithCovariance__create())
+}
+
+func (t _TwistWithCovarianceTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.geometry_msgs__msg__TwistWithCovariance__destroy((*C.geometry_msgs__msg__TwistWithCovariance)(pointer_to_free))
+}
+
+func (t _TwistWithCovarianceTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*TwistWithCovariance)
+	mem := (*C.geometry_msgs__msg__TwistWithCovariance)(dst)
+	TwistTypeSupport.AsCStruct(unsafe.Pointer(&mem.twist), &m.Twist)
+	cSlice_covariance := mem.covariance[:]
+	rosidl_runtime_c.Float64__Array_to_C(*(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_covariance)), m.Covariance[:])
+}
+
+func (t _TwistWithCovarianceTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*TwistWithCovariance)
+	mem := (*C.geometry_msgs__msg__TwistWithCovariance)(ros2_message_buffer)
+	TwistTypeSupport.AsGoStruct(&m.Twist, unsafe.Pointer(&mem.twist))
+	cSlice_covariance := mem.covariance[:]
+	rosidl_runtime_c.Float64__Array_to_Go(m.Covariance[:], *(*[]rosidl_runtime_c.CFloat64)(unsafe.Pointer(&cSlice_covariance)))
+}
+
+func (t _TwistWithCovarianceTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__TwistWithCovariance())
 }
 
 type CTwistWithCovariance = C.geometry_msgs__msg__TwistWithCovariance
@@ -96,8 +110,7 @@ func TwistWithCovariance__Sequence_to_Go(goSlice *[]TwistWithCovariance, cSlice 
 		cIdx := (*C.geometry_msgs__msg__TwistWithCovariance__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__TwistWithCovariance * uintptr(i)),
 		))
-		(*goSlice)[i] = TwistWithCovariance{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TwistWithCovarianceTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func TwistWithCovariance__Sequence_to_C(cSlice *CTwistWithCovariance__Sequence, goSlice []TwistWithCovariance) {
@@ -112,18 +125,16 @@ func TwistWithCovariance__Sequence_to_C(cSlice *CTwistWithCovariance__Sequence, 
 		cIdx := (*C.geometry_msgs__msg__TwistWithCovariance)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__TwistWithCovariance * uintptr(i)),
 		))
-		*cIdx = *(*C.geometry_msgs__msg__TwistWithCovariance)(v.AsCStruct())
+		TwistWithCovarianceTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func TwistWithCovariance__Array_to_Go(goSlice []TwistWithCovariance, cSlice []CTwistWithCovariance) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TwistWithCovarianceTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func TwistWithCovariance__Array_to_C(cSlice []CTwistWithCovariance, goSlice []TwistWithCovariance) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.geometry_msgs__msg__TwistWithCovariance)(goSlice[i].AsCStruct())
+		TwistWithCovarianceTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

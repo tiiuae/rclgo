@@ -15,7 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/PoseStamped", &PoseStamped{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/PoseStamped", PoseStampedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPoseStamped
@@ -48,40 +48,54 @@ type PoseStamped struct {
 // NewPoseStamped creates a new PoseStamped with default values.
 func NewPoseStamped() *PoseStamped {
 	self := PoseStamped{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *PoseStamped) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.Pose.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *PoseStamped) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__PoseStamped())
-}
-func (t *PoseStamped) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__PoseStamped
-	return (unsafe.Pointer)(C.geometry_msgs__msg__PoseStamped__create())
-}
-func (t *PoseStamped) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.geometry_msgs__msg__PoseStamped__destroy((*C.geometry_msgs__msg__PoseStamped)(pointer_to_free))
-}
-func (t *PoseStamped) AsCStruct() unsafe.Pointer {
-	mem := (*C.geometry_msgs__msg__PoseStamped)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.pose = *(*C.geometry_msgs__msg__Pose)(t.Pose.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *PoseStamped) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.geometry_msgs__msg__PoseStamped)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.Pose.AsGoStruct(unsafe.Pointer(&mem.pose))
-}
-func (t *PoseStamped) Clone() ros2types.ROS2Msg {
+func (t *PoseStamped) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *PoseStamped) SetDefaults() {
+	t.Header.SetDefaults()
+	t.Pose.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var PoseStampedTypeSupport types.MessageTypeSupport = _PoseStampedTypeSupport{}
+
+type _PoseStampedTypeSupport struct{}
+
+func (t _PoseStampedTypeSupport) New() types.Message {
+	return NewPoseStamped()
+}
+
+func (t _PoseStampedTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__PoseStamped
+	return (unsafe.Pointer)(C.geometry_msgs__msg__PoseStamped__create())
+}
+
+func (t _PoseStampedTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.geometry_msgs__msg__PoseStamped__destroy((*C.geometry_msgs__msg__PoseStamped)(pointer_to_free))
+}
+
+func (t _PoseStampedTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*PoseStamped)
+	mem := (*C.geometry_msgs__msg__PoseStamped)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	PoseTypeSupport.AsCStruct(unsafe.Pointer(&mem.pose), &m.Pose)
+}
+
+func (t _PoseStampedTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*PoseStamped)
+	mem := (*C.geometry_msgs__msg__PoseStamped)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	PoseTypeSupport.AsGoStruct(&m.Pose, unsafe.Pointer(&mem.pose))
+}
+
+func (t _PoseStampedTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__PoseStamped())
 }
 
 type CPoseStamped = C.geometry_msgs__msg__PoseStamped
@@ -96,8 +110,7 @@ func PoseStamped__Sequence_to_Go(goSlice *[]PoseStamped, cSlice CPoseStamped__Se
 		cIdx := (*C.geometry_msgs__msg__PoseStamped__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__PoseStamped * uintptr(i)),
 		))
-		(*goSlice)[i] = PoseStamped{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		PoseStampedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func PoseStamped__Sequence_to_C(cSlice *CPoseStamped__Sequence, goSlice []PoseStamped) {
@@ -112,18 +125,16 @@ func PoseStamped__Sequence_to_C(cSlice *CPoseStamped__Sequence, goSlice []PoseSt
 		cIdx := (*C.geometry_msgs__msg__PoseStamped)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__PoseStamped * uintptr(i)),
 		))
-		*cIdx = *(*C.geometry_msgs__msg__PoseStamped)(v.AsCStruct())
+		PoseStampedTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func PoseStamped__Array_to_Go(goSlice []PoseStamped, cSlice []CPoseStamped) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		PoseStampedTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func PoseStamped__Array_to_C(cSlice []CPoseStamped, goSlice []PoseStamped) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.geometry_msgs__msg__PoseStamped)(goSlice[i].AsCStruct())
+		PoseStampedTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

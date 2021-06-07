@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/MavlinkLog", &MavlinkLog{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/MavlinkLog", MavlinkLogTypeSupport)
 }
 const (
 	MavlinkLog_ORB_QUEUE_LENGTH uint8 = 8
@@ -51,42 +51,56 @@ type MavlinkLog struct {
 // NewMavlinkLog creates a new MavlinkLog with default values.
 func NewMavlinkLog() *MavlinkLog {
 	self := MavlinkLog{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *MavlinkLog) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *MavlinkLog) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__MavlinkLog())
-}
-func (t *MavlinkLog) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__MavlinkLog
-	return (unsafe.Pointer)(C.px4_msgs__msg__MavlinkLog__create())
-}
-func (t *MavlinkLog) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__MavlinkLog__destroy((*C.px4_msgs__msg__MavlinkLog)(pointer_to_free))
-}
-func (t *MavlinkLog) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__MavlinkLog)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	cSlice_text := mem.text[:]
-	rosidl_runtime_c.Char__Array_to_C(*(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_text)), t.Text[:])
-	mem.severity = C.uint8_t(t.Severity)
-	return unsafe.Pointer(mem)
-}
-func (t *MavlinkLog) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__MavlinkLog)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	cSlice_text := mem.text[:]
-	rosidl_runtime_c.Char__Array_to_Go(t.Text[:], *(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_text)))
-	t.Severity = uint8(mem.severity)
-}
-func (t *MavlinkLog) Clone() ros2types.ROS2Msg {
+func (t *MavlinkLog) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *MavlinkLog) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var MavlinkLogTypeSupport types.MessageTypeSupport = _MavlinkLogTypeSupport{}
+
+type _MavlinkLogTypeSupport struct{}
+
+func (t _MavlinkLogTypeSupport) New() types.Message {
+	return NewMavlinkLog()
+}
+
+func (t _MavlinkLogTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__MavlinkLog
+	return (unsafe.Pointer)(C.px4_msgs__msg__MavlinkLog__create())
+}
+
+func (t _MavlinkLogTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__MavlinkLog__destroy((*C.px4_msgs__msg__MavlinkLog)(pointer_to_free))
+}
+
+func (t _MavlinkLogTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*MavlinkLog)
+	mem := (*C.px4_msgs__msg__MavlinkLog)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	cSlice_text := mem.text[:]
+	rosidl_runtime_c.Char__Array_to_C(*(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_text)), m.Text[:])
+	mem.severity = C.uint8_t(m.Severity)
+}
+
+func (t _MavlinkLogTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*MavlinkLog)
+	mem := (*C.px4_msgs__msg__MavlinkLog)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	cSlice_text := mem.text[:]
+	rosidl_runtime_c.Char__Array_to_Go(m.Text[:], *(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_text)))
+	m.Severity = uint8(mem.severity)
+}
+
+func (t _MavlinkLogTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__MavlinkLog())
 }
 
 type CMavlinkLog = C.px4_msgs__msg__MavlinkLog
@@ -101,8 +115,7 @@ func MavlinkLog__Sequence_to_Go(goSlice *[]MavlinkLog, cSlice CMavlinkLog__Seque
 		cIdx := (*C.px4_msgs__msg__MavlinkLog__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__MavlinkLog * uintptr(i)),
 		))
-		(*goSlice)[i] = MavlinkLog{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		MavlinkLogTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func MavlinkLog__Sequence_to_C(cSlice *CMavlinkLog__Sequence, goSlice []MavlinkLog) {
@@ -117,18 +130,16 @@ func MavlinkLog__Sequence_to_C(cSlice *CMavlinkLog__Sequence, goSlice []MavlinkL
 		cIdx := (*C.px4_msgs__msg__MavlinkLog)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__MavlinkLog * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__MavlinkLog)(v.AsCStruct())
+		MavlinkLogTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func MavlinkLog__Array_to_Go(goSlice []MavlinkLog, cSlice []CMavlinkLog) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		MavlinkLogTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func MavlinkLog__Array_to_C(cSlice []CMavlinkLog, goSlice []MavlinkLog) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__MavlinkLog)(goSlice[i].AsCStruct())
+		MavlinkLogTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

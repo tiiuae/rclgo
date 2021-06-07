@@ -15,7 +15,7 @@ package tf2_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("tf2_msgs/FrameGraph_Request", &FrameGraph_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("tf2_msgs/FrameGraph_Request", FrameGraph_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewFrameGraph_Request
@@ -44,34 +44,46 @@ type FrameGraph_Request struct {
 // NewFrameGraph_Request creates a new FrameGraph_Request with default values.
 func NewFrameGraph_Request() *FrameGraph_Request {
 	self := FrameGraph_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *FrameGraph_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *FrameGraph_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__tf2_msgs__srv__FrameGraph_Request())
-}
-func (t *FrameGraph_Request) PrepareMemory() unsafe.Pointer { //returns *C.tf2_msgs__srv__FrameGraph_Request
-	return (unsafe.Pointer)(C.tf2_msgs__srv__FrameGraph_Request__create())
-}
-func (t *FrameGraph_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.tf2_msgs__srv__FrameGraph_Request__destroy((*C.tf2_msgs__srv__FrameGraph_Request)(pointer_to_free))
-}
-func (t *FrameGraph_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.tf2_msgs__srv__FrameGraph_Request)(t.PrepareMemory())
-	return unsafe.Pointer(mem)
-}
-func (t *FrameGraph_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	
-}
-func (t *FrameGraph_Request) Clone() ros2types.ROS2Msg {
+func (t *FrameGraph_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *FrameGraph_Request) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var FrameGraph_RequestTypeSupport types.MessageTypeSupport = _FrameGraph_RequestTypeSupport{}
+
+type _FrameGraph_RequestTypeSupport struct{}
+
+func (t _FrameGraph_RequestTypeSupport) New() types.Message {
+	return NewFrameGraph_Request()
+}
+
+func (t _FrameGraph_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.tf2_msgs__srv__FrameGraph_Request
+	return (unsafe.Pointer)(C.tf2_msgs__srv__FrameGraph_Request__create())
+}
+
+func (t _FrameGraph_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.tf2_msgs__srv__FrameGraph_Request__destroy((*C.tf2_msgs__srv__FrameGraph_Request)(pointer_to_free))
+}
+
+func (t _FrameGraph_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	
+}
+
+func (t _FrameGraph_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	
+}
+
+func (t _FrameGraph_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__tf2_msgs__srv__FrameGraph_Request())
 }
 
 type CFrameGraph_Request = C.tf2_msgs__srv__FrameGraph_Request
@@ -86,8 +98,7 @@ func FrameGraph_Request__Sequence_to_Go(goSlice *[]FrameGraph_Request, cSlice CF
 		cIdx := (*C.tf2_msgs__srv__FrameGraph_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_tf2_msgs__srv__FrameGraph_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = FrameGraph_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		FrameGraph_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func FrameGraph_Request__Sequence_to_C(cSlice *CFrameGraph_Request__Sequence, goSlice []FrameGraph_Request) {
@@ -102,18 +113,16 @@ func FrameGraph_Request__Sequence_to_C(cSlice *CFrameGraph_Request__Sequence, go
 		cIdx := (*C.tf2_msgs__srv__FrameGraph_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_tf2_msgs__srv__FrameGraph_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.tf2_msgs__srv__FrameGraph_Request)(v.AsCStruct())
+		FrameGraph_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func FrameGraph_Request__Array_to_Go(goSlice []FrameGraph_Request, cSlice []CFrameGraph_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		FrameGraph_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func FrameGraph_Request__Array_to_C(cSlice []CFrameGraph_Request, goSlice []FrameGraph_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.tf2_msgs__srv__FrameGraph_Request)(goSlice[i].AsCStruct())
+		FrameGraph_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

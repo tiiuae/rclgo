@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/GpsInjectData", &GpsInjectData{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/GpsInjectData", GpsInjectDataTypeSupport)
 }
 const (
 	GpsInjectData_ORB_QUEUE_LENGTH uint8 = 8
@@ -52,44 +52,58 @@ type GpsInjectData struct {
 // NewGpsInjectData creates a new GpsInjectData with default values.
 func NewGpsInjectData() *GpsInjectData {
 	self := GpsInjectData{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *GpsInjectData) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *GpsInjectData) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__GpsInjectData())
-}
-func (t *GpsInjectData) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__GpsInjectData
-	return (unsafe.Pointer)(C.px4_msgs__msg__GpsInjectData__create())
-}
-func (t *GpsInjectData) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__GpsInjectData__destroy((*C.px4_msgs__msg__GpsInjectData)(pointer_to_free))
-}
-func (t *GpsInjectData) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__GpsInjectData)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.len = C.uint8_t(t.Len)
-	mem.flags = C.uint8_t(t.Flags)
-	cSlice_data := mem.data[:]
-	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_data)), t.Data[:])
-	return unsafe.Pointer(mem)
-}
-func (t *GpsInjectData) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__GpsInjectData)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Len = uint8(mem.len)
-	t.Flags = uint8(mem.flags)
-	cSlice_data := mem.data[:]
-	rosidl_runtime_c.Uint8__Array_to_Go(t.Data[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_data)))
-}
-func (t *GpsInjectData) Clone() ros2types.ROS2Msg {
+func (t *GpsInjectData) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *GpsInjectData) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var GpsInjectDataTypeSupport types.MessageTypeSupport = _GpsInjectDataTypeSupport{}
+
+type _GpsInjectDataTypeSupport struct{}
+
+func (t _GpsInjectDataTypeSupport) New() types.Message {
+	return NewGpsInjectData()
+}
+
+func (t _GpsInjectDataTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__GpsInjectData
+	return (unsafe.Pointer)(C.px4_msgs__msg__GpsInjectData__create())
+}
+
+func (t _GpsInjectDataTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__GpsInjectData__destroy((*C.px4_msgs__msg__GpsInjectData)(pointer_to_free))
+}
+
+func (t _GpsInjectDataTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*GpsInjectData)
+	mem := (*C.px4_msgs__msg__GpsInjectData)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.len = C.uint8_t(m.Len)
+	mem.flags = C.uint8_t(m.Flags)
+	cSlice_data := mem.data[:]
+	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_data)), m.Data[:])
+}
+
+func (t _GpsInjectDataTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*GpsInjectData)
+	mem := (*C.px4_msgs__msg__GpsInjectData)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Len = uint8(mem.len)
+	m.Flags = uint8(mem.flags)
+	cSlice_data := mem.data[:]
+	rosidl_runtime_c.Uint8__Array_to_Go(m.Data[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_data)))
+}
+
+func (t _GpsInjectDataTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__GpsInjectData())
 }
 
 type CGpsInjectData = C.px4_msgs__msg__GpsInjectData
@@ -104,8 +118,7 @@ func GpsInjectData__Sequence_to_Go(goSlice *[]GpsInjectData, cSlice CGpsInjectDa
 		cIdx := (*C.px4_msgs__msg__GpsInjectData__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__GpsInjectData * uintptr(i)),
 		))
-		(*goSlice)[i] = GpsInjectData{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		GpsInjectDataTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func GpsInjectData__Sequence_to_C(cSlice *CGpsInjectData__Sequence, goSlice []GpsInjectData) {
@@ -120,18 +133,16 @@ func GpsInjectData__Sequence_to_C(cSlice *CGpsInjectData__Sequence, goSlice []Gp
 		cIdx := (*C.px4_msgs__msg__GpsInjectData)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__GpsInjectData * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__GpsInjectData)(v.AsCStruct())
+		GpsInjectDataTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func GpsInjectData__Array_to_Go(goSlice []GpsInjectData, cSlice []CGpsInjectData) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		GpsInjectDataTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func GpsInjectData__Array_to_C(cSlice []CGpsInjectData, goSlice []GpsInjectData) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__GpsInjectData)(goSlice[i].AsCStruct())
+		GpsInjectDataTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

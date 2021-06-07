@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("map_msgs/SetMapProjections", SetMapProjections)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("map_msgs/SetMapProjections", SetMapProjectionsTypeSupport)
 }
 
-type _SetMapProjections struct {
-	req,resp ros2types.ROS2Msg
+type _SetMapProjectionsTypeSupport struct {}
+
+func (s _SetMapProjectionsTypeSupport) Request() types.MessageTypeSupport {
+	return SetMapProjections_RequestTypeSupport
 }
 
-func (s *_SetMapProjections) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _SetMapProjectionsTypeSupport) Response() types.MessageTypeSupport {
+	return SetMapProjections_ResponseTypeSupport
 }
 
-func (s *_SetMapProjections) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_SetMapProjections) TypeSupport() unsafe.Pointer {
+func (s _SetMapProjectionsTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__map_msgs__srv__SetMapProjections())
 }
 
 // Modifying this variable is undefined behavior.
-var SetMapProjections ros2types.Service = &_SetMapProjections{
-	req: &SetMapProjections_Request{},
-	resp: &SetMapProjections_Response{},
-}
+var SetMapProjectionsTypeSupport types.ServiceTypeSupport = _SetMapProjectionsTypeSupport{}

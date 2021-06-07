@@ -15,7 +15,7 @@ package test_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("test_msgs/Empty", &Empty{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("test_msgs/Empty", EmptyTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewEmpty
@@ -44,34 +44,46 @@ type Empty struct {
 // NewEmpty creates a new Empty with default values.
 func NewEmpty() *Empty {
 	self := Empty{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Empty) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Empty) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__msg__Empty())
-}
-func (t *Empty) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__msg__Empty
-	return (unsafe.Pointer)(C.test_msgs__msg__Empty__create())
-}
-func (t *Empty) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.test_msgs__msg__Empty__destroy((*C.test_msgs__msg__Empty)(pointer_to_free))
-}
-func (t *Empty) AsCStruct() unsafe.Pointer {
-	mem := (*C.test_msgs__msg__Empty)(t.PrepareMemory())
-	return unsafe.Pointer(mem)
-}
-func (t *Empty) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	
-}
-func (t *Empty) Clone() ros2types.ROS2Msg {
+func (t *Empty) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Empty) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var EmptyTypeSupport types.MessageTypeSupport = _EmptyTypeSupport{}
+
+type _EmptyTypeSupport struct{}
+
+func (t _EmptyTypeSupport) New() types.Message {
+	return NewEmpty()
+}
+
+func (t _EmptyTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__msg__Empty
+	return (unsafe.Pointer)(C.test_msgs__msg__Empty__create())
+}
+
+func (t _EmptyTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.test_msgs__msg__Empty__destroy((*C.test_msgs__msg__Empty)(pointer_to_free))
+}
+
+func (t _EmptyTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	
+}
+
+func (t _EmptyTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	
+}
+
+func (t _EmptyTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__msg__Empty())
 }
 
 type CEmpty = C.test_msgs__msg__Empty
@@ -86,8 +98,7 @@ func Empty__Sequence_to_Go(goSlice *[]Empty, cSlice CEmpty__Sequence) {
 		cIdx := (*C.test_msgs__msg__Empty__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__msg__Empty * uintptr(i)),
 		))
-		(*goSlice)[i] = Empty{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		EmptyTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Empty__Sequence_to_C(cSlice *CEmpty__Sequence, goSlice []Empty) {
@@ -102,18 +113,16 @@ func Empty__Sequence_to_C(cSlice *CEmpty__Sequence, goSlice []Empty) {
 		cIdx := (*C.test_msgs__msg__Empty)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__msg__Empty * uintptr(i)),
 		))
-		*cIdx = *(*C.test_msgs__msg__Empty)(v.AsCStruct())
+		EmptyTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Empty__Array_to_Go(goSlice []Empty, cSlice []CEmpty) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		EmptyTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Empty__Array_to_C(cSlice []CEmpty, goSlice []Empty) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.test_msgs__msg__Empty)(goSlice[i].AsCStruct())
+		EmptyTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/Pose2D", &Pose2D{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/Pose2D", Pose2DTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPose2D
@@ -47,40 +47,54 @@ type Pose2D struct {
 // NewPose2D creates a new Pose2D with default values.
 func NewPose2D() *Pose2D {
 	self := Pose2D{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Pose2D) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Pose2D) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__Pose2D())
-}
-func (t *Pose2D) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__Pose2D
-	return (unsafe.Pointer)(C.geometry_msgs__msg__Pose2D__create())
-}
-func (t *Pose2D) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.geometry_msgs__msg__Pose2D__destroy((*C.geometry_msgs__msg__Pose2D)(pointer_to_free))
-}
-func (t *Pose2D) AsCStruct() unsafe.Pointer {
-	mem := (*C.geometry_msgs__msg__Pose2D)(t.PrepareMemory())
-	mem.x = C.double(t.X)
-	mem.y = C.double(t.Y)
-	mem.theta = C.double(t.Theta)
-	return unsafe.Pointer(mem)
-}
-func (t *Pose2D) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.geometry_msgs__msg__Pose2D)(ros2_message_buffer)
-	t.X = float64(mem.x)
-	t.Y = float64(mem.y)
-	t.Theta = float64(mem.theta)
-}
-func (t *Pose2D) Clone() ros2types.ROS2Msg {
+func (t *Pose2D) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Pose2D) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var Pose2DTypeSupport types.MessageTypeSupport = _Pose2DTypeSupport{}
+
+type _Pose2DTypeSupport struct{}
+
+func (t _Pose2DTypeSupport) New() types.Message {
+	return NewPose2D()
+}
+
+func (t _Pose2DTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__Pose2D
+	return (unsafe.Pointer)(C.geometry_msgs__msg__Pose2D__create())
+}
+
+func (t _Pose2DTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.geometry_msgs__msg__Pose2D__destroy((*C.geometry_msgs__msg__Pose2D)(pointer_to_free))
+}
+
+func (t _Pose2DTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Pose2D)
+	mem := (*C.geometry_msgs__msg__Pose2D)(dst)
+	mem.x = C.double(m.X)
+	mem.y = C.double(m.Y)
+	mem.theta = C.double(m.Theta)
+}
+
+func (t _Pose2DTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Pose2D)
+	mem := (*C.geometry_msgs__msg__Pose2D)(ros2_message_buffer)
+	m.X = float64(mem.x)
+	m.Y = float64(mem.y)
+	m.Theta = float64(mem.theta)
+}
+
+func (t _Pose2DTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__Pose2D())
 }
 
 type CPose2D = C.geometry_msgs__msg__Pose2D
@@ -95,8 +109,7 @@ func Pose2D__Sequence_to_Go(goSlice *[]Pose2D, cSlice CPose2D__Sequence) {
 		cIdx := (*C.geometry_msgs__msg__Pose2D__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Pose2D * uintptr(i)),
 		))
-		(*goSlice)[i] = Pose2D{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		Pose2DTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Pose2D__Sequence_to_C(cSlice *CPose2D__Sequence, goSlice []Pose2D) {
@@ -111,18 +124,16 @@ func Pose2D__Sequence_to_C(cSlice *CPose2D__Sequence, goSlice []Pose2D) {
 		cIdx := (*C.geometry_msgs__msg__Pose2D)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Pose2D * uintptr(i)),
 		))
-		*cIdx = *(*C.geometry_msgs__msg__Pose2D)(v.AsCStruct())
+		Pose2DTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Pose2D__Array_to_Go(goSlice []Pose2D, cSlice []CPose2D) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		Pose2DTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Pose2D__Array_to_C(cSlice []CPose2D, goSlice []Pose2D) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.geometry_msgs__msg__Pose2D)(goSlice[i].AsCStruct())
+		Pose2DTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

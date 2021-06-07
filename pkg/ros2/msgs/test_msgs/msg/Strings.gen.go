@@ -15,7 +15,7 @@ package test_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,96 +34,108 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("test_msgs/Strings", &Strings{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("test_msgs/Strings", StringsTypeSupport)
 }
 const (
-	Strings_STRING_CONST rosidl_runtime_c.String = "Hello world!"
+	Strings_STRING_CONST string = "Hello world!"
 )
 
 // Do not create instances of this type directly. Always use NewStrings
 // function instead.
 type Strings struct {
-	StringValue rosidl_runtime_c.String `yaml:"string_value"`
-	StringValueDefault1 rosidl_runtime_c.String `yaml:"string_value_default1"`
-	StringValueDefault2 rosidl_runtime_c.String `yaml:"string_value_default2"`
-	StringValueDefault3 rosidl_runtime_c.String `yaml:"string_value_default3"`
-	StringValueDefault4 rosidl_runtime_c.String `yaml:"string_value_default4"`
-	StringValueDefault5 rosidl_runtime_c.String `yaml:"string_value_default5"`
-	BoundedStringValue rosidl_runtime_c.String `yaml:"bounded_string_value"`
-	BoundedStringValueDefault1 rosidl_runtime_c.String `yaml:"bounded_string_value_default1"`
-	BoundedStringValueDefault2 rosidl_runtime_c.String `yaml:"bounded_string_value_default2"`
-	BoundedStringValueDefault3 rosidl_runtime_c.String `yaml:"bounded_string_value_default3"`
-	BoundedStringValueDefault4 rosidl_runtime_c.String `yaml:"bounded_string_value_default4"`
-	BoundedStringValueDefault5 rosidl_runtime_c.String `yaml:"bounded_string_value_default5"`
+	StringValue string `yaml:"string_value"`
+	StringValueDefault1 string `yaml:"string_value_default1"`
+	StringValueDefault2 string `yaml:"string_value_default2"`
+	StringValueDefault3 string `yaml:"string_value_default3"`
+	StringValueDefault4 string `yaml:"string_value_default4"`
+	StringValueDefault5 string `yaml:"string_value_default5"`
+	BoundedStringValue string `yaml:"bounded_string_value"`
+	BoundedStringValueDefault1 string `yaml:"bounded_string_value_default1"`
+	BoundedStringValueDefault2 string `yaml:"bounded_string_value_default2"`
+	BoundedStringValueDefault3 string `yaml:"bounded_string_value_default3"`
+	BoundedStringValueDefault4 string `yaml:"bounded_string_value_default4"`
+	BoundedStringValueDefault5 string `yaml:"bounded_string_value_default5"`
 }
 
 // NewStrings creates a new Strings with default values.
 func NewStrings() *Strings {
 	self := Strings{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Strings) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.StringValue.SetDefaults("")
-	t.StringValueDefault1.SetDefaults("Hello world!")
-	t.StringValueDefault2.SetDefaults("Hello'world!")
-	t.StringValueDefault3.SetDefaults("Hello\"world!")
-	t.StringValueDefault4.SetDefaults("Hello'world!")
-	t.StringValueDefault5.SetDefaults("Hello\"world!")
-	t.BoundedStringValue.SetDefaults("")
-	t.BoundedStringValueDefault1.SetDefaults("Hello world!")
-	t.BoundedStringValueDefault2.SetDefaults("Hello'world!")
-	t.BoundedStringValueDefault3.SetDefaults("Hello\"world!")
-	t.BoundedStringValueDefault4.SetDefaults("Hello'world!")
-	t.BoundedStringValueDefault5.SetDefaults("Hello\"world!")
-	
-	return t
-}
-
-func (t *Strings) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__msg__Strings())
-}
-func (t *Strings) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__msg__Strings
-	return (unsafe.Pointer)(C.test_msgs__msg__Strings__create())
-}
-func (t *Strings) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.test_msgs__msg__Strings__destroy((*C.test_msgs__msg__Strings)(pointer_to_free))
-}
-func (t *Strings) AsCStruct() unsafe.Pointer {
-	mem := (*C.test_msgs__msg__Strings)(t.PrepareMemory())
-	mem.string_value = *(*C.rosidl_runtime_c__String)(t.StringValue.AsCStruct())
-	mem.string_value_default1 = *(*C.rosidl_runtime_c__String)(t.StringValueDefault1.AsCStruct())
-	mem.string_value_default2 = *(*C.rosidl_runtime_c__String)(t.StringValueDefault2.AsCStruct())
-	mem.string_value_default3 = *(*C.rosidl_runtime_c__String)(t.StringValueDefault3.AsCStruct())
-	mem.string_value_default4 = *(*C.rosidl_runtime_c__String)(t.StringValueDefault4.AsCStruct())
-	mem.string_value_default5 = *(*C.rosidl_runtime_c__String)(t.StringValueDefault5.AsCStruct())
-	mem.bounded_string_value = *(*C.rosidl_runtime_c__String)(t.BoundedStringValue.AsCStruct())
-	mem.bounded_string_value_default1 = *(*C.rosidl_runtime_c__String)(t.BoundedStringValueDefault1.AsCStruct())
-	mem.bounded_string_value_default2 = *(*C.rosidl_runtime_c__String)(t.BoundedStringValueDefault2.AsCStruct())
-	mem.bounded_string_value_default3 = *(*C.rosidl_runtime_c__String)(t.BoundedStringValueDefault3.AsCStruct())
-	mem.bounded_string_value_default4 = *(*C.rosidl_runtime_c__String)(t.BoundedStringValueDefault4.AsCStruct())
-	mem.bounded_string_value_default5 = *(*C.rosidl_runtime_c__String)(t.BoundedStringValueDefault5.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *Strings) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.test_msgs__msg__Strings)(ros2_message_buffer)
-	t.StringValue.AsGoStruct(unsafe.Pointer(&mem.string_value))
-	t.StringValueDefault1.AsGoStruct(unsafe.Pointer(&mem.string_value_default1))
-	t.StringValueDefault2.AsGoStruct(unsafe.Pointer(&mem.string_value_default2))
-	t.StringValueDefault3.AsGoStruct(unsafe.Pointer(&mem.string_value_default3))
-	t.StringValueDefault4.AsGoStruct(unsafe.Pointer(&mem.string_value_default4))
-	t.StringValueDefault5.AsGoStruct(unsafe.Pointer(&mem.string_value_default5))
-	t.BoundedStringValue.AsGoStruct(unsafe.Pointer(&mem.bounded_string_value))
-	t.BoundedStringValueDefault1.AsGoStruct(unsafe.Pointer(&mem.bounded_string_value_default1))
-	t.BoundedStringValueDefault2.AsGoStruct(unsafe.Pointer(&mem.bounded_string_value_default2))
-	t.BoundedStringValueDefault3.AsGoStruct(unsafe.Pointer(&mem.bounded_string_value_default3))
-	t.BoundedStringValueDefault4.AsGoStruct(unsafe.Pointer(&mem.bounded_string_value_default4))
-	t.BoundedStringValueDefault5.AsGoStruct(unsafe.Pointer(&mem.bounded_string_value_default5))
-}
-func (t *Strings) Clone() ros2types.ROS2Msg {
+func (t *Strings) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Strings) SetDefaults() {
+	t.StringValueDefault1 = "Hello world!"
+	t.StringValueDefault2 = "Hello'world!"
+	t.StringValueDefault3 = "Hello\"world!"
+	t.StringValueDefault4 = "Hello'world!"
+	t.StringValueDefault5 = "Hello\"world!"
+	t.BoundedStringValueDefault1 = "Hello world!"
+	t.BoundedStringValueDefault2 = "Hello'world!"
+	t.BoundedStringValueDefault3 = "Hello\"world!"
+	t.BoundedStringValueDefault4 = "Hello'world!"
+	t.BoundedStringValueDefault5 = "Hello\"world!"
+	
+}
+
+// Modifying this variable is undefined behavior.
+var StringsTypeSupport types.MessageTypeSupport = _StringsTypeSupport{}
+
+type _StringsTypeSupport struct{}
+
+func (t _StringsTypeSupport) New() types.Message {
+	return NewStrings()
+}
+
+func (t _StringsTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__msg__Strings
+	return (unsafe.Pointer)(C.test_msgs__msg__Strings__create())
+}
+
+func (t _StringsTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.test_msgs__msg__Strings__destroy((*C.test_msgs__msg__Strings)(pointer_to_free))
+}
+
+func (t _StringsTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Strings)
+	mem := (*C.test_msgs__msg__Strings)(dst)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.string_value), m.StringValue)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.string_value_default1), m.StringValueDefault1)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.string_value_default2), m.StringValueDefault2)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.string_value_default3), m.StringValueDefault3)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.string_value_default4), m.StringValueDefault4)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.string_value_default5), m.StringValueDefault5)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.bounded_string_value), m.BoundedStringValue)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.bounded_string_value_default1), m.BoundedStringValueDefault1)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.bounded_string_value_default2), m.BoundedStringValueDefault2)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.bounded_string_value_default3), m.BoundedStringValueDefault3)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.bounded_string_value_default4), m.BoundedStringValueDefault4)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.bounded_string_value_default5), m.BoundedStringValueDefault5)
+}
+
+func (t _StringsTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Strings)
+	mem := (*C.test_msgs__msg__Strings)(ros2_message_buffer)
+	rosidl_runtime_c.StringAsGoStruct(&m.StringValue, unsafe.Pointer(&mem.string_value))
+	rosidl_runtime_c.StringAsGoStruct(&m.StringValueDefault1, unsafe.Pointer(&mem.string_value_default1))
+	rosidl_runtime_c.StringAsGoStruct(&m.StringValueDefault2, unsafe.Pointer(&mem.string_value_default2))
+	rosidl_runtime_c.StringAsGoStruct(&m.StringValueDefault3, unsafe.Pointer(&mem.string_value_default3))
+	rosidl_runtime_c.StringAsGoStruct(&m.StringValueDefault4, unsafe.Pointer(&mem.string_value_default4))
+	rosidl_runtime_c.StringAsGoStruct(&m.StringValueDefault5, unsafe.Pointer(&mem.string_value_default5))
+	rosidl_runtime_c.StringAsGoStruct(&m.BoundedStringValue, unsafe.Pointer(&mem.bounded_string_value))
+	rosidl_runtime_c.StringAsGoStruct(&m.BoundedStringValueDefault1, unsafe.Pointer(&mem.bounded_string_value_default1))
+	rosidl_runtime_c.StringAsGoStruct(&m.BoundedStringValueDefault2, unsafe.Pointer(&mem.bounded_string_value_default2))
+	rosidl_runtime_c.StringAsGoStruct(&m.BoundedStringValueDefault3, unsafe.Pointer(&mem.bounded_string_value_default3))
+	rosidl_runtime_c.StringAsGoStruct(&m.BoundedStringValueDefault4, unsafe.Pointer(&mem.bounded_string_value_default4))
+	rosidl_runtime_c.StringAsGoStruct(&m.BoundedStringValueDefault5, unsafe.Pointer(&mem.bounded_string_value_default5))
+}
+
+func (t _StringsTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__msg__Strings())
 }
 
 type CStrings = C.test_msgs__msg__Strings
@@ -138,8 +150,7 @@ func Strings__Sequence_to_Go(goSlice *[]Strings, cSlice CStrings__Sequence) {
 		cIdx := (*C.test_msgs__msg__Strings__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__msg__Strings * uintptr(i)),
 		))
-		(*goSlice)[i] = Strings{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		StringsTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Strings__Sequence_to_C(cSlice *CStrings__Sequence, goSlice []Strings) {
@@ -154,18 +165,16 @@ func Strings__Sequence_to_C(cSlice *CStrings__Sequence, goSlice []Strings) {
 		cIdx := (*C.test_msgs__msg__Strings)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__msg__Strings * uintptr(i)),
 		))
-		*cIdx = *(*C.test_msgs__msg__Strings)(v.AsCStruct())
+		StringsTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Strings__Array_to_Go(goSlice []Strings, cSlice []CStrings) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		StringsTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Strings__Array_to_C(cSlice []CStrings, goSlice []Strings) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.test_msgs__msg__Strings)(goSlice[i].AsCStruct())
+		StringsTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

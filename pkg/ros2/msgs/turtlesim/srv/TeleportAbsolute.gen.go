@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("turtlesim/TeleportAbsolute", TeleportAbsolute)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("turtlesim/TeleportAbsolute", TeleportAbsoluteTypeSupport)
 }
 
-type _TeleportAbsolute struct {
-	req,resp ros2types.ROS2Msg
+type _TeleportAbsoluteTypeSupport struct {}
+
+func (s _TeleportAbsoluteTypeSupport) Request() types.MessageTypeSupport {
+	return TeleportAbsolute_RequestTypeSupport
 }
 
-func (s *_TeleportAbsolute) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _TeleportAbsoluteTypeSupport) Response() types.MessageTypeSupport {
+	return TeleportAbsolute_ResponseTypeSupport
 }
 
-func (s *_TeleportAbsolute) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_TeleportAbsolute) TypeSupport() unsafe.Pointer {
+func (s _TeleportAbsoluteTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__turtlesim__srv__TeleportAbsolute())
 }
 
 // Modifying this variable is undefined behavior.
-var TeleportAbsolute ros2types.Service = &_TeleportAbsolute{
-	req: &TeleportAbsolute_Request{},
-	resp: &TeleportAbsolute_Response{},
-}
+var TeleportAbsoluteTypeSupport types.ServiceTypeSupport = _TeleportAbsoluteTypeSupport{}

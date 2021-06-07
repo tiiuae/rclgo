@@ -12,7 +12,7 @@ package ros2_type_dispatcher
 import (
 	"fmt"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"gopkg.in/yaml.v3"
 )
 
@@ -23,7 +23,7 @@ Needs to be defined for all supported ROS2 message types.
 Could also be implemented using Golang-plugins.
 Or maybe some pretty HC Golang hacks to dynamically cast a string to a Golang type.
 */
-var ROS2MsgTypeNameToGoROS2Msg = make(map[string]ros2types.ROS2Msg)
+var ROS2MsgTypeNameToGoROS2Msg = make(map[string]types.MessageTypeSupport)
 
 /*
 RegisterROS2MsgTypeNameAlias sets the type string to implementation dispatcher, so the correct type can be dynamically chosen.
@@ -33,7 +33,7 @@ The Golang types of ROS2 Message use
 
 to automatically populate this when imported.
 */
-func RegisterROS2MsgTypeNameAlias(alias string, msgType ros2types.ROS2Msg) {
+func RegisterROS2MsgTypeNameAlias(alias string, msgType types.MessageTypeSupport) {
 	ROS2MsgTypeNameToGoROS2Msg[alias] = msgType
 }
 
@@ -45,7 +45,7 @@ to
 
 returns true if the type mapping is found
 */
-func TranslateROS2MsgTypeNameToType(msgType string) (ros2types.ROS2Msg, bool) {
+func TranslateROS2MsgTypeNameToType(msgType string) (types.MessageTypeSupport, bool) {
 	ros2msg, ok := ROS2MsgTypeNameToGoROS2Msg[msgType]
 	return ros2msg, ok
 }
@@ -53,7 +53,7 @@ func TranslateROS2MsgTypeNameToType(msgType string) (ros2types.ROS2Msg, bool) {
 /*
 TranslateROS2MsgTypeNameToTypeMust panics if there is no mapping
 */
-func TranslateROS2MsgTypeNameToTypeMust(msgType string) ros2types.ROS2Msg {
+func TranslateROS2MsgTypeNameToTypeMust(msgType string) types.MessageTypeSupport {
 	ros2msg, ok := ROS2MsgTypeNameToGoROS2Msg[msgType]
 	if !ok {
 		panic(fmt.Sprintf("No registered implementation for ROS2 message type '%s'!\n", msgType))
@@ -62,38 +62,35 @@ func TranslateROS2MsgTypeNameToTypeMust(msgType string) ros2types.ROS2Msg {
 }
 
 /*
-TranslateMsgPayloadYAMLToROS2Msg returns a new instance of the given ROS2Msg-object
+TranslateMsgPayloadYAMLToROS2Msg returns a new instance of the given Message object
 
 The ROS2 official cli-client uses YAML to define the data payload, so do we.
 */
-func TranslateMsgPayloadYAMLToROS2Msg(yamlString string, ros2msg ros2types.ROS2Msg) (ros2types.ROS2Msg, error) {
-	yamlBytes := []byte(yamlString)
-	ros2msgClone := ros2msg.Clone()
-	ros2msgClone.SetDefaults(nil)
-	err := yaml.Unmarshal(yamlBytes, ros2msgClone)
-	return ros2msgClone, err
+func TranslateMsgPayloadYAMLToROS2Msg(yamlString string, ts types.MessageTypeSupport) (types.Message, error) {
+	msg := ts.New()
+	return msg, yaml.Unmarshal([]byte(yamlString), msg)
 }
 
 // serviceTypeToGoServiceDefinition is the ROS2MsgTypeNameToGoROS2Msg equivalent
 // for services.
-var serviceTypeToGoServiceDefinition = make(map[string]ros2types.Service)
+var serviceTypeToGoServiceDefinition = make(map[string]types.ServiceTypeSupport)
 
 // RegisterROS2ServiceTypeNameAlias is the RegisterROS2MsgTypeNameAlias
 // equivalent for services.
-func RegisterROS2ServiceTypeNameAlias(alias string, srvType ros2types.Service) {
+func RegisterROS2ServiceTypeNameAlias(alias string, srvType types.ServiceTypeSupport) {
 	serviceTypeToGoServiceDefinition[alias] = srvType
 }
 
 // TranslateROS2ServiceTypeNameToType is the TranslateROS2MsgTypeNameToType
 // equivalent for services.
-func TranslateROS2ServiceTypeNameToType(srvType string) (ros2types.Service, bool) {
+func TranslateROS2ServiceTypeNameToType(srvType string) (types.ServiceTypeSupport, bool) {
 	srv, ok := serviceTypeToGoServiceDefinition[srvType]
 	return srv, ok
 }
 
 // TranslateROS2ServiceTypeNameToTypeMust is the
 // TranslateROS2MsgTypeNameToTypeMust equivalent for services.
-func TranslateROS2ServiceTypeNameToTypeMust(srvType string) ros2types.Service {
+func TranslateROS2ServiceTypeNameToTypeMust(srvType string) types.ServiceTypeSupport {
 	srv, ok := serviceTypeToGoServiceDefinition[srvType]
 	if !ok {
 		panic(fmt.Sprintf("No registered implementation for ROS2 message type '%s'!\n", srvType))

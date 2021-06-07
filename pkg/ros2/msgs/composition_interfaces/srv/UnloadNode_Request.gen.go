@@ -15,7 +15,7 @@ package composition_interfaces_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("composition_interfaces/UnloadNode_Request", &UnloadNode_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("composition_interfaces/UnloadNode_Request", UnloadNode_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewUnloadNode_Request
@@ -45,36 +45,50 @@ type UnloadNode_Request struct {
 // NewUnloadNode_Request creates a new UnloadNode_Request with default values.
 func NewUnloadNode_Request() *UnloadNode_Request {
 	self := UnloadNode_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *UnloadNode_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *UnloadNode_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__composition_interfaces__srv__UnloadNode_Request())
-}
-func (t *UnloadNode_Request) PrepareMemory() unsafe.Pointer { //returns *C.composition_interfaces__srv__UnloadNode_Request
-	return (unsafe.Pointer)(C.composition_interfaces__srv__UnloadNode_Request__create())
-}
-func (t *UnloadNode_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.composition_interfaces__srv__UnloadNode_Request__destroy((*C.composition_interfaces__srv__UnloadNode_Request)(pointer_to_free))
-}
-func (t *UnloadNode_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.composition_interfaces__srv__UnloadNode_Request)(t.PrepareMemory())
-	mem.unique_id = C.uint64_t(t.UniqueId)
-	return unsafe.Pointer(mem)
-}
-func (t *UnloadNode_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.composition_interfaces__srv__UnloadNode_Request)(ros2_message_buffer)
-	t.UniqueId = uint64(mem.unique_id)
-}
-func (t *UnloadNode_Request) Clone() ros2types.ROS2Msg {
+func (t *UnloadNode_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *UnloadNode_Request) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var UnloadNode_RequestTypeSupport types.MessageTypeSupport = _UnloadNode_RequestTypeSupport{}
+
+type _UnloadNode_RequestTypeSupport struct{}
+
+func (t _UnloadNode_RequestTypeSupport) New() types.Message {
+	return NewUnloadNode_Request()
+}
+
+func (t _UnloadNode_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.composition_interfaces__srv__UnloadNode_Request
+	return (unsafe.Pointer)(C.composition_interfaces__srv__UnloadNode_Request__create())
+}
+
+func (t _UnloadNode_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.composition_interfaces__srv__UnloadNode_Request__destroy((*C.composition_interfaces__srv__UnloadNode_Request)(pointer_to_free))
+}
+
+func (t _UnloadNode_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*UnloadNode_Request)
+	mem := (*C.composition_interfaces__srv__UnloadNode_Request)(dst)
+	mem.unique_id = C.uint64_t(m.UniqueId)
+}
+
+func (t _UnloadNode_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*UnloadNode_Request)
+	mem := (*C.composition_interfaces__srv__UnloadNode_Request)(ros2_message_buffer)
+	m.UniqueId = uint64(mem.unique_id)
+}
+
+func (t _UnloadNode_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__composition_interfaces__srv__UnloadNode_Request())
 }
 
 type CUnloadNode_Request = C.composition_interfaces__srv__UnloadNode_Request
@@ -89,8 +103,7 @@ func UnloadNode_Request__Sequence_to_Go(goSlice *[]UnloadNode_Request, cSlice CU
 		cIdx := (*C.composition_interfaces__srv__UnloadNode_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_composition_interfaces__srv__UnloadNode_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = UnloadNode_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		UnloadNode_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func UnloadNode_Request__Sequence_to_C(cSlice *CUnloadNode_Request__Sequence, goSlice []UnloadNode_Request) {
@@ -105,18 +118,16 @@ func UnloadNode_Request__Sequence_to_C(cSlice *CUnloadNode_Request__Sequence, go
 		cIdx := (*C.composition_interfaces__srv__UnloadNode_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_composition_interfaces__srv__UnloadNode_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.composition_interfaces__srv__UnloadNode_Request)(v.AsCStruct())
+		UnloadNode_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func UnloadNode_Request__Array_to_Go(goSlice []UnloadNode_Request, cSlice []CUnloadNode_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		UnloadNode_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func UnloadNode_Request__Array_to_C(cSlice []CUnloadNode_Request, goSlice []UnloadNode_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.composition_interfaces__srv__UnloadNode_Request)(goSlice[i].AsCStruct())
+		UnloadNode_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

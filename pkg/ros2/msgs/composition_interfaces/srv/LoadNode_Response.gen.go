@@ -15,7 +15,7 @@ package composition_interfaces_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,59 +34,71 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("composition_interfaces/LoadNode_Response", &LoadNode_Response{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("composition_interfaces/LoadNode_Response", LoadNode_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewLoadNode_Response
 // function instead.
 type LoadNode_Response struct {
 	Success bool `yaml:"success"`// key/value arguments that are specific to a type of container process.True if the node was successfully loaded.
-	ErrorMessage rosidl_runtime_c.String `yaml:"error_message"`// Human readable error message if success is false, else empty string.
-	FullNodeName rosidl_runtime_c.String `yaml:"full_node_name"`// Name of the loaded composable node (including namespace).
+	ErrorMessage string `yaml:"error_message"`// Human readable error message if success is false, else empty string.
+	FullNodeName string `yaml:"full_node_name"`// Name of the loaded composable node (including namespace).
 	UniqueId uint64 `yaml:"unique_id"`// A unique identifier for the loaded node.
 }
 
 // NewLoadNode_Response creates a new LoadNode_Response with default values.
 func NewLoadNode_Response() *LoadNode_Response {
 	self := LoadNode_Response{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *LoadNode_Response) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.ErrorMessage.SetDefaults("")
-	t.FullNodeName.SetDefaults("")
-	
-	return t
-}
-
-func (t *LoadNode_Response) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__composition_interfaces__srv__LoadNode_Response())
-}
-func (t *LoadNode_Response) PrepareMemory() unsafe.Pointer { //returns *C.composition_interfaces__srv__LoadNode_Response
-	return (unsafe.Pointer)(C.composition_interfaces__srv__LoadNode_Response__create())
-}
-func (t *LoadNode_Response) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.composition_interfaces__srv__LoadNode_Response__destroy((*C.composition_interfaces__srv__LoadNode_Response)(pointer_to_free))
-}
-func (t *LoadNode_Response) AsCStruct() unsafe.Pointer {
-	mem := (*C.composition_interfaces__srv__LoadNode_Response)(t.PrepareMemory())
-	mem.success = C.bool(t.Success)
-	mem.error_message = *(*C.rosidl_runtime_c__String)(t.ErrorMessage.AsCStruct())
-	mem.full_node_name = *(*C.rosidl_runtime_c__String)(t.FullNodeName.AsCStruct())
-	mem.unique_id = C.uint64_t(t.UniqueId)
-	return unsafe.Pointer(mem)
-}
-func (t *LoadNode_Response) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.composition_interfaces__srv__LoadNode_Response)(ros2_message_buffer)
-	t.Success = bool(mem.success)
-	t.ErrorMessage.AsGoStruct(unsafe.Pointer(&mem.error_message))
-	t.FullNodeName.AsGoStruct(unsafe.Pointer(&mem.full_node_name))
-	t.UniqueId = uint64(mem.unique_id)
-}
-func (t *LoadNode_Response) Clone() ros2types.ROS2Msg {
+func (t *LoadNode_Response) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *LoadNode_Response) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var LoadNode_ResponseTypeSupport types.MessageTypeSupport = _LoadNode_ResponseTypeSupport{}
+
+type _LoadNode_ResponseTypeSupport struct{}
+
+func (t _LoadNode_ResponseTypeSupport) New() types.Message {
+	return NewLoadNode_Response()
+}
+
+func (t _LoadNode_ResponseTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.composition_interfaces__srv__LoadNode_Response
+	return (unsafe.Pointer)(C.composition_interfaces__srv__LoadNode_Response__create())
+}
+
+func (t _LoadNode_ResponseTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.composition_interfaces__srv__LoadNode_Response__destroy((*C.composition_interfaces__srv__LoadNode_Response)(pointer_to_free))
+}
+
+func (t _LoadNode_ResponseTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*LoadNode_Response)
+	mem := (*C.composition_interfaces__srv__LoadNode_Response)(dst)
+	mem.success = C.bool(m.Success)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.error_message), m.ErrorMessage)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.full_node_name), m.FullNodeName)
+	mem.unique_id = C.uint64_t(m.UniqueId)
+}
+
+func (t _LoadNode_ResponseTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*LoadNode_Response)
+	mem := (*C.composition_interfaces__srv__LoadNode_Response)(ros2_message_buffer)
+	m.Success = bool(mem.success)
+	rosidl_runtime_c.StringAsGoStruct(&m.ErrorMessage, unsafe.Pointer(&mem.error_message))
+	rosidl_runtime_c.StringAsGoStruct(&m.FullNodeName, unsafe.Pointer(&mem.full_node_name))
+	m.UniqueId = uint64(mem.unique_id)
+}
+
+func (t _LoadNode_ResponseTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__composition_interfaces__srv__LoadNode_Response())
 }
 
 type CLoadNode_Response = C.composition_interfaces__srv__LoadNode_Response
@@ -101,8 +113,7 @@ func LoadNode_Response__Sequence_to_Go(goSlice *[]LoadNode_Response, cSlice CLoa
 		cIdx := (*C.composition_interfaces__srv__LoadNode_Response__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_composition_interfaces__srv__LoadNode_Response * uintptr(i)),
 		))
-		(*goSlice)[i] = LoadNode_Response{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		LoadNode_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func LoadNode_Response__Sequence_to_C(cSlice *CLoadNode_Response__Sequence, goSlice []LoadNode_Response) {
@@ -117,18 +128,16 @@ func LoadNode_Response__Sequence_to_C(cSlice *CLoadNode_Response__Sequence, goSl
 		cIdx := (*C.composition_interfaces__srv__LoadNode_Response)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_composition_interfaces__srv__LoadNode_Response * uintptr(i)),
 		))
-		*cIdx = *(*C.composition_interfaces__srv__LoadNode_Response)(v.AsCStruct())
+		LoadNode_ResponseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func LoadNode_Response__Array_to_Go(goSlice []LoadNode_Response, cSlice []CLoadNode_Response) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		LoadNode_ResponseTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func LoadNode_Response__Array_to_C(cSlice []CLoadNode_Response, goSlice []LoadNode_Response) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.composition_interfaces__srv__LoadNode_Response)(goSlice[i].AsCStruct())
+		LoadNode_ResponseTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

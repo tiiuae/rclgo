@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EstimatorSensorBias", &EstimatorSensorBias{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EstimatorSensorBias", EstimatorSensorBiasTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewEstimatorSensorBias
@@ -62,80 +62,94 @@ type EstimatorSensorBias struct {
 // NewEstimatorSensorBias creates a new EstimatorSensorBias with default values.
 func NewEstimatorSensorBias() *EstimatorSensorBias {
 	self := EstimatorSensorBias{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *EstimatorSensorBias) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *EstimatorSensorBias) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EstimatorSensorBias())
-}
-func (t *EstimatorSensorBias) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EstimatorSensorBias
-	return (unsafe.Pointer)(C.px4_msgs__msg__EstimatorSensorBias__create())
-}
-func (t *EstimatorSensorBias) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__EstimatorSensorBias__destroy((*C.px4_msgs__msg__EstimatorSensorBias)(pointer_to_free))
-}
-func (t *EstimatorSensorBias) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__EstimatorSensorBias)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	mem.gyro_device_id = C.uint32_t(t.GyroDeviceId)
-	cSlice_gyro_bias := mem.gyro_bias[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_bias)), t.GyroBias[:])
-	mem.gyro_bias_limit = C.float(t.GyroBiasLimit)
-	cSlice_gyro_bias_variance := mem.gyro_bias_variance[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_bias_variance)), t.GyroBiasVariance[:])
-	mem.gyro_bias_valid = C.bool(t.GyroBiasValid)
-	mem.accel_device_id = C.uint32_t(t.AccelDeviceId)
-	cSlice_accel_bias := mem.accel_bias[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_bias)), t.AccelBias[:])
-	mem.accel_bias_limit = C.float(t.AccelBiasLimit)
-	cSlice_accel_bias_variance := mem.accel_bias_variance[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_bias_variance)), t.AccelBiasVariance[:])
-	mem.accel_bias_valid = C.bool(t.AccelBiasValid)
-	mem.mag_device_id = C.uint32_t(t.MagDeviceId)
-	cSlice_mag_bias := mem.mag_bias[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_mag_bias)), t.MagBias[:])
-	mem.mag_bias_limit = C.float(t.MagBiasLimit)
-	cSlice_mag_bias_variance := mem.mag_bias_variance[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_mag_bias_variance)), t.MagBiasVariance[:])
-	mem.mag_bias_valid = C.bool(t.MagBiasValid)
-	return unsafe.Pointer(mem)
-}
-func (t *EstimatorSensorBias) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__EstimatorSensorBias)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	t.GyroDeviceId = uint32(mem.gyro_device_id)
-	cSlice_gyro_bias := mem.gyro_bias[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.GyroBias[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_bias)))
-	t.GyroBiasLimit = float32(mem.gyro_bias_limit)
-	cSlice_gyro_bias_variance := mem.gyro_bias_variance[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.GyroBiasVariance[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_bias_variance)))
-	t.GyroBiasValid = bool(mem.gyro_bias_valid)
-	t.AccelDeviceId = uint32(mem.accel_device_id)
-	cSlice_accel_bias := mem.accel_bias[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.AccelBias[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_bias)))
-	t.AccelBiasLimit = float32(mem.accel_bias_limit)
-	cSlice_accel_bias_variance := mem.accel_bias_variance[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.AccelBiasVariance[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_bias_variance)))
-	t.AccelBiasValid = bool(mem.accel_bias_valid)
-	t.MagDeviceId = uint32(mem.mag_device_id)
-	cSlice_mag_bias := mem.mag_bias[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.MagBias[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_mag_bias)))
-	t.MagBiasLimit = float32(mem.mag_bias_limit)
-	cSlice_mag_bias_variance := mem.mag_bias_variance[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.MagBiasVariance[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_mag_bias_variance)))
-	t.MagBiasValid = bool(mem.mag_bias_valid)
-}
-func (t *EstimatorSensorBias) Clone() ros2types.ROS2Msg {
+func (t *EstimatorSensorBias) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *EstimatorSensorBias) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var EstimatorSensorBiasTypeSupport types.MessageTypeSupport = _EstimatorSensorBiasTypeSupport{}
+
+type _EstimatorSensorBiasTypeSupport struct{}
+
+func (t _EstimatorSensorBiasTypeSupport) New() types.Message {
+	return NewEstimatorSensorBias()
+}
+
+func (t _EstimatorSensorBiasTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EstimatorSensorBias
+	return (unsafe.Pointer)(C.px4_msgs__msg__EstimatorSensorBias__create())
+}
+
+func (t _EstimatorSensorBiasTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__EstimatorSensorBias__destroy((*C.px4_msgs__msg__EstimatorSensorBias)(pointer_to_free))
+}
+
+func (t _EstimatorSensorBiasTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*EstimatorSensorBias)
+	mem := (*C.px4_msgs__msg__EstimatorSensorBias)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	mem.gyro_device_id = C.uint32_t(m.GyroDeviceId)
+	cSlice_gyro_bias := mem.gyro_bias[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_bias)), m.GyroBias[:])
+	mem.gyro_bias_limit = C.float(m.GyroBiasLimit)
+	cSlice_gyro_bias_variance := mem.gyro_bias_variance[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_bias_variance)), m.GyroBiasVariance[:])
+	mem.gyro_bias_valid = C.bool(m.GyroBiasValid)
+	mem.accel_device_id = C.uint32_t(m.AccelDeviceId)
+	cSlice_accel_bias := mem.accel_bias[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_bias)), m.AccelBias[:])
+	mem.accel_bias_limit = C.float(m.AccelBiasLimit)
+	cSlice_accel_bias_variance := mem.accel_bias_variance[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_bias_variance)), m.AccelBiasVariance[:])
+	mem.accel_bias_valid = C.bool(m.AccelBiasValid)
+	mem.mag_device_id = C.uint32_t(m.MagDeviceId)
+	cSlice_mag_bias := mem.mag_bias[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_mag_bias)), m.MagBias[:])
+	mem.mag_bias_limit = C.float(m.MagBiasLimit)
+	cSlice_mag_bias_variance := mem.mag_bias_variance[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_mag_bias_variance)), m.MagBiasVariance[:])
+	mem.mag_bias_valid = C.bool(m.MagBiasValid)
+}
+
+func (t _EstimatorSensorBiasTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*EstimatorSensorBias)
+	mem := (*C.px4_msgs__msg__EstimatorSensorBias)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	m.GyroDeviceId = uint32(mem.gyro_device_id)
+	cSlice_gyro_bias := mem.gyro_bias[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.GyroBias[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_bias)))
+	m.GyroBiasLimit = float32(mem.gyro_bias_limit)
+	cSlice_gyro_bias_variance := mem.gyro_bias_variance[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.GyroBiasVariance[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gyro_bias_variance)))
+	m.GyroBiasValid = bool(mem.gyro_bias_valid)
+	m.AccelDeviceId = uint32(mem.accel_device_id)
+	cSlice_accel_bias := mem.accel_bias[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.AccelBias[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_bias)))
+	m.AccelBiasLimit = float32(mem.accel_bias_limit)
+	cSlice_accel_bias_variance := mem.accel_bias_variance[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.AccelBiasVariance[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_accel_bias_variance)))
+	m.AccelBiasValid = bool(mem.accel_bias_valid)
+	m.MagDeviceId = uint32(mem.mag_device_id)
+	cSlice_mag_bias := mem.mag_bias[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.MagBias[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_mag_bias)))
+	m.MagBiasLimit = float32(mem.mag_bias_limit)
+	cSlice_mag_bias_variance := mem.mag_bias_variance[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.MagBiasVariance[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_mag_bias_variance)))
+	m.MagBiasValid = bool(mem.mag_bias_valid)
+}
+
+func (t _EstimatorSensorBiasTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EstimatorSensorBias())
 }
 
 type CEstimatorSensorBias = C.px4_msgs__msg__EstimatorSensorBias
@@ -150,8 +164,7 @@ func EstimatorSensorBias__Sequence_to_Go(goSlice *[]EstimatorSensorBias, cSlice 
 		cIdx := (*C.px4_msgs__msg__EstimatorSensorBias__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EstimatorSensorBias * uintptr(i)),
 		))
-		(*goSlice)[i] = EstimatorSensorBias{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		EstimatorSensorBiasTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func EstimatorSensorBias__Sequence_to_C(cSlice *CEstimatorSensorBias__Sequence, goSlice []EstimatorSensorBias) {
@@ -166,18 +179,16 @@ func EstimatorSensorBias__Sequence_to_C(cSlice *CEstimatorSensorBias__Sequence, 
 		cIdx := (*C.px4_msgs__msg__EstimatorSensorBias)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EstimatorSensorBias * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__EstimatorSensorBias)(v.AsCStruct())
+		EstimatorSensorBiasTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func EstimatorSensorBias__Array_to_Go(goSlice []EstimatorSensorBias, cSlice []CEstimatorSensorBias) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		EstimatorSensorBiasTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func EstimatorSensorBias__Array_to_C(cSlice []CEstimatorSensorBias, goSlice []EstimatorSensorBias) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__EstimatorSensorBias)(goSlice[i].AsCStruct())
+		EstimatorSensorBiasTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

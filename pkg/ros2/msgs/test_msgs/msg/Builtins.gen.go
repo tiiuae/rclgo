@@ -15,7 +15,7 @@ package test_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	builtin_interfaces_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/builtin_interfaces/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("test_msgs/Builtins", &Builtins{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("test_msgs/Builtins", BuiltinsTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewBuiltins
@@ -48,40 +48,54 @@ type Builtins struct {
 // NewBuiltins creates a new Builtins with default values.
 func NewBuiltins() *Builtins {
 	self := Builtins{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Builtins) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.DurationValue.SetDefaults(nil)
-	t.TimeValue.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *Builtins) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__msg__Builtins())
-}
-func (t *Builtins) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__msg__Builtins
-	return (unsafe.Pointer)(C.test_msgs__msg__Builtins__create())
-}
-func (t *Builtins) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.test_msgs__msg__Builtins__destroy((*C.test_msgs__msg__Builtins)(pointer_to_free))
-}
-func (t *Builtins) AsCStruct() unsafe.Pointer {
-	mem := (*C.test_msgs__msg__Builtins)(t.PrepareMemory())
-	mem.duration_value = *(*C.builtin_interfaces__msg__Duration)(t.DurationValue.AsCStruct())
-	mem.time_value = *(*C.builtin_interfaces__msg__Time)(t.TimeValue.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *Builtins) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.test_msgs__msg__Builtins)(ros2_message_buffer)
-	t.DurationValue.AsGoStruct(unsafe.Pointer(&mem.duration_value))
-	t.TimeValue.AsGoStruct(unsafe.Pointer(&mem.time_value))
-}
-func (t *Builtins) Clone() ros2types.ROS2Msg {
+func (t *Builtins) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Builtins) SetDefaults() {
+	t.DurationValue.SetDefaults()
+	t.TimeValue.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var BuiltinsTypeSupport types.MessageTypeSupport = _BuiltinsTypeSupport{}
+
+type _BuiltinsTypeSupport struct{}
+
+func (t _BuiltinsTypeSupport) New() types.Message {
+	return NewBuiltins()
+}
+
+func (t _BuiltinsTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__msg__Builtins
+	return (unsafe.Pointer)(C.test_msgs__msg__Builtins__create())
+}
+
+func (t _BuiltinsTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.test_msgs__msg__Builtins__destroy((*C.test_msgs__msg__Builtins)(pointer_to_free))
+}
+
+func (t _BuiltinsTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Builtins)
+	mem := (*C.test_msgs__msg__Builtins)(dst)
+	builtin_interfaces_msg.DurationTypeSupport.AsCStruct(unsafe.Pointer(&mem.duration_value), &m.DurationValue)
+	builtin_interfaces_msg.TimeTypeSupport.AsCStruct(unsafe.Pointer(&mem.time_value), &m.TimeValue)
+}
+
+func (t _BuiltinsTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Builtins)
+	mem := (*C.test_msgs__msg__Builtins)(ros2_message_buffer)
+	builtin_interfaces_msg.DurationTypeSupport.AsGoStruct(&m.DurationValue, unsafe.Pointer(&mem.duration_value))
+	builtin_interfaces_msg.TimeTypeSupport.AsGoStruct(&m.TimeValue, unsafe.Pointer(&mem.time_value))
+}
+
+func (t _BuiltinsTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__msg__Builtins())
 }
 
 type CBuiltins = C.test_msgs__msg__Builtins
@@ -96,8 +110,7 @@ func Builtins__Sequence_to_Go(goSlice *[]Builtins, cSlice CBuiltins__Sequence) {
 		cIdx := (*C.test_msgs__msg__Builtins__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__msg__Builtins * uintptr(i)),
 		))
-		(*goSlice)[i] = Builtins{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		BuiltinsTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Builtins__Sequence_to_C(cSlice *CBuiltins__Sequence, goSlice []Builtins) {
@@ -112,18 +125,16 @@ func Builtins__Sequence_to_C(cSlice *CBuiltins__Sequence, goSlice []Builtins) {
 		cIdx := (*C.test_msgs__msg__Builtins)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__msg__Builtins * uintptr(i)),
 		))
-		*cIdx = *(*C.test_msgs__msg__Builtins)(v.AsCStruct())
+		BuiltinsTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Builtins__Array_to_Go(goSlice []Builtins, cSlice []CBuiltins) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		BuiltinsTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Builtins__Array_to_C(cSlice []CBuiltins, goSlice []Builtins) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.test_msgs__msg__Builtins)(goSlice[i].AsCStruct())
+		BuiltinsTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

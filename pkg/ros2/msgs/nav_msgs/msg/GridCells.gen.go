@@ -15,7 +15,7 @@ package nav_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	geometry_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/geometry_msgs/msg"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
@@ -37,7 +37,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("nav_msgs/GridCells", &GridCells{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("nav_msgs/GridCells", GridCellsTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewGridCells
@@ -52,43 +52,57 @@ type GridCells struct {
 // NewGridCells creates a new GridCells with default values.
 func NewGridCells() *GridCells {
 	self := GridCells{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *GridCells) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *GridCells) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__nav_msgs__msg__GridCells())
-}
-func (t *GridCells) PrepareMemory() unsafe.Pointer { //returns *C.nav_msgs__msg__GridCells
-	return (unsafe.Pointer)(C.nav_msgs__msg__GridCells__create())
-}
-func (t *GridCells) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.nav_msgs__msg__GridCells__destroy((*C.nav_msgs__msg__GridCells)(pointer_to_free))
-}
-func (t *GridCells) AsCStruct() unsafe.Pointer {
-	mem := (*C.nav_msgs__msg__GridCells)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.cell_width = C.float(t.CellWidth)
-	mem.cell_height = C.float(t.CellHeight)
-	geometry_msgs_msg.Point__Sequence_to_C((*geometry_msgs_msg.CPoint__Sequence)(unsafe.Pointer(&mem.cells)), t.Cells)
-	return unsafe.Pointer(mem)
-}
-func (t *GridCells) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.nav_msgs__msg__GridCells)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.CellWidth = float32(mem.cell_width)
-	t.CellHeight = float32(mem.cell_height)
-	geometry_msgs_msg.Point__Sequence_to_Go(&t.Cells, *(*geometry_msgs_msg.CPoint__Sequence)(unsafe.Pointer(&mem.cells)))
-}
-func (t *GridCells) Clone() ros2types.ROS2Msg {
+func (t *GridCells) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *GridCells) SetDefaults() {
+	t.Header.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var GridCellsTypeSupport types.MessageTypeSupport = _GridCellsTypeSupport{}
+
+type _GridCellsTypeSupport struct{}
+
+func (t _GridCellsTypeSupport) New() types.Message {
+	return NewGridCells()
+}
+
+func (t _GridCellsTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.nav_msgs__msg__GridCells
+	return (unsafe.Pointer)(C.nav_msgs__msg__GridCells__create())
+}
+
+func (t _GridCellsTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.nav_msgs__msg__GridCells__destroy((*C.nav_msgs__msg__GridCells)(pointer_to_free))
+}
+
+func (t _GridCellsTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*GridCells)
+	mem := (*C.nav_msgs__msg__GridCells)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	mem.cell_width = C.float(m.CellWidth)
+	mem.cell_height = C.float(m.CellHeight)
+	geometry_msgs_msg.Point__Sequence_to_C((*geometry_msgs_msg.CPoint__Sequence)(unsafe.Pointer(&mem.cells)), m.Cells)
+}
+
+func (t _GridCellsTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*GridCells)
+	mem := (*C.nav_msgs__msg__GridCells)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	m.CellWidth = float32(mem.cell_width)
+	m.CellHeight = float32(mem.cell_height)
+	geometry_msgs_msg.Point__Sequence_to_Go(&m.Cells, *(*geometry_msgs_msg.CPoint__Sequence)(unsafe.Pointer(&mem.cells)))
+}
+
+func (t _GridCellsTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__nav_msgs__msg__GridCells())
 }
 
 type CGridCells = C.nav_msgs__msg__GridCells
@@ -103,8 +117,7 @@ func GridCells__Sequence_to_Go(goSlice *[]GridCells, cSlice CGridCells__Sequence
 		cIdx := (*C.nav_msgs__msg__GridCells__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_nav_msgs__msg__GridCells * uintptr(i)),
 		))
-		(*goSlice)[i] = GridCells{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		GridCellsTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func GridCells__Sequence_to_C(cSlice *CGridCells__Sequence, goSlice []GridCells) {
@@ -119,18 +132,16 @@ func GridCells__Sequence_to_C(cSlice *CGridCells__Sequence, goSlice []GridCells)
 		cIdx := (*C.nav_msgs__msg__GridCells)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_nav_msgs__msg__GridCells * uintptr(i)),
 		))
-		*cIdx = *(*C.nav_msgs__msg__GridCells)(v.AsCStruct())
+		GridCellsTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func GridCells__Array_to_Go(goSlice []GridCells, cSlice []CGridCells) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		GridCellsTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func GridCells__Array_to_C(cSlice []CGridCells, goSlice []GridCells) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.nav_msgs__msg__GridCells)(goSlice[i].AsCStruct())
+		GridCellsTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

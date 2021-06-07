@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("example_interfaces/Trigger", Trigger)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("example_interfaces/Trigger", TriggerTypeSupport)
 }
 
-type _Trigger struct {
-	req,resp ros2types.ROS2Msg
+type _TriggerTypeSupport struct {}
+
+func (s _TriggerTypeSupport) Request() types.MessageTypeSupport {
+	return Trigger_RequestTypeSupport
 }
 
-func (s *_Trigger) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _TriggerTypeSupport) Response() types.MessageTypeSupport {
+	return Trigger_ResponseTypeSupport
 }
 
-func (s *_Trigger) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_Trigger) TypeSupport() unsafe.Pointer {
+func (s _TriggerTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__example_interfaces__srv__Trigger())
 }
 
 // Modifying this variable is undefined behavior.
-var Trigger ros2types.Service = &_Trigger{
-	req: &Trigger_Request{},
-	resp: &Trigger_Response{},
-}
+var TriggerTypeSupport types.ServiceTypeSupport = _TriggerTypeSupport{}

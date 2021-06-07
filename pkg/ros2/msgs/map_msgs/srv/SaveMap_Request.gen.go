@@ -15,7 +15,7 @@ package map_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("map_msgs/SaveMap_Request", &SaveMap_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("map_msgs/SaveMap_Request", SaveMap_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSaveMap_Request
@@ -47,37 +47,51 @@ type SaveMap_Request struct {
 // NewSaveMap_Request creates a new SaveMap_Request with default values.
 func NewSaveMap_Request() *SaveMap_Request {
 	self := SaveMap_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SaveMap_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Filename.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *SaveMap_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__map_msgs__srv__SaveMap_Request())
-}
-func (t *SaveMap_Request) PrepareMemory() unsafe.Pointer { //returns *C.map_msgs__srv__SaveMap_Request
-	return (unsafe.Pointer)(C.map_msgs__srv__SaveMap_Request__create())
-}
-func (t *SaveMap_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.map_msgs__srv__SaveMap_Request__destroy((*C.map_msgs__srv__SaveMap_Request)(pointer_to_free))
-}
-func (t *SaveMap_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.map_msgs__srv__SaveMap_Request)(t.PrepareMemory())
-	mem.filename = *(*C.std_msgs__msg__String)(t.Filename.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *SaveMap_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.map_msgs__srv__SaveMap_Request)(ros2_message_buffer)
-	t.Filename.AsGoStruct(unsafe.Pointer(&mem.filename))
-}
-func (t *SaveMap_Request) Clone() ros2types.ROS2Msg {
+func (t *SaveMap_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SaveMap_Request) SetDefaults() {
+	t.Filename.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SaveMap_RequestTypeSupport types.MessageTypeSupport = _SaveMap_RequestTypeSupport{}
+
+type _SaveMap_RequestTypeSupport struct{}
+
+func (t _SaveMap_RequestTypeSupport) New() types.Message {
+	return NewSaveMap_Request()
+}
+
+func (t _SaveMap_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.map_msgs__srv__SaveMap_Request
+	return (unsafe.Pointer)(C.map_msgs__srv__SaveMap_Request__create())
+}
+
+func (t _SaveMap_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.map_msgs__srv__SaveMap_Request__destroy((*C.map_msgs__srv__SaveMap_Request)(pointer_to_free))
+}
+
+func (t _SaveMap_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*SaveMap_Request)
+	mem := (*C.map_msgs__srv__SaveMap_Request)(dst)
+	std_msgs_msg.StringTypeSupport.AsCStruct(unsafe.Pointer(&mem.filename), &m.Filename)
+}
+
+func (t _SaveMap_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*SaveMap_Request)
+	mem := (*C.map_msgs__srv__SaveMap_Request)(ros2_message_buffer)
+	std_msgs_msg.StringTypeSupport.AsGoStruct(&m.Filename, unsafe.Pointer(&mem.filename))
+}
+
+func (t _SaveMap_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__map_msgs__srv__SaveMap_Request())
 }
 
 type CSaveMap_Request = C.map_msgs__srv__SaveMap_Request
@@ -92,8 +106,7 @@ func SaveMap_Request__Sequence_to_Go(goSlice *[]SaveMap_Request, cSlice CSaveMap
 		cIdx := (*C.map_msgs__srv__SaveMap_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_map_msgs__srv__SaveMap_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = SaveMap_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SaveMap_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SaveMap_Request__Sequence_to_C(cSlice *CSaveMap_Request__Sequence, goSlice []SaveMap_Request) {
@@ -108,18 +121,16 @@ func SaveMap_Request__Sequence_to_C(cSlice *CSaveMap_Request__Sequence, goSlice 
 		cIdx := (*C.map_msgs__srv__SaveMap_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_map_msgs__srv__SaveMap_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.map_msgs__srv__SaveMap_Request)(v.AsCStruct())
+		SaveMap_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SaveMap_Request__Array_to_Go(goSlice []SaveMap_Request, cSlice []CSaveMap_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SaveMap_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SaveMap_Request__Array_to_C(cSlice []CSaveMap_Request, goSlice []SaveMap_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.map_msgs__srv__SaveMap_Request)(goSlice[i].AsCStruct())
+		SaveMap_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package pcl_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	sensor_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/sensor_msgs/msg"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
@@ -37,7 +37,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("pcl_msgs/PolygonMesh", &PolygonMesh{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("pcl_msgs/PolygonMesh", PolygonMeshTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPolygonMesh
@@ -51,42 +51,56 @@ type PolygonMesh struct {
 // NewPolygonMesh creates a new PolygonMesh with default values.
 func NewPolygonMesh() *PolygonMesh {
 	self := PolygonMesh{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *PolygonMesh) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.Cloud.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *PolygonMesh) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__pcl_msgs__msg__PolygonMesh())
-}
-func (t *PolygonMesh) PrepareMemory() unsafe.Pointer { //returns *C.pcl_msgs__msg__PolygonMesh
-	return (unsafe.Pointer)(C.pcl_msgs__msg__PolygonMesh__create())
-}
-func (t *PolygonMesh) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.pcl_msgs__msg__PolygonMesh__destroy((*C.pcl_msgs__msg__PolygonMesh)(pointer_to_free))
-}
-func (t *PolygonMesh) AsCStruct() unsafe.Pointer {
-	mem := (*C.pcl_msgs__msg__PolygonMesh)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.cloud = *(*C.sensor_msgs__msg__PointCloud2)(t.Cloud.AsCStruct())
-	Vertices__Sequence_to_C(&mem.polygons, t.Polygons)
-	return unsafe.Pointer(mem)
-}
-func (t *PolygonMesh) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.pcl_msgs__msg__PolygonMesh)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.Cloud.AsGoStruct(unsafe.Pointer(&mem.cloud))
-	Vertices__Sequence_to_Go(&t.Polygons, mem.polygons)
-}
-func (t *PolygonMesh) Clone() ros2types.ROS2Msg {
+func (t *PolygonMesh) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *PolygonMesh) SetDefaults() {
+	t.Header.SetDefaults()
+	t.Cloud.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var PolygonMeshTypeSupport types.MessageTypeSupport = _PolygonMeshTypeSupport{}
+
+type _PolygonMeshTypeSupport struct{}
+
+func (t _PolygonMeshTypeSupport) New() types.Message {
+	return NewPolygonMesh()
+}
+
+func (t _PolygonMeshTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.pcl_msgs__msg__PolygonMesh
+	return (unsafe.Pointer)(C.pcl_msgs__msg__PolygonMesh__create())
+}
+
+func (t _PolygonMeshTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.pcl_msgs__msg__PolygonMesh__destroy((*C.pcl_msgs__msg__PolygonMesh)(pointer_to_free))
+}
+
+func (t _PolygonMeshTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*PolygonMesh)
+	mem := (*C.pcl_msgs__msg__PolygonMesh)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	sensor_msgs_msg.PointCloud2TypeSupport.AsCStruct(unsafe.Pointer(&mem.cloud), &m.Cloud)
+	Vertices__Sequence_to_C(&mem.polygons, m.Polygons)
+}
+
+func (t _PolygonMeshTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*PolygonMesh)
+	mem := (*C.pcl_msgs__msg__PolygonMesh)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	sensor_msgs_msg.PointCloud2TypeSupport.AsGoStruct(&m.Cloud, unsafe.Pointer(&mem.cloud))
+	Vertices__Sequence_to_Go(&m.Polygons, mem.polygons)
+}
+
+func (t _PolygonMeshTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__pcl_msgs__msg__PolygonMesh())
 }
 
 type CPolygonMesh = C.pcl_msgs__msg__PolygonMesh
@@ -101,8 +115,7 @@ func PolygonMesh__Sequence_to_Go(goSlice *[]PolygonMesh, cSlice CPolygonMesh__Se
 		cIdx := (*C.pcl_msgs__msg__PolygonMesh__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_pcl_msgs__msg__PolygonMesh * uintptr(i)),
 		))
-		(*goSlice)[i] = PolygonMesh{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		PolygonMeshTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func PolygonMesh__Sequence_to_C(cSlice *CPolygonMesh__Sequence, goSlice []PolygonMesh) {
@@ -117,18 +130,16 @@ func PolygonMesh__Sequence_to_C(cSlice *CPolygonMesh__Sequence, goSlice []Polygo
 		cIdx := (*C.pcl_msgs__msg__PolygonMesh)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_pcl_msgs__msg__PolygonMesh * uintptr(i)),
 		))
-		*cIdx = *(*C.pcl_msgs__msg__PolygonMesh)(v.AsCStruct())
+		PolygonMeshTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func PolygonMesh__Array_to_Go(goSlice []PolygonMesh, cSlice []CPolygonMesh) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		PolygonMeshTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func PolygonMesh__Array_to_C(cSlice []CPolygonMesh, goSlice []PolygonMesh) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.pcl_msgs__msg__PolygonMesh)(goSlice[i].AsCStruct())
+		PolygonMeshTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

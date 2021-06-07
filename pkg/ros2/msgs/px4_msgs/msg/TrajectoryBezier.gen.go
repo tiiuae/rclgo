@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/TrajectoryBezier", &TrajectoryBezier{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/TrajectoryBezier", TrajectoryBezierTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTrajectoryBezier
@@ -49,44 +49,58 @@ type TrajectoryBezier struct {
 // NewTrajectoryBezier creates a new TrajectoryBezier with default values.
 func NewTrajectoryBezier() *TrajectoryBezier {
 	self := TrajectoryBezier{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *TrajectoryBezier) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *TrajectoryBezier) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__TrajectoryBezier())
-}
-func (t *TrajectoryBezier) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__TrajectoryBezier
-	return (unsafe.Pointer)(C.px4_msgs__msg__TrajectoryBezier__create())
-}
-func (t *TrajectoryBezier) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__TrajectoryBezier__destroy((*C.px4_msgs__msg__TrajectoryBezier)(pointer_to_free))
-}
-func (t *TrajectoryBezier) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__TrajectoryBezier)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	cSlice_position := mem.position[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_position)), t.Position[:])
-	mem.yaw = C.float(t.Yaw)
-	mem.delta = C.float(t.Delta)
-	return unsafe.Pointer(mem)
-}
-func (t *TrajectoryBezier) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__TrajectoryBezier)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	cSlice_position := mem.position[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Position[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_position)))
-	t.Yaw = float32(mem.yaw)
-	t.Delta = float32(mem.delta)
-}
-func (t *TrajectoryBezier) Clone() ros2types.ROS2Msg {
+func (t *TrajectoryBezier) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *TrajectoryBezier) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TrajectoryBezierTypeSupport types.MessageTypeSupport = _TrajectoryBezierTypeSupport{}
+
+type _TrajectoryBezierTypeSupport struct{}
+
+func (t _TrajectoryBezierTypeSupport) New() types.Message {
+	return NewTrajectoryBezier()
+}
+
+func (t _TrajectoryBezierTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__TrajectoryBezier
+	return (unsafe.Pointer)(C.px4_msgs__msg__TrajectoryBezier__create())
+}
+
+func (t _TrajectoryBezierTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__TrajectoryBezier__destroy((*C.px4_msgs__msg__TrajectoryBezier)(pointer_to_free))
+}
+
+func (t _TrajectoryBezierTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*TrajectoryBezier)
+	mem := (*C.px4_msgs__msg__TrajectoryBezier)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	cSlice_position := mem.position[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_position)), m.Position[:])
+	mem.yaw = C.float(m.Yaw)
+	mem.delta = C.float(m.Delta)
+}
+
+func (t _TrajectoryBezierTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*TrajectoryBezier)
+	mem := (*C.px4_msgs__msg__TrajectoryBezier)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	cSlice_position := mem.position[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Position[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_position)))
+	m.Yaw = float32(mem.yaw)
+	m.Delta = float32(mem.delta)
+}
+
+func (t _TrajectoryBezierTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__TrajectoryBezier())
 }
 
 type CTrajectoryBezier = C.px4_msgs__msg__TrajectoryBezier
@@ -101,8 +115,7 @@ func TrajectoryBezier__Sequence_to_Go(goSlice *[]TrajectoryBezier, cSlice CTraje
 		cIdx := (*C.px4_msgs__msg__TrajectoryBezier__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__TrajectoryBezier * uintptr(i)),
 		))
-		(*goSlice)[i] = TrajectoryBezier{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TrajectoryBezierTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func TrajectoryBezier__Sequence_to_C(cSlice *CTrajectoryBezier__Sequence, goSlice []TrajectoryBezier) {
@@ -117,18 +130,16 @@ func TrajectoryBezier__Sequence_to_C(cSlice *CTrajectoryBezier__Sequence, goSlic
 		cIdx := (*C.px4_msgs__msg__TrajectoryBezier)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__TrajectoryBezier * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__TrajectoryBezier)(v.AsCStruct())
+		TrajectoryBezierTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func TrajectoryBezier__Array_to_Go(goSlice []TrajectoryBezier, cSlice []CTrajectoryBezier) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TrajectoryBezierTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func TrajectoryBezier__Array_to_C(cSlice []CTrajectoryBezier, goSlice []TrajectoryBezier) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__TrajectoryBezier)(goSlice[i].AsCStruct())
+		TrajectoryBezierTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

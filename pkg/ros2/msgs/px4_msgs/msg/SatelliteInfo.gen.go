@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/SatelliteInfo", &SatelliteInfo{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/SatelliteInfo", SatelliteInfoTypeSupport)
 }
 const (
 	SatelliteInfo_SAT_INFO_MAX_SATELLITES uint8 = 20
@@ -56,62 +56,76 @@ type SatelliteInfo struct {
 // NewSatelliteInfo creates a new SatelliteInfo with default values.
 func NewSatelliteInfo() *SatelliteInfo {
 	self := SatelliteInfo{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SatelliteInfo) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *SatelliteInfo) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__SatelliteInfo())
-}
-func (t *SatelliteInfo) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__SatelliteInfo
-	return (unsafe.Pointer)(C.px4_msgs__msg__SatelliteInfo__create())
-}
-func (t *SatelliteInfo) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__SatelliteInfo__destroy((*C.px4_msgs__msg__SatelliteInfo)(pointer_to_free))
-}
-func (t *SatelliteInfo) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__SatelliteInfo)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.count = C.uint8_t(t.Count)
-	cSlice_svid := mem.svid[:]
-	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_svid)), t.Svid[:])
-	cSlice_used := mem.used[:]
-	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_used)), t.Used[:])
-	cSlice_elevation := mem.elevation[:]
-	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_elevation)), t.Elevation[:])
-	cSlice_azimuth := mem.azimuth[:]
-	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_azimuth)), t.Azimuth[:])
-	cSlice_snr := mem.snr[:]
-	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_snr)), t.Snr[:])
-	cSlice_prn := mem.prn[:]
-	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_prn)), t.Prn[:])
-	return unsafe.Pointer(mem)
-}
-func (t *SatelliteInfo) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__SatelliteInfo)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Count = uint8(mem.count)
-	cSlice_svid := mem.svid[:]
-	rosidl_runtime_c.Uint8__Array_to_Go(t.Svid[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_svid)))
-	cSlice_used := mem.used[:]
-	rosidl_runtime_c.Uint8__Array_to_Go(t.Used[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_used)))
-	cSlice_elevation := mem.elevation[:]
-	rosidl_runtime_c.Uint8__Array_to_Go(t.Elevation[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_elevation)))
-	cSlice_azimuth := mem.azimuth[:]
-	rosidl_runtime_c.Uint8__Array_to_Go(t.Azimuth[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_azimuth)))
-	cSlice_snr := mem.snr[:]
-	rosidl_runtime_c.Uint8__Array_to_Go(t.Snr[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_snr)))
-	cSlice_prn := mem.prn[:]
-	rosidl_runtime_c.Uint8__Array_to_Go(t.Prn[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_prn)))
-}
-func (t *SatelliteInfo) Clone() ros2types.ROS2Msg {
+func (t *SatelliteInfo) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SatelliteInfo) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SatelliteInfoTypeSupport types.MessageTypeSupport = _SatelliteInfoTypeSupport{}
+
+type _SatelliteInfoTypeSupport struct{}
+
+func (t _SatelliteInfoTypeSupport) New() types.Message {
+	return NewSatelliteInfo()
+}
+
+func (t _SatelliteInfoTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__SatelliteInfo
+	return (unsafe.Pointer)(C.px4_msgs__msg__SatelliteInfo__create())
+}
+
+func (t _SatelliteInfoTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__SatelliteInfo__destroy((*C.px4_msgs__msg__SatelliteInfo)(pointer_to_free))
+}
+
+func (t _SatelliteInfoTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*SatelliteInfo)
+	mem := (*C.px4_msgs__msg__SatelliteInfo)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.count = C.uint8_t(m.Count)
+	cSlice_svid := mem.svid[:]
+	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_svid)), m.Svid[:])
+	cSlice_used := mem.used[:]
+	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_used)), m.Used[:])
+	cSlice_elevation := mem.elevation[:]
+	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_elevation)), m.Elevation[:])
+	cSlice_azimuth := mem.azimuth[:]
+	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_azimuth)), m.Azimuth[:])
+	cSlice_snr := mem.snr[:]
+	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_snr)), m.Snr[:])
+	cSlice_prn := mem.prn[:]
+	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_prn)), m.Prn[:])
+}
+
+func (t _SatelliteInfoTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*SatelliteInfo)
+	mem := (*C.px4_msgs__msg__SatelliteInfo)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Count = uint8(mem.count)
+	cSlice_svid := mem.svid[:]
+	rosidl_runtime_c.Uint8__Array_to_Go(m.Svid[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_svid)))
+	cSlice_used := mem.used[:]
+	rosidl_runtime_c.Uint8__Array_to_Go(m.Used[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_used)))
+	cSlice_elevation := mem.elevation[:]
+	rosidl_runtime_c.Uint8__Array_to_Go(m.Elevation[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_elevation)))
+	cSlice_azimuth := mem.azimuth[:]
+	rosidl_runtime_c.Uint8__Array_to_Go(m.Azimuth[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_azimuth)))
+	cSlice_snr := mem.snr[:]
+	rosidl_runtime_c.Uint8__Array_to_Go(m.Snr[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_snr)))
+	cSlice_prn := mem.prn[:]
+	rosidl_runtime_c.Uint8__Array_to_Go(m.Prn[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_prn)))
+}
+
+func (t _SatelliteInfoTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__SatelliteInfo())
 }
 
 type CSatelliteInfo = C.px4_msgs__msg__SatelliteInfo
@@ -126,8 +140,7 @@ func SatelliteInfo__Sequence_to_Go(goSlice *[]SatelliteInfo, cSlice CSatelliteIn
 		cIdx := (*C.px4_msgs__msg__SatelliteInfo__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__SatelliteInfo * uintptr(i)),
 		))
-		(*goSlice)[i] = SatelliteInfo{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SatelliteInfoTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SatelliteInfo__Sequence_to_C(cSlice *CSatelliteInfo__Sequence, goSlice []SatelliteInfo) {
@@ -142,18 +155,16 @@ func SatelliteInfo__Sequence_to_C(cSlice *CSatelliteInfo__Sequence, goSlice []Sa
 		cIdx := (*C.px4_msgs__msg__SatelliteInfo)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__SatelliteInfo * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__SatelliteInfo)(v.AsCStruct())
+		SatelliteInfoTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SatelliteInfo__Array_to_Go(goSlice []SatelliteInfo, cSlice []CSatelliteInfo) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SatelliteInfoTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SatelliteInfo__Array_to_C(cSlice []CSatelliteInfo, goSlice []SatelliteInfo) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__SatelliteInfo)(goSlice[i].AsCStruct())
+		SatelliteInfoTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

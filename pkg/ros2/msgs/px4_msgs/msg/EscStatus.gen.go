@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EscStatus", &EscStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EscStatus", EscStatusTypeSupport)
 }
 const (
 	EscStatus_CONNECTED_ESC_MAX uint8 = 8// The number of ESCs supported. Current (Q2/2013) we support 8 ESCs
@@ -60,56 +60,70 @@ type EscStatus struct {
 // NewEscStatus creates a new EscStatus with default values.
 func NewEscStatus() *EscStatus {
 	self := EscStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *EscStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Esc[0].SetDefaults(nil)
-	t.Esc[1].SetDefaults(nil)
-	t.Esc[2].SetDefaults(nil)
-	t.Esc[3].SetDefaults(nil)
-	t.Esc[4].SetDefaults(nil)
-	t.Esc[5].SetDefaults(nil)
-	t.Esc[6].SetDefaults(nil)
-	t.Esc[7].SetDefaults(nil)
-	
-	return t
-}
-
-func (t *EscStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EscStatus())
-}
-func (t *EscStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EscStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__EscStatus__create())
-}
-func (t *EscStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__EscStatus__destroy((*C.px4_msgs__msg__EscStatus)(pointer_to_free))
-}
-func (t *EscStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__EscStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.counter = C.uint16_t(t.Counter)
-	mem.esc_count = C.uint8_t(t.EscCount)
-	mem.esc_connectiontype = C.uint8_t(t.EscConnectiontype)
-	mem.esc_online_flags = C.uint8_t(t.EscOnlineFlags)
-	mem.esc_armed_flags = C.uint8_t(t.EscArmedFlags)
-	EscReport__Array_to_C(mem.esc[:], t.Esc[:])
-	return unsafe.Pointer(mem)
-}
-func (t *EscStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__EscStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Counter = uint16(mem.counter)
-	t.EscCount = uint8(mem.esc_count)
-	t.EscConnectiontype = uint8(mem.esc_connectiontype)
-	t.EscOnlineFlags = uint8(mem.esc_online_flags)
-	t.EscArmedFlags = uint8(mem.esc_armed_flags)
-	EscReport__Array_to_Go(t.Esc[:], mem.esc[:])
-}
-func (t *EscStatus) Clone() ros2types.ROS2Msg {
+func (t *EscStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *EscStatus) SetDefaults() {
+	t.Esc[0].SetDefaults()
+	t.Esc[1].SetDefaults()
+	t.Esc[2].SetDefaults()
+	t.Esc[3].SetDefaults()
+	t.Esc[4].SetDefaults()
+	t.Esc[5].SetDefaults()
+	t.Esc[6].SetDefaults()
+	t.Esc[7].SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var EscStatusTypeSupport types.MessageTypeSupport = _EscStatusTypeSupport{}
+
+type _EscStatusTypeSupport struct{}
+
+func (t _EscStatusTypeSupport) New() types.Message {
+	return NewEscStatus()
+}
+
+func (t _EscStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EscStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__EscStatus__create())
+}
+
+func (t _EscStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__EscStatus__destroy((*C.px4_msgs__msg__EscStatus)(pointer_to_free))
+}
+
+func (t _EscStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*EscStatus)
+	mem := (*C.px4_msgs__msg__EscStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.counter = C.uint16_t(m.Counter)
+	mem.esc_count = C.uint8_t(m.EscCount)
+	mem.esc_connectiontype = C.uint8_t(m.EscConnectiontype)
+	mem.esc_online_flags = C.uint8_t(m.EscOnlineFlags)
+	mem.esc_armed_flags = C.uint8_t(m.EscArmedFlags)
+	EscReport__Array_to_C(mem.esc[:], m.Esc[:])
+}
+
+func (t _EscStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*EscStatus)
+	mem := (*C.px4_msgs__msg__EscStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Counter = uint16(mem.counter)
+	m.EscCount = uint8(mem.esc_count)
+	m.EscConnectiontype = uint8(mem.esc_connectiontype)
+	m.EscOnlineFlags = uint8(mem.esc_online_flags)
+	m.EscArmedFlags = uint8(mem.esc_armed_flags)
+	EscReport__Array_to_Go(m.Esc[:], mem.esc[:])
+}
+
+func (t _EscStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EscStatus())
 }
 
 type CEscStatus = C.px4_msgs__msg__EscStatus
@@ -124,8 +138,7 @@ func EscStatus__Sequence_to_Go(goSlice *[]EscStatus, cSlice CEscStatus__Sequence
 		cIdx := (*C.px4_msgs__msg__EscStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EscStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = EscStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		EscStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func EscStatus__Sequence_to_C(cSlice *CEscStatus__Sequence, goSlice []EscStatus) {
@@ -140,18 +153,16 @@ func EscStatus__Sequence_to_C(cSlice *CEscStatus__Sequence, goSlice []EscStatus)
 		cIdx := (*C.px4_msgs__msg__EscStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EscStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__EscStatus)(v.AsCStruct())
+		EscStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func EscStatus__Array_to_Go(goSlice []EscStatus, cSlice []CEscStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		EscStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func EscStatus__Array_to_C(cSlice []CEscStatus, goSlice []EscStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__EscStatus)(goSlice[i].AsCStruct())
+		EscStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

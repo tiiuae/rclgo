@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EstimatorInnovationVariances", &EstimatorInnovationVariances{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EstimatorInnovationVariances", EstimatorInnovationVariancesTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewEstimatorInnovationVariances
@@ -66,92 +66,106 @@ type EstimatorInnovationVariances struct {
 // NewEstimatorInnovationVariances creates a new EstimatorInnovationVariances with default values.
 func NewEstimatorInnovationVariances() *EstimatorInnovationVariances {
 	self := EstimatorInnovationVariances{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *EstimatorInnovationVariances) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *EstimatorInnovationVariances) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EstimatorInnovationVariances())
-}
-func (t *EstimatorInnovationVariances) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EstimatorInnovationVariances
-	return (unsafe.Pointer)(C.px4_msgs__msg__EstimatorInnovationVariances__create())
-}
-func (t *EstimatorInnovationVariances) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__EstimatorInnovationVariances__destroy((*C.px4_msgs__msg__EstimatorInnovationVariances)(pointer_to_free))
-}
-func (t *EstimatorInnovationVariances) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__EstimatorInnovationVariances)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	cSlice_gps_hvel := mem.gps_hvel[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gps_hvel)), t.GpsHvel[:])
-	mem.gps_vvel = C.float(t.GpsVvel)
-	cSlice_gps_hpos := mem.gps_hpos[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gps_hpos)), t.GpsHpos[:])
-	mem.gps_vpos = C.float(t.GpsVpos)
-	cSlice_ev_hvel := mem.ev_hvel[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_ev_hvel)), t.EvHvel[:])
-	mem.ev_vvel = C.float(t.EvVvel)
-	cSlice_ev_hpos := mem.ev_hpos[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_ev_hpos)), t.EvHpos[:])
-	mem.ev_vpos = C.float(t.EvVpos)
-	mem.rng_vpos = C.float(t.RngVpos)
-	mem.baro_vpos = C.float(t.BaroVpos)
-	cSlice_aux_hvel := mem.aux_hvel[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_aux_hvel)), t.AuxHvel[:])
-	mem.aux_vvel = C.float(t.AuxVvel)
-	cSlice_flow := mem.flow[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_flow)), t.Flow[:])
-	mem.heading = C.float(t.Heading)
-	cSlice_mag_field := mem.mag_field[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_mag_field)), t.MagField[:])
-	cSlice_drag := mem.drag[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_drag)), t.Drag[:])
-	mem.airspeed = C.float(t.Airspeed)
-	mem.beta = C.float(t.Beta)
-	mem.hagl = C.float(t.Hagl)
-	return unsafe.Pointer(mem)
-}
-func (t *EstimatorInnovationVariances) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__EstimatorInnovationVariances)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	cSlice_gps_hvel := mem.gps_hvel[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.GpsHvel[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gps_hvel)))
-	t.GpsVvel = float32(mem.gps_vvel)
-	cSlice_gps_hpos := mem.gps_hpos[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.GpsHpos[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gps_hpos)))
-	t.GpsVpos = float32(mem.gps_vpos)
-	cSlice_ev_hvel := mem.ev_hvel[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.EvHvel[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_ev_hvel)))
-	t.EvVvel = float32(mem.ev_vvel)
-	cSlice_ev_hpos := mem.ev_hpos[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.EvHpos[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_ev_hpos)))
-	t.EvVpos = float32(mem.ev_vpos)
-	t.RngVpos = float32(mem.rng_vpos)
-	t.BaroVpos = float32(mem.baro_vpos)
-	cSlice_aux_hvel := mem.aux_hvel[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.AuxHvel[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_aux_hvel)))
-	t.AuxVvel = float32(mem.aux_vvel)
-	cSlice_flow := mem.flow[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Flow[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_flow)))
-	t.Heading = float32(mem.heading)
-	cSlice_mag_field := mem.mag_field[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.MagField[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_mag_field)))
-	cSlice_drag := mem.drag[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Drag[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_drag)))
-	t.Airspeed = float32(mem.airspeed)
-	t.Beta = float32(mem.beta)
-	t.Hagl = float32(mem.hagl)
-}
-func (t *EstimatorInnovationVariances) Clone() ros2types.ROS2Msg {
+func (t *EstimatorInnovationVariances) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *EstimatorInnovationVariances) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var EstimatorInnovationVariancesTypeSupport types.MessageTypeSupport = _EstimatorInnovationVariancesTypeSupport{}
+
+type _EstimatorInnovationVariancesTypeSupport struct{}
+
+func (t _EstimatorInnovationVariancesTypeSupport) New() types.Message {
+	return NewEstimatorInnovationVariances()
+}
+
+func (t _EstimatorInnovationVariancesTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EstimatorInnovationVariances
+	return (unsafe.Pointer)(C.px4_msgs__msg__EstimatorInnovationVariances__create())
+}
+
+func (t _EstimatorInnovationVariancesTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__EstimatorInnovationVariances__destroy((*C.px4_msgs__msg__EstimatorInnovationVariances)(pointer_to_free))
+}
+
+func (t _EstimatorInnovationVariancesTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*EstimatorInnovationVariances)
+	mem := (*C.px4_msgs__msg__EstimatorInnovationVariances)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	cSlice_gps_hvel := mem.gps_hvel[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gps_hvel)), m.GpsHvel[:])
+	mem.gps_vvel = C.float(m.GpsVvel)
+	cSlice_gps_hpos := mem.gps_hpos[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gps_hpos)), m.GpsHpos[:])
+	mem.gps_vpos = C.float(m.GpsVpos)
+	cSlice_ev_hvel := mem.ev_hvel[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_ev_hvel)), m.EvHvel[:])
+	mem.ev_vvel = C.float(m.EvVvel)
+	cSlice_ev_hpos := mem.ev_hpos[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_ev_hpos)), m.EvHpos[:])
+	mem.ev_vpos = C.float(m.EvVpos)
+	mem.rng_vpos = C.float(m.RngVpos)
+	mem.baro_vpos = C.float(m.BaroVpos)
+	cSlice_aux_hvel := mem.aux_hvel[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_aux_hvel)), m.AuxHvel[:])
+	mem.aux_vvel = C.float(m.AuxVvel)
+	cSlice_flow := mem.flow[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_flow)), m.Flow[:])
+	mem.heading = C.float(m.Heading)
+	cSlice_mag_field := mem.mag_field[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_mag_field)), m.MagField[:])
+	cSlice_drag := mem.drag[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_drag)), m.Drag[:])
+	mem.airspeed = C.float(m.Airspeed)
+	mem.beta = C.float(m.Beta)
+	mem.hagl = C.float(m.Hagl)
+}
+
+func (t _EstimatorInnovationVariancesTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*EstimatorInnovationVariances)
+	mem := (*C.px4_msgs__msg__EstimatorInnovationVariances)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	cSlice_gps_hvel := mem.gps_hvel[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.GpsHvel[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gps_hvel)))
+	m.GpsVvel = float32(mem.gps_vvel)
+	cSlice_gps_hpos := mem.gps_hpos[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.GpsHpos[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_gps_hpos)))
+	m.GpsVpos = float32(mem.gps_vpos)
+	cSlice_ev_hvel := mem.ev_hvel[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.EvHvel[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_ev_hvel)))
+	m.EvVvel = float32(mem.ev_vvel)
+	cSlice_ev_hpos := mem.ev_hpos[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.EvHpos[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_ev_hpos)))
+	m.EvVpos = float32(mem.ev_vpos)
+	m.RngVpos = float32(mem.rng_vpos)
+	m.BaroVpos = float32(mem.baro_vpos)
+	cSlice_aux_hvel := mem.aux_hvel[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.AuxHvel[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_aux_hvel)))
+	m.AuxVvel = float32(mem.aux_vvel)
+	cSlice_flow := mem.flow[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Flow[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_flow)))
+	m.Heading = float32(mem.heading)
+	cSlice_mag_field := mem.mag_field[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.MagField[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_mag_field)))
+	cSlice_drag := mem.drag[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Drag[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_drag)))
+	m.Airspeed = float32(mem.airspeed)
+	m.Beta = float32(mem.beta)
+	m.Hagl = float32(mem.hagl)
+}
+
+func (t _EstimatorInnovationVariancesTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EstimatorInnovationVariances())
 }
 
 type CEstimatorInnovationVariances = C.px4_msgs__msg__EstimatorInnovationVariances
@@ -166,8 +180,7 @@ func EstimatorInnovationVariances__Sequence_to_Go(goSlice *[]EstimatorInnovation
 		cIdx := (*C.px4_msgs__msg__EstimatorInnovationVariances__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EstimatorInnovationVariances * uintptr(i)),
 		))
-		(*goSlice)[i] = EstimatorInnovationVariances{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		EstimatorInnovationVariancesTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func EstimatorInnovationVariances__Sequence_to_C(cSlice *CEstimatorInnovationVariances__Sequence, goSlice []EstimatorInnovationVariances) {
@@ -182,18 +195,16 @@ func EstimatorInnovationVariances__Sequence_to_C(cSlice *CEstimatorInnovationVar
 		cIdx := (*C.px4_msgs__msg__EstimatorInnovationVariances)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EstimatorInnovationVariances * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__EstimatorInnovationVariances)(v.AsCStruct())
+		EstimatorInnovationVariancesTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func EstimatorInnovationVariances__Array_to_Go(goSlice []EstimatorInnovationVariances, cSlice []CEstimatorInnovationVariances) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		EstimatorInnovationVariancesTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func EstimatorInnovationVariances__Array_to_C(cSlice []CEstimatorInnovationVariances, goSlice []EstimatorInnovationVariances) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__EstimatorInnovationVariances)(goSlice[i].AsCStruct())
+		EstimatorInnovationVariancesTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

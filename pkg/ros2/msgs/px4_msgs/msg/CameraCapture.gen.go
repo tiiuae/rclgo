@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/CameraCapture", &CameraCapture{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/CameraCapture", CameraCaptureTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewCameraCapture
@@ -54,54 +54,68 @@ type CameraCapture struct {
 // NewCameraCapture creates a new CameraCapture with default values.
 func NewCameraCapture() *CameraCapture {
 	self := CameraCapture{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *CameraCapture) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *CameraCapture) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__CameraCapture())
-}
-func (t *CameraCapture) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__CameraCapture
-	return (unsafe.Pointer)(C.px4_msgs__msg__CameraCapture__create())
-}
-func (t *CameraCapture) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__CameraCapture__destroy((*C.px4_msgs__msg__CameraCapture)(pointer_to_free))
-}
-func (t *CameraCapture) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__CameraCapture)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_utc = C.uint64_t(t.TimestampUtc)
-	mem.seq = C.uint32_t(t.Seq)
-	mem.lat = C.double(t.Lat)
-	mem.lon = C.double(t.Lon)
-	mem.alt = C.float(t.Alt)
-	mem.ground_distance = C.float(t.GroundDistance)
-	cSlice_q := mem.q[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)), t.Q[:])
-	mem.result = C.int8_t(t.Result)
-	return unsafe.Pointer(mem)
-}
-func (t *CameraCapture) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__CameraCapture)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampUtc = uint64(mem.timestamp_utc)
-	t.Seq = uint32(mem.seq)
-	t.Lat = float64(mem.lat)
-	t.Lon = float64(mem.lon)
-	t.Alt = float32(mem.alt)
-	t.GroundDistance = float32(mem.ground_distance)
-	cSlice_q := mem.q[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Q[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)))
-	t.Result = int8(mem.result)
-}
-func (t *CameraCapture) Clone() ros2types.ROS2Msg {
+func (t *CameraCapture) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *CameraCapture) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var CameraCaptureTypeSupport types.MessageTypeSupport = _CameraCaptureTypeSupport{}
+
+type _CameraCaptureTypeSupport struct{}
+
+func (t _CameraCaptureTypeSupport) New() types.Message {
+	return NewCameraCapture()
+}
+
+func (t _CameraCaptureTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__CameraCapture
+	return (unsafe.Pointer)(C.px4_msgs__msg__CameraCapture__create())
+}
+
+func (t _CameraCaptureTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__CameraCapture__destroy((*C.px4_msgs__msg__CameraCapture)(pointer_to_free))
+}
+
+func (t _CameraCaptureTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*CameraCapture)
+	mem := (*C.px4_msgs__msg__CameraCapture)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_utc = C.uint64_t(m.TimestampUtc)
+	mem.seq = C.uint32_t(m.Seq)
+	mem.lat = C.double(m.Lat)
+	mem.lon = C.double(m.Lon)
+	mem.alt = C.float(m.Alt)
+	mem.ground_distance = C.float(m.GroundDistance)
+	cSlice_q := mem.q[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)), m.Q[:])
+	mem.result = C.int8_t(m.Result)
+}
+
+func (t _CameraCaptureTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*CameraCapture)
+	mem := (*C.px4_msgs__msg__CameraCapture)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampUtc = uint64(mem.timestamp_utc)
+	m.Seq = uint32(mem.seq)
+	m.Lat = float64(mem.lat)
+	m.Lon = float64(mem.lon)
+	m.Alt = float32(mem.alt)
+	m.GroundDistance = float32(mem.ground_distance)
+	cSlice_q := mem.q[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Q[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)))
+	m.Result = int8(mem.result)
+}
+
+func (t _CameraCaptureTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__CameraCapture())
 }
 
 type CCameraCapture = C.px4_msgs__msg__CameraCapture
@@ -116,8 +130,7 @@ func CameraCapture__Sequence_to_Go(goSlice *[]CameraCapture, cSlice CCameraCaptu
 		cIdx := (*C.px4_msgs__msg__CameraCapture__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__CameraCapture * uintptr(i)),
 		))
-		(*goSlice)[i] = CameraCapture{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		CameraCaptureTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func CameraCapture__Sequence_to_C(cSlice *CCameraCapture__Sequence, goSlice []CameraCapture) {
@@ -132,18 +145,16 @@ func CameraCapture__Sequence_to_C(cSlice *CCameraCapture__Sequence, goSlice []Ca
 		cIdx := (*C.px4_msgs__msg__CameraCapture)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__CameraCapture * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__CameraCapture)(v.AsCStruct())
+		CameraCaptureTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func CameraCapture__Array_to_Go(goSlice []CameraCapture, cSlice []CCameraCapture) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		CameraCaptureTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func CameraCapture__Array_to_C(cSlice []CCameraCapture, goSlice []CameraCapture) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__CameraCapture)(goSlice[i].AsCStruct())
+		CameraCaptureTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

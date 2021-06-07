@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/TimesyncStatus", &TimesyncStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/TimesyncStatus", TimesyncStatusTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTimesyncStatus
@@ -49,44 +49,58 @@ type TimesyncStatus struct {
 // NewTimesyncStatus creates a new TimesyncStatus with default values.
 func NewTimesyncStatus() *TimesyncStatus {
 	self := TimesyncStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *TimesyncStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *TimesyncStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__TimesyncStatus())
-}
-func (t *TimesyncStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__TimesyncStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__TimesyncStatus__create())
-}
-func (t *TimesyncStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__TimesyncStatus__destroy((*C.px4_msgs__msg__TimesyncStatus)(pointer_to_free))
-}
-func (t *TimesyncStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__TimesyncStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.remote_timestamp = C.uint64_t(t.RemoteTimestamp)
-	mem.observed_offset = C.int64_t(t.ObservedOffset)
-	mem.estimated_offset = C.int64_t(t.EstimatedOffset)
-	mem.round_trip_time = C.uint32_t(t.RoundTripTime)
-	return unsafe.Pointer(mem)
-}
-func (t *TimesyncStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__TimesyncStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.RemoteTimestamp = uint64(mem.remote_timestamp)
-	t.ObservedOffset = int64(mem.observed_offset)
-	t.EstimatedOffset = int64(mem.estimated_offset)
-	t.RoundTripTime = uint32(mem.round_trip_time)
-}
-func (t *TimesyncStatus) Clone() ros2types.ROS2Msg {
+func (t *TimesyncStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *TimesyncStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TimesyncStatusTypeSupport types.MessageTypeSupport = _TimesyncStatusTypeSupport{}
+
+type _TimesyncStatusTypeSupport struct{}
+
+func (t _TimesyncStatusTypeSupport) New() types.Message {
+	return NewTimesyncStatus()
+}
+
+func (t _TimesyncStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__TimesyncStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__TimesyncStatus__create())
+}
+
+func (t _TimesyncStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__TimesyncStatus__destroy((*C.px4_msgs__msg__TimesyncStatus)(pointer_to_free))
+}
+
+func (t _TimesyncStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*TimesyncStatus)
+	mem := (*C.px4_msgs__msg__TimesyncStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.remote_timestamp = C.uint64_t(m.RemoteTimestamp)
+	mem.observed_offset = C.int64_t(m.ObservedOffset)
+	mem.estimated_offset = C.int64_t(m.EstimatedOffset)
+	mem.round_trip_time = C.uint32_t(m.RoundTripTime)
+}
+
+func (t _TimesyncStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*TimesyncStatus)
+	mem := (*C.px4_msgs__msg__TimesyncStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.RemoteTimestamp = uint64(mem.remote_timestamp)
+	m.ObservedOffset = int64(mem.observed_offset)
+	m.EstimatedOffset = int64(mem.estimated_offset)
+	m.RoundTripTime = uint32(mem.round_trip_time)
+}
+
+func (t _TimesyncStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__TimesyncStatus())
 }
 
 type CTimesyncStatus = C.px4_msgs__msg__TimesyncStatus
@@ -101,8 +115,7 @@ func TimesyncStatus__Sequence_to_Go(goSlice *[]TimesyncStatus, cSlice CTimesyncS
 		cIdx := (*C.px4_msgs__msg__TimesyncStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__TimesyncStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = TimesyncStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TimesyncStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func TimesyncStatus__Sequence_to_C(cSlice *CTimesyncStatus__Sequence, goSlice []TimesyncStatus) {
@@ -117,18 +130,16 @@ func TimesyncStatus__Sequence_to_C(cSlice *CTimesyncStatus__Sequence, goSlice []
 		cIdx := (*C.px4_msgs__msg__TimesyncStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__TimesyncStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__TimesyncStatus)(v.AsCStruct())
+		TimesyncStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func TimesyncStatus__Array_to_Go(goSlice []TimesyncStatus, cSlice []CTimesyncStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TimesyncStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func TimesyncStatus__Array_to_C(cSlice []CTimesyncStatus, goSlice []TimesyncStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__TimesyncStatus)(goSlice[i].AsCStruct())
+		TimesyncStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package pendulum_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	builtin_interfaces_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/builtin_interfaces/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("pendulum_msgs/RttestResults", &RttestResults{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("pendulum_msgs/RttestResults", RttestResultsTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewRttestResults
@@ -55,55 +55,69 @@ type RttestResults struct {
 // NewRttestResults creates a new RttestResults with default values.
 func NewRttestResults() *RttestResults {
 	self := RttestResults{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *RttestResults) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Stamp.SetDefaults(nil)
-	t.Command.SetDefaults(nil)
-	t.State.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *RttestResults) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__pendulum_msgs__msg__RttestResults())
-}
-func (t *RttestResults) PrepareMemory() unsafe.Pointer { //returns *C.pendulum_msgs__msg__RttestResults
-	return (unsafe.Pointer)(C.pendulum_msgs__msg__RttestResults__create())
-}
-func (t *RttestResults) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.pendulum_msgs__msg__RttestResults__destroy((*C.pendulum_msgs__msg__RttestResults)(pointer_to_free))
-}
-func (t *RttestResults) AsCStruct() unsafe.Pointer {
-	mem := (*C.pendulum_msgs__msg__RttestResults)(t.PrepareMemory())
-	mem.stamp = *(*C.builtin_interfaces__msg__Time)(t.Stamp.AsCStruct())
-	mem.command = *(*C.pendulum_msgs__msg__JointCommand)(t.Command.AsCStruct())
-	mem.state = *(*C.pendulum_msgs__msg__JointState)(t.State.AsCStruct())
-	mem.cur_latency = C.uint64_t(t.CurLatency)
-	mem.mean_latency = C.double(t.MeanLatency)
-	mem.min_latency = C.uint64_t(t.MinLatency)
-	mem.max_latency = C.uint64_t(t.MaxLatency)
-	mem.minor_pagefaults = C.uint64_t(t.MinorPagefaults)
-	mem.major_pagefaults = C.uint64_t(t.MajorPagefaults)
-	return unsafe.Pointer(mem)
-}
-func (t *RttestResults) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.pendulum_msgs__msg__RttestResults)(ros2_message_buffer)
-	t.Stamp.AsGoStruct(unsafe.Pointer(&mem.stamp))
-	t.Command.AsGoStruct(unsafe.Pointer(&mem.command))
-	t.State.AsGoStruct(unsafe.Pointer(&mem.state))
-	t.CurLatency = uint64(mem.cur_latency)
-	t.MeanLatency = float64(mem.mean_latency)
-	t.MinLatency = uint64(mem.min_latency)
-	t.MaxLatency = uint64(mem.max_latency)
-	t.MinorPagefaults = uint64(mem.minor_pagefaults)
-	t.MajorPagefaults = uint64(mem.major_pagefaults)
-}
-func (t *RttestResults) Clone() ros2types.ROS2Msg {
+func (t *RttestResults) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *RttestResults) SetDefaults() {
+	t.Stamp.SetDefaults()
+	t.Command.SetDefaults()
+	t.State.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var RttestResultsTypeSupport types.MessageTypeSupport = _RttestResultsTypeSupport{}
+
+type _RttestResultsTypeSupport struct{}
+
+func (t _RttestResultsTypeSupport) New() types.Message {
+	return NewRttestResults()
+}
+
+func (t _RttestResultsTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.pendulum_msgs__msg__RttestResults
+	return (unsafe.Pointer)(C.pendulum_msgs__msg__RttestResults__create())
+}
+
+func (t _RttestResultsTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.pendulum_msgs__msg__RttestResults__destroy((*C.pendulum_msgs__msg__RttestResults)(pointer_to_free))
+}
+
+func (t _RttestResultsTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*RttestResults)
+	mem := (*C.pendulum_msgs__msg__RttestResults)(dst)
+	builtin_interfaces_msg.TimeTypeSupport.AsCStruct(unsafe.Pointer(&mem.stamp), &m.Stamp)
+	JointCommandTypeSupport.AsCStruct(unsafe.Pointer(&mem.command), &m.Command)
+	JointStateTypeSupport.AsCStruct(unsafe.Pointer(&mem.state), &m.State)
+	mem.cur_latency = C.uint64_t(m.CurLatency)
+	mem.mean_latency = C.double(m.MeanLatency)
+	mem.min_latency = C.uint64_t(m.MinLatency)
+	mem.max_latency = C.uint64_t(m.MaxLatency)
+	mem.minor_pagefaults = C.uint64_t(m.MinorPagefaults)
+	mem.major_pagefaults = C.uint64_t(m.MajorPagefaults)
+}
+
+func (t _RttestResultsTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*RttestResults)
+	mem := (*C.pendulum_msgs__msg__RttestResults)(ros2_message_buffer)
+	builtin_interfaces_msg.TimeTypeSupport.AsGoStruct(&m.Stamp, unsafe.Pointer(&mem.stamp))
+	JointCommandTypeSupport.AsGoStruct(&m.Command, unsafe.Pointer(&mem.command))
+	JointStateTypeSupport.AsGoStruct(&m.State, unsafe.Pointer(&mem.state))
+	m.CurLatency = uint64(mem.cur_latency)
+	m.MeanLatency = float64(mem.mean_latency)
+	m.MinLatency = uint64(mem.min_latency)
+	m.MaxLatency = uint64(mem.max_latency)
+	m.MinorPagefaults = uint64(mem.minor_pagefaults)
+	m.MajorPagefaults = uint64(mem.major_pagefaults)
+}
+
+func (t _RttestResultsTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__pendulum_msgs__msg__RttestResults())
 }
 
 type CRttestResults = C.pendulum_msgs__msg__RttestResults
@@ -118,8 +132,7 @@ func RttestResults__Sequence_to_Go(goSlice *[]RttestResults, cSlice CRttestResul
 		cIdx := (*C.pendulum_msgs__msg__RttestResults__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_pendulum_msgs__msg__RttestResults * uintptr(i)),
 		))
-		(*goSlice)[i] = RttestResults{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		RttestResultsTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func RttestResults__Sequence_to_C(cSlice *CRttestResults__Sequence, goSlice []RttestResults) {
@@ -134,18 +147,16 @@ func RttestResults__Sequence_to_C(cSlice *CRttestResults__Sequence, goSlice []Rt
 		cIdx := (*C.pendulum_msgs__msg__RttestResults)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_pendulum_msgs__msg__RttestResults * uintptr(i)),
 		))
-		*cIdx = *(*C.pendulum_msgs__msg__RttestResults)(v.AsCStruct())
+		RttestResultsTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func RttestResults__Array_to_Go(goSlice []RttestResults, cSlice []CRttestResults) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		RttestResultsTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func RttestResults__Array_to_C(cSlice []CRttestResults, goSlice []RttestResults) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.pendulum_msgs__msg__RttestResults)(goSlice[i].AsCStruct())
+		RttestResultsTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

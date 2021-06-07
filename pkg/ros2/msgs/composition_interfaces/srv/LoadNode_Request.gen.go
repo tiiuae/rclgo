@@ -15,7 +15,7 @@ package composition_interfaces_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rcl_interfaces_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/rcl_interfaces/msg"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
@@ -36,18 +36,18 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("composition_interfaces/LoadNode_Request", &LoadNode_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("composition_interfaces/LoadNode_Request", LoadNode_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewLoadNode_Request
 // function instead.
 type LoadNode_Request struct {
-	PackageName rosidl_runtime_c.String `yaml:"package_name"`// The ROS package in which the composable node can be found.
-	PluginName rosidl_runtime_c.String `yaml:"plugin_name"`// A plugin within the ROS package "package_name".
-	NodeName rosidl_runtime_c.String `yaml:"node_name"`// The assigned name of the composable node. Leave empty to use the node'sdefault name.
-	NodeNamespace rosidl_runtime_c.String `yaml:"node_namespace"`// The assigned namespace of the composable node. Leave empty to use the node'sdefault namespace.
+	PackageName string `yaml:"package_name"`// The ROS package in which the composable node can be found.
+	PluginName string `yaml:"plugin_name"`// A plugin within the ROS package "package_name".
+	NodeName string `yaml:"node_name"`// The assigned name of the composable node. Leave empty to use the node'sdefault name.
+	NodeNamespace string `yaml:"node_namespace"`// The assigned namespace of the composable node. Leave empty to use the node'sdefault namespace.
 	LogLevel uint8 `yaml:"log_level"`// The assigned log level of the composable node. Enum values are found inmessage rcl_interfaces/Log.
-	RemapRules []rosidl_runtime_c.String `yaml:"remap_rules"`// Remapping rules for this composable node.For more info about static_remapping rules and their syntax, seehttps://design.ros2.org/articles/static_remapping.htmlTODO(sloretz) rcl_interfaces message for remap rules?
+	RemapRules []string `yaml:"remap_rules"`// Remapping rules for this composable node.For more info about static_remapping rules and their syntax, seehttps://design.ros2.org/articles/static_remapping.htmlTODO(sloretz) rcl_interfaces message for remap rules?
 	Parameters []rcl_interfaces_msg.Parameter `yaml:"parameters"`// The Parameters of this composable node to set.
 	ExtraArguments []rcl_interfaces_msg.Parameter `yaml:"extra_arguments"`// key/value arguments that are specific to a type of container process.
 }
@@ -55,54 +55,64 @@ type LoadNode_Request struct {
 // NewLoadNode_Request creates a new LoadNode_Request with default values.
 func NewLoadNode_Request() *LoadNode_Request {
 	self := LoadNode_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *LoadNode_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.PackageName.SetDefaults("")
-	t.PluginName.SetDefaults("")
-	t.NodeName.SetDefaults("")
-	t.NodeNamespace.SetDefaults("")
-	
-	return t
-}
-
-func (t *LoadNode_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__composition_interfaces__srv__LoadNode_Request())
-}
-func (t *LoadNode_Request) PrepareMemory() unsafe.Pointer { //returns *C.composition_interfaces__srv__LoadNode_Request
-	return (unsafe.Pointer)(C.composition_interfaces__srv__LoadNode_Request__create())
-}
-func (t *LoadNode_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.composition_interfaces__srv__LoadNode_Request__destroy((*C.composition_interfaces__srv__LoadNode_Request)(pointer_to_free))
-}
-func (t *LoadNode_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.composition_interfaces__srv__LoadNode_Request)(t.PrepareMemory())
-	mem.package_name = *(*C.rosidl_runtime_c__String)(t.PackageName.AsCStruct())
-	mem.plugin_name = *(*C.rosidl_runtime_c__String)(t.PluginName.AsCStruct())
-	mem.node_name = *(*C.rosidl_runtime_c__String)(t.NodeName.AsCStruct())
-	mem.node_namespace = *(*C.rosidl_runtime_c__String)(t.NodeNamespace.AsCStruct())
-	mem.log_level = C.uint8_t(t.LogLevel)
-	rosidl_runtime_c.String__Sequence_to_C((*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.remap_rules)), t.RemapRules)
-	rcl_interfaces_msg.Parameter__Sequence_to_C((*rcl_interfaces_msg.CParameter__Sequence)(unsafe.Pointer(&mem.parameters)), t.Parameters)
-	rcl_interfaces_msg.Parameter__Sequence_to_C((*rcl_interfaces_msg.CParameter__Sequence)(unsafe.Pointer(&mem.extra_arguments)), t.ExtraArguments)
-	return unsafe.Pointer(mem)
-}
-func (t *LoadNode_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.composition_interfaces__srv__LoadNode_Request)(ros2_message_buffer)
-	t.PackageName.AsGoStruct(unsafe.Pointer(&mem.package_name))
-	t.PluginName.AsGoStruct(unsafe.Pointer(&mem.plugin_name))
-	t.NodeName.AsGoStruct(unsafe.Pointer(&mem.node_name))
-	t.NodeNamespace.AsGoStruct(unsafe.Pointer(&mem.node_namespace))
-	t.LogLevel = uint8(mem.log_level)
-	rosidl_runtime_c.String__Sequence_to_Go(&t.RemapRules, *(*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.remap_rules)))
-	rcl_interfaces_msg.Parameter__Sequence_to_Go(&t.Parameters, *(*rcl_interfaces_msg.CParameter__Sequence)(unsafe.Pointer(&mem.parameters)))
-	rcl_interfaces_msg.Parameter__Sequence_to_Go(&t.ExtraArguments, *(*rcl_interfaces_msg.CParameter__Sequence)(unsafe.Pointer(&mem.extra_arguments)))
-}
-func (t *LoadNode_Request) Clone() ros2types.ROS2Msg {
+func (t *LoadNode_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *LoadNode_Request) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var LoadNode_RequestTypeSupport types.MessageTypeSupport = _LoadNode_RequestTypeSupport{}
+
+type _LoadNode_RequestTypeSupport struct{}
+
+func (t _LoadNode_RequestTypeSupport) New() types.Message {
+	return NewLoadNode_Request()
+}
+
+func (t _LoadNode_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.composition_interfaces__srv__LoadNode_Request
+	return (unsafe.Pointer)(C.composition_interfaces__srv__LoadNode_Request__create())
+}
+
+func (t _LoadNode_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.composition_interfaces__srv__LoadNode_Request__destroy((*C.composition_interfaces__srv__LoadNode_Request)(pointer_to_free))
+}
+
+func (t _LoadNode_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*LoadNode_Request)
+	mem := (*C.composition_interfaces__srv__LoadNode_Request)(dst)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.package_name), m.PackageName)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.plugin_name), m.PluginName)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.node_name), m.NodeName)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.node_namespace), m.NodeNamespace)
+	mem.log_level = C.uint8_t(m.LogLevel)
+	rosidl_runtime_c.String__Sequence_to_C((*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.remap_rules)), m.RemapRules)
+	rcl_interfaces_msg.Parameter__Sequence_to_C((*rcl_interfaces_msg.CParameter__Sequence)(unsafe.Pointer(&mem.parameters)), m.Parameters)
+	rcl_interfaces_msg.Parameter__Sequence_to_C((*rcl_interfaces_msg.CParameter__Sequence)(unsafe.Pointer(&mem.extra_arguments)), m.ExtraArguments)
+}
+
+func (t _LoadNode_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*LoadNode_Request)
+	mem := (*C.composition_interfaces__srv__LoadNode_Request)(ros2_message_buffer)
+	rosidl_runtime_c.StringAsGoStruct(&m.PackageName, unsafe.Pointer(&mem.package_name))
+	rosidl_runtime_c.StringAsGoStruct(&m.PluginName, unsafe.Pointer(&mem.plugin_name))
+	rosidl_runtime_c.StringAsGoStruct(&m.NodeName, unsafe.Pointer(&mem.node_name))
+	rosidl_runtime_c.StringAsGoStruct(&m.NodeNamespace, unsafe.Pointer(&mem.node_namespace))
+	m.LogLevel = uint8(mem.log_level)
+	rosidl_runtime_c.String__Sequence_to_Go(&m.RemapRules, *(*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.remap_rules)))
+	rcl_interfaces_msg.Parameter__Sequence_to_Go(&m.Parameters, *(*rcl_interfaces_msg.CParameter__Sequence)(unsafe.Pointer(&mem.parameters)))
+	rcl_interfaces_msg.Parameter__Sequence_to_Go(&m.ExtraArguments, *(*rcl_interfaces_msg.CParameter__Sequence)(unsafe.Pointer(&mem.extra_arguments)))
+}
+
+func (t _LoadNode_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__composition_interfaces__srv__LoadNode_Request())
 }
 
 type CLoadNode_Request = C.composition_interfaces__srv__LoadNode_Request
@@ -117,8 +127,7 @@ func LoadNode_Request__Sequence_to_Go(goSlice *[]LoadNode_Request, cSlice CLoadN
 		cIdx := (*C.composition_interfaces__srv__LoadNode_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_composition_interfaces__srv__LoadNode_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = LoadNode_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		LoadNode_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func LoadNode_Request__Sequence_to_C(cSlice *CLoadNode_Request__Sequence, goSlice []LoadNode_Request) {
@@ -133,18 +142,16 @@ func LoadNode_Request__Sequence_to_C(cSlice *CLoadNode_Request__Sequence, goSlic
 		cIdx := (*C.composition_interfaces__srv__LoadNode_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_composition_interfaces__srv__LoadNode_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.composition_interfaces__srv__LoadNode_Request)(v.AsCStruct())
+		LoadNode_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func LoadNode_Request__Array_to_Go(goSlice []LoadNode_Request, cSlice []CLoadNode_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		LoadNode_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func LoadNode_Request__Array_to_C(cSlice []CLoadNode_Request, goSlice []LoadNode_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.composition_interfaces__srv__LoadNode_Request)(goSlice[i].AsCStruct())
+		LoadNode_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

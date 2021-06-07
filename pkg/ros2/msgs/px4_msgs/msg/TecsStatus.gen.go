@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/TecsStatus", &TecsStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/TecsStatus", TecsStatusTypeSupport)
 }
 const (
 	TecsStatus_TECS_MODE_NORMAL uint8 = 0
@@ -79,86 +79,100 @@ type TecsStatus struct {
 // NewTecsStatus creates a new TecsStatus with default values.
 func NewTecsStatus() *TecsStatus {
 	self := TecsStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *TecsStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *TecsStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__TecsStatus())
-}
-func (t *TecsStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__TecsStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__TecsStatus__create())
-}
-func (t *TecsStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__TecsStatus__destroy((*C.px4_msgs__msg__TecsStatus)(pointer_to_free))
-}
-func (t *TecsStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__TecsStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.altitude_sp = C.float(t.AltitudeSp)
-	mem.altitude_filtered = C.float(t.AltitudeFiltered)
-	mem.height_rate_setpoint = C.float(t.HeightRateSetpoint)
-	mem.height_rate = C.float(t.HeightRate)
-	mem.equivalent_airspeed_sp = C.float(t.EquivalentAirspeedSp)
-	mem.true_airspeed_sp = C.float(t.TrueAirspeedSp)
-	mem.true_airspeed_filtered = C.float(t.TrueAirspeedFiltered)
-	mem.true_airspeed_derivative_sp = C.float(t.TrueAirspeedDerivativeSp)
-	mem.true_airspeed_derivative = C.float(t.TrueAirspeedDerivative)
-	mem.total_energy_error = C.float(t.TotalEnergyError)
-	mem.energy_distribution_error = C.float(t.EnergyDistributionError)
-	mem.total_energy_rate_error = C.float(t.TotalEnergyRateError)
-	mem.energy_distribution_rate_error = C.float(t.EnergyDistributionRateError)
-	mem.total_energy = C.float(t.TotalEnergy)
-	mem.total_energy_rate = C.float(t.TotalEnergyRate)
-	mem.total_energy_balance = C.float(t.TotalEnergyBalance)
-	mem.total_energy_balance_rate = C.float(t.TotalEnergyBalanceRate)
-	mem.total_energy_sp = C.float(t.TotalEnergySp)
-	mem.total_energy_rate_sp = C.float(t.TotalEnergyRateSp)
-	mem.total_energy_balance_sp = C.float(t.TotalEnergyBalanceSp)
-	mem.total_energy_balance_rate_sp = C.float(t.TotalEnergyBalanceRateSp)
-	mem.throttle_integ = C.float(t.ThrottleInteg)
-	mem.pitch_integ = C.float(t.PitchInteg)
-	mem.throttle_sp = C.float(t.ThrottleSp)
-	mem.mode = C.uint8_t(t.Mode)
-	return unsafe.Pointer(mem)
-}
-func (t *TecsStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__TecsStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.AltitudeSp = float32(mem.altitude_sp)
-	t.AltitudeFiltered = float32(mem.altitude_filtered)
-	t.HeightRateSetpoint = float32(mem.height_rate_setpoint)
-	t.HeightRate = float32(mem.height_rate)
-	t.EquivalentAirspeedSp = float32(mem.equivalent_airspeed_sp)
-	t.TrueAirspeedSp = float32(mem.true_airspeed_sp)
-	t.TrueAirspeedFiltered = float32(mem.true_airspeed_filtered)
-	t.TrueAirspeedDerivativeSp = float32(mem.true_airspeed_derivative_sp)
-	t.TrueAirspeedDerivative = float32(mem.true_airspeed_derivative)
-	t.TotalEnergyError = float32(mem.total_energy_error)
-	t.EnergyDistributionError = float32(mem.energy_distribution_error)
-	t.TotalEnergyRateError = float32(mem.total_energy_rate_error)
-	t.EnergyDistributionRateError = float32(mem.energy_distribution_rate_error)
-	t.TotalEnergy = float32(mem.total_energy)
-	t.TotalEnergyRate = float32(mem.total_energy_rate)
-	t.TotalEnergyBalance = float32(mem.total_energy_balance)
-	t.TotalEnergyBalanceRate = float32(mem.total_energy_balance_rate)
-	t.TotalEnergySp = float32(mem.total_energy_sp)
-	t.TotalEnergyRateSp = float32(mem.total_energy_rate_sp)
-	t.TotalEnergyBalanceSp = float32(mem.total_energy_balance_sp)
-	t.TotalEnergyBalanceRateSp = float32(mem.total_energy_balance_rate_sp)
-	t.ThrottleInteg = float32(mem.throttle_integ)
-	t.PitchInteg = float32(mem.pitch_integ)
-	t.ThrottleSp = float32(mem.throttle_sp)
-	t.Mode = uint8(mem.mode)
-}
-func (t *TecsStatus) Clone() ros2types.ROS2Msg {
+func (t *TecsStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *TecsStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TecsStatusTypeSupport types.MessageTypeSupport = _TecsStatusTypeSupport{}
+
+type _TecsStatusTypeSupport struct{}
+
+func (t _TecsStatusTypeSupport) New() types.Message {
+	return NewTecsStatus()
+}
+
+func (t _TecsStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__TecsStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__TecsStatus__create())
+}
+
+func (t _TecsStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__TecsStatus__destroy((*C.px4_msgs__msg__TecsStatus)(pointer_to_free))
+}
+
+func (t _TecsStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*TecsStatus)
+	mem := (*C.px4_msgs__msg__TecsStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.altitude_sp = C.float(m.AltitudeSp)
+	mem.altitude_filtered = C.float(m.AltitudeFiltered)
+	mem.height_rate_setpoint = C.float(m.HeightRateSetpoint)
+	mem.height_rate = C.float(m.HeightRate)
+	mem.equivalent_airspeed_sp = C.float(m.EquivalentAirspeedSp)
+	mem.true_airspeed_sp = C.float(m.TrueAirspeedSp)
+	mem.true_airspeed_filtered = C.float(m.TrueAirspeedFiltered)
+	mem.true_airspeed_derivative_sp = C.float(m.TrueAirspeedDerivativeSp)
+	mem.true_airspeed_derivative = C.float(m.TrueAirspeedDerivative)
+	mem.total_energy_error = C.float(m.TotalEnergyError)
+	mem.energy_distribution_error = C.float(m.EnergyDistributionError)
+	mem.total_energy_rate_error = C.float(m.TotalEnergyRateError)
+	mem.energy_distribution_rate_error = C.float(m.EnergyDistributionRateError)
+	mem.total_energy = C.float(m.TotalEnergy)
+	mem.total_energy_rate = C.float(m.TotalEnergyRate)
+	mem.total_energy_balance = C.float(m.TotalEnergyBalance)
+	mem.total_energy_balance_rate = C.float(m.TotalEnergyBalanceRate)
+	mem.total_energy_sp = C.float(m.TotalEnergySp)
+	mem.total_energy_rate_sp = C.float(m.TotalEnergyRateSp)
+	mem.total_energy_balance_sp = C.float(m.TotalEnergyBalanceSp)
+	mem.total_energy_balance_rate_sp = C.float(m.TotalEnergyBalanceRateSp)
+	mem.throttle_integ = C.float(m.ThrottleInteg)
+	mem.pitch_integ = C.float(m.PitchInteg)
+	mem.throttle_sp = C.float(m.ThrottleSp)
+	mem.mode = C.uint8_t(m.Mode)
+}
+
+func (t _TecsStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*TecsStatus)
+	mem := (*C.px4_msgs__msg__TecsStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.AltitudeSp = float32(mem.altitude_sp)
+	m.AltitudeFiltered = float32(mem.altitude_filtered)
+	m.HeightRateSetpoint = float32(mem.height_rate_setpoint)
+	m.HeightRate = float32(mem.height_rate)
+	m.EquivalentAirspeedSp = float32(mem.equivalent_airspeed_sp)
+	m.TrueAirspeedSp = float32(mem.true_airspeed_sp)
+	m.TrueAirspeedFiltered = float32(mem.true_airspeed_filtered)
+	m.TrueAirspeedDerivativeSp = float32(mem.true_airspeed_derivative_sp)
+	m.TrueAirspeedDerivative = float32(mem.true_airspeed_derivative)
+	m.TotalEnergyError = float32(mem.total_energy_error)
+	m.EnergyDistributionError = float32(mem.energy_distribution_error)
+	m.TotalEnergyRateError = float32(mem.total_energy_rate_error)
+	m.EnergyDistributionRateError = float32(mem.energy_distribution_rate_error)
+	m.TotalEnergy = float32(mem.total_energy)
+	m.TotalEnergyRate = float32(mem.total_energy_rate)
+	m.TotalEnergyBalance = float32(mem.total_energy_balance)
+	m.TotalEnergyBalanceRate = float32(mem.total_energy_balance_rate)
+	m.TotalEnergySp = float32(mem.total_energy_sp)
+	m.TotalEnergyRateSp = float32(mem.total_energy_rate_sp)
+	m.TotalEnergyBalanceSp = float32(mem.total_energy_balance_sp)
+	m.TotalEnergyBalanceRateSp = float32(mem.total_energy_balance_rate_sp)
+	m.ThrottleInteg = float32(mem.throttle_integ)
+	m.PitchInteg = float32(mem.pitch_integ)
+	m.ThrottleSp = float32(mem.throttle_sp)
+	m.Mode = uint8(mem.mode)
+}
+
+func (t _TecsStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__TecsStatus())
 }
 
 type CTecsStatus = C.px4_msgs__msg__TecsStatus
@@ -173,8 +187,7 @@ func TecsStatus__Sequence_to_Go(goSlice *[]TecsStatus, cSlice CTecsStatus__Seque
 		cIdx := (*C.px4_msgs__msg__TecsStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__TecsStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = TecsStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TecsStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func TecsStatus__Sequence_to_C(cSlice *CTecsStatus__Sequence, goSlice []TecsStatus) {
@@ -189,18 +202,16 @@ func TecsStatus__Sequence_to_C(cSlice *CTecsStatus__Sequence, goSlice []TecsStat
 		cIdx := (*C.px4_msgs__msg__TecsStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__TecsStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__TecsStatus)(v.AsCStruct())
+		TecsStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func TecsStatus__Array_to_Go(goSlice []TecsStatus, cSlice []CTecsStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TecsStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func TecsStatus__Array_to_C(cSlice []CTecsStatus, goSlice []TecsStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__TecsStatus)(goSlice[i].AsCStruct())
+		TecsStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

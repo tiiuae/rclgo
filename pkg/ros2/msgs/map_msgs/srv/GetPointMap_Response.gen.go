@@ -15,7 +15,7 @@ package map_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	sensor_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/sensor_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("map_msgs/GetPointMap_Response", &GetPointMap_Response{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("map_msgs/GetPointMap_Response", GetPointMap_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewGetPointMap_Response
@@ -47,37 +47,51 @@ type GetPointMap_Response struct {
 // NewGetPointMap_Response creates a new GetPointMap_Response with default values.
 func NewGetPointMap_Response() *GetPointMap_Response {
 	self := GetPointMap_Response{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *GetPointMap_Response) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Map.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *GetPointMap_Response) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__map_msgs__srv__GetPointMap_Response())
-}
-func (t *GetPointMap_Response) PrepareMemory() unsafe.Pointer { //returns *C.map_msgs__srv__GetPointMap_Response
-	return (unsafe.Pointer)(C.map_msgs__srv__GetPointMap_Response__create())
-}
-func (t *GetPointMap_Response) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.map_msgs__srv__GetPointMap_Response__destroy((*C.map_msgs__srv__GetPointMap_Response)(pointer_to_free))
-}
-func (t *GetPointMap_Response) AsCStruct() unsafe.Pointer {
-	mem := (*C.map_msgs__srv__GetPointMap_Response)(t.PrepareMemory())
-	mem._map = *(*C.sensor_msgs__msg__PointCloud2)(t.Map.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *GetPointMap_Response) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.map_msgs__srv__GetPointMap_Response)(ros2_message_buffer)
-	t.Map.AsGoStruct(unsafe.Pointer(&mem._map))
-}
-func (t *GetPointMap_Response) Clone() ros2types.ROS2Msg {
+func (t *GetPointMap_Response) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *GetPointMap_Response) SetDefaults() {
+	t.Map.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var GetPointMap_ResponseTypeSupport types.MessageTypeSupport = _GetPointMap_ResponseTypeSupport{}
+
+type _GetPointMap_ResponseTypeSupport struct{}
+
+func (t _GetPointMap_ResponseTypeSupport) New() types.Message {
+	return NewGetPointMap_Response()
+}
+
+func (t _GetPointMap_ResponseTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.map_msgs__srv__GetPointMap_Response
+	return (unsafe.Pointer)(C.map_msgs__srv__GetPointMap_Response__create())
+}
+
+func (t _GetPointMap_ResponseTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.map_msgs__srv__GetPointMap_Response__destroy((*C.map_msgs__srv__GetPointMap_Response)(pointer_to_free))
+}
+
+func (t _GetPointMap_ResponseTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*GetPointMap_Response)
+	mem := (*C.map_msgs__srv__GetPointMap_Response)(dst)
+	sensor_msgs_msg.PointCloud2TypeSupport.AsCStruct(unsafe.Pointer(&mem._map), &m.Map)
+}
+
+func (t _GetPointMap_ResponseTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*GetPointMap_Response)
+	mem := (*C.map_msgs__srv__GetPointMap_Response)(ros2_message_buffer)
+	sensor_msgs_msg.PointCloud2TypeSupport.AsGoStruct(&m.Map, unsafe.Pointer(&mem._map))
+}
+
+func (t _GetPointMap_ResponseTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__map_msgs__srv__GetPointMap_Response())
 }
 
 type CGetPointMap_Response = C.map_msgs__srv__GetPointMap_Response
@@ -92,8 +106,7 @@ func GetPointMap_Response__Sequence_to_Go(goSlice *[]GetPointMap_Response, cSlic
 		cIdx := (*C.map_msgs__srv__GetPointMap_Response__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_map_msgs__srv__GetPointMap_Response * uintptr(i)),
 		))
-		(*goSlice)[i] = GetPointMap_Response{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		GetPointMap_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func GetPointMap_Response__Sequence_to_C(cSlice *CGetPointMap_Response__Sequence, goSlice []GetPointMap_Response) {
@@ -108,18 +121,16 @@ func GetPointMap_Response__Sequence_to_C(cSlice *CGetPointMap_Response__Sequence
 		cIdx := (*C.map_msgs__srv__GetPointMap_Response)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_map_msgs__srv__GetPointMap_Response * uintptr(i)),
 		))
-		*cIdx = *(*C.map_msgs__srv__GetPointMap_Response)(v.AsCStruct())
+		GetPointMap_ResponseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func GetPointMap_Response__Array_to_Go(goSlice []GetPointMap_Response, cSlice []CGetPointMap_Response) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		GetPointMap_ResponseTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func GetPointMap_Response__Array_to_C(cSlice []CGetPointMap_Response, goSlice []GetPointMap_Response) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.map_msgs__srv__GetPointMap_Response)(goSlice[i].AsCStruct())
+		GetPointMap_ResponseTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

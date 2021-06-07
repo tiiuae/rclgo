@@ -15,7 +15,6 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 	std_msgs "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	test_msgs "github.com/tiiuae/rclgo/pkg/ros2/msgs/test_msgs/msg"
-	"github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 )
 
 func TestPubSub(t *testing.T) {
@@ -115,25 +114,25 @@ func TestMultipleSubscribersInSingleWaitSet(t *testing.T) {
 		Convey("And a subscriber on the first topic", func() {
 			node, err := rclCtxPub.NewNode("sub1", "/test")
 			So(err, ShouldBeNil)
-			sub1, err = node.NewSubscription("/topic1", &std_msgs.String{}, sendToChan(topic1Chan))
+			sub1, err = node.NewSubscription("/topic1", std_msgs.StringTypeSupport, sendToChan(topic1Chan))
 			So(err, ShouldBeNil)
 		})
 		Convey("And a subscriber on the second topic", func() {
 			node, err := rclCtxPub.NewNode("sub2", "/test")
 			So(err, ShouldBeNil)
-			sub2, err = node.NewSubscription("/topic2", &std_msgs.String{}, sendToChan(topic2Chan))
+			sub2, err = node.NewSubscription("/topic2", std_msgs.StringTypeSupport, sendToChan(topic2Chan))
 			So(err, ShouldBeNil)
 		})
 		Convey("And a publisher on the first topic", func() {
 			node, err := rclCtxPub.NewNode("pub1", "/test")
 			So(err, ShouldBeNil)
-			pub1, err = node.NewPublisher("/topic1", &std_msgs.String{})
+			pub1, err = node.NewPublisher("/topic1", std_msgs.StringTypeSupport)
 			So(err, ShouldBeNil)
 		})
 		Convey("And a publisher on the second topic", func() {
 			node, err := rclCtxPub.NewNode("pub2", "/test")
 			So(err, ShouldBeNil)
-			pub2, err = node.NewPublisher("/topic1", &std_msgs.String{})
+			pub2, err = node.NewPublisher("/topic1", std_msgs.StringTypeSupport)
 			So(err, ShouldBeNil)
 		})
 		Convey("And the waitset is started", func() {
@@ -321,7 +320,7 @@ func getMemReading() string {
 }
 
 func publishColorRGBA(p *Publisher, r, g, b, a float32) error {
-	m := p.Ros2MsgType.Clone().(*std_msgs.ColorRGBA)
+	m := p.typeSupport.New().(*std_msgs.ColorRGBA)
 	m.R = r
 	m.G = g
 	m.B = b
@@ -356,7 +355,7 @@ func timeOut(timeoutMs int, f func(), testDescription string) bool {
 
 func publishString(pub *Publisher, s string) {
 	msg := std_msgs.NewString()
-	msg.Data = rosidl_runtime_c.String(s)
+	msg.Data = s
 	So(pub.Publish(msg), ShouldBeNil)
 }
 

@@ -15,7 +15,7 @@ package map_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	nav_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/nav_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("map_msgs/ProjectedMap", &ProjectedMap{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("map_msgs/ProjectedMap", ProjectedMapTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewProjectedMap
@@ -49,41 +49,55 @@ type ProjectedMap struct {
 // NewProjectedMap creates a new ProjectedMap with default values.
 func NewProjectedMap() *ProjectedMap {
 	self := ProjectedMap{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *ProjectedMap) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Map.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *ProjectedMap) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__map_msgs__msg__ProjectedMap())
-}
-func (t *ProjectedMap) PrepareMemory() unsafe.Pointer { //returns *C.map_msgs__msg__ProjectedMap
-	return (unsafe.Pointer)(C.map_msgs__msg__ProjectedMap__create())
-}
-func (t *ProjectedMap) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.map_msgs__msg__ProjectedMap__destroy((*C.map_msgs__msg__ProjectedMap)(pointer_to_free))
-}
-func (t *ProjectedMap) AsCStruct() unsafe.Pointer {
-	mem := (*C.map_msgs__msg__ProjectedMap)(t.PrepareMemory())
-	mem._map = *(*C.nav_msgs__msg__OccupancyGrid)(t.Map.AsCStruct())
-	mem.min_z = C.double(t.MinZ)
-	mem.max_z = C.double(t.MaxZ)
-	return unsafe.Pointer(mem)
-}
-func (t *ProjectedMap) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.map_msgs__msg__ProjectedMap)(ros2_message_buffer)
-	t.Map.AsGoStruct(unsafe.Pointer(&mem._map))
-	t.MinZ = float64(mem.min_z)
-	t.MaxZ = float64(mem.max_z)
-}
-func (t *ProjectedMap) Clone() ros2types.ROS2Msg {
+func (t *ProjectedMap) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *ProjectedMap) SetDefaults() {
+	t.Map.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ProjectedMapTypeSupport types.MessageTypeSupport = _ProjectedMapTypeSupport{}
+
+type _ProjectedMapTypeSupport struct{}
+
+func (t _ProjectedMapTypeSupport) New() types.Message {
+	return NewProjectedMap()
+}
+
+func (t _ProjectedMapTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.map_msgs__msg__ProjectedMap
+	return (unsafe.Pointer)(C.map_msgs__msg__ProjectedMap__create())
+}
+
+func (t _ProjectedMapTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.map_msgs__msg__ProjectedMap__destroy((*C.map_msgs__msg__ProjectedMap)(pointer_to_free))
+}
+
+func (t _ProjectedMapTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*ProjectedMap)
+	mem := (*C.map_msgs__msg__ProjectedMap)(dst)
+	nav_msgs_msg.OccupancyGridTypeSupport.AsCStruct(unsafe.Pointer(&mem._map), &m.Map)
+	mem.min_z = C.double(m.MinZ)
+	mem.max_z = C.double(m.MaxZ)
+}
+
+func (t _ProjectedMapTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*ProjectedMap)
+	mem := (*C.map_msgs__msg__ProjectedMap)(ros2_message_buffer)
+	nav_msgs_msg.OccupancyGridTypeSupport.AsGoStruct(&m.Map, unsafe.Pointer(&mem._map))
+	m.MinZ = float64(mem.min_z)
+	m.MaxZ = float64(mem.max_z)
+}
+
+func (t _ProjectedMapTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__map_msgs__msg__ProjectedMap())
 }
 
 type CProjectedMap = C.map_msgs__msg__ProjectedMap
@@ -98,8 +112,7 @@ func ProjectedMap__Sequence_to_Go(goSlice *[]ProjectedMap, cSlice CProjectedMap_
 		cIdx := (*C.map_msgs__msg__ProjectedMap__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_map_msgs__msg__ProjectedMap * uintptr(i)),
 		))
-		(*goSlice)[i] = ProjectedMap{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ProjectedMapTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func ProjectedMap__Sequence_to_C(cSlice *CProjectedMap__Sequence, goSlice []ProjectedMap) {
@@ -114,18 +127,16 @@ func ProjectedMap__Sequence_to_C(cSlice *CProjectedMap__Sequence, goSlice []Proj
 		cIdx := (*C.map_msgs__msg__ProjectedMap)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_map_msgs__msg__ProjectedMap * uintptr(i)),
 		))
-		*cIdx = *(*C.map_msgs__msg__ProjectedMap)(v.AsCStruct())
+		ProjectedMapTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func ProjectedMap__Array_to_Go(goSlice []ProjectedMap, cSlice []CProjectedMap) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ProjectedMapTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func ProjectedMap__Array_to_C(cSlice []CProjectedMap, goSlice []ProjectedMap) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.map_msgs__msg__ProjectedMap)(goSlice[i].AsCStruct())
+		ProjectedMapTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

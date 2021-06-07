@@ -15,7 +15,7 @@ package visualization_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	builtin_interfaces_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/builtin_interfaces/msg"
 	geometry_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/geometry_msgs/msg"
@@ -40,7 +40,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("visualization_msgs/ImageMarker", &ImageMarker{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("visualization_msgs/ImageMarker", ImageMarkerTypeSupport)
 }
 const (
 	ImageMarker_CIRCLE int32 = 0
@@ -56,7 +56,7 @@ const (
 // function instead.
 type ImageMarker struct {
 	Header std_msgs_msg.Header `yaml:"header"`
-	Ns rosidl_runtime_c.String `yaml:"ns"`// Namespace which is used with the id to form a unique id.
+	Ns string `yaml:"ns"`// Namespace which is used with the id to form a unique id.
 	Id int32 `yaml:"id"`// Namespace which is used with the id to form a unique id.Unique id within the namespace.
 	Type int32 `yaml:"type"`// Namespace which is used with the id to form a unique id.Unique id within the namespace.One of the above types, e.g. CIRCLE, LINE_STRIP, etc.
 	Action int32 `yaml:"action"`// Namespace which is used with the id to form a unique id.Unique id within the namespace.One of the above types, e.g. CIRCLE, LINE_STRIP, etc.Either ADD or REMOVE.
@@ -73,66 +73,79 @@ type ImageMarker struct {
 // NewImageMarker creates a new ImageMarker with default values.
 func NewImageMarker() *ImageMarker {
 	self := ImageMarker{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *ImageMarker) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.Ns.SetDefaults("")
-	t.Position.SetDefaults(nil)
-	t.OutlineColor.SetDefaults(nil)
-	t.FillColor.SetDefaults(nil)
-	t.Lifetime.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *ImageMarker) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__visualization_msgs__msg__ImageMarker())
-}
-func (t *ImageMarker) PrepareMemory() unsafe.Pointer { //returns *C.visualization_msgs__msg__ImageMarker
-	return (unsafe.Pointer)(C.visualization_msgs__msg__ImageMarker__create())
-}
-func (t *ImageMarker) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.visualization_msgs__msg__ImageMarker__destroy((*C.visualization_msgs__msg__ImageMarker)(pointer_to_free))
-}
-func (t *ImageMarker) AsCStruct() unsafe.Pointer {
-	mem := (*C.visualization_msgs__msg__ImageMarker)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.ns = *(*C.rosidl_runtime_c__String)(t.Ns.AsCStruct())
-	mem.id = C.int32_t(t.Id)
-	mem._type = C.int32_t(t.Type)
-	mem.action = C.int32_t(t.Action)
-	mem.position = *(*C.geometry_msgs__msg__Point)(t.Position.AsCStruct())
-	mem.scale = C.float(t.Scale)
-	mem.outline_color = *(*C.std_msgs__msg__ColorRGBA)(t.OutlineColor.AsCStruct())
-	mem.filled = C.uint8_t(t.Filled)
-	mem.fill_color = *(*C.std_msgs__msg__ColorRGBA)(t.FillColor.AsCStruct())
-	mem.lifetime = *(*C.builtin_interfaces__msg__Duration)(t.Lifetime.AsCStruct())
-	geometry_msgs_msg.Point__Sequence_to_C((*geometry_msgs_msg.CPoint__Sequence)(unsafe.Pointer(&mem.points)), t.Points)
-	std_msgs_msg.ColorRGBA__Sequence_to_C((*std_msgs_msg.CColorRGBA__Sequence)(unsafe.Pointer(&mem.outline_colors)), t.OutlineColors)
-	return unsafe.Pointer(mem)
-}
-func (t *ImageMarker) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.visualization_msgs__msg__ImageMarker)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.Ns.AsGoStruct(unsafe.Pointer(&mem.ns))
-	t.Id = int32(mem.id)
-	t.Type = int32(mem._type)
-	t.Action = int32(mem.action)
-	t.Position.AsGoStruct(unsafe.Pointer(&mem.position))
-	t.Scale = float32(mem.scale)
-	t.OutlineColor.AsGoStruct(unsafe.Pointer(&mem.outline_color))
-	t.Filled = uint8(mem.filled)
-	t.FillColor.AsGoStruct(unsafe.Pointer(&mem.fill_color))
-	t.Lifetime.AsGoStruct(unsafe.Pointer(&mem.lifetime))
-	geometry_msgs_msg.Point__Sequence_to_Go(&t.Points, *(*geometry_msgs_msg.CPoint__Sequence)(unsafe.Pointer(&mem.points)))
-	std_msgs_msg.ColorRGBA__Sequence_to_Go(&t.OutlineColors, *(*std_msgs_msg.CColorRGBA__Sequence)(unsafe.Pointer(&mem.outline_colors)))
-}
-func (t *ImageMarker) Clone() ros2types.ROS2Msg {
+func (t *ImageMarker) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *ImageMarker) SetDefaults() {
+	t.Header.SetDefaults()
+	t.Position.SetDefaults()
+	t.OutlineColor.SetDefaults()
+	t.FillColor.SetDefaults()
+	t.Lifetime.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ImageMarkerTypeSupport types.MessageTypeSupport = _ImageMarkerTypeSupport{}
+
+type _ImageMarkerTypeSupport struct{}
+
+func (t _ImageMarkerTypeSupport) New() types.Message {
+	return NewImageMarker()
+}
+
+func (t _ImageMarkerTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.visualization_msgs__msg__ImageMarker
+	return (unsafe.Pointer)(C.visualization_msgs__msg__ImageMarker__create())
+}
+
+func (t _ImageMarkerTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.visualization_msgs__msg__ImageMarker__destroy((*C.visualization_msgs__msg__ImageMarker)(pointer_to_free))
+}
+
+func (t _ImageMarkerTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*ImageMarker)
+	mem := (*C.visualization_msgs__msg__ImageMarker)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.ns), m.Ns)
+	mem.id = C.int32_t(m.Id)
+	mem._type = C.int32_t(m.Type)
+	mem.action = C.int32_t(m.Action)
+	geometry_msgs_msg.PointTypeSupport.AsCStruct(unsafe.Pointer(&mem.position), &m.Position)
+	mem.scale = C.float(m.Scale)
+	std_msgs_msg.ColorRGBATypeSupport.AsCStruct(unsafe.Pointer(&mem.outline_color), &m.OutlineColor)
+	mem.filled = C.uint8_t(m.Filled)
+	std_msgs_msg.ColorRGBATypeSupport.AsCStruct(unsafe.Pointer(&mem.fill_color), &m.FillColor)
+	builtin_interfaces_msg.DurationTypeSupport.AsCStruct(unsafe.Pointer(&mem.lifetime), &m.Lifetime)
+	geometry_msgs_msg.Point__Sequence_to_C((*geometry_msgs_msg.CPoint__Sequence)(unsafe.Pointer(&mem.points)), m.Points)
+	std_msgs_msg.ColorRGBA__Sequence_to_C((*std_msgs_msg.CColorRGBA__Sequence)(unsafe.Pointer(&mem.outline_colors)), m.OutlineColors)
+}
+
+func (t _ImageMarkerTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*ImageMarker)
+	mem := (*C.visualization_msgs__msg__ImageMarker)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	rosidl_runtime_c.StringAsGoStruct(&m.Ns, unsafe.Pointer(&mem.ns))
+	m.Id = int32(mem.id)
+	m.Type = int32(mem._type)
+	m.Action = int32(mem.action)
+	geometry_msgs_msg.PointTypeSupport.AsGoStruct(&m.Position, unsafe.Pointer(&mem.position))
+	m.Scale = float32(mem.scale)
+	std_msgs_msg.ColorRGBATypeSupport.AsGoStruct(&m.OutlineColor, unsafe.Pointer(&mem.outline_color))
+	m.Filled = uint8(mem.filled)
+	std_msgs_msg.ColorRGBATypeSupport.AsGoStruct(&m.FillColor, unsafe.Pointer(&mem.fill_color))
+	builtin_interfaces_msg.DurationTypeSupport.AsGoStruct(&m.Lifetime, unsafe.Pointer(&mem.lifetime))
+	geometry_msgs_msg.Point__Sequence_to_Go(&m.Points, *(*geometry_msgs_msg.CPoint__Sequence)(unsafe.Pointer(&mem.points)))
+	std_msgs_msg.ColorRGBA__Sequence_to_Go(&m.OutlineColors, *(*std_msgs_msg.CColorRGBA__Sequence)(unsafe.Pointer(&mem.outline_colors)))
+}
+
+func (t _ImageMarkerTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__visualization_msgs__msg__ImageMarker())
 }
 
 type CImageMarker = C.visualization_msgs__msg__ImageMarker
@@ -147,8 +160,7 @@ func ImageMarker__Sequence_to_Go(goSlice *[]ImageMarker, cSlice CImageMarker__Se
 		cIdx := (*C.visualization_msgs__msg__ImageMarker__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_visualization_msgs__msg__ImageMarker * uintptr(i)),
 		))
-		(*goSlice)[i] = ImageMarker{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ImageMarkerTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func ImageMarker__Sequence_to_C(cSlice *CImageMarker__Sequence, goSlice []ImageMarker) {
@@ -163,18 +175,16 @@ func ImageMarker__Sequence_to_C(cSlice *CImageMarker__Sequence, goSlice []ImageM
 		cIdx := (*C.visualization_msgs__msg__ImageMarker)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_visualization_msgs__msg__ImageMarker * uintptr(i)),
 		))
-		*cIdx = *(*C.visualization_msgs__msg__ImageMarker)(v.AsCStruct())
+		ImageMarkerTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func ImageMarker__Array_to_Go(goSlice []ImageMarker, cSlice []CImageMarker) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ImageMarkerTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func ImageMarker__Array_to_C(cSlice []CImageMarker, goSlice []ImageMarker) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.visualization_msgs__msg__ImageMarker)(goSlice[i].AsCStruct())
+		ImageMarkerTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

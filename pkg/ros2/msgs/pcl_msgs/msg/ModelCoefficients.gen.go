@@ -15,7 +15,7 @@ package pcl_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
@@ -36,7 +36,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("pcl_msgs/ModelCoefficients", &ModelCoefficients{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("pcl_msgs/ModelCoefficients", ModelCoefficientsTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewModelCoefficients
@@ -49,39 +49,53 @@ type ModelCoefficients struct {
 // NewModelCoefficients creates a new ModelCoefficients with default values.
 func NewModelCoefficients() *ModelCoefficients {
 	self := ModelCoefficients{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *ModelCoefficients) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *ModelCoefficients) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__pcl_msgs__msg__ModelCoefficients())
-}
-func (t *ModelCoefficients) PrepareMemory() unsafe.Pointer { //returns *C.pcl_msgs__msg__ModelCoefficients
-	return (unsafe.Pointer)(C.pcl_msgs__msg__ModelCoefficients__create())
-}
-func (t *ModelCoefficients) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.pcl_msgs__msg__ModelCoefficients__destroy((*C.pcl_msgs__msg__ModelCoefficients)(pointer_to_free))
-}
-func (t *ModelCoefficients) AsCStruct() unsafe.Pointer {
-	mem := (*C.pcl_msgs__msg__ModelCoefficients)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	rosidl_runtime_c.Float32__Sequence_to_C((*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.values)), t.Values)
-	return unsafe.Pointer(mem)
-}
-func (t *ModelCoefficients) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.pcl_msgs__msg__ModelCoefficients)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	rosidl_runtime_c.Float32__Sequence_to_Go(&t.Values, *(*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.values)))
-}
-func (t *ModelCoefficients) Clone() ros2types.ROS2Msg {
+func (t *ModelCoefficients) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *ModelCoefficients) SetDefaults() {
+	t.Header.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ModelCoefficientsTypeSupport types.MessageTypeSupport = _ModelCoefficientsTypeSupport{}
+
+type _ModelCoefficientsTypeSupport struct{}
+
+func (t _ModelCoefficientsTypeSupport) New() types.Message {
+	return NewModelCoefficients()
+}
+
+func (t _ModelCoefficientsTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.pcl_msgs__msg__ModelCoefficients
+	return (unsafe.Pointer)(C.pcl_msgs__msg__ModelCoefficients__create())
+}
+
+func (t _ModelCoefficientsTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.pcl_msgs__msg__ModelCoefficients__destroy((*C.pcl_msgs__msg__ModelCoefficients)(pointer_to_free))
+}
+
+func (t _ModelCoefficientsTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*ModelCoefficients)
+	mem := (*C.pcl_msgs__msg__ModelCoefficients)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	rosidl_runtime_c.Float32__Sequence_to_C((*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.values)), m.Values)
+}
+
+func (t _ModelCoefficientsTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*ModelCoefficients)
+	mem := (*C.pcl_msgs__msg__ModelCoefficients)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	rosidl_runtime_c.Float32__Sequence_to_Go(&m.Values, *(*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.values)))
+}
+
+func (t _ModelCoefficientsTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__pcl_msgs__msg__ModelCoefficients())
 }
 
 type CModelCoefficients = C.pcl_msgs__msg__ModelCoefficients
@@ -96,8 +110,7 @@ func ModelCoefficients__Sequence_to_Go(goSlice *[]ModelCoefficients, cSlice CMod
 		cIdx := (*C.pcl_msgs__msg__ModelCoefficients__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_pcl_msgs__msg__ModelCoefficients * uintptr(i)),
 		))
-		(*goSlice)[i] = ModelCoefficients{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ModelCoefficientsTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func ModelCoefficients__Sequence_to_C(cSlice *CModelCoefficients__Sequence, goSlice []ModelCoefficients) {
@@ -112,18 +125,16 @@ func ModelCoefficients__Sequence_to_C(cSlice *CModelCoefficients__Sequence, goSl
 		cIdx := (*C.pcl_msgs__msg__ModelCoefficients)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_pcl_msgs__msg__ModelCoefficients * uintptr(i)),
 		))
-		*cIdx = *(*C.pcl_msgs__msg__ModelCoefficients)(v.AsCStruct())
+		ModelCoefficientsTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func ModelCoefficients__Array_to_Go(goSlice []ModelCoefficients, cSlice []CModelCoefficients) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ModelCoefficientsTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func ModelCoefficients__Array_to_C(cSlice []CModelCoefficients, goSlice []ModelCoefficients) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.pcl_msgs__msg__ModelCoefficients)(goSlice[i].AsCStruct())
+		ModelCoefficientsTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

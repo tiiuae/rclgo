@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("lifecycle_msgs/GetAvailableTransitions", GetAvailableTransitions)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("lifecycle_msgs/GetAvailableTransitions", GetAvailableTransitionsTypeSupport)
 }
 
-type _GetAvailableTransitions struct {
-	req,resp ros2types.ROS2Msg
+type _GetAvailableTransitionsTypeSupport struct {}
+
+func (s _GetAvailableTransitionsTypeSupport) Request() types.MessageTypeSupport {
+	return GetAvailableTransitions_RequestTypeSupport
 }
 
-func (s *_GetAvailableTransitions) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _GetAvailableTransitionsTypeSupport) Response() types.MessageTypeSupport {
+	return GetAvailableTransitions_ResponseTypeSupport
 }
 
-func (s *_GetAvailableTransitions) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_GetAvailableTransitions) TypeSupport() unsafe.Pointer {
+func (s _GetAvailableTransitionsTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__lifecycle_msgs__srv__GetAvailableTransitions())
 }
 
 // Modifying this variable is undefined behavior.
-var GetAvailableTransitions ros2types.Service = &_GetAvailableTransitions{
-	req: &GetAvailableTransitions_Request{},
-	resp: &GetAvailableTransitions_Response{},
-}
+var GetAvailableTransitionsTypeSupport types.ServiceTypeSupport = _GetAvailableTransitionsTypeSupport{}

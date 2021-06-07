@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/DifferentialPressure", &DifferentialPressure{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/DifferentialPressure", DifferentialPressureTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewDifferentialPressure
@@ -50,46 +50,60 @@ type DifferentialPressure struct {
 // NewDifferentialPressure creates a new DifferentialPressure with default values.
 func NewDifferentialPressure() *DifferentialPressure {
 	self := DifferentialPressure{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *DifferentialPressure) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *DifferentialPressure) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__DifferentialPressure())
-}
-func (t *DifferentialPressure) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__DifferentialPressure
-	return (unsafe.Pointer)(C.px4_msgs__msg__DifferentialPressure__create())
-}
-func (t *DifferentialPressure) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__DifferentialPressure__destroy((*C.px4_msgs__msg__DifferentialPressure)(pointer_to_free))
-}
-func (t *DifferentialPressure) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__DifferentialPressure)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.error_count = C.uint64_t(t.ErrorCount)
-	mem.differential_pressure_raw_pa = C.float(t.DifferentialPressureRawPa)
-	mem.differential_pressure_filtered_pa = C.float(t.DifferentialPressureFilteredPa)
-	mem.temperature = C.float(t.Temperature)
-	mem.device_id = C.uint32_t(t.DeviceId)
-	return unsafe.Pointer(mem)
-}
-func (t *DifferentialPressure) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__DifferentialPressure)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.ErrorCount = uint64(mem.error_count)
-	t.DifferentialPressureRawPa = float32(mem.differential_pressure_raw_pa)
-	t.DifferentialPressureFilteredPa = float32(mem.differential_pressure_filtered_pa)
-	t.Temperature = float32(mem.temperature)
-	t.DeviceId = uint32(mem.device_id)
-}
-func (t *DifferentialPressure) Clone() ros2types.ROS2Msg {
+func (t *DifferentialPressure) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *DifferentialPressure) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var DifferentialPressureTypeSupport types.MessageTypeSupport = _DifferentialPressureTypeSupport{}
+
+type _DifferentialPressureTypeSupport struct{}
+
+func (t _DifferentialPressureTypeSupport) New() types.Message {
+	return NewDifferentialPressure()
+}
+
+func (t _DifferentialPressureTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__DifferentialPressure
+	return (unsafe.Pointer)(C.px4_msgs__msg__DifferentialPressure__create())
+}
+
+func (t _DifferentialPressureTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__DifferentialPressure__destroy((*C.px4_msgs__msg__DifferentialPressure)(pointer_to_free))
+}
+
+func (t _DifferentialPressureTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*DifferentialPressure)
+	mem := (*C.px4_msgs__msg__DifferentialPressure)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.error_count = C.uint64_t(m.ErrorCount)
+	mem.differential_pressure_raw_pa = C.float(m.DifferentialPressureRawPa)
+	mem.differential_pressure_filtered_pa = C.float(m.DifferentialPressureFilteredPa)
+	mem.temperature = C.float(m.Temperature)
+	mem.device_id = C.uint32_t(m.DeviceId)
+}
+
+func (t _DifferentialPressureTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*DifferentialPressure)
+	mem := (*C.px4_msgs__msg__DifferentialPressure)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.ErrorCount = uint64(mem.error_count)
+	m.DifferentialPressureRawPa = float32(mem.differential_pressure_raw_pa)
+	m.DifferentialPressureFilteredPa = float32(mem.differential_pressure_filtered_pa)
+	m.Temperature = float32(mem.temperature)
+	m.DeviceId = uint32(mem.device_id)
+}
+
+func (t _DifferentialPressureTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__DifferentialPressure())
 }
 
 type CDifferentialPressure = C.px4_msgs__msg__DifferentialPressure
@@ -104,8 +118,7 @@ func DifferentialPressure__Sequence_to_Go(goSlice *[]DifferentialPressure, cSlic
 		cIdx := (*C.px4_msgs__msg__DifferentialPressure__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__DifferentialPressure * uintptr(i)),
 		))
-		(*goSlice)[i] = DifferentialPressure{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		DifferentialPressureTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func DifferentialPressure__Sequence_to_C(cSlice *CDifferentialPressure__Sequence, goSlice []DifferentialPressure) {
@@ -120,18 +133,16 @@ func DifferentialPressure__Sequence_to_C(cSlice *CDifferentialPressure__Sequence
 		cIdx := (*C.px4_msgs__msg__DifferentialPressure)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__DifferentialPressure * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__DifferentialPressure)(v.AsCStruct())
+		DifferentialPressureTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func DifferentialPressure__Array_to_Go(goSlice []DifferentialPressure, cSlice []CDifferentialPressure) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		DifferentialPressureTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func DifferentialPressure__Array_to_C(cSlice []CDifferentialPressure, goSlice []DifferentialPressure) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__DifferentialPressure)(goSlice[i].AsCStruct())
+		DifferentialPressureTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package map_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("map_msgs/ProjectedMapsInfo_Response", &ProjectedMapsInfo_Response{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("map_msgs/ProjectedMapsInfo_Response", ProjectedMapsInfo_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewProjectedMapsInfo_Response
@@ -44,34 +44,46 @@ type ProjectedMapsInfo_Response struct {
 // NewProjectedMapsInfo_Response creates a new ProjectedMapsInfo_Response with default values.
 func NewProjectedMapsInfo_Response() *ProjectedMapsInfo_Response {
 	self := ProjectedMapsInfo_Response{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *ProjectedMapsInfo_Response) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *ProjectedMapsInfo_Response) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__map_msgs__srv__ProjectedMapsInfo_Response())
-}
-func (t *ProjectedMapsInfo_Response) PrepareMemory() unsafe.Pointer { //returns *C.map_msgs__srv__ProjectedMapsInfo_Response
-	return (unsafe.Pointer)(C.map_msgs__srv__ProjectedMapsInfo_Response__create())
-}
-func (t *ProjectedMapsInfo_Response) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.map_msgs__srv__ProjectedMapsInfo_Response__destroy((*C.map_msgs__srv__ProjectedMapsInfo_Response)(pointer_to_free))
-}
-func (t *ProjectedMapsInfo_Response) AsCStruct() unsafe.Pointer {
-	mem := (*C.map_msgs__srv__ProjectedMapsInfo_Response)(t.PrepareMemory())
-	return unsafe.Pointer(mem)
-}
-func (t *ProjectedMapsInfo_Response) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	
-}
-func (t *ProjectedMapsInfo_Response) Clone() ros2types.ROS2Msg {
+func (t *ProjectedMapsInfo_Response) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *ProjectedMapsInfo_Response) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ProjectedMapsInfo_ResponseTypeSupport types.MessageTypeSupport = _ProjectedMapsInfo_ResponseTypeSupport{}
+
+type _ProjectedMapsInfo_ResponseTypeSupport struct{}
+
+func (t _ProjectedMapsInfo_ResponseTypeSupport) New() types.Message {
+	return NewProjectedMapsInfo_Response()
+}
+
+func (t _ProjectedMapsInfo_ResponseTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.map_msgs__srv__ProjectedMapsInfo_Response
+	return (unsafe.Pointer)(C.map_msgs__srv__ProjectedMapsInfo_Response__create())
+}
+
+func (t _ProjectedMapsInfo_ResponseTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.map_msgs__srv__ProjectedMapsInfo_Response__destroy((*C.map_msgs__srv__ProjectedMapsInfo_Response)(pointer_to_free))
+}
+
+func (t _ProjectedMapsInfo_ResponseTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	
+}
+
+func (t _ProjectedMapsInfo_ResponseTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	
+}
+
+func (t _ProjectedMapsInfo_ResponseTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__map_msgs__srv__ProjectedMapsInfo_Response())
 }
 
 type CProjectedMapsInfo_Response = C.map_msgs__srv__ProjectedMapsInfo_Response
@@ -86,8 +98,7 @@ func ProjectedMapsInfo_Response__Sequence_to_Go(goSlice *[]ProjectedMapsInfo_Res
 		cIdx := (*C.map_msgs__srv__ProjectedMapsInfo_Response__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_map_msgs__srv__ProjectedMapsInfo_Response * uintptr(i)),
 		))
-		(*goSlice)[i] = ProjectedMapsInfo_Response{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ProjectedMapsInfo_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func ProjectedMapsInfo_Response__Sequence_to_C(cSlice *CProjectedMapsInfo_Response__Sequence, goSlice []ProjectedMapsInfo_Response) {
@@ -102,18 +113,16 @@ func ProjectedMapsInfo_Response__Sequence_to_C(cSlice *CProjectedMapsInfo_Respon
 		cIdx := (*C.map_msgs__srv__ProjectedMapsInfo_Response)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_map_msgs__srv__ProjectedMapsInfo_Response * uintptr(i)),
 		))
-		*cIdx = *(*C.map_msgs__srv__ProjectedMapsInfo_Response)(v.AsCStruct())
+		ProjectedMapsInfo_ResponseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func ProjectedMapsInfo_Response__Array_to_Go(goSlice []ProjectedMapsInfo_Response, cSlice []CProjectedMapsInfo_Response) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ProjectedMapsInfo_ResponseTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func ProjectedMapsInfo_Response__Array_to_C(cSlice []CProjectedMapsInfo_Response, goSlice []ProjectedMapsInfo_Response) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.map_msgs__srv__ProjectedMapsInfo_Response)(goSlice[i].AsCStruct())
+		ProjectedMapsInfo_ResponseTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

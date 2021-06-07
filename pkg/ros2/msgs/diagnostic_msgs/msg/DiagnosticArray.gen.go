@@ -15,7 +15,7 @@ package diagnostic_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("diagnostic_msgs/DiagnosticArray", &DiagnosticArray{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("diagnostic_msgs/DiagnosticArray", DiagnosticArrayTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewDiagnosticArray
@@ -48,39 +48,53 @@ type DiagnosticArray struct {
 // NewDiagnosticArray creates a new DiagnosticArray with default values.
 func NewDiagnosticArray() *DiagnosticArray {
 	self := DiagnosticArray{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *DiagnosticArray) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *DiagnosticArray) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__diagnostic_msgs__msg__DiagnosticArray())
-}
-func (t *DiagnosticArray) PrepareMemory() unsafe.Pointer { //returns *C.diagnostic_msgs__msg__DiagnosticArray
-	return (unsafe.Pointer)(C.diagnostic_msgs__msg__DiagnosticArray__create())
-}
-func (t *DiagnosticArray) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.diagnostic_msgs__msg__DiagnosticArray__destroy((*C.diagnostic_msgs__msg__DiagnosticArray)(pointer_to_free))
-}
-func (t *DiagnosticArray) AsCStruct() unsafe.Pointer {
-	mem := (*C.diagnostic_msgs__msg__DiagnosticArray)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	DiagnosticStatus__Sequence_to_C(&mem.status, t.Status)
-	return unsafe.Pointer(mem)
-}
-func (t *DiagnosticArray) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.diagnostic_msgs__msg__DiagnosticArray)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	DiagnosticStatus__Sequence_to_Go(&t.Status, mem.status)
-}
-func (t *DiagnosticArray) Clone() ros2types.ROS2Msg {
+func (t *DiagnosticArray) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *DiagnosticArray) SetDefaults() {
+	t.Header.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var DiagnosticArrayTypeSupport types.MessageTypeSupport = _DiagnosticArrayTypeSupport{}
+
+type _DiagnosticArrayTypeSupport struct{}
+
+func (t _DiagnosticArrayTypeSupport) New() types.Message {
+	return NewDiagnosticArray()
+}
+
+func (t _DiagnosticArrayTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.diagnostic_msgs__msg__DiagnosticArray
+	return (unsafe.Pointer)(C.diagnostic_msgs__msg__DiagnosticArray__create())
+}
+
+func (t _DiagnosticArrayTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.diagnostic_msgs__msg__DiagnosticArray__destroy((*C.diagnostic_msgs__msg__DiagnosticArray)(pointer_to_free))
+}
+
+func (t _DiagnosticArrayTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*DiagnosticArray)
+	mem := (*C.diagnostic_msgs__msg__DiagnosticArray)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	DiagnosticStatus__Sequence_to_C(&mem.status, m.Status)
+}
+
+func (t _DiagnosticArrayTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*DiagnosticArray)
+	mem := (*C.diagnostic_msgs__msg__DiagnosticArray)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	DiagnosticStatus__Sequence_to_Go(&m.Status, mem.status)
+}
+
+func (t _DiagnosticArrayTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__diagnostic_msgs__msg__DiagnosticArray())
 }
 
 type CDiagnosticArray = C.diagnostic_msgs__msg__DiagnosticArray
@@ -95,8 +109,7 @@ func DiagnosticArray__Sequence_to_Go(goSlice *[]DiagnosticArray, cSlice CDiagnos
 		cIdx := (*C.diagnostic_msgs__msg__DiagnosticArray__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_diagnostic_msgs__msg__DiagnosticArray * uintptr(i)),
 		))
-		(*goSlice)[i] = DiagnosticArray{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		DiagnosticArrayTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func DiagnosticArray__Sequence_to_C(cSlice *CDiagnosticArray__Sequence, goSlice []DiagnosticArray) {
@@ -111,18 +124,16 @@ func DiagnosticArray__Sequence_to_C(cSlice *CDiagnosticArray__Sequence, goSlice 
 		cIdx := (*C.diagnostic_msgs__msg__DiagnosticArray)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_diagnostic_msgs__msg__DiagnosticArray * uintptr(i)),
 		))
-		*cIdx = *(*C.diagnostic_msgs__msg__DiagnosticArray)(v.AsCStruct())
+		DiagnosticArrayTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func DiagnosticArray__Array_to_Go(goSlice []DiagnosticArray, cSlice []CDiagnosticArray) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		DiagnosticArrayTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func DiagnosticArray__Array_to_C(cSlice []CDiagnosticArray, goSlice []DiagnosticArray) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.diagnostic_msgs__msg__DiagnosticArray)(goSlice[i].AsCStruct())
+		DiagnosticArrayTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

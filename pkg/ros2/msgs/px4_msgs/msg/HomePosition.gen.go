@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/HomePosition", &HomePosition{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/HomePosition", HomePositionTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewHomePosition
@@ -56,58 +56,72 @@ type HomePosition struct {
 // NewHomePosition creates a new HomePosition with default values.
 func NewHomePosition() *HomePosition {
 	self := HomePosition{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *HomePosition) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *HomePosition) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__HomePosition())
-}
-func (t *HomePosition) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__HomePosition
-	return (unsafe.Pointer)(C.px4_msgs__msg__HomePosition__create())
-}
-func (t *HomePosition) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__HomePosition__destroy((*C.px4_msgs__msg__HomePosition)(pointer_to_free))
-}
-func (t *HomePosition) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__HomePosition)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.lat = C.double(t.Lat)
-	mem.lon = C.double(t.Lon)
-	mem.alt = C.float(t.Alt)
-	mem.x = C.float(t.X)
-	mem.y = C.float(t.Y)
-	mem.z = C.float(t.Z)
-	mem.yaw = C.float(t.Yaw)
-	mem.valid_alt = C.bool(t.ValidAlt)
-	mem.valid_hpos = C.bool(t.ValidHpos)
-	mem.valid_lpos = C.bool(t.ValidLpos)
-	mem.manual_home = C.bool(t.ManualHome)
-	return unsafe.Pointer(mem)
-}
-func (t *HomePosition) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__HomePosition)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Lat = float64(mem.lat)
-	t.Lon = float64(mem.lon)
-	t.Alt = float32(mem.alt)
-	t.X = float32(mem.x)
-	t.Y = float32(mem.y)
-	t.Z = float32(mem.z)
-	t.Yaw = float32(mem.yaw)
-	t.ValidAlt = bool(mem.valid_alt)
-	t.ValidHpos = bool(mem.valid_hpos)
-	t.ValidLpos = bool(mem.valid_lpos)
-	t.ManualHome = bool(mem.manual_home)
-}
-func (t *HomePosition) Clone() ros2types.ROS2Msg {
+func (t *HomePosition) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *HomePosition) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var HomePositionTypeSupport types.MessageTypeSupport = _HomePositionTypeSupport{}
+
+type _HomePositionTypeSupport struct{}
+
+func (t _HomePositionTypeSupport) New() types.Message {
+	return NewHomePosition()
+}
+
+func (t _HomePositionTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__HomePosition
+	return (unsafe.Pointer)(C.px4_msgs__msg__HomePosition__create())
+}
+
+func (t _HomePositionTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__HomePosition__destroy((*C.px4_msgs__msg__HomePosition)(pointer_to_free))
+}
+
+func (t _HomePositionTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*HomePosition)
+	mem := (*C.px4_msgs__msg__HomePosition)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.lat = C.double(m.Lat)
+	mem.lon = C.double(m.Lon)
+	mem.alt = C.float(m.Alt)
+	mem.x = C.float(m.X)
+	mem.y = C.float(m.Y)
+	mem.z = C.float(m.Z)
+	mem.yaw = C.float(m.Yaw)
+	mem.valid_alt = C.bool(m.ValidAlt)
+	mem.valid_hpos = C.bool(m.ValidHpos)
+	mem.valid_lpos = C.bool(m.ValidLpos)
+	mem.manual_home = C.bool(m.ManualHome)
+}
+
+func (t _HomePositionTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*HomePosition)
+	mem := (*C.px4_msgs__msg__HomePosition)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Lat = float64(mem.lat)
+	m.Lon = float64(mem.lon)
+	m.Alt = float32(mem.alt)
+	m.X = float32(mem.x)
+	m.Y = float32(mem.y)
+	m.Z = float32(mem.z)
+	m.Yaw = float32(mem.yaw)
+	m.ValidAlt = bool(mem.valid_alt)
+	m.ValidHpos = bool(mem.valid_hpos)
+	m.ValidLpos = bool(mem.valid_lpos)
+	m.ManualHome = bool(mem.manual_home)
+}
+
+func (t _HomePositionTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__HomePosition())
 }
 
 type CHomePosition = C.px4_msgs__msg__HomePosition
@@ -122,8 +136,7 @@ func HomePosition__Sequence_to_Go(goSlice *[]HomePosition, cSlice CHomePosition_
 		cIdx := (*C.px4_msgs__msg__HomePosition__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__HomePosition * uintptr(i)),
 		))
-		(*goSlice)[i] = HomePosition{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		HomePositionTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func HomePosition__Sequence_to_C(cSlice *CHomePosition__Sequence, goSlice []HomePosition) {
@@ -138,18 +151,16 @@ func HomePosition__Sequence_to_C(cSlice *CHomePosition__Sequence, goSlice []Home
 		cIdx := (*C.px4_msgs__msg__HomePosition)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__HomePosition * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__HomePosition)(v.AsCStruct())
+		HomePositionTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func HomePosition__Array_to_Go(goSlice []HomePosition, cSlice []CHomePosition) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		HomePositionTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func HomePosition__Array_to_C(cSlice []CHomePosition, goSlice []HomePosition) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__HomePosition)(goSlice[i].AsCStruct())
+		HomePositionTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

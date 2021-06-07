@@ -15,7 +15,7 @@ package composition_interfaces_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,51 +34,65 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("composition_interfaces/ListNodes_Response", &ListNodes_Response{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("composition_interfaces/ListNodes_Response", ListNodes_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewListNodes_Response
 // function instead.
 type ListNodes_Response struct {
-	FullNodeNames []rosidl_runtime_c.String `yaml:"full_node_names"`// List of full node names including namespace.
+	FullNodeNames []string `yaml:"full_node_names"`// List of full node names including namespace.
 	UniqueIds []uint64 `yaml:"unique_ids"`// List of full node names including namespace.corresponding unique ids (must have same length as full_node_names).
 }
 
 // NewListNodes_Response creates a new ListNodes_Response with default values.
 func NewListNodes_Response() *ListNodes_Response {
 	self := ListNodes_Response{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *ListNodes_Response) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *ListNodes_Response) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__composition_interfaces__srv__ListNodes_Response())
-}
-func (t *ListNodes_Response) PrepareMemory() unsafe.Pointer { //returns *C.composition_interfaces__srv__ListNodes_Response
-	return (unsafe.Pointer)(C.composition_interfaces__srv__ListNodes_Response__create())
-}
-func (t *ListNodes_Response) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.composition_interfaces__srv__ListNodes_Response__destroy((*C.composition_interfaces__srv__ListNodes_Response)(pointer_to_free))
-}
-func (t *ListNodes_Response) AsCStruct() unsafe.Pointer {
-	mem := (*C.composition_interfaces__srv__ListNodes_Response)(t.PrepareMemory())
-	rosidl_runtime_c.String__Sequence_to_C((*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.full_node_names)), t.FullNodeNames)
-	rosidl_runtime_c.Uint64__Sequence_to_C((*rosidl_runtime_c.CUint64__Sequence)(unsafe.Pointer(&mem.unique_ids)), t.UniqueIds)
-	return unsafe.Pointer(mem)
-}
-func (t *ListNodes_Response) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.composition_interfaces__srv__ListNodes_Response)(ros2_message_buffer)
-	rosidl_runtime_c.String__Sequence_to_Go(&t.FullNodeNames, *(*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.full_node_names)))
-	rosidl_runtime_c.Uint64__Sequence_to_Go(&t.UniqueIds, *(*rosidl_runtime_c.CUint64__Sequence)(unsafe.Pointer(&mem.unique_ids)))
-}
-func (t *ListNodes_Response) Clone() ros2types.ROS2Msg {
+func (t *ListNodes_Response) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *ListNodes_Response) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ListNodes_ResponseTypeSupport types.MessageTypeSupport = _ListNodes_ResponseTypeSupport{}
+
+type _ListNodes_ResponseTypeSupport struct{}
+
+func (t _ListNodes_ResponseTypeSupport) New() types.Message {
+	return NewListNodes_Response()
+}
+
+func (t _ListNodes_ResponseTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.composition_interfaces__srv__ListNodes_Response
+	return (unsafe.Pointer)(C.composition_interfaces__srv__ListNodes_Response__create())
+}
+
+func (t _ListNodes_ResponseTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.composition_interfaces__srv__ListNodes_Response__destroy((*C.composition_interfaces__srv__ListNodes_Response)(pointer_to_free))
+}
+
+func (t _ListNodes_ResponseTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*ListNodes_Response)
+	mem := (*C.composition_interfaces__srv__ListNodes_Response)(dst)
+	rosidl_runtime_c.String__Sequence_to_C((*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.full_node_names)), m.FullNodeNames)
+	rosidl_runtime_c.Uint64__Sequence_to_C((*rosidl_runtime_c.CUint64__Sequence)(unsafe.Pointer(&mem.unique_ids)), m.UniqueIds)
+}
+
+func (t _ListNodes_ResponseTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*ListNodes_Response)
+	mem := (*C.composition_interfaces__srv__ListNodes_Response)(ros2_message_buffer)
+	rosidl_runtime_c.String__Sequence_to_Go(&m.FullNodeNames, *(*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.full_node_names)))
+	rosidl_runtime_c.Uint64__Sequence_to_Go(&m.UniqueIds, *(*rosidl_runtime_c.CUint64__Sequence)(unsafe.Pointer(&mem.unique_ids)))
+}
+
+func (t _ListNodes_ResponseTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__composition_interfaces__srv__ListNodes_Response())
 }
 
 type CListNodes_Response = C.composition_interfaces__srv__ListNodes_Response
@@ -93,8 +107,7 @@ func ListNodes_Response__Sequence_to_Go(goSlice *[]ListNodes_Response, cSlice CL
 		cIdx := (*C.composition_interfaces__srv__ListNodes_Response__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_composition_interfaces__srv__ListNodes_Response * uintptr(i)),
 		))
-		(*goSlice)[i] = ListNodes_Response{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ListNodes_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func ListNodes_Response__Sequence_to_C(cSlice *CListNodes_Response__Sequence, goSlice []ListNodes_Response) {
@@ -109,18 +122,16 @@ func ListNodes_Response__Sequence_to_C(cSlice *CListNodes_Response__Sequence, go
 		cIdx := (*C.composition_interfaces__srv__ListNodes_Response)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_composition_interfaces__srv__ListNodes_Response * uintptr(i)),
 		))
-		*cIdx = *(*C.composition_interfaces__srv__ListNodes_Response)(v.AsCStruct())
+		ListNodes_ResponseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func ListNodes_Response__Array_to_Go(goSlice []ListNodes_Response, cSlice []CListNodes_Response) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ListNodes_ResponseTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func ListNodes_Response__Array_to_C(cSlice []CListNodes_Response, goSlice []ListNodes_Response) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.composition_interfaces__srv__ListNodes_Response)(goSlice[i].AsCStruct())
+		ListNodes_ResponseTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

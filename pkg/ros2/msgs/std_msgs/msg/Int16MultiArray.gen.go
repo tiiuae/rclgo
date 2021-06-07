@@ -15,7 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("std_msgs/Int16MultiArray", &Int16MultiArray{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("std_msgs/Int16MultiArray", Int16MultiArrayTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewInt16MultiArray
@@ -47,39 +47,53 @@ type Int16MultiArray struct {
 // NewInt16MultiArray creates a new Int16MultiArray with default values.
 func NewInt16MultiArray() *Int16MultiArray {
 	self := Int16MultiArray{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Int16MultiArray) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Layout.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *Int16MultiArray) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__std_msgs__msg__Int16MultiArray())
-}
-func (t *Int16MultiArray) PrepareMemory() unsafe.Pointer { //returns *C.std_msgs__msg__Int16MultiArray
-	return (unsafe.Pointer)(C.std_msgs__msg__Int16MultiArray__create())
-}
-func (t *Int16MultiArray) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.std_msgs__msg__Int16MultiArray__destroy((*C.std_msgs__msg__Int16MultiArray)(pointer_to_free))
-}
-func (t *Int16MultiArray) AsCStruct() unsafe.Pointer {
-	mem := (*C.std_msgs__msg__Int16MultiArray)(t.PrepareMemory())
-	mem.layout = *(*C.std_msgs__msg__MultiArrayLayout)(t.Layout.AsCStruct())
-	rosidl_runtime_c.Int16__Sequence_to_C((*rosidl_runtime_c.CInt16__Sequence)(unsafe.Pointer(&mem.data)), t.Data)
-	return unsafe.Pointer(mem)
-}
-func (t *Int16MultiArray) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.std_msgs__msg__Int16MultiArray)(ros2_message_buffer)
-	t.Layout.AsGoStruct(unsafe.Pointer(&mem.layout))
-	rosidl_runtime_c.Int16__Sequence_to_Go(&t.Data, *(*rosidl_runtime_c.CInt16__Sequence)(unsafe.Pointer(&mem.data)))
-}
-func (t *Int16MultiArray) Clone() ros2types.ROS2Msg {
+func (t *Int16MultiArray) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Int16MultiArray) SetDefaults() {
+	t.Layout.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var Int16MultiArrayTypeSupport types.MessageTypeSupport = _Int16MultiArrayTypeSupport{}
+
+type _Int16MultiArrayTypeSupport struct{}
+
+func (t _Int16MultiArrayTypeSupport) New() types.Message {
+	return NewInt16MultiArray()
+}
+
+func (t _Int16MultiArrayTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.std_msgs__msg__Int16MultiArray
+	return (unsafe.Pointer)(C.std_msgs__msg__Int16MultiArray__create())
+}
+
+func (t _Int16MultiArrayTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.std_msgs__msg__Int16MultiArray__destroy((*C.std_msgs__msg__Int16MultiArray)(pointer_to_free))
+}
+
+func (t _Int16MultiArrayTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Int16MultiArray)
+	mem := (*C.std_msgs__msg__Int16MultiArray)(dst)
+	MultiArrayLayoutTypeSupport.AsCStruct(unsafe.Pointer(&mem.layout), &m.Layout)
+	rosidl_runtime_c.Int16__Sequence_to_C((*rosidl_runtime_c.CInt16__Sequence)(unsafe.Pointer(&mem.data)), m.Data)
+}
+
+func (t _Int16MultiArrayTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Int16MultiArray)
+	mem := (*C.std_msgs__msg__Int16MultiArray)(ros2_message_buffer)
+	MultiArrayLayoutTypeSupport.AsGoStruct(&m.Layout, unsafe.Pointer(&mem.layout))
+	rosidl_runtime_c.Int16__Sequence_to_Go(&m.Data, *(*rosidl_runtime_c.CInt16__Sequence)(unsafe.Pointer(&mem.data)))
+}
+
+func (t _Int16MultiArrayTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__std_msgs__msg__Int16MultiArray())
 }
 
 type CInt16MultiArray = C.std_msgs__msg__Int16MultiArray
@@ -94,8 +108,7 @@ func Int16MultiArray__Sequence_to_Go(goSlice *[]Int16MultiArray, cSlice CInt16Mu
 		cIdx := (*C.std_msgs__msg__Int16MultiArray__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__Int16MultiArray * uintptr(i)),
 		))
-		(*goSlice)[i] = Int16MultiArray{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		Int16MultiArrayTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Int16MultiArray__Sequence_to_C(cSlice *CInt16MultiArray__Sequence, goSlice []Int16MultiArray) {
@@ -110,18 +123,16 @@ func Int16MultiArray__Sequence_to_C(cSlice *CInt16MultiArray__Sequence, goSlice 
 		cIdx := (*C.std_msgs__msg__Int16MultiArray)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__Int16MultiArray * uintptr(i)),
 		))
-		*cIdx = *(*C.std_msgs__msg__Int16MultiArray)(v.AsCStruct())
+		Int16MultiArrayTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Int16MultiArray__Array_to_Go(goSlice []Int16MultiArray, cSlice []CInt16MultiArray) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		Int16MultiArrayTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Int16MultiArray__Array_to_C(cSlice []CInt16MultiArray, goSlice []Int16MultiArray) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.std_msgs__msg__Int16MultiArray)(goSlice[i].AsCStruct())
+		Int16MultiArrayTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

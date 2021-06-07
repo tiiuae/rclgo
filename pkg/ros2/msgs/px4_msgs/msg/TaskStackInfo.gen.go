@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/TaskStackInfo", &TaskStackInfo{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/TaskStackInfo", TaskStackInfoTypeSupport)
 }
 const (
 	TaskStackInfo_ORB_QUEUE_LENGTH uint8 = 2
@@ -51,42 +51,56 @@ type TaskStackInfo struct {
 // NewTaskStackInfo creates a new TaskStackInfo with default values.
 func NewTaskStackInfo() *TaskStackInfo {
 	self := TaskStackInfo{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *TaskStackInfo) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *TaskStackInfo) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__TaskStackInfo())
-}
-func (t *TaskStackInfo) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__TaskStackInfo
-	return (unsafe.Pointer)(C.px4_msgs__msg__TaskStackInfo__create())
-}
-func (t *TaskStackInfo) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__TaskStackInfo__destroy((*C.px4_msgs__msg__TaskStackInfo)(pointer_to_free))
-}
-func (t *TaskStackInfo) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__TaskStackInfo)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.stack_free = C.uint16_t(t.StackFree)
-	cSlice_task_name := mem.task_name[:]
-	rosidl_runtime_c.Char__Array_to_C(*(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_task_name)), t.TaskName[:])
-	return unsafe.Pointer(mem)
-}
-func (t *TaskStackInfo) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__TaskStackInfo)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.StackFree = uint16(mem.stack_free)
-	cSlice_task_name := mem.task_name[:]
-	rosidl_runtime_c.Char__Array_to_Go(t.TaskName[:], *(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_task_name)))
-}
-func (t *TaskStackInfo) Clone() ros2types.ROS2Msg {
+func (t *TaskStackInfo) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *TaskStackInfo) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TaskStackInfoTypeSupport types.MessageTypeSupport = _TaskStackInfoTypeSupport{}
+
+type _TaskStackInfoTypeSupport struct{}
+
+func (t _TaskStackInfoTypeSupport) New() types.Message {
+	return NewTaskStackInfo()
+}
+
+func (t _TaskStackInfoTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__TaskStackInfo
+	return (unsafe.Pointer)(C.px4_msgs__msg__TaskStackInfo__create())
+}
+
+func (t _TaskStackInfoTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__TaskStackInfo__destroy((*C.px4_msgs__msg__TaskStackInfo)(pointer_to_free))
+}
+
+func (t _TaskStackInfoTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*TaskStackInfo)
+	mem := (*C.px4_msgs__msg__TaskStackInfo)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.stack_free = C.uint16_t(m.StackFree)
+	cSlice_task_name := mem.task_name[:]
+	rosidl_runtime_c.Char__Array_to_C(*(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_task_name)), m.TaskName[:])
+}
+
+func (t _TaskStackInfoTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*TaskStackInfo)
+	mem := (*C.px4_msgs__msg__TaskStackInfo)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.StackFree = uint16(mem.stack_free)
+	cSlice_task_name := mem.task_name[:]
+	rosidl_runtime_c.Char__Array_to_Go(m.TaskName[:], *(*[]rosidl_runtime_c.CChar)(unsafe.Pointer(&cSlice_task_name)))
+}
+
+func (t _TaskStackInfoTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__TaskStackInfo())
 }
 
 type CTaskStackInfo = C.px4_msgs__msg__TaskStackInfo
@@ -101,8 +115,7 @@ func TaskStackInfo__Sequence_to_Go(goSlice *[]TaskStackInfo, cSlice CTaskStackIn
 		cIdx := (*C.px4_msgs__msg__TaskStackInfo__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__TaskStackInfo * uintptr(i)),
 		))
-		(*goSlice)[i] = TaskStackInfo{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TaskStackInfoTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func TaskStackInfo__Sequence_to_C(cSlice *CTaskStackInfo__Sequence, goSlice []TaskStackInfo) {
@@ -117,18 +130,16 @@ func TaskStackInfo__Sequence_to_C(cSlice *CTaskStackInfo__Sequence, goSlice []Ta
 		cIdx := (*C.px4_msgs__msg__TaskStackInfo)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__TaskStackInfo * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__TaskStackInfo)(v.AsCStruct())
+		TaskStackInfoTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func TaskStackInfo__Array_to_Go(goSlice []TaskStackInfo, cSlice []CTaskStackInfo) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TaskStackInfoTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func TaskStackInfo__Array_to_C(cSlice []CTaskStackInfo, goSlice []TaskStackInfo) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__TaskStackInfo)(goSlice[i].AsCStruct())
+		TaskStackInfoTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

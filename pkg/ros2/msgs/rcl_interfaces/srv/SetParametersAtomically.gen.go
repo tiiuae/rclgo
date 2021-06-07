@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("rcl_interfaces/SetParametersAtomically", SetParametersAtomically)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("rcl_interfaces/SetParametersAtomically", SetParametersAtomicallyTypeSupport)
 }
 
-type _SetParametersAtomically struct {
-	req,resp ros2types.ROS2Msg
+type _SetParametersAtomicallyTypeSupport struct {}
+
+func (s _SetParametersAtomicallyTypeSupport) Request() types.MessageTypeSupport {
+	return SetParametersAtomically_RequestTypeSupport
 }
 
-func (s *_SetParametersAtomically) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _SetParametersAtomicallyTypeSupport) Response() types.MessageTypeSupport {
+	return SetParametersAtomically_ResponseTypeSupport
 }
 
-func (s *_SetParametersAtomically) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_SetParametersAtomically) TypeSupport() unsafe.Pointer {
+func (s _SetParametersAtomicallyTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__rcl_interfaces__srv__SetParametersAtomically())
 }
 
 // Modifying this variable is undefined behavior.
-var SetParametersAtomically ros2types.Service = &_SetParametersAtomically{
-	req: &SetParametersAtomically_Request{},
-	resp: &SetParametersAtomically_Response{},
-}
+var SetParametersAtomicallyTypeSupport types.ServiceTypeSupport = _SetParametersAtomicallyTypeSupport{}

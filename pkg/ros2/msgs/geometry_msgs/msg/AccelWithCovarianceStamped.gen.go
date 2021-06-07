@@ -15,7 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/AccelWithCovarianceStamped", &AccelWithCovarianceStamped{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/AccelWithCovarianceStamped", AccelWithCovarianceStampedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewAccelWithCovarianceStamped
@@ -48,40 +48,54 @@ type AccelWithCovarianceStamped struct {
 // NewAccelWithCovarianceStamped creates a new AccelWithCovarianceStamped with default values.
 func NewAccelWithCovarianceStamped() *AccelWithCovarianceStamped {
 	self := AccelWithCovarianceStamped{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *AccelWithCovarianceStamped) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.Accel.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *AccelWithCovarianceStamped) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__AccelWithCovarianceStamped())
-}
-func (t *AccelWithCovarianceStamped) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__AccelWithCovarianceStamped
-	return (unsafe.Pointer)(C.geometry_msgs__msg__AccelWithCovarianceStamped__create())
-}
-func (t *AccelWithCovarianceStamped) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.geometry_msgs__msg__AccelWithCovarianceStamped__destroy((*C.geometry_msgs__msg__AccelWithCovarianceStamped)(pointer_to_free))
-}
-func (t *AccelWithCovarianceStamped) AsCStruct() unsafe.Pointer {
-	mem := (*C.geometry_msgs__msg__AccelWithCovarianceStamped)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.accel = *(*C.geometry_msgs__msg__AccelWithCovariance)(t.Accel.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *AccelWithCovarianceStamped) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.geometry_msgs__msg__AccelWithCovarianceStamped)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.Accel.AsGoStruct(unsafe.Pointer(&mem.accel))
-}
-func (t *AccelWithCovarianceStamped) Clone() ros2types.ROS2Msg {
+func (t *AccelWithCovarianceStamped) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *AccelWithCovarianceStamped) SetDefaults() {
+	t.Header.SetDefaults()
+	t.Accel.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var AccelWithCovarianceStampedTypeSupport types.MessageTypeSupport = _AccelWithCovarianceStampedTypeSupport{}
+
+type _AccelWithCovarianceStampedTypeSupport struct{}
+
+func (t _AccelWithCovarianceStampedTypeSupport) New() types.Message {
+	return NewAccelWithCovarianceStamped()
+}
+
+func (t _AccelWithCovarianceStampedTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__AccelWithCovarianceStamped
+	return (unsafe.Pointer)(C.geometry_msgs__msg__AccelWithCovarianceStamped__create())
+}
+
+func (t _AccelWithCovarianceStampedTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.geometry_msgs__msg__AccelWithCovarianceStamped__destroy((*C.geometry_msgs__msg__AccelWithCovarianceStamped)(pointer_to_free))
+}
+
+func (t _AccelWithCovarianceStampedTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*AccelWithCovarianceStamped)
+	mem := (*C.geometry_msgs__msg__AccelWithCovarianceStamped)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	AccelWithCovarianceTypeSupport.AsCStruct(unsafe.Pointer(&mem.accel), &m.Accel)
+}
+
+func (t _AccelWithCovarianceStampedTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*AccelWithCovarianceStamped)
+	mem := (*C.geometry_msgs__msg__AccelWithCovarianceStamped)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	AccelWithCovarianceTypeSupport.AsGoStruct(&m.Accel, unsafe.Pointer(&mem.accel))
+}
+
+func (t _AccelWithCovarianceStampedTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__AccelWithCovarianceStamped())
 }
 
 type CAccelWithCovarianceStamped = C.geometry_msgs__msg__AccelWithCovarianceStamped
@@ -96,8 +110,7 @@ func AccelWithCovarianceStamped__Sequence_to_Go(goSlice *[]AccelWithCovarianceSt
 		cIdx := (*C.geometry_msgs__msg__AccelWithCovarianceStamped__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__AccelWithCovarianceStamped * uintptr(i)),
 		))
-		(*goSlice)[i] = AccelWithCovarianceStamped{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		AccelWithCovarianceStampedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func AccelWithCovarianceStamped__Sequence_to_C(cSlice *CAccelWithCovarianceStamped__Sequence, goSlice []AccelWithCovarianceStamped) {
@@ -112,18 +125,16 @@ func AccelWithCovarianceStamped__Sequence_to_C(cSlice *CAccelWithCovarianceStamp
 		cIdx := (*C.geometry_msgs__msg__AccelWithCovarianceStamped)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__AccelWithCovarianceStamped * uintptr(i)),
 		))
-		*cIdx = *(*C.geometry_msgs__msg__AccelWithCovarianceStamped)(v.AsCStruct())
+		AccelWithCovarianceStampedTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func AccelWithCovarianceStamped__Array_to_Go(goSlice []AccelWithCovarianceStamped, cSlice []CAccelWithCovarianceStamped) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		AccelWithCovarianceStampedTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func AccelWithCovarianceStamped__Array_to_C(cSlice []CAccelWithCovarianceStamped, goSlice []AccelWithCovarianceStamped) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.geometry_msgs__msg__AccelWithCovarianceStamped)(goSlice[i].AsCStruct())
+		AccelWithCovarianceStampedTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

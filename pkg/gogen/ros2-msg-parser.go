@@ -267,42 +267,53 @@ func translateROS2Type(f *ROS2Field, m *ROS2Message) (pkgName string, cType stri
 }
 
 func cSerializationCode(f *ROS2Field, m *ROS2Message) string {
-
+	if f.PkgName == "" {
+	}
 	if f.TypeArray != "" && f.ArraySize > 0 && f.PkgName != "" && f.PkgIsLocal {
 		// Complex value Array local package reference
-		return ucFirst(f.RosType) + `__Array_to_C(mem.` + f.CName + `[:], t.` + f.GoName + `[:])`
+		return ucFirst(f.RosType) + `__Array_to_C(mem.` + f.CName + `[:], m.` + f.GoName + `[:])`
 
 	} else if f.TypeArray != "" && f.ArraySize > 0 && f.PkgName != "" && !f.PkgIsLocal {
 		// Complex value Array remote package reference
 		return `cSlice_` + f.RosName + ` := mem.` + f.CName + `[:]
-	` + f.GoPkgReference() + ucFirst(f.RosType) + `__Array_to_C(*(*[]` + f.GoPkgReference() + `C` + ucFirst(f.RosType) + `)(unsafe.Pointer(&cSlice_` + f.RosName + `)), t.` + f.GoName + `[:])`
+	` + f.GoPkgReference() + ucFirst(f.RosType) + `__Array_to_C(*(*[]` + f.GoPkgReference() + `C` + ucFirst(f.RosType) + `)(unsafe.Pointer(&cSlice_` + f.RosName + `)), m.` + f.GoName + `[:])`
 	} else if f.TypeArray != "" && f.ArraySize == 0 && f.PkgName != "" && f.PkgIsLocal {
 		// Complex value Slice local package reference
-		return ucFirst(f.RosType) + `__Sequence_to_C(&mem.` + f.CName + `, t.` + f.GoName + `)`
+		return ucFirst(f.RosType) + `__Sequence_to_C(&mem.` + f.CName + `, m.` + f.GoName + `)`
 
 	} else if f.TypeArray != "" && f.ArraySize == 0 && f.PkgName != "" && !f.PkgIsLocal {
 		// Complex value Slice remote package reference
-		return f.GoPkgReference() + ucFirst(f.RosType) + `__Sequence_to_C((*` + f.GoPkgReference() + `C` + ucFirst(f.RosType) + `__Sequence)(unsafe.Pointer(&mem.` + f.CName + `)), t.` + f.GoName + `)`
+		return f.GoPkgReference() + ucFirst(f.RosType) + `__Sequence_to_C((*` + f.GoPkgReference() + `C` + ucFirst(f.RosType) + `__Sequence)(unsafe.Pointer(&mem.` + f.CName + `)), m.` + f.GoName + `)`
 
 	} else if f.TypeArray == "" && f.PkgName != "" {
 		// Complex value single
-		return `mem.` + f.CName + ` = *(*C.` + cStructName(f, m) + `)(t.` + f.GoName + `.AsCStruct())`
+		return f.GoPkgReference() + f.GoType + "TypeSupport.AsCStruct(unsafe.Pointer(&mem." + f.CName + "), &m." + f.GoName + ")"
 
 	} else if f.TypeArray != "" && f.ArraySize > 0 && f.PkgName == "" {
 		// Primitive value Array
 		m.GoImports["github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"] = "rosidl_runtime_c"
 		return `cSlice_` + f.RosName + ` := mem.` + f.CName + `[:]
-	` + `rosidl_runtime_c.` + ucFirst(f.RosType) + `__Array_to_C(*(*[]rosidl_runtime_c.C` + ucFirst(f.RosType) + `)(unsafe.Pointer(&cSlice_` + f.RosName + `)), t.` + f.GoName + `[:])`
+	` + `rosidl_runtime_c.` + ucFirst(f.RosType) + `__Array_to_C(*(*[]rosidl_runtime_c.C` + ucFirst(f.RosType) + `)(unsafe.Pointer(&cSlice_` + f.RosName + `)), m.` + f.GoName + `[:])`
 
 	} else if f.TypeArray != "" && f.ArraySize == 0 && f.PkgName == "" {
 		// Primitive value Slice
 		m.GoImports["github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"] = "rosidl_runtime_c"
-		return `rosidl_runtime_c.` + ucFirst(f.RosType) + `__Sequence_to_C((*rosidl_runtime_c.C` + ucFirst(f.RosType) + `__Sequence)(unsafe.Pointer(&mem.` + f.CName + `)), t.` + f.GoName + `)`
+		return `rosidl_runtime_c.` + ucFirst(f.RosType) + `__Sequence_to_C((*rosidl_runtime_c.C` + ucFirst(f.RosType) + `__Sequence)(unsafe.Pointer(&mem.` + f.CName + `)), m.` + f.GoName + `)`
 
 	} else if f.TypeArray == "" && f.PkgName == "" {
 		// Primitive value single
-		return `mem.` + f.CName + ` = C.` + f.CType + `(t.` + f.GoName + `)`
 
+		// string and U16String are special cases because they have custom
+		// serialization implementations but still use a non-generated type in
+		// generated message fields.
+		if f.RosType == "string" {
+			m.GoImports["github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"] = "rosidl_runtime_c"
+			return "rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem." + f.CName + "), m." + f.GoName + ")"
+		} else if f.RosType == "U16String" {
+			m.GoImports["github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"] = "rosidl_runtime_c"
+			return "rosidl_runtime_c.U16StringAsCStruct(unsafe.Pointer(&mem." + f.CName + "), m." + f.GoName + ")"
+		}
+		return `mem.` + f.CName + ` = C.` + f.CType + `(m.` + f.GoName + `)`
 	}
 	return "//<MISSING cSerializationCode!!>"
 }
@@ -324,39 +335,50 @@ func goSerializationCode(f *ROS2Field, m *ROS2Message) string {
 
 	if f.TypeArray != "" && f.ArraySize > 0 && f.PkgName != "" && f.PkgIsLocal {
 		// Complex value Array local package reference
-		return ucFirst(f.RosType) + `__Array_to_Go(t.` + f.GoName + `[:], mem.` + f.CName + `[:])`
+		return ucFirst(f.RosType) + `__Array_to_Go(m.` + f.GoName + `[:], mem.` + f.CName + `[:])`
 
 	} else if f.TypeArray != "" && f.ArraySize > 0 && f.PkgName != "" {
 		// Complex value Array remote package reference
 		return `cSlice_` + f.RosName + ` := mem.` + f.CName + `[:]
-	` + f.GoPkgReference() + ucFirst(f.RosType) + `__Array_to_Go(t.` + f.GoName + `[:], *(*[]` + f.GoPkgReference() + `C` + ucFirst(f.RosType) + `)(unsafe.Pointer(&cSlice_` + f.RosName + `)))`
+	` + f.GoPkgReference() + ucFirst(f.RosType) + `__Array_to_Go(m.` + f.GoName + `[:], *(*[]` + f.GoPkgReference() + `C` + ucFirst(f.RosType) + `)(unsafe.Pointer(&cSlice_` + f.RosName + `)))`
 
 	} else if f.TypeArray != "" && f.ArraySize == 0 && f.PkgName != "" && f.PkgIsLocal {
 		// Complex value Slice local package reference
-		return ucFirst(f.RosType) + `__Sequence_to_Go(&t.` + f.GoName + `, mem.` + f.CName + `)`
+		return ucFirst(f.RosType) + `__Sequence_to_Go(&m.` + f.GoName + `, mem.` + f.CName + `)`
 
 	} else if f.TypeArray != "" && f.ArraySize == 0 && f.PkgName != "" && !f.PkgIsLocal {
 		// Complex value Slice remote package reference
-		return f.GoPkgReference() + ucFirst(f.RosType) + `__Sequence_to_Go(&t.` + f.GoName + `, *(*` + f.GoPkgReference() + `C` + ucFirst(f.RosType) + `__Sequence)(unsafe.Pointer(&mem.` + f.CName + `)))`
+		return f.GoPkgReference() + ucFirst(f.RosType) + `__Sequence_to_Go(&m.` + f.GoName + `, *(*` + f.GoPkgReference() + `C` + ucFirst(f.RosType) + `__Sequence)(unsafe.Pointer(&mem.` + f.CName + `)))`
 
 	} else if f.TypeArray == "" && f.PkgName != "" {
 		// Complex value single
-		return `t.` + f.GoName + `.AsGoStruct(unsafe.Pointer(&mem.` + f.CName + `))`
+		return f.GoPkgReference() + f.GoType + "TypeSupport.AsGoStruct(&m." + f.GoName + ", unsafe.Pointer(&mem." + f.CName + "))"
 
 	} else if f.TypeArray != "" && f.ArraySize > 0 && f.PkgName == "" {
 		// Primitive value Array
 		m.GoImports["github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"] = "rosidl_runtime_c"
 		return `cSlice_` + f.RosName + ` := mem.` + f.CName + `[:]
-	` + `rosidl_runtime_c.` + ucFirst(f.RosType) + `__Array_to_Go(t.` + f.GoName + `[:], *(*[]rosidl_runtime_c.C` + ucFirst(f.RosType) + `)(unsafe.Pointer(&cSlice_` + f.RosName + `)))`
+	` + `rosidl_runtime_c.` + ucFirst(f.RosType) + `__Array_to_Go(m.` + f.GoName + `[:], *(*[]rosidl_runtime_c.C` + ucFirst(f.RosType) + `)(unsafe.Pointer(&cSlice_` + f.RosName + `)))`
 
 	} else if f.TypeArray != "" && f.ArraySize == 0 && f.PkgName == "" {
 		// Primitive value Slice
 		m.GoImports["github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"] = "rosidl_runtime_c"
-		return `rosidl_runtime_c.` + ucFirst(f.RosType) + `__Sequence_to_Go(&t.` + f.GoName + `, *(*rosidl_runtime_c.C` + ucFirst(f.RosType) + `__Sequence)(unsafe.Pointer(&mem.` + f.CName + `)))`
+		return `rosidl_runtime_c.` + ucFirst(f.RosType) + `__Sequence_to_Go(&m.` + f.GoName + `, *(*rosidl_runtime_c.C` + ucFirst(f.RosType) + `__Sequence)(unsafe.Pointer(&mem.` + f.CName + `)))`
 
 	} else if f.TypeArray == "" && f.PkgName == "" {
 		// Primitive value single
-		return `t.` + f.GoName + ` = ` + f.GoType + `(mem.` + f.CName + `)`
+
+		// string and U16String are special cases because they have custom
+		// serialization implementations but still use a non-generated type in
+		// generated message fields.
+		if f.RosType == "string" {
+			m.GoImports["github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"] = "rosidl_runtime_c"
+			return "rosidl_runtime_c.StringAsGoStruct(&m." + f.GoName + ", unsafe.Pointer(&mem." + f.CName + "))"
+		} else if f.RosType == "U16String" {
+			m.GoImports["github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"] = "rosidl_runtime_c"
+			return "rosidl_runtime_c.U16StringAsGoStruct(&m." + f.GoName + ", unsafe.Pointer(&mem." + f.CName + "))"
+		}
+		return `m.` + f.GoName + ` = ` + f.GoType + `(mem.` + f.CName + `)`
 
 	}
 	return "//<MISSING goSerializationCode!!>"
@@ -379,25 +401,25 @@ func defaultCode(f *ROS2Field) string {
 		}
 
 		for i := 0; i < indexesCount; i++ {
-			defaultValue := "nil"
-			if i < len(defaultValues) {
-				defaultValue = defaultValues[i]
-			}
-			sb.WriteString(`t.` + f.GoName + `[` + strconv.Itoa(i) + `].SetDefaults(` + ValOrNil(defaultValue) + ")\n\t")
+			sb.WriteString(`t.` + f.GoName + `[` + strconv.Itoa(i) + "].SetDefaults()\n\t")
 		}
 		return sb.String()
 
 	} else if f.PkgName != "" && f.TypeArray == "" {
 		// Complex value single
-		return `t.` + f.GoName + `.SetDefaults(` + ValOrNil(defaultValueSanitizer(f.RosType, f.DefaultValue)) + `)` + "\n\t"
+		return `t.` + f.GoName + ".SetDefaults()\n\t"
 
 	} else if f.DefaultValue != "" && f.TypeArray != "" {
-		// Primitive value array
-		return `t.` + f.GoName + ` = ` + f.TypeArray + f.GoPkgReference() + f.GoType + `{` + normalizeMsgDefaultArrayValue(f.DefaultValue) + `}` + "\n\t"
+		// Primitive value array and slice
+		defaultValues := splitMsgDefaultArrayValues(f.RosType, f.DefaultValue)
+		for i := range defaultValues {
+			defaultValues[i] = defaultValueSanitizer(f.RosType, defaultValues[i])
+		}
+		return `t.` + f.GoName + ` = ` + f.TypeArray + f.GoPkgReference() + f.GoType + `{` + strings.Join(defaultValues, ",") + `}` + "\n\t"
 
 	} else if f.DefaultValue != "" {
 		// Primitive value single
-		return `t.` + f.GoName + ` = ` + f.DefaultValue + "\n\t"
+		return `t.` + f.GoName + ` = ` + defaultValueSanitizer(f.RosType, f.DefaultValue) + "\n\t"
 
 	} else if f.DefaultValue == "" {
 		return ""

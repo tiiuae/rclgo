@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/MagWorkerData", &MagWorkerData{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/MagWorkerData", MagWorkerDataTypeSupport)
 }
 const (
 	MagWorkerData_MAX_MAGS uint8 = 4
@@ -58,64 +58,78 @@ type MagWorkerData struct {
 // NewMagWorkerData creates a new MagWorkerData with default values.
 func NewMagWorkerData() *MagWorkerData {
 	self := MagWorkerData{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *MagWorkerData) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *MagWorkerData) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__MagWorkerData())
-}
-func (t *MagWorkerData) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__MagWorkerData
-	return (unsafe.Pointer)(C.px4_msgs__msg__MagWorkerData__create())
-}
-func (t *MagWorkerData) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__MagWorkerData__destroy((*C.px4_msgs__msg__MagWorkerData)(pointer_to_free))
-}
-func (t *MagWorkerData) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__MagWorkerData)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	mem.done_count = C.uint32_t(t.DoneCount)
-	mem.calibration_points_perside = C.uint32_t(t.CalibrationPointsPerside)
-	mem.calibration_interval_perside_us = C.uint64_t(t.CalibrationIntervalPersideUs)
-	cSlice_calibration_counter_total := mem.calibration_counter_total[:]
-	rosidl_runtime_c.Uint32__Array_to_C(*(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_calibration_counter_total)), t.CalibrationCounterTotal[:])
-	cSlice_side_data_collected := mem.side_data_collected[:]
-	rosidl_runtime_c.Bool__Array_to_C(*(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_side_data_collected)), t.SideDataCollected[:])
-	cSlice_x := mem.x[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_x)), t.X[:])
-	cSlice_y := mem.y[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_y)), t.Y[:])
-	cSlice_z := mem.z[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_z)), t.Z[:])
-	return unsafe.Pointer(mem)
-}
-func (t *MagWorkerData) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__MagWorkerData)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	t.DoneCount = uint32(mem.done_count)
-	t.CalibrationPointsPerside = uint32(mem.calibration_points_perside)
-	t.CalibrationIntervalPersideUs = uint64(mem.calibration_interval_perside_us)
-	cSlice_calibration_counter_total := mem.calibration_counter_total[:]
-	rosidl_runtime_c.Uint32__Array_to_Go(t.CalibrationCounterTotal[:], *(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_calibration_counter_total)))
-	cSlice_side_data_collected := mem.side_data_collected[:]
-	rosidl_runtime_c.Bool__Array_to_Go(t.SideDataCollected[:], *(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_side_data_collected)))
-	cSlice_x := mem.x[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.X[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_x)))
-	cSlice_y := mem.y[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Y[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_y)))
-	cSlice_z := mem.z[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Z[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_z)))
-}
-func (t *MagWorkerData) Clone() ros2types.ROS2Msg {
+func (t *MagWorkerData) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *MagWorkerData) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var MagWorkerDataTypeSupport types.MessageTypeSupport = _MagWorkerDataTypeSupport{}
+
+type _MagWorkerDataTypeSupport struct{}
+
+func (t _MagWorkerDataTypeSupport) New() types.Message {
+	return NewMagWorkerData()
+}
+
+func (t _MagWorkerDataTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__MagWorkerData
+	return (unsafe.Pointer)(C.px4_msgs__msg__MagWorkerData__create())
+}
+
+func (t _MagWorkerDataTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__MagWorkerData__destroy((*C.px4_msgs__msg__MagWorkerData)(pointer_to_free))
+}
+
+func (t _MagWorkerDataTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*MagWorkerData)
+	mem := (*C.px4_msgs__msg__MagWorkerData)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	mem.done_count = C.uint32_t(m.DoneCount)
+	mem.calibration_points_perside = C.uint32_t(m.CalibrationPointsPerside)
+	mem.calibration_interval_perside_us = C.uint64_t(m.CalibrationIntervalPersideUs)
+	cSlice_calibration_counter_total := mem.calibration_counter_total[:]
+	rosidl_runtime_c.Uint32__Array_to_C(*(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_calibration_counter_total)), m.CalibrationCounterTotal[:])
+	cSlice_side_data_collected := mem.side_data_collected[:]
+	rosidl_runtime_c.Bool__Array_to_C(*(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_side_data_collected)), m.SideDataCollected[:])
+	cSlice_x := mem.x[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_x)), m.X[:])
+	cSlice_y := mem.y[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_y)), m.Y[:])
+	cSlice_z := mem.z[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_z)), m.Z[:])
+}
+
+func (t _MagWorkerDataTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*MagWorkerData)
+	mem := (*C.px4_msgs__msg__MagWorkerData)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	m.DoneCount = uint32(mem.done_count)
+	m.CalibrationPointsPerside = uint32(mem.calibration_points_perside)
+	m.CalibrationIntervalPersideUs = uint64(mem.calibration_interval_perside_us)
+	cSlice_calibration_counter_total := mem.calibration_counter_total[:]
+	rosidl_runtime_c.Uint32__Array_to_Go(m.CalibrationCounterTotal[:], *(*[]rosidl_runtime_c.CUint32)(unsafe.Pointer(&cSlice_calibration_counter_total)))
+	cSlice_side_data_collected := mem.side_data_collected[:]
+	rosidl_runtime_c.Bool__Array_to_Go(m.SideDataCollected[:], *(*[]rosidl_runtime_c.CBool)(unsafe.Pointer(&cSlice_side_data_collected)))
+	cSlice_x := mem.x[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.X[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_x)))
+	cSlice_y := mem.y[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Y[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_y)))
+	cSlice_z := mem.z[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Z[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_z)))
+}
+
+func (t _MagWorkerDataTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__MagWorkerData())
 }
 
 type CMagWorkerData = C.px4_msgs__msg__MagWorkerData
@@ -130,8 +144,7 @@ func MagWorkerData__Sequence_to_Go(goSlice *[]MagWorkerData, cSlice CMagWorkerDa
 		cIdx := (*C.px4_msgs__msg__MagWorkerData__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__MagWorkerData * uintptr(i)),
 		))
-		(*goSlice)[i] = MagWorkerData{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		MagWorkerDataTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func MagWorkerData__Sequence_to_C(cSlice *CMagWorkerData__Sequence, goSlice []MagWorkerData) {
@@ -146,18 +159,16 @@ func MagWorkerData__Sequence_to_C(cSlice *CMagWorkerData__Sequence, goSlice []Ma
 		cIdx := (*C.px4_msgs__msg__MagWorkerData)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__MagWorkerData * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__MagWorkerData)(v.AsCStruct())
+		MagWorkerDataTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func MagWorkerData__Array_to_Go(goSlice []MagWorkerData, cSlice []CMagWorkerData) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		MagWorkerDataTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func MagWorkerData__Array_to_C(cSlice []CMagWorkerData, goSlice []MagWorkerData) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__MagWorkerData)(goSlice[i].AsCStruct())
+		MagWorkerDataTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

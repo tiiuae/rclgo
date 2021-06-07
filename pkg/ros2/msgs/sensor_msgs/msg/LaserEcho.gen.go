@@ -15,7 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/LaserEcho", &LaserEcho{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/LaserEcho", LaserEchoTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewLaserEcho
@@ -46,36 +46,50 @@ type LaserEcho struct {
 // NewLaserEcho creates a new LaserEcho with default values.
 func NewLaserEcho() *LaserEcho {
 	self := LaserEcho{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *LaserEcho) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *LaserEcho) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__LaserEcho())
-}
-func (t *LaserEcho) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__LaserEcho
-	return (unsafe.Pointer)(C.sensor_msgs__msg__LaserEcho__create())
-}
-func (t *LaserEcho) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__msg__LaserEcho__destroy((*C.sensor_msgs__msg__LaserEcho)(pointer_to_free))
-}
-func (t *LaserEcho) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__msg__LaserEcho)(t.PrepareMemory())
-	rosidl_runtime_c.Float32__Sequence_to_C((*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.echoes)), t.Echoes)
-	return unsafe.Pointer(mem)
-}
-func (t *LaserEcho) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__msg__LaserEcho)(ros2_message_buffer)
-	rosidl_runtime_c.Float32__Sequence_to_Go(&t.Echoes, *(*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.echoes)))
-}
-func (t *LaserEcho) Clone() ros2types.ROS2Msg {
+func (t *LaserEcho) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *LaserEcho) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var LaserEchoTypeSupport types.MessageTypeSupport = _LaserEchoTypeSupport{}
+
+type _LaserEchoTypeSupport struct{}
+
+func (t _LaserEchoTypeSupport) New() types.Message {
+	return NewLaserEcho()
+}
+
+func (t _LaserEchoTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__LaserEcho
+	return (unsafe.Pointer)(C.sensor_msgs__msg__LaserEcho__create())
+}
+
+func (t _LaserEchoTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__msg__LaserEcho__destroy((*C.sensor_msgs__msg__LaserEcho)(pointer_to_free))
+}
+
+func (t _LaserEchoTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*LaserEcho)
+	mem := (*C.sensor_msgs__msg__LaserEcho)(dst)
+	rosidl_runtime_c.Float32__Sequence_to_C((*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.echoes)), m.Echoes)
+}
+
+func (t _LaserEchoTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*LaserEcho)
+	mem := (*C.sensor_msgs__msg__LaserEcho)(ros2_message_buffer)
+	rosidl_runtime_c.Float32__Sequence_to_Go(&m.Echoes, *(*rosidl_runtime_c.CFloat32__Sequence)(unsafe.Pointer(&mem.echoes)))
+}
+
+func (t _LaserEchoTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__LaserEcho())
 }
 
 type CLaserEcho = C.sensor_msgs__msg__LaserEcho
@@ -90,8 +104,7 @@ func LaserEcho__Sequence_to_Go(goSlice *[]LaserEcho, cSlice CLaserEcho__Sequence
 		cIdx := (*C.sensor_msgs__msg__LaserEcho__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__LaserEcho * uintptr(i)),
 		))
-		(*goSlice)[i] = LaserEcho{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		LaserEchoTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func LaserEcho__Sequence_to_C(cSlice *CLaserEcho__Sequence, goSlice []LaserEcho) {
@@ -106,18 +119,16 @@ func LaserEcho__Sequence_to_C(cSlice *CLaserEcho__Sequence, goSlice []LaserEcho)
 		cIdx := (*C.sensor_msgs__msg__LaserEcho)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__LaserEcho * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__msg__LaserEcho)(v.AsCStruct())
+		LaserEchoTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func LaserEcho__Array_to_Go(goSlice []LaserEcho, cSlice []CLaserEcho) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		LaserEchoTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func LaserEcho__Array_to_C(cSlice []CLaserEcho, goSlice []LaserEcho) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__msg__LaserEcho)(goSlice[i].AsCStruct())
+		LaserEchoTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -49,7 +49,7 @@ var echoCmd = &cobra.Command{
 			viper.GetString("msg-type"),
 			ros2.NewRCLArgsMust(viper.GetString("ros-args")),
 			func(s *ros2.Subscription) {
-				msg := s.Ros2MsgType.Clone()
+				msg := s.Ros2MsgType.New()
 				rmi, err := s.TakeMessage(msg)
 				if err != nil {
 					fmt.Println("failed to take message:", err)

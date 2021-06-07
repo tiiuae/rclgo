@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/OffboardControlMode", &OffboardControlMode{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/OffboardControlMode", OffboardControlModeTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewOffboardControlMode
@@ -50,46 +50,60 @@ type OffboardControlMode struct {
 // NewOffboardControlMode creates a new OffboardControlMode with default values.
 func NewOffboardControlMode() *OffboardControlMode {
 	self := OffboardControlMode{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *OffboardControlMode) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *OffboardControlMode) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__OffboardControlMode())
-}
-func (t *OffboardControlMode) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__OffboardControlMode
-	return (unsafe.Pointer)(C.px4_msgs__msg__OffboardControlMode__create())
-}
-func (t *OffboardControlMode) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__OffboardControlMode__destroy((*C.px4_msgs__msg__OffboardControlMode)(pointer_to_free))
-}
-func (t *OffboardControlMode) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__OffboardControlMode)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.position = C.bool(t.Position)
-	mem.velocity = C.bool(t.Velocity)
-	mem.acceleration = C.bool(t.Acceleration)
-	mem.attitude = C.bool(t.Attitude)
-	mem.body_rate = C.bool(t.BodyRate)
-	return unsafe.Pointer(mem)
-}
-func (t *OffboardControlMode) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__OffboardControlMode)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Position = bool(mem.position)
-	t.Velocity = bool(mem.velocity)
-	t.Acceleration = bool(mem.acceleration)
-	t.Attitude = bool(mem.attitude)
-	t.BodyRate = bool(mem.body_rate)
-}
-func (t *OffboardControlMode) Clone() ros2types.ROS2Msg {
+func (t *OffboardControlMode) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *OffboardControlMode) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var OffboardControlModeTypeSupport types.MessageTypeSupport = _OffboardControlModeTypeSupport{}
+
+type _OffboardControlModeTypeSupport struct{}
+
+func (t _OffboardControlModeTypeSupport) New() types.Message {
+	return NewOffboardControlMode()
+}
+
+func (t _OffboardControlModeTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__OffboardControlMode
+	return (unsafe.Pointer)(C.px4_msgs__msg__OffboardControlMode__create())
+}
+
+func (t _OffboardControlModeTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__OffboardControlMode__destroy((*C.px4_msgs__msg__OffboardControlMode)(pointer_to_free))
+}
+
+func (t _OffboardControlModeTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*OffboardControlMode)
+	mem := (*C.px4_msgs__msg__OffboardControlMode)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.position = C.bool(m.Position)
+	mem.velocity = C.bool(m.Velocity)
+	mem.acceleration = C.bool(m.Acceleration)
+	mem.attitude = C.bool(m.Attitude)
+	mem.body_rate = C.bool(m.BodyRate)
+}
+
+func (t _OffboardControlModeTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*OffboardControlMode)
+	mem := (*C.px4_msgs__msg__OffboardControlMode)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Position = bool(mem.position)
+	m.Velocity = bool(mem.velocity)
+	m.Acceleration = bool(mem.acceleration)
+	m.Attitude = bool(mem.attitude)
+	m.BodyRate = bool(mem.body_rate)
+}
+
+func (t _OffboardControlModeTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__OffboardControlMode())
 }
 
 type COffboardControlMode = C.px4_msgs__msg__OffboardControlMode
@@ -104,8 +118,7 @@ func OffboardControlMode__Sequence_to_Go(goSlice *[]OffboardControlMode, cSlice 
 		cIdx := (*C.px4_msgs__msg__OffboardControlMode__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__OffboardControlMode * uintptr(i)),
 		))
-		(*goSlice)[i] = OffboardControlMode{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		OffboardControlModeTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func OffboardControlMode__Sequence_to_C(cSlice *COffboardControlMode__Sequence, goSlice []OffboardControlMode) {
@@ -120,18 +133,16 @@ func OffboardControlMode__Sequence_to_C(cSlice *COffboardControlMode__Sequence, 
 		cIdx := (*C.px4_msgs__msg__OffboardControlMode)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__OffboardControlMode * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__OffboardControlMode)(v.AsCStruct())
+		OffboardControlModeTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func OffboardControlMode__Array_to_Go(goSlice []OffboardControlMode, cSlice []COffboardControlMode) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		OffboardControlModeTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func OffboardControlMode__Array_to_C(cSlice []COffboardControlMode, goSlice []OffboardControlMode) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__OffboardControlMode)(goSlice[i].AsCStruct())
+		OffboardControlModeTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

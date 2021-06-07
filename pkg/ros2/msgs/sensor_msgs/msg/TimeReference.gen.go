@@ -15,7 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	builtin_interfaces_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/builtin_interfaces/msg"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
@@ -38,7 +38,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/TimeReference", &TimeReference{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/TimeReference", TimeReferenceTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTimeReference
@@ -46,49 +46,62 @@ func init() {
 type TimeReference struct {
 	Header std_msgs_msg.Header `yaml:"header"`// stamp is system time for which measurement was valid
 	TimeRef builtin_interfaces_msg.Time `yaml:"time_ref"`// corresponding time from this external source
-	Source rosidl_runtime_c.String `yaml:"source"`// (optional) name of time source
+	Source string `yaml:"source"`// (optional) name of time source
 }
 
 // NewTimeReference creates a new TimeReference with default values.
 func NewTimeReference() *TimeReference {
 	self := TimeReference{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *TimeReference) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	t.TimeRef.SetDefaults(nil)
-	t.Source.SetDefaults("")
-	
-	return t
-}
-
-func (t *TimeReference) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__TimeReference())
-}
-func (t *TimeReference) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__TimeReference
-	return (unsafe.Pointer)(C.sensor_msgs__msg__TimeReference__create())
-}
-func (t *TimeReference) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__msg__TimeReference__destroy((*C.sensor_msgs__msg__TimeReference)(pointer_to_free))
-}
-func (t *TimeReference) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__msg__TimeReference)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	mem.time_ref = *(*C.builtin_interfaces__msg__Time)(t.TimeRef.AsCStruct())
-	mem.source = *(*C.rosidl_runtime_c__String)(t.Source.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *TimeReference) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__msg__TimeReference)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	t.TimeRef.AsGoStruct(unsafe.Pointer(&mem.time_ref))
-	t.Source.AsGoStruct(unsafe.Pointer(&mem.source))
-}
-func (t *TimeReference) Clone() ros2types.ROS2Msg {
+func (t *TimeReference) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *TimeReference) SetDefaults() {
+	t.Header.SetDefaults()
+	t.TimeRef.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var TimeReferenceTypeSupport types.MessageTypeSupport = _TimeReferenceTypeSupport{}
+
+type _TimeReferenceTypeSupport struct{}
+
+func (t _TimeReferenceTypeSupport) New() types.Message {
+	return NewTimeReference()
+}
+
+func (t _TimeReferenceTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__TimeReference
+	return (unsafe.Pointer)(C.sensor_msgs__msg__TimeReference__create())
+}
+
+func (t _TimeReferenceTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__msg__TimeReference__destroy((*C.sensor_msgs__msg__TimeReference)(pointer_to_free))
+}
+
+func (t _TimeReferenceTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*TimeReference)
+	mem := (*C.sensor_msgs__msg__TimeReference)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	builtin_interfaces_msg.TimeTypeSupport.AsCStruct(unsafe.Pointer(&mem.time_ref), &m.TimeRef)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.source), m.Source)
+}
+
+func (t _TimeReferenceTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*TimeReference)
+	mem := (*C.sensor_msgs__msg__TimeReference)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	builtin_interfaces_msg.TimeTypeSupport.AsGoStruct(&m.TimeRef, unsafe.Pointer(&mem.time_ref))
+	rosidl_runtime_c.StringAsGoStruct(&m.Source, unsafe.Pointer(&mem.source))
+}
+
+func (t _TimeReferenceTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__TimeReference())
 }
 
 type CTimeReference = C.sensor_msgs__msg__TimeReference
@@ -103,8 +116,7 @@ func TimeReference__Sequence_to_Go(goSlice *[]TimeReference, cSlice CTimeReferen
 		cIdx := (*C.sensor_msgs__msg__TimeReference__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__TimeReference * uintptr(i)),
 		))
-		(*goSlice)[i] = TimeReference{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		TimeReferenceTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func TimeReference__Sequence_to_C(cSlice *CTimeReference__Sequence, goSlice []TimeReference) {
@@ -119,18 +131,16 @@ func TimeReference__Sequence_to_C(cSlice *CTimeReference__Sequence, goSlice []Ti
 		cIdx := (*C.sensor_msgs__msg__TimeReference)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__TimeReference * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__msg__TimeReference)(v.AsCStruct())
+		TimeReferenceTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func TimeReference__Array_to_Go(goSlice []TimeReference, cSlice []CTimeReference) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		TimeReferenceTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func TimeReference__Array_to_C(cSlice []CTimeReference, goSlice []TimeReference) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__msg__TimeReference)(goSlice[i].AsCStruct())
+		TimeReferenceTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

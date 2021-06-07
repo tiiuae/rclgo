@@ -15,7 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	geometry_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/geometry_msgs/msg"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
@@ -38,14 +38,14 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/MultiDOFJointState", &MultiDOFJointState{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/MultiDOFJointState", MultiDOFJointStateTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewMultiDOFJointState
 // function instead.
 type MultiDOFJointState struct {
 	Header std_msgs_msg.Header `yaml:"header"`
-	JointNames []rosidl_runtime_c.String `yaml:"joint_names"`
+	JointNames []string `yaml:"joint_names"`
 	Transforms []geometry_msgs_msg.Transform `yaml:"transforms"`
 	Twist []geometry_msgs_msg.Twist `yaml:"twist"`
 	Wrench []geometry_msgs_msg.Wrench `yaml:"wrench"`
@@ -54,45 +54,59 @@ type MultiDOFJointState struct {
 // NewMultiDOFJointState creates a new MultiDOFJointState with default values.
 func NewMultiDOFJointState() *MultiDOFJointState {
 	self := MultiDOFJointState{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *MultiDOFJointState) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *MultiDOFJointState) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__MultiDOFJointState())
-}
-func (t *MultiDOFJointState) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__MultiDOFJointState
-	return (unsafe.Pointer)(C.sensor_msgs__msg__MultiDOFJointState__create())
-}
-func (t *MultiDOFJointState) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__msg__MultiDOFJointState__destroy((*C.sensor_msgs__msg__MultiDOFJointState)(pointer_to_free))
-}
-func (t *MultiDOFJointState) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__msg__MultiDOFJointState)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	rosidl_runtime_c.String__Sequence_to_C((*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.joint_names)), t.JointNames)
-	geometry_msgs_msg.Transform__Sequence_to_C((*geometry_msgs_msg.CTransform__Sequence)(unsafe.Pointer(&mem.transforms)), t.Transforms)
-	geometry_msgs_msg.Twist__Sequence_to_C((*geometry_msgs_msg.CTwist__Sequence)(unsafe.Pointer(&mem.twist)), t.Twist)
-	geometry_msgs_msg.Wrench__Sequence_to_C((*geometry_msgs_msg.CWrench__Sequence)(unsafe.Pointer(&mem.wrench)), t.Wrench)
-	return unsafe.Pointer(mem)
-}
-func (t *MultiDOFJointState) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__msg__MultiDOFJointState)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	rosidl_runtime_c.String__Sequence_to_Go(&t.JointNames, *(*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.joint_names)))
-	geometry_msgs_msg.Transform__Sequence_to_Go(&t.Transforms, *(*geometry_msgs_msg.CTransform__Sequence)(unsafe.Pointer(&mem.transforms)))
-	geometry_msgs_msg.Twist__Sequence_to_Go(&t.Twist, *(*geometry_msgs_msg.CTwist__Sequence)(unsafe.Pointer(&mem.twist)))
-	geometry_msgs_msg.Wrench__Sequence_to_Go(&t.Wrench, *(*geometry_msgs_msg.CWrench__Sequence)(unsafe.Pointer(&mem.wrench)))
-}
-func (t *MultiDOFJointState) Clone() ros2types.ROS2Msg {
+func (t *MultiDOFJointState) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *MultiDOFJointState) SetDefaults() {
+	t.Header.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var MultiDOFJointStateTypeSupport types.MessageTypeSupport = _MultiDOFJointStateTypeSupport{}
+
+type _MultiDOFJointStateTypeSupport struct{}
+
+func (t _MultiDOFJointStateTypeSupport) New() types.Message {
+	return NewMultiDOFJointState()
+}
+
+func (t _MultiDOFJointStateTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__MultiDOFJointState
+	return (unsafe.Pointer)(C.sensor_msgs__msg__MultiDOFJointState__create())
+}
+
+func (t _MultiDOFJointStateTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__msg__MultiDOFJointState__destroy((*C.sensor_msgs__msg__MultiDOFJointState)(pointer_to_free))
+}
+
+func (t _MultiDOFJointStateTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*MultiDOFJointState)
+	mem := (*C.sensor_msgs__msg__MultiDOFJointState)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	rosidl_runtime_c.String__Sequence_to_C((*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.joint_names)), m.JointNames)
+	geometry_msgs_msg.Transform__Sequence_to_C((*geometry_msgs_msg.CTransform__Sequence)(unsafe.Pointer(&mem.transforms)), m.Transforms)
+	geometry_msgs_msg.Twist__Sequence_to_C((*geometry_msgs_msg.CTwist__Sequence)(unsafe.Pointer(&mem.twist)), m.Twist)
+	geometry_msgs_msg.Wrench__Sequence_to_C((*geometry_msgs_msg.CWrench__Sequence)(unsafe.Pointer(&mem.wrench)), m.Wrench)
+}
+
+func (t _MultiDOFJointStateTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*MultiDOFJointState)
+	mem := (*C.sensor_msgs__msg__MultiDOFJointState)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	rosidl_runtime_c.String__Sequence_to_Go(&m.JointNames, *(*rosidl_runtime_c.CString__Sequence)(unsafe.Pointer(&mem.joint_names)))
+	geometry_msgs_msg.Transform__Sequence_to_Go(&m.Transforms, *(*geometry_msgs_msg.CTransform__Sequence)(unsafe.Pointer(&mem.transforms)))
+	geometry_msgs_msg.Twist__Sequence_to_Go(&m.Twist, *(*geometry_msgs_msg.CTwist__Sequence)(unsafe.Pointer(&mem.twist)))
+	geometry_msgs_msg.Wrench__Sequence_to_Go(&m.Wrench, *(*geometry_msgs_msg.CWrench__Sequence)(unsafe.Pointer(&mem.wrench)))
+}
+
+func (t _MultiDOFJointStateTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__MultiDOFJointState())
 }
 
 type CMultiDOFJointState = C.sensor_msgs__msg__MultiDOFJointState
@@ -107,8 +121,7 @@ func MultiDOFJointState__Sequence_to_Go(goSlice *[]MultiDOFJointState, cSlice CM
 		cIdx := (*C.sensor_msgs__msg__MultiDOFJointState__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__MultiDOFJointState * uintptr(i)),
 		))
-		(*goSlice)[i] = MultiDOFJointState{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		MultiDOFJointStateTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func MultiDOFJointState__Sequence_to_C(cSlice *CMultiDOFJointState__Sequence, goSlice []MultiDOFJointState) {
@@ -123,18 +136,16 @@ func MultiDOFJointState__Sequence_to_C(cSlice *CMultiDOFJointState__Sequence, go
 		cIdx := (*C.sensor_msgs__msg__MultiDOFJointState)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__MultiDOFJointState * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__msg__MultiDOFJointState)(v.AsCStruct())
+		MultiDOFJointStateTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func MultiDOFJointState__Array_to_Go(goSlice []MultiDOFJointState, cSlice []CMultiDOFJointState) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		MultiDOFJointStateTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func MultiDOFJointState__Array_to_C(cSlice []CMultiDOFJointState, goSlice []MultiDOFJointState) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__msg__MultiDOFJointState)(goSlice[i].AsCStruct())
+		MultiDOFJointStateTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

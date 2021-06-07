@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/GimbalManagerStatus", &GimbalManagerStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/GimbalManagerStatus", GimbalManagerStatusTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewGimbalManagerStatus
@@ -51,48 +51,62 @@ type GimbalManagerStatus struct {
 // NewGimbalManagerStatus creates a new GimbalManagerStatus with default values.
 func NewGimbalManagerStatus() *GimbalManagerStatus {
 	self := GimbalManagerStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *GimbalManagerStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *GimbalManagerStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__GimbalManagerStatus())
-}
-func (t *GimbalManagerStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__GimbalManagerStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__GimbalManagerStatus__create())
-}
-func (t *GimbalManagerStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__GimbalManagerStatus__destroy((*C.px4_msgs__msg__GimbalManagerStatus)(pointer_to_free))
-}
-func (t *GimbalManagerStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__GimbalManagerStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.flags = C.uint32_t(t.Flags)
-	mem.gimbal_device_id = C.uint8_t(t.GimbalDeviceId)
-	mem.primary_control_sysid = C.uint8_t(t.PrimaryControlSysid)
-	mem.primary_control_compid = C.uint8_t(t.PrimaryControlCompid)
-	mem.secondary_control_sysid = C.uint8_t(t.SecondaryControlSysid)
-	mem.secondary_control_compid = C.uint8_t(t.SecondaryControlCompid)
-	return unsafe.Pointer(mem)
-}
-func (t *GimbalManagerStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__GimbalManagerStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Flags = uint32(mem.flags)
-	t.GimbalDeviceId = uint8(mem.gimbal_device_id)
-	t.PrimaryControlSysid = uint8(mem.primary_control_sysid)
-	t.PrimaryControlCompid = uint8(mem.primary_control_compid)
-	t.SecondaryControlSysid = uint8(mem.secondary_control_sysid)
-	t.SecondaryControlCompid = uint8(mem.secondary_control_compid)
-}
-func (t *GimbalManagerStatus) Clone() ros2types.ROS2Msg {
+func (t *GimbalManagerStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *GimbalManagerStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var GimbalManagerStatusTypeSupport types.MessageTypeSupport = _GimbalManagerStatusTypeSupport{}
+
+type _GimbalManagerStatusTypeSupport struct{}
+
+func (t _GimbalManagerStatusTypeSupport) New() types.Message {
+	return NewGimbalManagerStatus()
+}
+
+func (t _GimbalManagerStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__GimbalManagerStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__GimbalManagerStatus__create())
+}
+
+func (t _GimbalManagerStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__GimbalManagerStatus__destroy((*C.px4_msgs__msg__GimbalManagerStatus)(pointer_to_free))
+}
+
+func (t _GimbalManagerStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*GimbalManagerStatus)
+	mem := (*C.px4_msgs__msg__GimbalManagerStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.flags = C.uint32_t(m.Flags)
+	mem.gimbal_device_id = C.uint8_t(m.GimbalDeviceId)
+	mem.primary_control_sysid = C.uint8_t(m.PrimaryControlSysid)
+	mem.primary_control_compid = C.uint8_t(m.PrimaryControlCompid)
+	mem.secondary_control_sysid = C.uint8_t(m.SecondaryControlSysid)
+	mem.secondary_control_compid = C.uint8_t(m.SecondaryControlCompid)
+}
+
+func (t _GimbalManagerStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*GimbalManagerStatus)
+	mem := (*C.px4_msgs__msg__GimbalManagerStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Flags = uint32(mem.flags)
+	m.GimbalDeviceId = uint8(mem.gimbal_device_id)
+	m.PrimaryControlSysid = uint8(mem.primary_control_sysid)
+	m.PrimaryControlCompid = uint8(mem.primary_control_compid)
+	m.SecondaryControlSysid = uint8(mem.secondary_control_sysid)
+	m.SecondaryControlCompid = uint8(mem.secondary_control_compid)
+}
+
+func (t _GimbalManagerStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__GimbalManagerStatus())
 }
 
 type CGimbalManagerStatus = C.px4_msgs__msg__GimbalManagerStatus
@@ -107,8 +121,7 @@ func GimbalManagerStatus__Sequence_to_Go(goSlice *[]GimbalManagerStatus, cSlice 
 		cIdx := (*C.px4_msgs__msg__GimbalManagerStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__GimbalManagerStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = GimbalManagerStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		GimbalManagerStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func GimbalManagerStatus__Sequence_to_C(cSlice *CGimbalManagerStatus__Sequence, goSlice []GimbalManagerStatus) {
@@ -123,18 +136,16 @@ func GimbalManagerStatus__Sequence_to_C(cSlice *CGimbalManagerStatus__Sequence, 
 		cIdx := (*C.px4_msgs__msg__GimbalManagerStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__GimbalManagerStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__GimbalManagerStatus)(v.AsCStruct())
+		GimbalManagerStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func GimbalManagerStatus__Array_to_Go(goSlice []GimbalManagerStatus, cSlice []CGimbalManagerStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		GimbalManagerStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func GimbalManagerStatus__Array_to_C(cSlice []CGimbalManagerStatus, goSlice []GimbalManagerStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__GimbalManagerStatus)(goSlice[i].AsCStruct())
+		GimbalManagerStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

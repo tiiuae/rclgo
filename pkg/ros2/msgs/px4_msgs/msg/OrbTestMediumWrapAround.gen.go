@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/OrbTestMediumWrapAround", &OrbTestMediumWrapAround{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/OrbTestMediumWrapAround", OrbTestMediumWrapAroundTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewOrbTestMediumWrapAround
@@ -48,42 +48,56 @@ type OrbTestMediumWrapAround struct {
 // NewOrbTestMediumWrapAround creates a new OrbTestMediumWrapAround with default values.
 func NewOrbTestMediumWrapAround() *OrbTestMediumWrapAround {
 	self := OrbTestMediumWrapAround{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *OrbTestMediumWrapAround) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *OrbTestMediumWrapAround) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__OrbTestMediumWrapAround())
-}
-func (t *OrbTestMediumWrapAround) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__OrbTestMediumWrapAround
-	return (unsafe.Pointer)(C.px4_msgs__msg__OrbTestMediumWrapAround__create())
-}
-func (t *OrbTestMediumWrapAround) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__OrbTestMediumWrapAround__destroy((*C.px4_msgs__msg__OrbTestMediumWrapAround)(pointer_to_free))
-}
-func (t *OrbTestMediumWrapAround) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__OrbTestMediumWrapAround)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.val = C.int32_t(t.Val)
-	cSlice_junk := mem.junk[:]
-	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_junk)), t.Junk[:])
-	return unsafe.Pointer(mem)
-}
-func (t *OrbTestMediumWrapAround) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__OrbTestMediumWrapAround)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Val = int32(mem.val)
-	cSlice_junk := mem.junk[:]
-	rosidl_runtime_c.Uint8__Array_to_Go(t.Junk[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_junk)))
-}
-func (t *OrbTestMediumWrapAround) Clone() ros2types.ROS2Msg {
+func (t *OrbTestMediumWrapAround) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *OrbTestMediumWrapAround) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var OrbTestMediumWrapAroundTypeSupport types.MessageTypeSupport = _OrbTestMediumWrapAroundTypeSupport{}
+
+type _OrbTestMediumWrapAroundTypeSupport struct{}
+
+func (t _OrbTestMediumWrapAroundTypeSupport) New() types.Message {
+	return NewOrbTestMediumWrapAround()
+}
+
+func (t _OrbTestMediumWrapAroundTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__OrbTestMediumWrapAround
+	return (unsafe.Pointer)(C.px4_msgs__msg__OrbTestMediumWrapAround__create())
+}
+
+func (t _OrbTestMediumWrapAroundTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__OrbTestMediumWrapAround__destroy((*C.px4_msgs__msg__OrbTestMediumWrapAround)(pointer_to_free))
+}
+
+func (t _OrbTestMediumWrapAroundTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*OrbTestMediumWrapAround)
+	mem := (*C.px4_msgs__msg__OrbTestMediumWrapAround)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.val = C.int32_t(m.Val)
+	cSlice_junk := mem.junk[:]
+	rosidl_runtime_c.Uint8__Array_to_C(*(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_junk)), m.Junk[:])
+}
+
+func (t _OrbTestMediumWrapAroundTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*OrbTestMediumWrapAround)
+	mem := (*C.px4_msgs__msg__OrbTestMediumWrapAround)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Val = int32(mem.val)
+	cSlice_junk := mem.junk[:]
+	rosidl_runtime_c.Uint8__Array_to_Go(m.Junk[:], *(*[]rosidl_runtime_c.CUint8)(unsafe.Pointer(&cSlice_junk)))
+}
+
+func (t _OrbTestMediumWrapAroundTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__OrbTestMediumWrapAround())
 }
 
 type COrbTestMediumWrapAround = C.px4_msgs__msg__OrbTestMediumWrapAround
@@ -98,8 +112,7 @@ func OrbTestMediumWrapAround__Sequence_to_Go(goSlice *[]OrbTestMediumWrapAround,
 		cIdx := (*C.px4_msgs__msg__OrbTestMediumWrapAround__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__OrbTestMediumWrapAround * uintptr(i)),
 		))
-		(*goSlice)[i] = OrbTestMediumWrapAround{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		OrbTestMediumWrapAroundTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func OrbTestMediumWrapAround__Sequence_to_C(cSlice *COrbTestMediumWrapAround__Sequence, goSlice []OrbTestMediumWrapAround) {
@@ -114,18 +127,16 @@ func OrbTestMediumWrapAround__Sequence_to_C(cSlice *COrbTestMediumWrapAround__Se
 		cIdx := (*C.px4_msgs__msg__OrbTestMediumWrapAround)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__OrbTestMediumWrapAround * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__OrbTestMediumWrapAround)(v.AsCStruct())
+		OrbTestMediumWrapAroundTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func OrbTestMediumWrapAround__Array_to_Go(goSlice []OrbTestMediumWrapAround, cSlice []COrbTestMediumWrapAround) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		OrbTestMediumWrapAroundTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func OrbTestMediumWrapAround__Array_to_C(cSlice []COrbTestMediumWrapAround, goSlice []OrbTestMediumWrapAround) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__OrbTestMediumWrapAround)(goSlice[i].AsCStruct())
+		OrbTestMediumWrapAroundTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

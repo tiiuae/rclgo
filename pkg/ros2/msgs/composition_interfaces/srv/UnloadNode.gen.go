@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("composition_interfaces/UnloadNode", UnloadNode)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("composition_interfaces/UnloadNode", UnloadNodeTypeSupport)
 }
 
-type _UnloadNode struct {
-	req,resp ros2types.ROS2Msg
+type _UnloadNodeTypeSupport struct {}
+
+func (s _UnloadNodeTypeSupport) Request() types.MessageTypeSupport {
+	return UnloadNode_RequestTypeSupport
 }
 
-func (s *_UnloadNode) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _UnloadNodeTypeSupport) Response() types.MessageTypeSupport {
+	return UnloadNode_ResponseTypeSupport
 }
 
-func (s *_UnloadNode) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_UnloadNode) TypeSupport() unsafe.Pointer {
+func (s _UnloadNodeTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__composition_interfaces__srv__UnloadNode())
 }
 
 // Modifying this variable is undefined behavior.
-var UnloadNode ros2types.Service = &_UnloadNode{
-	req: &UnloadNode_Request{},
-	resp: &UnloadNode_Response{},
-}
+var UnloadNodeTypeSupport types.ServiceTypeSupport = _UnloadNodeTypeSupport{}

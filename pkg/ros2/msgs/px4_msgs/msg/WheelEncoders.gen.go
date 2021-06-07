@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/WheelEncoders", &WheelEncoders{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/WheelEncoders", WheelEncodersTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewWheelEncoders
@@ -48,42 +48,56 @@ type WheelEncoders struct {
 // NewWheelEncoders creates a new WheelEncoders with default values.
 func NewWheelEncoders() *WheelEncoders {
 	self := WheelEncoders{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *WheelEncoders) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *WheelEncoders) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__WheelEncoders())
-}
-func (t *WheelEncoders) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__WheelEncoders
-	return (unsafe.Pointer)(C.px4_msgs__msg__WheelEncoders__create())
-}
-func (t *WheelEncoders) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__WheelEncoders__destroy((*C.px4_msgs__msg__WheelEncoders)(pointer_to_free))
-}
-func (t *WheelEncoders) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__WheelEncoders)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.encoder_position = C.int64_t(t.EncoderPosition)
-	mem.speed = C.int32_t(t.Speed)
-	mem.pulses_per_rev = C.uint32_t(t.PulsesPerRev)
-	return unsafe.Pointer(mem)
-}
-func (t *WheelEncoders) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__WheelEncoders)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.EncoderPosition = int64(mem.encoder_position)
-	t.Speed = int32(mem.speed)
-	t.PulsesPerRev = uint32(mem.pulses_per_rev)
-}
-func (t *WheelEncoders) Clone() ros2types.ROS2Msg {
+func (t *WheelEncoders) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *WheelEncoders) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var WheelEncodersTypeSupport types.MessageTypeSupport = _WheelEncodersTypeSupport{}
+
+type _WheelEncodersTypeSupport struct{}
+
+func (t _WheelEncodersTypeSupport) New() types.Message {
+	return NewWheelEncoders()
+}
+
+func (t _WheelEncodersTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__WheelEncoders
+	return (unsafe.Pointer)(C.px4_msgs__msg__WheelEncoders__create())
+}
+
+func (t _WheelEncodersTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__WheelEncoders__destroy((*C.px4_msgs__msg__WheelEncoders)(pointer_to_free))
+}
+
+func (t _WheelEncodersTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*WheelEncoders)
+	mem := (*C.px4_msgs__msg__WheelEncoders)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.encoder_position = C.int64_t(m.EncoderPosition)
+	mem.speed = C.int32_t(m.Speed)
+	mem.pulses_per_rev = C.uint32_t(m.PulsesPerRev)
+}
+
+func (t _WheelEncodersTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*WheelEncoders)
+	mem := (*C.px4_msgs__msg__WheelEncoders)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.EncoderPosition = int64(mem.encoder_position)
+	m.Speed = int32(mem.speed)
+	m.PulsesPerRev = uint32(mem.pulses_per_rev)
+}
+
+func (t _WheelEncodersTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__WheelEncoders())
 }
 
 type CWheelEncoders = C.px4_msgs__msg__WheelEncoders
@@ -98,8 +112,7 @@ func WheelEncoders__Sequence_to_Go(goSlice *[]WheelEncoders, cSlice CWheelEncode
 		cIdx := (*C.px4_msgs__msg__WheelEncoders__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__WheelEncoders * uintptr(i)),
 		))
-		(*goSlice)[i] = WheelEncoders{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		WheelEncodersTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func WheelEncoders__Sequence_to_C(cSlice *CWheelEncoders__Sequence, goSlice []WheelEncoders) {
@@ -114,18 +127,16 @@ func WheelEncoders__Sequence_to_C(cSlice *CWheelEncoders__Sequence, goSlice []Wh
 		cIdx := (*C.px4_msgs__msg__WheelEncoders)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__WheelEncoders * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__WheelEncoders)(v.AsCStruct())
+		WheelEncodersTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func WheelEncoders__Array_to_Go(goSlice []WheelEncoders, cSlice []CWheelEncoders) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		WheelEncodersTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func WheelEncoders__Array_to_C(cSlice []CWheelEncoders, goSlice []WheelEncoders) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__WheelEncoders)(goSlice[i].AsCStruct())
+		WheelEncodersTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

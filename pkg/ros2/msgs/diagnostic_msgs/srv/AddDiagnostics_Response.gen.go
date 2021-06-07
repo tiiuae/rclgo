@@ -15,7 +15,7 @@ package diagnostic_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,52 +34,65 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("diagnostic_msgs/AddDiagnostics_Response", &AddDiagnostics_Response{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("diagnostic_msgs/AddDiagnostics_Response", AddDiagnostics_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewAddDiagnostics_Response
 // function instead.
 type AddDiagnostics_Response struct {
 	Success bool `yaml:"success"`// True if diagnostic aggregator was updated with new diagnostics, Falseotherwise. A false return value means that either there is a bond in theaggregator which already used the requested namespace, or the initializationof analyzers failed.
-	Message rosidl_runtime_c.String `yaml:"message"`// Message with additional information about the success or failure
+	Message string `yaml:"message"`// Message with additional information about the success or failure
 }
 
 // NewAddDiagnostics_Response creates a new AddDiagnostics_Response with default values.
 func NewAddDiagnostics_Response() *AddDiagnostics_Response {
 	self := AddDiagnostics_Response{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *AddDiagnostics_Response) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Message.SetDefaults("")
-	
-	return t
-}
-
-func (t *AddDiagnostics_Response) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__diagnostic_msgs__srv__AddDiagnostics_Response())
-}
-func (t *AddDiagnostics_Response) PrepareMemory() unsafe.Pointer { //returns *C.diagnostic_msgs__srv__AddDiagnostics_Response
-	return (unsafe.Pointer)(C.diagnostic_msgs__srv__AddDiagnostics_Response__create())
-}
-func (t *AddDiagnostics_Response) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.diagnostic_msgs__srv__AddDiagnostics_Response__destroy((*C.diagnostic_msgs__srv__AddDiagnostics_Response)(pointer_to_free))
-}
-func (t *AddDiagnostics_Response) AsCStruct() unsafe.Pointer {
-	mem := (*C.diagnostic_msgs__srv__AddDiagnostics_Response)(t.PrepareMemory())
-	mem.success = C.bool(t.Success)
-	mem.message = *(*C.rosidl_runtime_c__String)(t.Message.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *AddDiagnostics_Response) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.diagnostic_msgs__srv__AddDiagnostics_Response)(ros2_message_buffer)
-	t.Success = bool(mem.success)
-	t.Message.AsGoStruct(unsafe.Pointer(&mem.message))
-}
-func (t *AddDiagnostics_Response) Clone() ros2types.ROS2Msg {
+func (t *AddDiagnostics_Response) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *AddDiagnostics_Response) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var AddDiagnostics_ResponseTypeSupport types.MessageTypeSupport = _AddDiagnostics_ResponseTypeSupport{}
+
+type _AddDiagnostics_ResponseTypeSupport struct{}
+
+func (t _AddDiagnostics_ResponseTypeSupport) New() types.Message {
+	return NewAddDiagnostics_Response()
+}
+
+func (t _AddDiagnostics_ResponseTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.diagnostic_msgs__srv__AddDiagnostics_Response
+	return (unsafe.Pointer)(C.diagnostic_msgs__srv__AddDiagnostics_Response__create())
+}
+
+func (t _AddDiagnostics_ResponseTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.diagnostic_msgs__srv__AddDiagnostics_Response__destroy((*C.diagnostic_msgs__srv__AddDiagnostics_Response)(pointer_to_free))
+}
+
+func (t _AddDiagnostics_ResponseTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*AddDiagnostics_Response)
+	mem := (*C.diagnostic_msgs__srv__AddDiagnostics_Response)(dst)
+	mem.success = C.bool(m.Success)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.message), m.Message)
+}
+
+func (t _AddDiagnostics_ResponseTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*AddDiagnostics_Response)
+	mem := (*C.diagnostic_msgs__srv__AddDiagnostics_Response)(ros2_message_buffer)
+	m.Success = bool(mem.success)
+	rosidl_runtime_c.StringAsGoStruct(&m.Message, unsafe.Pointer(&mem.message))
+}
+
+func (t _AddDiagnostics_ResponseTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__diagnostic_msgs__srv__AddDiagnostics_Response())
 }
 
 type CAddDiagnostics_Response = C.diagnostic_msgs__srv__AddDiagnostics_Response
@@ -94,8 +107,7 @@ func AddDiagnostics_Response__Sequence_to_Go(goSlice *[]AddDiagnostics_Response,
 		cIdx := (*C.diagnostic_msgs__srv__AddDiagnostics_Response__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_diagnostic_msgs__srv__AddDiagnostics_Response * uintptr(i)),
 		))
-		(*goSlice)[i] = AddDiagnostics_Response{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		AddDiagnostics_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func AddDiagnostics_Response__Sequence_to_C(cSlice *CAddDiagnostics_Response__Sequence, goSlice []AddDiagnostics_Response) {
@@ -110,18 +122,16 @@ func AddDiagnostics_Response__Sequence_to_C(cSlice *CAddDiagnostics_Response__Se
 		cIdx := (*C.diagnostic_msgs__srv__AddDiagnostics_Response)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_diagnostic_msgs__srv__AddDiagnostics_Response * uintptr(i)),
 		))
-		*cIdx = *(*C.diagnostic_msgs__srv__AddDiagnostics_Response)(v.AsCStruct())
+		AddDiagnostics_ResponseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func AddDiagnostics_Response__Array_to_Go(goSlice []AddDiagnostics_Response, cSlice []CAddDiagnostics_Response) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		AddDiagnostics_ResponseTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func AddDiagnostics_Response__Array_to_C(cSlice []CAddDiagnostics_Response, goSlice []AddDiagnostics_Response) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.diagnostic_msgs__srv__AddDiagnostics_Response)(goSlice[i].AsCStruct())
+		AddDiagnostics_ResponseTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

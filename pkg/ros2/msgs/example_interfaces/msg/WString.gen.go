@@ -15,7 +15,7 @@ package example_interfaces_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,49 +34,62 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("example_interfaces/WString", &WString{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("example_interfaces/WString", WStringTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewWString
 // function instead.
 type WString struct {
-	Data rosidl_runtime_c.U16String `yaml:"data"`// This is an example message of using a primitive datatype, wstring.If you want to test with this that's fine, but if you are deployingit into a system you should create a semantically meaningful message type.If you want to embed it in another message, use the primitive data type instead.
+	Data string `yaml:"data"`// This is an example message of using a primitive datatype, wstring.If you want to test with this that's fine, but if you are deployingit into a system you should create a semantically meaningful message type.If you want to embed it in another message, use the primitive data type instead.
 }
 
 // NewWString creates a new WString with default values.
 func NewWString() *WString {
 	self := WString{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *WString) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Data.SetDefaults("")
-	
-	return t
-}
-
-func (t *WString) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__example_interfaces__msg__WString())
-}
-func (t *WString) PrepareMemory() unsafe.Pointer { //returns *C.example_interfaces__msg__WString
-	return (unsafe.Pointer)(C.example_interfaces__msg__WString__create())
-}
-func (t *WString) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.example_interfaces__msg__WString__destroy((*C.example_interfaces__msg__WString)(pointer_to_free))
-}
-func (t *WString) AsCStruct() unsafe.Pointer {
-	mem := (*C.example_interfaces__msg__WString)(t.PrepareMemory())
-	mem.data = *(*C.rosidl_runtime_c__U16String)(t.Data.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *WString) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.example_interfaces__msg__WString)(ros2_message_buffer)
-	t.Data.AsGoStruct(unsafe.Pointer(&mem.data))
-}
-func (t *WString) Clone() ros2types.ROS2Msg {
+func (t *WString) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *WString) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var WStringTypeSupport types.MessageTypeSupport = _WStringTypeSupport{}
+
+type _WStringTypeSupport struct{}
+
+func (t _WStringTypeSupport) New() types.Message {
+	return NewWString()
+}
+
+func (t _WStringTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.example_interfaces__msg__WString
+	return (unsafe.Pointer)(C.example_interfaces__msg__WString__create())
+}
+
+func (t _WStringTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.example_interfaces__msg__WString__destroy((*C.example_interfaces__msg__WString)(pointer_to_free))
+}
+
+func (t _WStringTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*WString)
+	mem := (*C.example_interfaces__msg__WString)(dst)
+	rosidl_runtime_c.U16StringAsCStruct(unsafe.Pointer(&mem.data), m.Data)
+}
+
+func (t _WStringTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*WString)
+	mem := (*C.example_interfaces__msg__WString)(ros2_message_buffer)
+	rosidl_runtime_c.U16StringAsGoStruct(&m.Data, unsafe.Pointer(&mem.data))
+}
+
+func (t _WStringTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__example_interfaces__msg__WString())
 }
 
 type CWString = C.example_interfaces__msg__WString
@@ -91,8 +104,7 @@ func WString__Sequence_to_Go(goSlice *[]WString, cSlice CWString__Sequence) {
 		cIdx := (*C.example_interfaces__msg__WString__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__WString * uintptr(i)),
 		))
-		(*goSlice)[i] = WString{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		WStringTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func WString__Sequence_to_C(cSlice *CWString__Sequence, goSlice []WString) {
@@ -107,18 +119,16 @@ func WString__Sequence_to_C(cSlice *CWString__Sequence, goSlice []WString) {
 		cIdx := (*C.example_interfaces__msg__WString)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__WString * uintptr(i)),
 		))
-		*cIdx = *(*C.example_interfaces__msg__WString)(v.AsCStruct())
+		WStringTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func WString__Array_to_Go(goSlice []WString, cSlice []CWString) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		WStringTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func WString__Array_to_C(cSlice []CWString, goSlice []WString) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.example_interfaces__msg__WString)(goSlice[i].AsCStruct())
+		WStringTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

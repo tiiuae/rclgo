@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleControlMode", &VehicleControlMode{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleControlMode", VehicleControlModeTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewVehicleControlMode
@@ -58,62 +58,76 @@ type VehicleControlMode struct {
 // NewVehicleControlMode creates a new VehicleControlMode with default values.
 func NewVehicleControlMode() *VehicleControlMode {
 	self := VehicleControlMode{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *VehicleControlMode) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *VehicleControlMode) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleControlMode())
-}
-func (t *VehicleControlMode) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleControlMode
-	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleControlMode__create())
-}
-func (t *VehicleControlMode) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__VehicleControlMode__destroy((*C.px4_msgs__msg__VehicleControlMode)(pointer_to_free))
-}
-func (t *VehicleControlMode) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__VehicleControlMode)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.flag_armed = C.bool(t.FlagArmed)
-	mem.flag_external_manual_override_ok = C.bool(t.FlagExternalManualOverrideOk)
-	mem.flag_control_manual_enabled = C.bool(t.FlagControlManualEnabled)
-	mem.flag_control_auto_enabled = C.bool(t.FlagControlAutoEnabled)
-	mem.flag_control_offboard_enabled = C.bool(t.FlagControlOffboardEnabled)
-	mem.flag_control_rates_enabled = C.bool(t.FlagControlRatesEnabled)
-	mem.flag_control_attitude_enabled = C.bool(t.FlagControlAttitudeEnabled)
-	mem.flag_control_acceleration_enabled = C.bool(t.FlagControlAccelerationEnabled)
-	mem.flag_control_velocity_enabled = C.bool(t.FlagControlVelocityEnabled)
-	mem.flag_control_position_enabled = C.bool(t.FlagControlPositionEnabled)
-	mem.flag_control_altitude_enabled = C.bool(t.FlagControlAltitudeEnabled)
-	mem.flag_control_climb_rate_enabled = C.bool(t.FlagControlClimbRateEnabled)
-	mem.flag_control_termination_enabled = C.bool(t.FlagControlTerminationEnabled)
-	return unsafe.Pointer(mem)
-}
-func (t *VehicleControlMode) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__VehicleControlMode)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.FlagArmed = bool(mem.flag_armed)
-	t.FlagExternalManualOverrideOk = bool(mem.flag_external_manual_override_ok)
-	t.FlagControlManualEnabled = bool(mem.flag_control_manual_enabled)
-	t.FlagControlAutoEnabled = bool(mem.flag_control_auto_enabled)
-	t.FlagControlOffboardEnabled = bool(mem.flag_control_offboard_enabled)
-	t.FlagControlRatesEnabled = bool(mem.flag_control_rates_enabled)
-	t.FlagControlAttitudeEnabled = bool(mem.flag_control_attitude_enabled)
-	t.FlagControlAccelerationEnabled = bool(mem.flag_control_acceleration_enabled)
-	t.FlagControlVelocityEnabled = bool(mem.flag_control_velocity_enabled)
-	t.FlagControlPositionEnabled = bool(mem.flag_control_position_enabled)
-	t.FlagControlAltitudeEnabled = bool(mem.flag_control_altitude_enabled)
-	t.FlagControlClimbRateEnabled = bool(mem.flag_control_climb_rate_enabled)
-	t.FlagControlTerminationEnabled = bool(mem.flag_control_termination_enabled)
-}
-func (t *VehicleControlMode) Clone() ros2types.ROS2Msg {
+func (t *VehicleControlMode) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *VehicleControlMode) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VehicleControlModeTypeSupport types.MessageTypeSupport = _VehicleControlModeTypeSupport{}
+
+type _VehicleControlModeTypeSupport struct{}
+
+func (t _VehicleControlModeTypeSupport) New() types.Message {
+	return NewVehicleControlMode()
+}
+
+func (t _VehicleControlModeTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleControlMode
+	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleControlMode__create())
+}
+
+func (t _VehicleControlModeTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__VehicleControlMode__destroy((*C.px4_msgs__msg__VehicleControlMode)(pointer_to_free))
+}
+
+func (t _VehicleControlModeTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*VehicleControlMode)
+	mem := (*C.px4_msgs__msg__VehicleControlMode)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.flag_armed = C.bool(m.FlagArmed)
+	mem.flag_external_manual_override_ok = C.bool(m.FlagExternalManualOverrideOk)
+	mem.flag_control_manual_enabled = C.bool(m.FlagControlManualEnabled)
+	mem.flag_control_auto_enabled = C.bool(m.FlagControlAutoEnabled)
+	mem.flag_control_offboard_enabled = C.bool(m.FlagControlOffboardEnabled)
+	mem.flag_control_rates_enabled = C.bool(m.FlagControlRatesEnabled)
+	mem.flag_control_attitude_enabled = C.bool(m.FlagControlAttitudeEnabled)
+	mem.flag_control_acceleration_enabled = C.bool(m.FlagControlAccelerationEnabled)
+	mem.flag_control_velocity_enabled = C.bool(m.FlagControlVelocityEnabled)
+	mem.flag_control_position_enabled = C.bool(m.FlagControlPositionEnabled)
+	mem.flag_control_altitude_enabled = C.bool(m.FlagControlAltitudeEnabled)
+	mem.flag_control_climb_rate_enabled = C.bool(m.FlagControlClimbRateEnabled)
+	mem.flag_control_termination_enabled = C.bool(m.FlagControlTerminationEnabled)
+}
+
+func (t _VehicleControlModeTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*VehicleControlMode)
+	mem := (*C.px4_msgs__msg__VehicleControlMode)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.FlagArmed = bool(mem.flag_armed)
+	m.FlagExternalManualOverrideOk = bool(mem.flag_external_manual_override_ok)
+	m.FlagControlManualEnabled = bool(mem.flag_control_manual_enabled)
+	m.FlagControlAutoEnabled = bool(mem.flag_control_auto_enabled)
+	m.FlagControlOffboardEnabled = bool(mem.flag_control_offboard_enabled)
+	m.FlagControlRatesEnabled = bool(mem.flag_control_rates_enabled)
+	m.FlagControlAttitudeEnabled = bool(mem.flag_control_attitude_enabled)
+	m.FlagControlAccelerationEnabled = bool(mem.flag_control_acceleration_enabled)
+	m.FlagControlVelocityEnabled = bool(mem.flag_control_velocity_enabled)
+	m.FlagControlPositionEnabled = bool(mem.flag_control_position_enabled)
+	m.FlagControlAltitudeEnabled = bool(mem.flag_control_altitude_enabled)
+	m.FlagControlClimbRateEnabled = bool(mem.flag_control_climb_rate_enabled)
+	m.FlagControlTerminationEnabled = bool(mem.flag_control_termination_enabled)
+}
+
+func (t _VehicleControlModeTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleControlMode())
 }
 
 type CVehicleControlMode = C.px4_msgs__msg__VehicleControlMode
@@ -128,8 +142,7 @@ func VehicleControlMode__Sequence_to_Go(goSlice *[]VehicleControlMode, cSlice CV
 		cIdx := (*C.px4_msgs__msg__VehicleControlMode__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleControlMode * uintptr(i)),
 		))
-		(*goSlice)[i] = VehicleControlMode{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VehicleControlModeTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func VehicleControlMode__Sequence_to_C(cSlice *CVehicleControlMode__Sequence, goSlice []VehicleControlMode) {
@@ -144,18 +157,16 @@ func VehicleControlMode__Sequence_to_C(cSlice *CVehicleControlMode__Sequence, go
 		cIdx := (*C.px4_msgs__msg__VehicleControlMode)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleControlMode * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__VehicleControlMode)(v.AsCStruct())
+		VehicleControlModeTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func VehicleControlMode__Array_to_Go(goSlice []VehicleControlMode, cSlice []CVehicleControlMode) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VehicleControlModeTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func VehicleControlMode__Array_to_C(cSlice []CVehicleControlMode, goSlice []VehicleControlMode) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__VehicleControlMode)(goSlice[i].AsCStruct())
+		VehicleControlModeTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/Wind", &Wind{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/Wind", WindTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewWind
@@ -54,54 +54,68 @@ type Wind struct {
 // NewWind creates a new Wind with default values.
 func NewWind() *Wind {
 	self := Wind{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Wind) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Wind) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__Wind())
-}
-func (t *Wind) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__Wind
-	return (unsafe.Pointer)(C.px4_msgs__msg__Wind__create())
-}
-func (t *Wind) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__Wind__destroy((*C.px4_msgs__msg__Wind)(pointer_to_free))
-}
-func (t *Wind) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__Wind)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	mem.windspeed_north = C.float(t.WindspeedNorth)
-	mem.windspeed_east = C.float(t.WindspeedEast)
-	mem.variance_north = C.float(t.VarianceNorth)
-	mem.variance_east = C.float(t.VarianceEast)
-	mem.tas_innov = C.float(t.TasInnov)
-	mem.tas_innov_var = C.float(t.TasInnovVar)
-	mem.beta_innov = C.float(t.BetaInnov)
-	mem.beta_innov_var = C.float(t.BetaInnovVar)
-	return unsafe.Pointer(mem)
-}
-func (t *Wind) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__Wind)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	t.WindspeedNorth = float32(mem.windspeed_north)
-	t.WindspeedEast = float32(mem.windspeed_east)
-	t.VarianceNorth = float32(mem.variance_north)
-	t.VarianceEast = float32(mem.variance_east)
-	t.TasInnov = float32(mem.tas_innov)
-	t.TasInnovVar = float32(mem.tas_innov_var)
-	t.BetaInnov = float32(mem.beta_innov)
-	t.BetaInnovVar = float32(mem.beta_innov_var)
-}
-func (t *Wind) Clone() ros2types.ROS2Msg {
+func (t *Wind) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Wind) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var WindTypeSupport types.MessageTypeSupport = _WindTypeSupport{}
+
+type _WindTypeSupport struct{}
+
+func (t _WindTypeSupport) New() types.Message {
+	return NewWind()
+}
+
+func (t _WindTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__Wind
+	return (unsafe.Pointer)(C.px4_msgs__msg__Wind__create())
+}
+
+func (t _WindTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__Wind__destroy((*C.px4_msgs__msg__Wind)(pointer_to_free))
+}
+
+func (t _WindTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Wind)
+	mem := (*C.px4_msgs__msg__Wind)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	mem.windspeed_north = C.float(m.WindspeedNorth)
+	mem.windspeed_east = C.float(m.WindspeedEast)
+	mem.variance_north = C.float(m.VarianceNorth)
+	mem.variance_east = C.float(m.VarianceEast)
+	mem.tas_innov = C.float(m.TasInnov)
+	mem.tas_innov_var = C.float(m.TasInnovVar)
+	mem.beta_innov = C.float(m.BetaInnov)
+	mem.beta_innov_var = C.float(m.BetaInnovVar)
+}
+
+func (t _WindTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Wind)
+	mem := (*C.px4_msgs__msg__Wind)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	m.WindspeedNorth = float32(mem.windspeed_north)
+	m.WindspeedEast = float32(mem.windspeed_east)
+	m.VarianceNorth = float32(mem.variance_north)
+	m.VarianceEast = float32(mem.variance_east)
+	m.TasInnov = float32(mem.tas_innov)
+	m.TasInnovVar = float32(mem.tas_innov_var)
+	m.BetaInnov = float32(mem.beta_innov)
+	m.BetaInnovVar = float32(mem.beta_innov_var)
+}
+
+func (t _WindTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__Wind())
 }
 
 type CWind = C.px4_msgs__msg__Wind
@@ -116,8 +130,7 @@ func Wind__Sequence_to_Go(goSlice *[]Wind, cSlice CWind__Sequence) {
 		cIdx := (*C.px4_msgs__msg__Wind__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__Wind * uintptr(i)),
 		))
-		(*goSlice)[i] = Wind{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		WindTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Wind__Sequence_to_C(cSlice *CWind__Sequence, goSlice []Wind) {
@@ -132,18 +145,16 @@ func Wind__Sequence_to_C(cSlice *CWind__Sequence, goSlice []Wind) {
 		cIdx := (*C.px4_msgs__msg__Wind)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__Wind * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__Wind)(v.AsCStruct())
+		WindTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Wind__Array_to_Go(goSlice []Wind, cSlice []CWind) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		WindTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Wind__Array_to_C(cSlice []CWind, goSlice []Wind) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__Wind)(goSlice[i].AsCStruct())
+		WindTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

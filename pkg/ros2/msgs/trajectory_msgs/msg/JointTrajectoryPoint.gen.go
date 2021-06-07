@@ -15,7 +15,7 @@ package trajectory_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	builtin_interfaces_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/builtin_interfaces/msg"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
@@ -36,7 +36,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("trajectory_msgs/JointTrajectoryPoint", &JointTrajectoryPoint{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("trajectory_msgs/JointTrajectoryPoint", JointTrajectoryPointTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewJointTrajectoryPoint
@@ -52,45 +52,59 @@ type JointTrajectoryPoint struct {
 // NewJointTrajectoryPoint creates a new JointTrajectoryPoint with default values.
 func NewJointTrajectoryPoint() *JointTrajectoryPoint {
 	self := JointTrajectoryPoint{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *JointTrajectoryPoint) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.TimeFromStart.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *JointTrajectoryPoint) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__trajectory_msgs__msg__JointTrajectoryPoint())
-}
-func (t *JointTrajectoryPoint) PrepareMemory() unsafe.Pointer { //returns *C.trajectory_msgs__msg__JointTrajectoryPoint
-	return (unsafe.Pointer)(C.trajectory_msgs__msg__JointTrajectoryPoint__create())
-}
-func (t *JointTrajectoryPoint) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.trajectory_msgs__msg__JointTrajectoryPoint__destroy((*C.trajectory_msgs__msg__JointTrajectoryPoint)(pointer_to_free))
-}
-func (t *JointTrajectoryPoint) AsCStruct() unsafe.Pointer {
-	mem := (*C.trajectory_msgs__msg__JointTrajectoryPoint)(t.PrepareMemory())
-	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.positions)), t.Positions)
-	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.velocities)), t.Velocities)
-	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.accelerations)), t.Accelerations)
-	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.effort)), t.Effort)
-	mem.time_from_start = *(*C.builtin_interfaces__msg__Duration)(t.TimeFromStart.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *JointTrajectoryPoint) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.trajectory_msgs__msg__JointTrajectoryPoint)(ros2_message_buffer)
-	rosidl_runtime_c.Float64__Sequence_to_Go(&t.Positions, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.positions)))
-	rosidl_runtime_c.Float64__Sequence_to_Go(&t.Velocities, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.velocities)))
-	rosidl_runtime_c.Float64__Sequence_to_Go(&t.Accelerations, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.accelerations)))
-	rosidl_runtime_c.Float64__Sequence_to_Go(&t.Effort, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.effort)))
-	t.TimeFromStart.AsGoStruct(unsafe.Pointer(&mem.time_from_start))
-}
-func (t *JointTrajectoryPoint) Clone() ros2types.ROS2Msg {
+func (t *JointTrajectoryPoint) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *JointTrajectoryPoint) SetDefaults() {
+	t.TimeFromStart.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var JointTrajectoryPointTypeSupport types.MessageTypeSupport = _JointTrajectoryPointTypeSupport{}
+
+type _JointTrajectoryPointTypeSupport struct{}
+
+func (t _JointTrajectoryPointTypeSupport) New() types.Message {
+	return NewJointTrajectoryPoint()
+}
+
+func (t _JointTrajectoryPointTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.trajectory_msgs__msg__JointTrajectoryPoint
+	return (unsafe.Pointer)(C.trajectory_msgs__msg__JointTrajectoryPoint__create())
+}
+
+func (t _JointTrajectoryPointTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.trajectory_msgs__msg__JointTrajectoryPoint__destroy((*C.trajectory_msgs__msg__JointTrajectoryPoint)(pointer_to_free))
+}
+
+func (t _JointTrajectoryPointTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*JointTrajectoryPoint)
+	mem := (*C.trajectory_msgs__msg__JointTrajectoryPoint)(dst)
+	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.positions)), m.Positions)
+	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.velocities)), m.Velocities)
+	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.accelerations)), m.Accelerations)
+	rosidl_runtime_c.Float64__Sequence_to_C((*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.effort)), m.Effort)
+	builtin_interfaces_msg.DurationTypeSupport.AsCStruct(unsafe.Pointer(&mem.time_from_start), &m.TimeFromStart)
+}
+
+func (t _JointTrajectoryPointTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*JointTrajectoryPoint)
+	mem := (*C.trajectory_msgs__msg__JointTrajectoryPoint)(ros2_message_buffer)
+	rosidl_runtime_c.Float64__Sequence_to_Go(&m.Positions, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.positions)))
+	rosidl_runtime_c.Float64__Sequence_to_Go(&m.Velocities, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.velocities)))
+	rosidl_runtime_c.Float64__Sequence_to_Go(&m.Accelerations, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.accelerations)))
+	rosidl_runtime_c.Float64__Sequence_to_Go(&m.Effort, *(*rosidl_runtime_c.CFloat64__Sequence)(unsafe.Pointer(&mem.effort)))
+	builtin_interfaces_msg.DurationTypeSupport.AsGoStruct(&m.TimeFromStart, unsafe.Pointer(&mem.time_from_start))
+}
+
+func (t _JointTrajectoryPointTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__trajectory_msgs__msg__JointTrajectoryPoint())
 }
 
 type CJointTrajectoryPoint = C.trajectory_msgs__msg__JointTrajectoryPoint
@@ -105,8 +119,7 @@ func JointTrajectoryPoint__Sequence_to_Go(goSlice *[]JointTrajectoryPoint, cSlic
 		cIdx := (*C.trajectory_msgs__msg__JointTrajectoryPoint__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_trajectory_msgs__msg__JointTrajectoryPoint * uintptr(i)),
 		))
-		(*goSlice)[i] = JointTrajectoryPoint{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		JointTrajectoryPointTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func JointTrajectoryPoint__Sequence_to_C(cSlice *CJointTrajectoryPoint__Sequence, goSlice []JointTrajectoryPoint) {
@@ -121,18 +134,16 @@ func JointTrajectoryPoint__Sequence_to_C(cSlice *CJointTrajectoryPoint__Sequence
 		cIdx := (*C.trajectory_msgs__msg__JointTrajectoryPoint)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_trajectory_msgs__msg__JointTrajectoryPoint * uintptr(i)),
 		))
-		*cIdx = *(*C.trajectory_msgs__msg__JointTrajectoryPoint)(v.AsCStruct())
+		JointTrajectoryPointTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func JointTrajectoryPoint__Array_to_Go(goSlice []JointTrajectoryPoint, cSlice []CJointTrajectoryPoint) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		JointTrajectoryPointTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func JointTrajectoryPoint__Array_to_C(cSlice []CJointTrajectoryPoint, goSlice []JointTrajectoryPoint) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.trajectory_msgs__msg__JointTrajectoryPoint)(goSlice[i].AsCStruct())
+		JointTrajectoryPointTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

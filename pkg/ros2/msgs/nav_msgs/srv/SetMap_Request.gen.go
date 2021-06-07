@@ -15,7 +15,7 @@ package nav_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	geometry_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/geometry_msgs/msg"
 	nav_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/nav_msgs/msg"
@@ -37,7 +37,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("nav_msgs/SetMap_Request", &SetMap_Request{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("nav_msgs/SetMap_Request", SetMap_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSetMap_Request
@@ -50,40 +50,54 @@ type SetMap_Request struct {
 // NewSetMap_Request creates a new SetMap_Request with default values.
 func NewSetMap_Request() *SetMap_Request {
 	self := SetMap_Request{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SetMap_Request) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Map.SetDefaults(nil)
-	t.InitialPose.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *SetMap_Request) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__nav_msgs__srv__SetMap_Request())
-}
-func (t *SetMap_Request) PrepareMemory() unsafe.Pointer { //returns *C.nav_msgs__srv__SetMap_Request
-	return (unsafe.Pointer)(C.nav_msgs__srv__SetMap_Request__create())
-}
-func (t *SetMap_Request) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.nav_msgs__srv__SetMap_Request__destroy((*C.nav_msgs__srv__SetMap_Request)(pointer_to_free))
-}
-func (t *SetMap_Request) AsCStruct() unsafe.Pointer {
-	mem := (*C.nav_msgs__srv__SetMap_Request)(t.PrepareMemory())
-	mem._map = *(*C.nav_msgs__msg__OccupancyGrid)(t.Map.AsCStruct())
-	mem.initial_pose = *(*C.geometry_msgs__msg__PoseWithCovarianceStamped)(t.InitialPose.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *SetMap_Request) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.nav_msgs__srv__SetMap_Request)(ros2_message_buffer)
-	t.Map.AsGoStruct(unsafe.Pointer(&mem._map))
-	t.InitialPose.AsGoStruct(unsafe.Pointer(&mem.initial_pose))
-}
-func (t *SetMap_Request) Clone() ros2types.ROS2Msg {
+func (t *SetMap_Request) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SetMap_Request) SetDefaults() {
+	t.Map.SetDefaults()
+	t.InitialPose.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SetMap_RequestTypeSupport types.MessageTypeSupport = _SetMap_RequestTypeSupport{}
+
+type _SetMap_RequestTypeSupport struct{}
+
+func (t _SetMap_RequestTypeSupport) New() types.Message {
+	return NewSetMap_Request()
+}
+
+func (t _SetMap_RequestTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.nav_msgs__srv__SetMap_Request
+	return (unsafe.Pointer)(C.nav_msgs__srv__SetMap_Request__create())
+}
+
+func (t _SetMap_RequestTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.nav_msgs__srv__SetMap_Request__destroy((*C.nav_msgs__srv__SetMap_Request)(pointer_to_free))
+}
+
+func (t _SetMap_RequestTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*SetMap_Request)
+	mem := (*C.nav_msgs__srv__SetMap_Request)(dst)
+	nav_msgs_msg.OccupancyGridTypeSupport.AsCStruct(unsafe.Pointer(&mem._map), &m.Map)
+	geometry_msgs_msg.PoseWithCovarianceStampedTypeSupport.AsCStruct(unsafe.Pointer(&mem.initial_pose), &m.InitialPose)
+}
+
+func (t _SetMap_RequestTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*SetMap_Request)
+	mem := (*C.nav_msgs__srv__SetMap_Request)(ros2_message_buffer)
+	nav_msgs_msg.OccupancyGridTypeSupport.AsGoStruct(&m.Map, unsafe.Pointer(&mem._map))
+	geometry_msgs_msg.PoseWithCovarianceStampedTypeSupport.AsGoStruct(&m.InitialPose, unsafe.Pointer(&mem.initial_pose))
+}
+
+func (t _SetMap_RequestTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__nav_msgs__srv__SetMap_Request())
 }
 
 type CSetMap_Request = C.nav_msgs__srv__SetMap_Request
@@ -98,8 +112,7 @@ func SetMap_Request__Sequence_to_Go(goSlice *[]SetMap_Request, cSlice CSetMap_Re
 		cIdx := (*C.nav_msgs__srv__SetMap_Request__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_nav_msgs__srv__SetMap_Request * uintptr(i)),
 		))
-		(*goSlice)[i] = SetMap_Request{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SetMap_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SetMap_Request__Sequence_to_C(cSlice *CSetMap_Request__Sequence, goSlice []SetMap_Request) {
@@ -114,18 +127,16 @@ func SetMap_Request__Sequence_to_C(cSlice *CSetMap_Request__Sequence, goSlice []
 		cIdx := (*C.nav_msgs__srv__SetMap_Request)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_nav_msgs__srv__SetMap_Request * uintptr(i)),
 		))
-		*cIdx = *(*C.nav_msgs__srv__SetMap_Request)(v.AsCStruct())
+		SetMap_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SetMap_Request__Array_to_Go(goSlice []SetMap_Request, cSlice []CSetMap_Request) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SetMap_RequestTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SetMap_Request__Array_to_C(cSlice []CSetMap_Request, goSlice []SetMap_Request) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.nav_msgs__srv__SetMap_Request)(goSlice[i].AsCStruct())
+		SetMap_RequestTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

@@ -15,7 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/Wrench", &Wrench{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/Wrench", WrenchTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewWrench
@@ -46,40 +46,54 @@ type Wrench struct {
 // NewWrench creates a new Wrench with default values.
 func NewWrench() *Wrench {
 	self := Wrench{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Wrench) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Force.SetDefaults(nil)
-	t.Torque.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *Wrench) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__Wrench())
-}
-func (t *Wrench) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__Wrench
-	return (unsafe.Pointer)(C.geometry_msgs__msg__Wrench__create())
-}
-func (t *Wrench) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.geometry_msgs__msg__Wrench__destroy((*C.geometry_msgs__msg__Wrench)(pointer_to_free))
-}
-func (t *Wrench) AsCStruct() unsafe.Pointer {
-	mem := (*C.geometry_msgs__msg__Wrench)(t.PrepareMemory())
-	mem.force = *(*C.geometry_msgs__msg__Vector3)(t.Force.AsCStruct())
-	mem.torque = *(*C.geometry_msgs__msg__Vector3)(t.Torque.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *Wrench) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.geometry_msgs__msg__Wrench)(ros2_message_buffer)
-	t.Force.AsGoStruct(unsafe.Pointer(&mem.force))
-	t.Torque.AsGoStruct(unsafe.Pointer(&mem.torque))
-}
-func (t *Wrench) Clone() ros2types.ROS2Msg {
+func (t *Wrench) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Wrench) SetDefaults() {
+	t.Force.SetDefaults()
+	t.Torque.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var WrenchTypeSupport types.MessageTypeSupport = _WrenchTypeSupport{}
+
+type _WrenchTypeSupport struct{}
+
+func (t _WrenchTypeSupport) New() types.Message {
+	return NewWrench()
+}
+
+func (t _WrenchTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__Wrench
+	return (unsafe.Pointer)(C.geometry_msgs__msg__Wrench__create())
+}
+
+func (t _WrenchTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.geometry_msgs__msg__Wrench__destroy((*C.geometry_msgs__msg__Wrench)(pointer_to_free))
+}
+
+func (t _WrenchTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Wrench)
+	mem := (*C.geometry_msgs__msg__Wrench)(dst)
+	Vector3TypeSupport.AsCStruct(unsafe.Pointer(&mem.force), &m.Force)
+	Vector3TypeSupport.AsCStruct(unsafe.Pointer(&mem.torque), &m.Torque)
+}
+
+func (t _WrenchTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Wrench)
+	mem := (*C.geometry_msgs__msg__Wrench)(ros2_message_buffer)
+	Vector3TypeSupport.AsGoStruct(&m.Force, unsafe.Pointer(&mem.force))
+	Vector3TypeSupport.AsGoStruct(&m.Torque, unsafe.Pointer(&mem.torque))
+}
+
+func (t _WrenchTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__Wrench())
 }
 
 type CWrench = C.geometry_msgs__msg__Wrench
@@ -94,8 +108,7 @@ func Wrench__Sequence_to_Go(goSlice *[]Wrench, cSlice CWrench__Sequence) {
 		cIdx := (*C.geometry_msgs__msg__Wrench__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Wrench * uintptr(i)),
 		))
-		(*goSlice)[i] = Wrench{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		WrenchTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Wrench__Sequence_to_C(cSlice *CWrench__Sequence, goSlice []Wrench) {
@@ -110,18 +123,16 @@ func Wrench__Sequence_to_C(cSlice *CWrench__Sequence, goSlice []Wrench) {
 		cIdx := (*C.geometry_msgs__msg__Wrench)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Wrench * uintptr(i)),
 		))
-		*cIdx = *(*C.geometry_msgs__msg__Wrench)(v.AsCStruct())
+		WrenchTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Wrench__Array_to_Go(goSlice []Wrench, cSlice []CWrench) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		WrenchTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Wrench__Array_to_C(cSlice []CWrench, goSlice []Wrench) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.geometry_msgs__msg__Wrench)(goSlice[i].AsCStruct())
+		WrenchTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

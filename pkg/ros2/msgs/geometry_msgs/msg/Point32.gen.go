@@ -15,7 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/Point32", &Point32{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("geometry_msgs/Point32", Point32TypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPoint32
@@ -47,40 +47,54 @@ type Point32 struct {
 // NewPoint32 creates a new Point32 with default values.
 func NewPoint32() *Point32 {
 	self := Point32{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Point32) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Point32) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__Point32())
-}
-func (t *Point32) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__Point32
-	return (unsafe.Pointer)(C.geometry_msgs__msg__Point32__create())
-}
-func (t *Point32) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.geometry_msgs__msg__Point32__destroy((*C.geometry_msgs__msg__Point32)(pointer_to_free))
-}
-func (t *Point32) AsCStruct() unsafe.Pointer {
-	mem := (*C.geometry_msgs__msg__Point32)(t.PrepareMemory())
-	mem.x = C.float(t.X)
-	mem.y = C.float(t.Y)
-	mem.z = C.float(t.Z)
-	return unsafe.Pointer(mem)
-}
-func (t *Point32) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.geometry_msgs__msg__Point32)(ros2_message_buffer)
-	t.X = float32(mem.x)
-	t.Y = float32(mem.y)
-	t.Z = float32(mem.z)
-}
-func (t *Point32) Clone() ros2types.ROS2Msg {
+func (t *Point32) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Point32) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var Point32TypeSupport types.MessageTypeSupport = _Point32TypeSupport{}
+
+type _Point32TypeSupport struct{}
+
+func (t _Point32TypeSupport) New() types.Message {
+	return NewPoint32()
+}
+
+func (t _Point32TypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.geometry_msgs__msg__Point32
+	return (unsafe.Pointer)(C.geometry_msgs__msg__Point32__create())
+}
+
+func (t _Point32TypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.geometry_msgs__msg__Point32__destroy((*C.geometry_msgs__msg__Point32)(pointer_to_free))
+}
+
+func (t _Point32TypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Point32)
+	mem := (*C.geometry_msgs__msg__Point32)(dst)
+	mem.x = C.float(m.X)
+	mem.y = C.float(m.Y)
+	mem.z = C.float(m.Z)
+}
+
+func (t _Point32TypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Point32)
+	mem := (*C.geometry_msgs__msg__Point32)(ros2_message_buffer)
+	m.X = float32(mem.x)
+	m.Y = float32(mem.y)
+	m.Z = float32(mem.z)
+}
+
+func (t _Point32TypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__geometry_msgs__msg__Point32())
 }
 
 type CPoint32 = C.geometry_msgs__msg__Point32
@@ -95,8 +109,7 @@ func Point32__Sequence_to_Go(goSlice *[]Point32, cSlice CPoint32__Sequence) {
 		cIdx := (*C.geometry_msgs__msg__Point32__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Point32 * uintptr(i)),
 		))
-		(*goSlice)[i] = Point32{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		Point32TypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Point32__Sequence_to_C(cSlice *CPoint32__Sequence, goSlice []Point32) {
@@ -111,18 +124,16 @@ func Point32__Sequence_to_C(cSlice *CPoint32__Sequence, goSlice []Point32) {
 		cIdx := (*C.geometry_msgs__msg__Point32)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Point32 * uintptr(i)),
 		))
-		*cIdx = *(*C.geometry_msgs__msg__Point32)(v.AsCStruct())
+		Point32TypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Point32__Array_to_Go(goSlice []Point32, cSlice []CPoint32) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		Point32TypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Point32__Array_to_C(cSlice []CPoint32, goSlice []Point32) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.geometry_msgs__msg__Point32)(goSlice[i].AsCStruct())
+		Point32TypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

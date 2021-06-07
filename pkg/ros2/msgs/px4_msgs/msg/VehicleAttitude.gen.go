@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleAttitude", &VehicleAttitude{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleAttitude", VehicleAttitudeTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewVehicleAttitude
@@ -50,48 +50,62 @@ type VehicleAttitude struct {
 // NewVehicleAttitude creates a new VehicleAttitude with default values.
 func NewVehicleAttitude() *VehicleAttitude {
 	self := VehicleAttitude{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *VehicleAttitude) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *VehicleAttitude) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleAttitude())
-}
-func (t *VehicleAttitude) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleAttitude
-	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleAttitude__create())
-}
-func (t *VehicleAttitude) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__VehicleAttitude__destroy((*C.px4_msgs__msg__VehicleAttitude)(pointer_to_free))
-}
-func (t *VehicleAttitude) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__VehicleAttitude)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	cSlice_q := mem.q[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)), t.Q[:])
-	cSlice_delta_q_reset := mem.delta_q_reset[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_q_reset)), t.DeltaQReset[:])
-	mem.quat_reset_counter = C.uint8_t(t.QuatResetCounter)
-	return unsafe.Pointer(mem)
-}
-func (t *VehicleAttitude) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__VehicleAttitude)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	cSlice_q := mem.q[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Q[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)))
-	cSlice_delta_q_reset := mem.delta_q_reset[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.DeltaQReset[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_q_reset)))
-	t.QuatResetCounter = uint8(mem.quat_reset_counter)
-}
-func (t *VehicleAttitude) Clone() ros2types.ROS2Msg {
+func (t *VehicleAttitude) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *VehicleAttitude) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VehicleAttitudeTypeSupport types.MessageTypeSupport = _VehicleAttitudeTypeSupport{}
+
+type _VehicleAttitudeTypeSupport struct{}
+
+func (t _VehicleAttitudeTypeSupport) New() types.Message {
+	return NewVehicleAttitude()
+}
+
+func (t _VehicleAttitudeTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleAttitude
+	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleAttitude__create())
+}
+
+func (t _VehicleAttitudeTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__VehicleAttitude__destroy((*C.px4_msgs__msg__VehicleAttitude)(pointer_to_free))
+}
+
+func (t _VehicleAttitudeTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*VehicleAttitude)
+	mem := (*C.px4_msgs__msg__VehicleAttitude)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	cSlice_q := mem.q[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)), m.Q[:])
+	cSlice_delta_q_reset := mem.delta_q_reset[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_q_reset)), m.DeltaQReset[:])
+	mem.quat_reset_counter = C.uint8_t(m.QuatResetCounter)
+}
+
+func (t _VehicleAttitudeTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*VehicleAttitude)
+	mem := (*C.px4_msgs__msg__VehicleAttitude)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	cSlice_q := mem.q[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Q[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_q)))
+	cSlice_delta_q_reset := mem.delta_q_reset[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.DeltaQReset[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_delta_q_reset)))
+	m.QuatResetCounter = uint8(mem.quat_reset_counter)
+}
+
+func (t _VehicleAttitudeTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleAttitude())
 }
 
 type CVehicleAttitude = C.px4_msgs__msg__VehicleAttitude
@@ -106,8 +120,7 @@ func VehicleAttitude__Sequence_to_Go(goSlice *[]VehicleAttitude, cSlice CVehicle
 		cIdx := (*C.px4_msgs__msg__VehicleAttitude__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleAttitude * uintptr(i)),
 		))
-		(*goSlice)[i] = VehicleAttitude{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VehicleAttitudeTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func VehicleAttitude__Sequence_to_C(cSlice *CVehicleAttitude__Sequence, goSlice []VehicleAttitude) {
@@ -122,18 +135,16 @@ func VehicleAttitude__Sequence_to_C(cSlice *CVehicleAttitude__Sequence, goSlice 
 		cIdx := (*C.px4_msgs__msg__VehicleAttitude)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleAttitude * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__VehicleAttitude)(v.AsCStruct())
+		VehicleAttitudeTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func VehicleAttitude__Array_to_Go(goSlice []VehicleAttitude, cSlice []CVehicleAttitude) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VehicleAttitudeTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func VehicleAttitude__Array_to_C(cSlice []CVehicleAttitude, goSlice []VehicleAttitude) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__VehicleAttitude)(goSlice[i].AsCStruct())
+		VehicleAttitudeTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

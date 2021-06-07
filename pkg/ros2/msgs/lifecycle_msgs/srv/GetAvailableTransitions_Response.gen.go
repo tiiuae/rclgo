@@ -15,7 +15,7 @@ package lifecycle_msgs_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	lifecycle_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/lifecycle_msgs/msg"
 	
@@ -35,7 +35,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("lifecycle_msgs/GetAvailableTransitions_Response", &GetAvailableTransitions_Response{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("lifecycle_msgs/GetAvailableTransitions_Response", GetAvailableTransitions_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewGetAvailableTransitions_Response
@@ -47,36 +47,50 @@ type GetAvailableTransitions_Response struct {
 // NewGetAvailableTransitions_Response creates a new GetAvailableTransitions_Response with default values.
 func NewGetAvailableTransitions_Response() *GetAvailableTransitions_Response {
 	self := GetAvailableTransitions_Response{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *GetAvailableTransitions_Response) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *GetAvailableTransitions_Response) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__lifecycle_msgs__srv__GetAvailableTransitions_Response())
-}
-func (t *GetAvailableTransitions_Response) PrepareMemory() unsafe.Pointer { //returns *C.lifecycle_msgs__srv__GetAvailableTransitions_Response
-	return (unsafe.Pointer)(C.lifecycle_msgs__srv__GetAvailableTransitions_Response__create())
-}
-func (t *GetAvailableTransitions_Response) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.lifecycle_msgs__srv__GetAvailableTransitions_Response__destroy((*C.lifecycle_msgs__srv__GetAvailableTransitions_Response)(pointer_to_free))
-}
-func (t *GetAvailableTransitions_Response) AsCStruct() unsafe.Pointer {
-	mem := (*C.lifecycle_msgs__srv__GetAvailableTransitions_Response)(t.PrepareMemory())
-	lifecycle_msgs_msg.TransitionDescription__Sequence_to_C((*lifecycle_msgs_msg.CTransitionDescription__Sequence)(unsafe.Pointer(&mem.available_transitions)), t.AvailableTransitions)
-	return unsafe.Pointer(mem)
-}
-func (t *GetAvailableTransitions_Response) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.lifecycle_msgs__srv__GetAvailableTransitions_Response)(ros2_message_buffer)
-	lifecycle_msgs_msg.TransitionDescription__Sequence_to_Go(&t.AvailableTransitions, *(*lifecycle_msgs_msg.CTransitionDescription__Sequence)(unsafe.Pointer(&mem.available_transitions)))
-}
-func (t *GetAvailableTransitions_Response) Clone() ros2types.ROS2Msg {
+func (t *GetAvailableTransitions_Response) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *GetAvailableTransitions_Response) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var GetAvailableTransitions_ResponseTypeSupport types.MessageTypeSupport = _GetAvailableTransitions_ResponseTypeSupport{}
+
+type _GetAvailableTransitions_ResponseTypeSupport struct{}
+
+func (t _GetAvailableTransitions_ResponseTypeSupport) New() types.Message {
+	return NewGetAvailableTransitions_Response()
+}
+
+func (t _GetAvailableTransitions_ResponseTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.lifecycle_msgs__srv__GetAvailableTransitions_Response
+	return (unsafe.Pointer)(C.lifecycle_msgs__srv__GetAvailableTransitions_Response__create())
+}
+
+func (t _GetAvailableTransitions_ResponseTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.lifecycle_msgs__srv__GetAvailableTransitions_Response__destroy((*C.lifecycle_msgs__srv__GetAvailableTransitions_Response)(pointer_to_free))
+}
+
+func (t _GetAvailableTransitions_ResponseTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*GetAvailableTransitions_Response)
+	mem := (*C.lifecycle_msgs__srv__GetAvailableTransitions_Response)(dst)
+	lifecycle_msgs_msg.TransitionDescription__Sequence_to_C((*lifecycle_msgs_msg.CTransitionDescription__Sequence)(unsafe.Pointer(&mem.available_transitions)), m.AvailableTransitions)
+}
+
+func (t _GetAvailableTransitions_ResponseTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*GetAvailableTransitions_Response)
+	mem := (*C.lifecycle_msgs__srv__GetAvailableTransitions_Response)(ros2_message_buffer)
+	lifecycle_msgs_msg.TransitionDescription__Sequence_to_Go(&m.AvailableTransitions, *(*lifecycle_msgs_msg.CTransitionDescription__Sequence)(unsafe.Pointer(&mem.available_transitions)))
+}
+
+func (t _GetAvailableTransitions_ResponseTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__lifecycle_msgs__srv__GetAvailableTransitions_Response())
 }
 
 type CGetAvailableTransitions_Response = C.lifecycle_msgs__srv__GetAvailableTransitions_Response
@@ -91,8 +105,7 @@ func GetAvailableTransitions_Response__Sequence_to_Go(goSlice *[]GetAvailableTra
 		cIdx := (*C.lifecycle_msgs__srv__GetAvailableTransitions_Response__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_lifecycle_msgs__srv__GetAvailableTransitions_Response * uintptr(i)),
 		))
-		(*goSlice)[i] = GetAvailableTransitions_Response{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		GetAvailableTransitions_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func GetAvailableTransitions_Response__Sequence_to_C(cSlice *CGetAvailableTransitions_Response__Sequence, goSlice []GetAvailableTransitions_Response) {
@@ -107,18 +120,16 @@ func GetAvailableTransitions_Response__Sequence_to_C(cSlice *CGetAvailableTransi
 		cIdx := (*C.lifecycle_msgs__srv__GetAvailableTransitions_Response)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_lifecycle_msgs__srv__GetAvailableTransitions_Response * uintptr(i)),
 		))
-		*cIdx = *(*C.lifecycle_msgs__srv__GetAvailableTransitions_Response)(v.AsCStruct())
+		GetAvailableTransitions_ResponseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func GetAvailableTransitions_Response__Array_to_Go(goSlice []GetAvailableTransitions_Response, cSlice []CGetAvailableTransitions_Response) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		GetAvailableTransitions_ResponseTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func GetAvailableTransitions_Response__Array_to_C(cSlice []CGetAvailableTransitions_Response, goSlice []GetAvailableTransitions_Response) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.lifecycle_msgs__srv__GetAvailableTransitions_Response)(goSlice[i].AsCStruct())
+		GetAvailableTransitions_ResponseTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

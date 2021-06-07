@@ -15,7 +15,7 @@ package example_interfaces_srv
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,52 +34,65 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("example_interfaces/SetBool_Response", &SetBool_Response{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("example_interfaces/SetBool_Response", SetBool_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSetBool_Response
 // function instead.
 type SetBool_Response struct {
 	Success bool `yaml:"success"`// indicate successful run of triggered service
-	Message rosidl_runtime_c.String `yaml:"message"`// informational, e.g. for error messages
+	Message string `yaml:"message"`// informational, e.g. for error messages
 }
 
 // NewSetBool_Response creates a new SetBool_Response with default values.
 func NewSetBool_Response() *SetBool_Response {
 	self := SetBool_Response{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SetBool_Response) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Message.SetDefaults("")
-	
-	return t
-}
-
-func (t *SetBool_Response) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__example_interfaces__srv__SetBool_Response())
-}
-func (t *SetBool_Response) PrepareMemory() unsafe.Pointer { //returns *C.example_interfaces__srv__SetBool_Response
-	return (unsafe.Pointer)(C.example_interfaces__srv__SetBool_Response__create())
-}
-func (t *SetBool_Response) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.example_interfaces__srv__SetBool_Response__destroy((*C.example_interfaces__srv__SetBool_Response)(pointer_to_free))
-}
-func (t *SetBool_Response) AsCStruct() unsafe.Pointer {
-	mem := (*C.example_interfaces__srv__SetBool_Response)(t.PrepareMemory())
-	mem.success = C.bool(t.Success)
-	mem.message = *(*C.rosidl_runtime_c__String)(t.Message.AsCStruct())
-	return unsafe.Pointer(mem)
-}
-func (t *SetBool_Response) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.example_interfaces__srv__SetBool_Response)(ros2_message_buffer)
-	t.Success = bool(mem.success)
-	t.Message.AsGoStruct(unsafe.Pointer(&mem.message))
-}
-func (t *SetBool_Response) Clone() ros2types.ROS2Msg {
+func (t *SetBool_Response) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SetBool_Response) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SetBool_ResponseTypeSupport types.MessageTypeSupport = _SetBool_ResponseTypeSupport{}
+
+type _SetBool_ResponseTypeSupport struct{}
+
+func (t _SetBool_ResponseTypeSupport) New() types.Message {
+	return NewSetBool_Response()
+}
+
+func (t _SetBool_ResponseTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.example_interfaces__srv__SetBool_Response
+	return (unsafe.Pointer)(C.example_interfaces__srv__SetBool_Response__create())
+}
+
+func (t _SetBool_ResponseTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.example_interfaces__srv__SetBool_Response__destroy((*C.example_interfaces__srv__SetBool_Response)(pointer_to_free))
+}
+
+func (t _SetBool_ResponseTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*SetBool_Response)
+	mem := (*C.example_interfaces__srv__SetBool_Response)(dst)
+	mem.success = C.bool(m.Success)
+	rosidl_runtime_c.StringAsCStruct(unsafe.Pointer(&mem.message), m.Message)
+}
+
+func (t _SetBool_ResponseTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*SetBool_Response)
+	mem := (*C.example_interfaces__srv__SetBool_Response)(ros2_message_buffer)
+	m.Success = bool(mem.success)
+	rosidl_runtime_c.StringAsGoStruct(&m.Message, unsafe.Pointer(&mem.message))
+}
+
+func (t _SetBool_ResponseTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__example_interfaces__srv__SetBool_Response())
 }
 
 type CSetBool_Response = C.example_interfaces__srv__SetBool_Response
@@ -94,8 +107,7 @@ func SetBool_Response__Sequence_to_Go(goSlice *[]SetBool_Response, cSlice CSetBo
 		cIdx := (*C.example_interfaces__srv__SetBool_Response__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__srv__SetBool_Response * uintptr(i)),
 		))
-		(*goSlice)[i] = SetBool_Response{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SetBool_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SetBool_Response__Sequence_to_C(cSlice *CSetBool_Response__Sequence, goSlice []SetBool_Response) {
@@ -110,18 +122,16 @@ func SetBool_Response__Sequence_to_C(cSlice *CSetBool_Response__Sequence, goSlic
 		cIdx := (*C.example_interfaces__srv__SetBool_Response)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__srv__SetBool_Response * uintptr(i)),
 		))
-		*cIdx = *(*C.example_interfaces__srv__SetBool_Response)(v.AsCStruct())
+		SetBool_ResponseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SetBool_Response__Array_to_Go(goSlice []SetBool_Response, cSlice []CSetBool_Response) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SetBool_ResponseTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SetBool_Response__Array_to_C(cSlice []CSetBool_Response, goSlice []SetBool_Response) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.example_interfaces__srv__SetBool_Response)(goSlice[i].AsCStruct())
+		SetBool_ResponseTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

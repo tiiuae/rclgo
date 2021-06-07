@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EstimatorGlobalPosition", &EstimatorGlobalPosition{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/EstimatorGlobalPosition", EstimatorGlobalPositionTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewEstimatorGlobalPosition
@@ -58,62 +58,76 @@ type EstimatorGlobalPosition struct {
 // NewEstimatorGlobalPosition creates a new EstimatorGlobalPosition with default values.
 func NewEstimatorGlobalPosition() *EstimatorGlobalPosition {
 	self := EstimatorGlobalPosition{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *EstimatorGlobalPosition) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *EstimatorGlobalPosition) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EstimatorGlobalPosition())
-}
-func (t *EstimatorGlobalPosition) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EstimatorGlobalPosition
-	return (unsafe.Pointer)(C.px4_msgs__msg__EstimatorGlobalPosition__create())
-}
-func (t *EstimatorGlobalPosition) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__EstimatorGlobalPosition__destroy((*C.px4_msgs__msg__EstimatorGlobalPosition)(pointer_to_free))
-}
-func (t *EstimatorGlobalPosition) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__EstimatorGlobalPosition)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	mem.lat = C.double(t.Lat)
-	mem.lon = C.double(t.Lon)
-	mem.alt = C.float(t.Alt)
-	mem.alt_ellipsoid = C.float(t.AltEllipsoid)
-	mem.delta_alt = C.float(t.DeltaAlt)
-	mem.lat_lon_reset_counter = C.uint8_t(t.LatLonResetCounter)
-	mem.alt_reset_counter = C.uint8_t(t.AltResetCounter)
-	mem.eph = C.float(t.Eph)
-	mem.epv = C.float(t.Epv)
-	mem.terrain_alt = C.float(t.TerrainAlt)
-	mem.terrain_alt_valid = C.bool(t.TerrainAltValid)
-	mem.dead_reckoning = C.bool(t.DeadReckoning)
-	return unsafe.Pointer(mem)
-}
-func (t *EstimatorGlobalPosition) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__EstimatorGlobalPosition)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	t.Lat = float64(mem.lat)
-	t.Lon = float64(mem.lon)
-	t.Alt = float32(mem.alt)
-	t.AltEllipsoid = float32(mem.alt_ellipsoid)
-	t.DeltaAlt = float32(mem.delta_alt)
-	t.LatLonResetCounter = uint8(mem.lat_lon_reset_counter)
-	t.AltResetCounter = uint8(mem.alt_reset_counter)
-	t.Eph = float32(mem.eph)
-	t.Epv = float32(mem.epv)
-	t.TerrainAlt = float32(mem.terrain_alt)
-	t.TerrainAltValid = bool(mem.terrain_alt_valid)
-	t.DeadReckoning = bool(mem.dead_reckoning)
-}
-func (t *EstimatorGlobalPosition) Clone() ros2types.ROS2Msg {
+func (t *EstimatorGlobalPosition) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *EstimatorGlobalPosition) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var EstimatorGlobalPositionTypeSupport types.MessageTypeSupport = _EstimatorGlobalPositionTypeSupport{}
+
+type _EstimatorGlobalPositionTypeSupport struct{}
+
+func (t _EstimatorGlobalPositionTypeSupport) New() types.Message {
+	return NewEstimatorGlobalPosition()
+}
+
+func (t _EstimatorGlobalPositionTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__EstimatorGlobalPosition
+	return (unsafe.Pointer)(C.px4_msgs__msg__EstimatorGlobalPosition__create())
+}
+
+func (t _EstimatorGlobalPositionTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__EstimatorGlobalPosition__destroy((*C.px4_msgs__msg__EstimatorGlobalPosition)(pointer_to_free))
+}
+
+func (t _EstimatorGlobalPositionTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*EstimatorGlobalPosition)
+	mem := (*C.px4_msgs__msg__EstimatorGlobalPosition)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	mem.lat = C.double(m.Lat)
+	mem.lon = C.double(m.Lon)
+	mem.alt = C.float(m.Alt)
+	mem.alt_ellipsoid = C.float(m.AltEllipsoid)
+	mem.delta_alt = C.float(m.DeltaAlt)
+	mem.lat_lon_reset_counter = C.uint8_t(m.LatLonResetCounter)
+	mem.alt_reset_counter = C.uint8_t(m.AltResetCounter)
+	mem.eph = C.float(m.Eph)
+	mem.epv = C.float(m.Epv)
+	mem.terrain_alt = C.float(m.TerrainAlt)
+	mem.terrain_alt_valid = C.bool(m.TerrainAltValid)
+	mem.dead_reckoning = C.bool(m.DeadReckoning)
+}
+
+func (t _EstimatorGlobalPositionTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*EstimatorGlobalPosition)
+	mem := (*C.px4_msgs__msg__EstimatorGlobalPosition)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	m.Lat = float64(mem.lat)
+	m.Lon = float64(mem.lon)
+	m.Alt = float32(mem.alt)
+	m.AltEllipsoid = float32(mem.alt_ellipsoid)
+	m.DeltaAlt = float32(mem.delta_alt)
+	m.LatLonResetCounter = uint8(mem.lat_lon_reset_counter)
+	m.AltResetCounter = uint8(mem.alt_reset_counter)
+	m.Eph = float32(mem.eph)
+	m.Epv = float32(mem.epv)
+	m.TerrainAlt = float32(mem.terrain_alt)
+	m.TerrainAltValid = bool(mem.terrain_alt_valid)
+	m.DeadReckoning = bool(mem.dead_reckoning)
+}
+
+func (t _EstimatorGlobalPositionTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__EstimatorGlobalPosition())
 }
 
 type CEstimatorGlobalPosition = C.px4_msgs__msg__EstimatorGlobalPosition
@@ -128,8 +142,7 @@ func EstimatorGlobalPosition__Sequence_to_Go(goSlice *[]EstimatorGlobalPosition,
 		cIdx := (*C.px4_msgs__msg__EstimatorGlobalPosition__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EstimatorGlobalPosition * uintptr(i)),
 		))
-		(*goSlice)[i] = EstimatorGlobalPosition{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		EstimatorGlobalPositionTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func EstimatorGlobalPosition__Sequence_to_C(cSlice *CEstimatorGlobalPosition__Sequence, goSlice []EstimatorGlobalPosition) {
@@ -144,18 +157,16 @@ func EstimatorGlobalPosition__Sequence_to_C(cSlice *CEstimatorGlobalPosition__Se
 		cIdx := (*C.px4_msgs__msg__EstimatorGlobalPosition)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__EstimatorGlobalPosition * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__EstimatorGlobalPosition)(v.AsCStruct())
+		EstimatorGlobalPositionTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func EstimatorGlobalPosition__Array_to_Go(goSlice []EstimatorGlobalPosition, cSlice []CEstimatorGlobalPosition) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		EstimatorGlobalPositionTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func EstimatorGlobalPosition__Array_to_C(cSlice []CEstimatorGlobalPosition, goSlice []EstimatorGlobalPosition) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__EstimatorGlobalPosition)(goSlice[i].AsCStruct())
+		EstimatorGlobalPositionTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

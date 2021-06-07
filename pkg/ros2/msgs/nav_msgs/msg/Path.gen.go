@@ -15,7 +15,7 @@ package nav_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	geometry_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/geometry_msgs/msg"
 	std_msgs_msg "github.com/tiiuae/rclgo/pkg/ros2/msgs/std_msgs/msg"
@@ -37,7 +37,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("nav_msgs/Path", &Path{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("nav_msgs/Path", PathTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPath
@@ -50,39 +50,53 @@ type Path struct {
 // NewPath creates a new Path with default values.
 func NewPath() *Path {
 	self := Path{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Path) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	t.Header.SetDefaults(nil)
-	
-	return t
-}
-
-func (t *Path) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__nav_msgs__msg__Path())
-}
-func (t *Path) PrepareMemory() unsafe.Pointer { //returns *C.nav_msgs__msg__Path
-	return (unsafe.Pointer)(C.nav_msgs__msg__Path__create())
-}
-func (t *Path) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.nav_msgs__msg__Path__destroy((*C.nav_msgs__msg__Path)(pointer_to_free))
-}
-func (t *Path) AsCStruct() unsafe.Pointer {
-	mem := (*C.nav_msgs__msg__Path)(t.PrepareMemory())
-	mem.header = *(*C.std_msgs__msg__Header)(t.Header.AsCStruct())
-	geometry_msgs_msg.PoseStamped__Sequence_to_C((*geometry_msgs_msg.CPoseStamped__Sequence)(unsafe.Pointer(&mem.poses)), t.Poses)
-	return unsafe.Pointer(mem)
-}
-func (t *Path) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.nav_msgs__msg__Path)(ros2_message_buffer)
-	t.Header.AsGoStruct(unsafe.Pointer(&mem.header))
-	geometry_msgs_msg.PoseStamped__Sequence_to_Go(&t.Poses, *(*geometry_msgs_msg.CPoseStamped__Sequence)(unsafe.Pointer(&mem.poses)))
-}
-func (t *Path) Clone() ros2types.ROS2Msg {
+func (t *Path) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Path) SetDefaults() {
+	t.Header.SetDefaults()
+	
+}
+
+// Modifying this variable is undefined behavior.
+var PathTypeSupport types.MessageTypeSupport = _PathTypeSupport{}
+
+type _PathTypeSupport struct{}
+
+func (t _PathTypeSupport) New() types.Message {
+	return NewPath()
+}
+
+func (t _PathTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.nav_msgs__msg__Path
+	return (unsafe.Pointer)(C.nav_msgs__msg__Path__create())
+}
+
+func (t _PathTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.nav_msgs__msg__Path__destroy((*C.nav_msgs__msg__Path)(pointer_to_free))
+}
+
+func (t _PathTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Path)
+	mem := (*C.nav_msgs__msg__Path)(dst)
+	std_msgs_msg.HeaderTypeSupport.AsCStruct(unsafe.Pointer(&mem.header), &m.Header)
+	geometry_msgs_msg.PoseStamped__Sequence_to_C((*geometry_msgs_msg.CPoseStamped__Sequence)(unsafe.Pointer(&mem.poses)), m.Poses)
+}
+
+func (t _PathTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Path)
+	mem := (*C.nav_msgs__msg__Path)(ros2_message_buffer)
+	std_msgs_msg.HeaderTypeSupport.AsGoStruct(&m.Header, unsafe.Pointer(&mem.header))
+	geometry_msgs_msg.PoseStamped__Sequence_to_Go(&m.Poses, *(*geometry_msgs_msg.CPoseStamped__Sequence)(unsafe.Pointer(&mem.poses)))
+}
+
+func (t _PathTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__nav_msgs__msg__Path())
 }
 
 type CPath = C.nav_msgs__msg__Path
@@ -97,8 +111,7 @@ func Path__Sequence_to_Go(goSlice *[]Path, cSlice CPath__Sequence) {
 		cIdx := (*C.nav_msgs__msg__Path__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_nav_msgs__msg__Path * uintptr(i)),
 		))
-		(*goSlice)[i] = Path{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		PathTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Path__Sequence_to_C(cSlice *CPath__Sequence, goSlice []Path) {
@@ -113,18 +126,16 @@ func Path__Sequence_to_C(cSlice *CPath__Sequence, goSlice []Path) {
 		cIdx := (*C.nav_msgs__msg__Path)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_nav_msgs__msg__Path * uintptr(i)),
 		))
-		*cIdx = *(*C.nav_msgs__msg__Path)(v.AsCStruct())
+		PathTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Path__Array_to_Go(goSlice []Path, cSlice []CPath) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		PathTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Path__Array_to_C(cSlice []CPath, goSlice []Path) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.nav_msgs__msg__Path)(goSlice[i].AsCStruct())
+		PathTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

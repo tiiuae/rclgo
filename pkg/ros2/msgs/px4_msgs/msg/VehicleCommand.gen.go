@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleCommand", &VehicleCommand{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/VehicleCommand", VehicleCommandTypeSupport)
 }
 const (
 	VehicleCommand_VEHICLE_CMD_CUSTOM_0 uint16 = 0// test command
@@ -195,64 +195,78 @@ type VehicleCommand struct {
 // NewVehicleCommand creates a new VehicleCommand with default values.
 func NewVehicleCommand() *VehicleCommand {
 	self := VehicleCommand{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *VehicleCommand) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *VehicleCommand) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleCommand())
-}
-func (t *VehicleCommand) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleCommand
-	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleCommand__create())
-}
-func (t *VehicleCommand) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__VehicleCommand__destroy((*C.px4_msgs__msg__VehicleCommand)(pointer_to_free))
-}
-func (t *VehicleCommand) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__VehicleCommand)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.param1 = C.float(t.Param1)
-	mem.param2 = C.float(t.Param2)
-	mem.param3 = C.float(t.Param3)
-	mem.param4 = C.float(t.Param4)
-	mem.param5 = C.double(t.Param5)
-	mem.param6 = C.double(t.Param6)
-	mem.param7 = C.float(t.Param7)
-	mem.command = C.uint32_t(t.Command)
-	mem.target_system = C.uint8_t(t.TargetSystem)
-	mem.target_component = C.uint8_t(t.TargetComponent)
-	mem.source_system = C.uint8_t(t.SourceSystem)
-	mem.source_component = C.uint8_t(t.SourceComponent)
-	mem.confirmation = C.uint8_t(t.Confirmation)
-	mem.from_external = C.bool(t.FromExternal)
-	return unsafe.Pointer(mem)
-}
-func (t *VehicleCommand) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__VehicleCommand)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Param1 = float32(mem.param1)
-	t.Param2 = float32(mem.param2)
-	t.Param3 = float32(mem.param3)
-	t.Param4 = float32(mem.param4)
-	t.Param5 = float64(mem.param5)
-	t.Param6 = float64(mem.param6)
-	t.Param7 = float32(mem.param7)
-	t.Command = uint32(mem.command)
-	t.TargetSystem = uint8(mem.target_system)
-	t.TargetComponent = uint8(mem.target_component)
-	t.SourceSystem = uint8(mem.source_system)
-	t.SourceComponent = uint8(mem.source_component)
-	t.Confirmation = uint8(mem.confirmation)
-	t.FromExternal = bool(mem.from_external)
-}
-func (t *VehicleCommand) Clone() ros2types.ROS2Msg {
+func (t *VehicleCommand) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *VehicleCommand) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var VehicleCommandTypeSupport types.MessageTypeSupport = _VehicleCommandTypeSupport{}
+
+type _VehicleCommandTypeSupport struct{}
+
+func (t _VehicleCommandTypeSupport) New() types.Message {
+	return NewVehicleCommand()
+}
+
+func (t _VehicleCommandTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__VehicleCommand
+	return (unsafe.Pointer)(C.px4_msgs__msg__VehicleCommand__create())
+}
+
+func (t _VehicleCommandTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__VehicleCommand__destroy((*C.px4_msgs__msg__VehicleCommand)(pointer_to_free))
+}
+
+func (t _VehicleCommandTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*VehicleCommand)
+	mem := (*C.px4_msgs__msg__VehicleCommand)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.param1 = C.float(m.Param1)
+	mem.param2 = C.float(m.Param2)
+	mem.param3 = C.float(m.Param3)
+	mem.param4 = C.float(m.Param4)
+	mem.param5 = C.double(m.Param5)
+	mem.param6 = C.double(m.Param6)
+	mem.param7 = C.float(m.Param7)
+	mem.command = C.uint32_t(m.Command)
+	mem.target_system = C.uint8_t(m.TargetSystem)
+	mem.target_component = C.uint8_t(m.TargetComponent)
+	mem.source_system = C.uint8_t(m.SourceSystem)
+	mem.source_component = C.uint8_t(m.SourceComponent)
+	mem.confirmation = C.uint8_t(m.Confirmation)
+	mem.from_external = C.bool(m.FromExternal)
+}
+
+func (t _VehicleCommandTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*VehicleCommand)
+	mem := (*C.px4_msgs__msg__VehicleCommand)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Param1 = float32(mem.param1)
+	m.Param2 = float32(mem.param2)
+	m.Param3 = float32(mem.param3)
+	m.Param4 = float32(mem.param4)
+	m.Param5 = float64(mem.param5)
+	m.Param6 = float64(mem.param6)
+	m.Param7 = float32(mem.param7)
+	m.Command = uint32(mem.command)
+	m.TargetSystem = uint8(mem.target_system)
+	m.TargetComponent = uint8(mem.target_component)
+	m.SourceSystem = uint8(mem.source_system)
+	m.SourceComponent = uint8(mem.source_component)
+	m.Confirmation = uint8(mem.confirmation)
+	m.FromExternal = bool(mem.from_external)
+}
+
+func (t _VehicleCommandTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__VehicleCommand())
 }
 
 type CVehicleCommand = C.px4_msgs__msg__VehicleCommand
@@ -267,8 +281,7 @@ func VehicleCommand__Sequence_to_Go(goSlice *[]VehicleCommand, cSlice CVehicleCo
 		cIdx := (*C.px4_msgs__msg__VehicleCommand__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleCommand * uintptr(i)),
 		))
-		(*goSlice)[i] = VehicleCommand{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		VehicleCommandTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func VehicleCommand__Sequence_to_C(cSlice *CVehicleCommand__Sequence, goSlice []VehicleCommand) {
@@ -283,18 +296,16 @@ func VehicleCommand__Sequence_to_C(cSlice *CVehicleCommand__Sequence, goSlice []
 		cIdx := (*C.px4_msgs__msg__VehicleCommand)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__VehicleCommand * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__VehicleCommand)(v.AsCStruct())
+		VehicleCommandTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func VehicleCommand__Array_to_Go(goSlice []VehicleCommand, cSlice []CVehicleCommand) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		VehicleCommandTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func VehicleCommand__Array_to_C(cSlice []CVehicleCommand, goSlice []VehicleCommand) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__VehicleCommand)(goSlice[i].AsCStruct())
+		VehicleCommandTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

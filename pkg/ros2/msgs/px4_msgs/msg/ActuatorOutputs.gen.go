@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/ActuatorOutputs", &ActuatorOutputs{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/ActuatorOutputs", ActuatorOutputsTypeSupport)
 }
 const (
 	ActuatorOutputs_NUM_ACTUATOR_OUTPUTS uint8 = 16
@@ -52,42 +52,56 @@ type ActuatorOutputs struct {
 // NewActuatorOutputs creates a new ActuatorOutputs with default values.
 func NewActuatorOutputs() *ActuatorOutputs {
 	self := ActuatorOutputs{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *ActuatorOutputs) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *ActuatorOutputs) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__ActuatorOutputs())
-}
-func (t *ActuatorOutputs) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__ActuatorOutputs
-	return (unsafe.Pointer)(C.px4_msgs__msg__ActuatorOutputs__create())
-}
-func (t *ActuatorOutputs) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__ActuatorOutputs__destroy((*C.px4_msgs__msg__ActuatorOutputs)(pointer_to_free))
-}
-func (t *ActuatorOutputs) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__ActuatorOutputs)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.noutputs = C.uint32_t(t.Noutputs)
-	cSlice_output := mem.output[:]
-	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_output)), t.Output[:])
-	return unsafe.Pointer(mem)
-}
-func (t *ActuatorOutputs) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__ActuatorOutputs)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.Noutputs = uint32(mem.noutputs)
-	cSlice_output := mem.output[:]
-	rosidl_runtime_c.Float32__Array_to_Go(t.Output[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_output)))
-}
-func (t *ActuatorOutputs) Clone() ros2types.ROS2Msg {
+func (t *ActuatorOutputs) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *ActuatorOutputs) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var ActuatorOutputsTypeSupport types.MessageTypeSupport = _ActuatorOutputsTypeSupport{}
+
+type _ActuatorOutputsTypeSupport struct{}
+
+func (t _ActuatorOutputsTypeSupport) New() types.Message {
+	return NewActuatorOutputs()
+}
+
+func (t _ActuatorOutputsTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__ActuatorOutputs
+	return (unsafe.Pointer)(C.px4_msgs__msg__ActuatorOutputs__create())
+}
+
+func (t _ActuatorOutputsTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__ActuatorOutputs__destroy((*C.px4_msgs__msg__ActuatorOutputs)(pointer_to_free))
+}
+
+func (t _ActuatorOutputsTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*ActuatorOutputs)
+	mem := (*C.px4_msgs__msg__ActuatorOutputs)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.noutputs = C.uint32_t(m.Noutputs)
+	cSlice_output := mem.output[:]
+	rosidl_runtime_c.Float32__Array_to_C(*(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_output)), m.Output[:])
+}
+
+func (t _ActuatorOutputsTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*ActuatorOutputs)
+	mem := (*C.px4_msgs__msg__ActuatorOutputs)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.Noutputs = uint32(mem.noutputs)
+	cSlice_output := mem.output[:]
+	rosidl_runtime_c.Float32__Array_to_Go(m.Output[:], *(*[]rosidl_runtime_c.CFloat32)(unsafe.Pointer(&cSlice_output)))
+}
+
+func (t _ActuatorOutputsTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__ActuatorOutputs())
 }
 
 type CActuatorOutputs = C.px4_msgs__msg__ActuatorOutputs
@@ -102,8 +116,7 @@ func ActuatorOutputs__Sequence_to_Go(goSlice *[]ActuatorOutputs, cSlice CActuato
 		cIdx := (*C.px4_msgs__msg__ActuatorOutputs__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__ActuatorOutputs * uintptr(i)),
 		))
-		(*goSlice)[i] = ActuatorOutputs{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		ActuatorOutputsTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func ActuatorOutputs__Sequence_to_C(cSlice *CActuatorOutputs__Sequence, goSlice []ActuatorOutputs) {
@@ -118,18 +131,16 @@ func ActuatorOutputs__Sequence_to_C(cSlice *CActuatorOutputs__Sequence, goSlice 
 		cIdx := (*C.px4_msgs__msg__ActuatorOutputs)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__ActuatorOutputs * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__ActuatorOutputs)(v.AsCStruct())
+		ActuatorOutputsTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func ActuatorOutputs__Array_to_Go(goSlice []ActuatorOutputs, cSlice []CActuatorOutputs) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		ActuatorOutputsTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func ActuatorOutputs__Array_to_C(cSlice []CActuatorOutputs, goSlice []ActuatorOutputs) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__ActuatorOutputs)(goSlice[i].AsCStruct())
+		ActuatorOutputsTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

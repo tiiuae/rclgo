@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/SensorGyroFifo", &SensorGyroFifo{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/SensorGyroFifo", SensorGyroFifoTypeSupport)
 }
 const (
 	SensorGyroFifo_ORB_QUEUE_LENGTH uint8 = 4
@@ -57,58 +57,72 @@ type SensorGyroFifo struct {
 // NewSensorGyroFifo creates a new SensorGyroFifo with default values.
 func NewSensorGyroFifo() *SensorGyroFifo {
 	self := SensorGyroFifo{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *SensorGyroFifo) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *SensorGyroFifo) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__SensorGyroFifo())
-}
-func (t *SensorGyroFifo) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__SensorGyroFifo
-	return (unsafe.Pointer)(C.px4_msgs__msg__SensorGyroFifo__create())
-}
-func (t *SensorGyroFifo) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__SensorGyroFifo__destroy((*C.px4_msgs__msg__SensorGyroFifo)(pointer_to_free))
-}
-func (t *SensorGyroFifo) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__SensorGyroFifo)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.timestamp_sample = C.uint64_t(t.TimestampSample)
-	mem.device_id = C.uint32_t(t.DeviceId)
-	mem.dt = C.float(t.Dt)
-	mem.scale = C.float(t.Scale)
-	mem.samples = C.uint8_t(t.Samples)
-	cSlice_x := mem.x[:]
-	rosidl_runtime_c.Int16__Array_to_C(*(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_x)), t.X[:])
-	cSlice_y := mem.y[:]
-	rosidl_runtime_c.Int16__Array_to_C(*(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_y)), t.Y[:])
-	cSlice_z := mem.z[:]
-	rosidl_runtime_c.Int16__Array_to_C(*(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_z)), t.Z[:])
-	return unsafe.Pointer(mem)
-}
-func (t *SensorGyroFifo) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__SensorGyroFifo)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.TimestampSample = uint64(mem.timestamp_sample)
-	t.DeviceId = uint32(mem.device_id)
-	t.Dt = float32(mem.dt)
-	t.Scale = float32(mem.scale)
-	t.Samples = uint8(mem.samples)
-	cSlice_x := mem.x[:]
-	rosidl_runtime_c.Int16__Array_to_Go(t.X[:], *(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_x)))
-	cSlice_y := mem.y[:]
-	rosidl_runtime_c.Int16__Array_to_Go(t.Y[:], *(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_y)))
-	cSlice_z := mem.z[:]
-	rosidl_runtime_c.Int16__Array_to_Go(t.Z[:], *(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_z)))
-}
-func (t *SensorGyroFifo) Clone() ros2types.ROS2Msg {
+func (t *SensorGyroFifo) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *SensorGyroFifo) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var SensorGyroFifoTypeSupport types.MessageTypeSupport = _SensorGyroFifoTypeSupport{}
+
+type _SensorGyroFifoTypeSupport struct{}
+
+func (t _SensorGyroFifoTypeSupport) New() types.Message {
+	return NewSensorGyroFifo()
+}
+
+func (t _SensorGyroFifoTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__SensorGyroFifo
+	return (unsafe.Pointer)(C.px4_msgs__msg__SensorGyroFifo__create())
+}
+
+func (t _SensorGyroFifoTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__SensorGyroFifo__destroy((*C.px4_msgs__msg__SensorGyroFifo)(pointer_to_free))
+}
+
+func (t _SensorGyroFifoTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*SensorGyroFifo)
+	mem := (*C.px4_msgs__msg__SensorGyroFifo)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.timestamp_sample = C.uint64_t(m.TimestampSample)
+	mem.device_id = C.uint32_t(m.DeviceId)
+	mem.dt = C.float(m.Dt)
+	mem.scale = C.float(m.Scale)
+	mem.samples = C.uint8_t(m.Samples)
+	cSlice_x := mem.x[:]
+	rosidl_runtime_c.Int16__Array_to_C(*(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_x)), m.X[:])
+	cSlice_y := mem.y[:]
+	rosidl_runtime_c.Int16__Array_to_C(*(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_y)), m.Y[:])
+	cSlice_z := mem.z[:]
+	rosidl_runtime_c.Int16__Array_to_C(*(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_z)), m.Z[:])
+}
+
+func (t _SensorGyroFifoTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*SensorGyroFifo)
+	mem := (*C.px4_msgs__msg__SensorGyroFifo)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.TimestampSample = uint64(mem.timestamp_sample)
+	m.DeviceId = uint32(mem.device_id)
+	m.Dt = float32(mem.dt)
+	m.Scale = float32(mem.scale)
+	m.Samples = uint8(mem.samples)
+	cSlice_x := mem.x[:]
+	rosidl_runtime_c.Int16__Array_to_Go(m.X[:], *(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_x)))
+	cSlice_y := mem.y[:]
+	rosidl_runtime_c.Int16__Array_to_Go(m.Y[:], *(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_y)))
+	cSlice_z := mem.z[:]
+	rosidl_runtime_c.Int16__Array_to_Go(m.Z[:], *(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_z)))
+}
+
+func (t _SensorGyroFifoTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__SensorGyroFifo())
 }
 
 type CSensorGyroFifo = C.px4_msgs__msg__SensorGyroFifo
@@ -123,8 +137,7 @@ func SensorGyroFifo__Sequence_to_Go(goSlice *[]SensorGyroFifo, cSlice CSensorGyr
 		cIdx := (*C.px4_msgs__msg__SensorGyroFifo__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__SensorGyroFifo * uintptr(i)),
 		))
-		(*goSlice)[i] = SensorGyroFifo{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		SensorGyroFifoTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func SensorGyroFifo__Sequence_to_C(cSlice *CSensorGyroFifo__Sequence, goSlice []SensorGyroFifo) {
@@ -139,18 +152,16 @@ func SensorGyroFifo__Sequence_to_C(cSlice *CSensorGyroFifo__Sequence, goSlice []
 		cIdx := (*C.px4_msgs__msg__SensorGyroFifo)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__SensorGyroFifo * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__SensorGyroFifo)(v.AsCStruct())
+		SensorGyroFifoTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func SensorGyroFifo__Array_to_Go(goSlice []SensorGyroFifo, cSlice []CSensorGyroFifo) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		SensorGyroFifoTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func SensorGyroFifo__Array_to_C(cSlice []CSensorGyroFifo, goSlice []SensorGyroFifo) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__SensorGyroFifo)(goSlice[i].AsCStruct())
+		SensorGyroFifoTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

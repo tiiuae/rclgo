@@ -25,33 +25,28 @@ import "C"
 
 import (
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 
 	"unsafe"
 )
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("nav_msgs/GetMap", GetMap)
+	ros2_type_dispatcher.RegisterROS2ServiceTypeNameAlias("nav_msgs/GetMap", GetMapTypeSupport)
 }
 
-type _GetMap struct {
-	req,resp ros2types.ROS2Msg
+type _GetMapTypeSupport struct {}
+
+func (s _GetMapTypeSupport) Request() types.MessageTypeSupport {
+	return GetMap_RequestTypeSupport
 }
 
-func (s *_GetMap) Request() ros2types.ROS2Msg {
-	return s.req
+func (s _GetMapTypeSupport) Response() types.MessageTypeSupport {
+	return GetMap_ResponseTypeSupport
 }
 
-func (s *_GetMap) Response() ros2types.ROS2Msg {
-	return s.resp
-}
-
-func (s *_GetMap) TypeSupport() unsafe.Pointer {
+func (s _GetMapTypeSupport) TypeSupport() unsafe.Pointer {
 	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__nav_msgs__srv__GetMap())
 }
 
 // Modifying this variable is undefined behavior.
-var GetMap ros2types.Service = &_GetMap{
-	req: &GetMap_Request{},
-	resp: &GetMap_Response{},
-}
+var GetMapTypeSupport types.ServiceTypeSupport = _GetMapTypeSupport{}

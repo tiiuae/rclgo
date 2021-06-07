@@ -15,7 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	
 )
@@ -33,7 +33,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/NavSatStatus", &NavSatStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("sensor_msgs/NavSatStatus", NavSatStatusTypeSupport)
 }
 const (
 	NavSatStatus_STATUS_NO_FIX int8 = -1// unable to fix position
@@ -56,38 +56,52 @@ type NavSatStatus struct {
 // NewNavSatStatus creates a new NavSatStatus with default values.
 func NewNavSatStatus() *NavSatStatus {
 	self := NavSatStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *NavSatStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *NavSatStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__NavSatStatus())
-}
-func (t *NavSatStatus) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__NavSatStatus
-	return (unsafe.Pointer)(C.sensor_msgs__msg__NavSatStatus__create())
-}
-func (t *NavSatStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.sensor_msgs__msg__NavSatStatus__destroy((*C.sensor_msgs__msg__NavSatStatus)(pointer_to_free))
-}
-func (t *NavSatStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.sensor_msgs__msg__NavSatStatus)(t.PrepareMemory())
-	mem.status = C.int8_t(t.Status)
-	mem.service = C.uint16_t(t.Service)
-	return unsafe.Pointer(mem)
-}
-func (t *NavSatStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.sensor_msgs__msg__NavSatStatus)(ros2_message_buffer)
-	t.Status = int8(mem.status)
-	t.Service = uint16(mem.service)
-}
-func (t *NavSatStatus) Clone() ros2types.ROS2Msg {
+func (t *NavSatStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *NavSatStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var NavSatStatusTypeSupport types.MessageTypeSupport = _NavSatStatusTypeSupport{}
+
+type _NavSatStatusTypeSupport struct{}
+
+func (t _NavSatStatusTypeSupport) New() types.Message {
+	return NewNavSatStatus()
+}
+
+func (t _NavSatStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.sensor_msgs__msg__NavSatStatus
+	return (unsafe.Pointer)(C.sensor_msgs__msg__NavSatStatus__create())
+}
+
+func (t _NavSatStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.sensor_msgs__msg__NavSatStatus__destroy((*C.sensor_msgs__msg__NavSatStatus)(pointer_to_free))
+}
+
+func (t _NavSatStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*NavSatStatus)
+	mem := (*C.sensor_msgs__msg__NavSatStatus)(dst)
+	mem.status = C.int8_t(m.Status)
+	mem.service = C.uint16_t(m.Service)
+}
+
+func (t _NavSatStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*NavSatStatus)
+	mem := (*C.sensor_msgs__msg__NavSatStatus)(ros2_message_buffer)
+	m.Status = int8(mem.status)
+	m.Service = uint16(mem.service)
+}
+
+func (t _NavSatStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__sensor_msgs__msg__NavSatStatus())
 }
 
 type CNavSatStatus = C.sensor_msgs__msg__NavSatStatus
@@ -102,8 +116,7 @@ func NavSatStatus__Sequence_to_Go(goSlice *[]NavSatStatus, cSlice CNavSatStatus_
 		cIdx := (*C.sensor_msgs__msg__NavSatStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__NavSatStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = NavSatStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		NavSatStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func NavSatStatus__Sequence_to_C(cSlice *CNavSatStatus__Sequence, goSlice []NavSatStatus) {
@@ -118,18 +131,16 @@ func NavSatStatus__Sequence_to_C(cSlice *CNavSatStatus__Sequence, goSlice []NavS
 		cIdx := (*C.sensor_msgs__msg__NavSatStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__NavSatStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.sensor_msgs__msg__NavSatStatus)(v.AsCStruct())
+		NavSatStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func NavSatStatus__Array_to_Go(goSlice []NavSatStatus, cSlice []CNavSatStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		NavSatStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func NavSatStatus__Array_to_C(cSlice []CNavSatStatus, goSlice []NavSatStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.sensor_msgs__msg__NavSatStatus)(goSlice[i].AsCStruct())
+		NavSatStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

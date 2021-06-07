@@ -15,7 +15,7 @@ package px4_msgs_msg
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/ros2/ros2types"
+	"github.com/tiiuae/rclgo/pkg/ros2/types"
 	"github.com/tiiuae/rclgo/pkg/ros2/ros2_type_dispatcher"
 	rosidl_runtime_c "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c"
 	
@@ -34,7 +34,7 @@ import (
 import "C"
 
 func init() {
-	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/Px4IoStatus", &Px4IoStatus{})
+	ros2_type_dispatcher.RegisterROS2MsgTypeNameAlias("px4_msgs/Px4IoStatus", Px4IoStatusTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPx4IoStatus
@@ -88,126 +88,140 @@ type Px4IoStatus struct {
 // NewPx4IoStatus creates a new Px4IoStatus with default values.
 func NewPx4IoStatus() *Px4IoStatus {
 	self := Px4IoStatus{}
-	self.SetDefaults(nil)
+	self.SetDefaults()
 	return &self
 }
 
-func (t *Px4IoStatus) SetDefaults(d interface{}) ros2types.ROS2Msg {
-	
-	return t
-}
-
-func (t *Px4IoStatus) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__Px4IoStatus())
-}
-func (t *Px4IoStatus) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__Px4IoStatus
-	return (unsafe.Pointer)(C.px4_msgs__msg__Px4IoStatus__create())
-}
-func (t *Px4IoStatus) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.px4_msgs__msg__Px4IoStatus__destroy((*C.px4_msgs__msg__Px4IoStatus)(pointer_to_free))
-}
-func (t *Px4IoStatus) AsCStruct() unsafe.Pointer {
-	mem := (*C.px4_msgs__msg__Px4IoStatus)(t.PrepareMemory())
-	mem.timestamp = C.uint64_t(t.Timestamp)
-	mem.free_memory_bytes = C.uint16_t(t.FreeMemoryBytes)
-	mem.voltage_v = C.float(t.VoltageV)
-	mem.rssi_v = C.float(t.RssiV)
-	mem.status_outputs_armed = C.bool(t.StatusOutputsArmed)
-	mem.status_override = C.bool(t.StatusOverride)
-	mem.status_rc_ok = C.bool(t.StatusRcOk)
-	mem.status_rc_ppm = C.bool(t.StatusRcPpm)
-	mem.status_rc_dsm = C.bool(t.StatusRcDsm)
-	mem.status_rc_sbus = C.bool(t.StatusRcSbus)
-	mem.status_fmu_ok = C.bool(t.StatusFmuOk)
-	mem.status_raw_pwm = C.bool(t.StatusRawPwm)
-	mem.status_mixer_ok = C.bool(t.StatusMixerOk)
-	mem.status_arm_sync = C.bool(t.StatusArmSync)
-	mem.status_init_ok = C.bool(t.StatusInitOk)
-	mem.status_failsafe = C.bool(t.StatusFailsafe)
-	mem.status_safety_off = C.bool(t.StatusSafetyOff)
-	mem.status_fmu_initialized = C.bool(t.StatusFmuInitialized)
-	mem.status_rc_st24 = C.bool(t.StatusRcSt24)
-	mem.status_rc_sumd = C.bool(t.StatusRcSumd)
-	mem.alarm_vbatt_low = C.bool(t.AlarmVbattLow)
-	mem.alarm_temperature = C.bool(t.AlarmTemperature)
-	mem.alarm_servo_current = C.bool(t.AlarmServoCurrent)
-	mem.alarm_acc_current = C.bool(t.AlarmAccCurrent)
-	mem.alarm_fmu_lost = C.bool(t.AlarmFmuLost)
-	mem.alarm_rc_lost = C.bool(t.AlarmRcLost)
-	mem.alarm_pwm_error = C.bool(t.AlarmPwmError)
-	mem.alarm_vservo_fault = C.bool(t.AlarmVservoFault)
-	mem.arming_io_arm_ok = C.bool(t.ArmingIoArmOk)
-	mem.arming_fmu_armed = C.bool(t.ArmingFmuArmed)
-	mem.arming_fmu_prearmed = C.bool(t.ArmingFmuPrearmed)
-	mem.arming_manual_override_ok = C.bool(t.ArmingManualOverrideOk)
-	mem.arming_failsafe_custom = C.bool(t.ArmingFailsafeCustom)
-	mem.arming_inair_restart_ok = C.bool(t.ArmingInairRestartOk)
-	mem.arming_always_pwm_enable = C.bool(t.ArmingAlwaysPwmEnable)
-	mem.arming_rc_handling_disabled = C.bool(t.ArmingRcHandlingDisabled)
-	mem.arming_lockdown = C.bool(t.ArmingLockdown)
-	mem.arming_force_failsafe = C.bool(t.ArmingForceFailsafe)
-	mem.arming_termination_failsafe = C.bool(t.ArmingTerminationFailsafe)
-	mem.arming_override_immediate = C.bool(t.ArmingOverrideImmediate)
-	cSlice_actuators := mem.actuators[:]
-	rosidl_runtime_c.Int16__Array_to_C(*(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_actuators)), t.Actuators[:])
-	cSlice_servos := mem.servos[:]
-	rosidl_runtime_c.Uint16__Array_to_C(*(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_servos)), t.Servos[:])
-	cSlice_raw_inputs := mem.raw_inputs[:]
-	rosidl_runtime_c.Uint16__Array_to_C(*(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_raw_inputs)), t.RawInputs[:])
-	return unsafe.Pointer(mem)
-}
-func (t *Px4IoStatus) AsGoStruct(ros2_message_buffer unsafe.Pointer) {
-	mem := (*C.px4_msgs__msg__Px4IoStatus)(ros2_message_buffer)
-	t.Timestamp = uint64(mem.timestamp)
-	t.FreeMemoryBytes = uint16(mem.free_memory_bytes)
-	t.VoltageV = float32(mem.voltage_v)
-	t.RssiV = float32(mem.rssi_v)
-	t.StatusOutputsArmed = bool(mem.status_outputs_armed)
-	t.StatusOverride = bool(mem.status_override)
-	t.StatusRcOk = bool(mem.status_rc_ok)
-	t.StatusRcPpm = bool(mem.status_rc_ppm)
-	t.StatusRcDsm = bool(mem.status_rc_dsm)
-	t.StatusRcSbus = bool(mem.status_rc_sbus)
-	t.StatusFmuOk = bool(mem.status_fmu_ok)
-	t.StatusRawPwm = bool(mem.status_raw_pwm)
-	t.StatusMixerOk = bool(mem.status_mixer_ok)
-	t.StatusArmSync = bool(mem.status_arm_sync)
-	t.StatusInitOk = bool(mem.status_init_ok)
-	t.StatusFailsafe = bool(mem.status_failsafe)
-	t.StatusSafetyOff = bool(mem.status_safety_off)
-	t.StatusFmuInitialized = bool(mem.status_fmu_initialized)
-	t.StatusRcSt24 = bool(mem.status_rc_st24)
-	t.StatusRcSumd = bool(mem.status_rc_sumd)
-	t.AlarmVbattLow = bool(mem.alarm_vbatt_low)
-	t.AlarmTemperature = bool(mem.alarm_temperature)
-	t.AlarmServoCurrent = bool(mem.alarm_servo_current)
-	t.AlarmAccCurrent = bool(mem.alarm_acc_current)
-	t.AlarmFmuLost = bool(mem.alarm_fmu_lost)
-	t.AlarmRcLost = bool(mem.alarm_rc_lost)
-	t.AlarmPwmError = bool(mem.alarm_pwm_error)
-	t.AlarmVservoFault = bool(mem.alarm_vservo_fault)
-	t.ArmingIoArmOk = bool(mem.arming_io_arm_ok)
-	t.ArmingFmuArmed = bool(mem.arming_fmu_armed)
-	t.ArmingFmuPrearmed = bool(mem.arming_fmu_prearmed)
-	t.ArmingManualOverrideOk = bool(mem.arming_manual_override_ok)
-	t.ArmingFailsafeCustom = bool(mem.arming_failsafe_custom)
-	t.ArmingInairRestartOk = bool(mem.arming_inair_restart_ok)
-	t.ArmingAlwaysPwmEnable = bool(mem.arming_always_pwm_enable)
-	t.ArmingRcHandlingDisabled = bool(mem.arming_rc_handling_disabled)
-	t.ArmingLockdown = bool(mem.arming_lockdown)
-	t.ArmingForceFailsafe = bool(mem.arming_force_failsafe)
-	t.ArmingTerminationFailsafe = bool(mem.arming_termination_failsafe)
-	t.ArmingOverrideImmediate = bool(mem.arming_override_immediate)
-	cSlice_actuators := mem.actuators[:]
-	rosidl_runtime_c.Int16__Array_to_Go(t.Actuators[:], *(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_actuators)))
-	cSlice_servos := mem.servos[:]
-	rosidl_runtime_c.Uint16__Array_to_Go(t.Servos[:], *(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_servos)))
-	cSlice_raw_inputs := mem.raw_inputs[:]
-	rosidl_runtime_c.Uint16__Array_to_Go(t.RawInputs[:], *(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_raw_inputs)))
-}
-func (t *Px4IoStatus) Clone() ros2types.ROS2Msg {
+func (t *Px4IoStatus) Clone() types.Message {
 	clone := *t
 	return &clone
+}
+
+func (t *Px4IoStatus) SetDefaults() {
+	
+}
+
+// Modifying this variable is undefined behavior.
+var Px4IoStatusTypeSupport types.MessageTypeSupport = _Px4IoStatusTypeSupport{}
+
+type _Px4IoStatusTypeSupport struct{}
+
+func (t _Px4IoStatusTypeSupport) New() types.Message {
+	return NewPx4IoStatus()
+}
+
+func (t _Px4IoStatusTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.px4_msgs__msg__Px4IoStatus
+	return (unsafe.Pointer)(C.px4_msgs__msg__Px4IoStatus__create())
+}
+
+func (t _Px4IoStatusTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.px4_msgs__msg__Px4IoStatus__destroy((*C.px4_msgs__msg__Px4IoStatus)(pointer_to_free))
+}
+
+func (t _Px4IoStatusTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*Px4IoStatus)
+	mem := (*C.px4_msgs__msg__Px4IoStatus)(dst)
+	mem.timestamp = C.uint64_t(m.Timestamp)
+	mem.free_memory_bytes = C.uint16_t(m.FreeMemoryBytes)
+	mem.voltage_v = C.float(m.VoltageV)
+	mem.rssi_v = C.float(m.RssiV)
+	mem.status_outputs_armed = C.bool(m.StatusOutputsArmed)
+	mem.status_override = C.bool(m.StatusOverride)
+	mem.status_rc_ok = C.bool(m.StatusRcOk)
+	mem.status_rc_ppm = C.bool(m.StatusRcPpm)
+	mem.status_rc_dsm = C.bool(m.StatusRcDsm)
+	mem.status_rc_sbus = C.bool(m.StatusRcSbus)
+	mem.status_fmu_ok = C.bool(m.StatusFmuOk)
+	mem.status_raw_pwm = C.bool(m.StatusRawPwm)
+	mem.status_mixer_ok = C.bool(m.StatusMixerOk)
+	mem.status_arm_sync = C.bool(m.StatusArmSync)
+	mem.status_init_ok = C.bool(m.StatusInitOk)
+	mem.status_failsafe = C.bool(m.StatusFailsafe)
+	mem.status_safety_off = C.bool(m.StatusSafetyOff)
+	mem.status_fmu_initialized = C.bool(m.StatusFmuInitialized)
+	mem.status_rc_st24 = C.bool(m.StatusRcSt24)
+	mem.status_rc_sumd = C.bool(m.StatusRcSumd)
+	mem.alarm_vbatt_low = C.bool(m.AlarmVbattLow)
+	mem.alarm_temperature = C.bool(m.AlarmTemperature)
+	mem.alarm_servo_current = C.bool(m.AlarmServoCurrent)
+	mem.alarm_acc_current = C.bool(m.AlarmAccCurrent)
+	mem.alarm_fmu_lost = C.bool(m.AlarmFmuLost)
+	mem.alarm_rc_lost = C.bool(m.AlarmRcLost)
+	mem.alarm_pwm_error = C.bool(m.AlarmPwmError)
+	mem.alarm_vservo_fault = C.bool(m.AlarmVservoFault)
+	mem.arming_io_arm_ok = C.bool(m.ArmingIoArmOk)
+	mem.arming_fmu_armed = C.bool(m.ArmingFmuArmed)
+	mem.arming_fmu_prearmed = C.bool(m.ArmingFmuPrearmed)
+	mem.arming_manual_override_ok = C.bool(m.ArmingManualOverrideOk)
+	mem.arming_failsafe_custom = C.bool(m.ArmingFailsafeCustom)
+	mem.arming_inair_restart_ok = C.bool(m.ArmingInairRestartOk)
+	mem.arming_always_pwm_enable = C.bool(m.ArmingAlwaysPwmEnable)
+	mem.arming_rc_handling_disabled = C.bool(m.ArmingRcHandlingDisabled)
+	mem.arming_lockdown = C.bool(m.ArmingLockdown)
+	mem.arming_force_failsafe = C.bool(m.ArmingForceFailsafe)
+	mem.arming_termination_failsafe = C.bool(m.ArmingTerminationFailsafe)
+	mem.arming_override_immediate = C.bool(m.ArmingOverrideImmediate)
+	cSlice_actuators := mem.actuators[:]
+	rosidl_runtime_c.Int16__Array_to_C(*(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_actuators)), m.Actuators[:])
+	cSlice_servos := mem.servos[:]
+	rosidl_runtime_c.Uint16__Array_to_C(*(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_servos)), m.Servos[:])
+	cSlice_raw_inputs := mem.raw_inputs[:]
+	rosidl_runtime_c.Uint16__Array_to_C(*(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_raw_inputs)), m.RawInputs[:])
+}
+
+func (t _Px4IoStatusTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*Px4IoStatus)
+	mem := (*C.px4_msgs__msg__Px4IoStatus)(ros2_message_buffer)
+	m.Timestamp = uint64(mem.timestamp)
+	m.FreeMemoryBytes = uint16(mem.free_memory_bytes)
+	m.VoltageV = float32(mem.voltage_v)
+	m.RssiV = float32(mem.rssi_v)
+	m.StatusOutputsArmed = bool(mem.status_outputs_armed)
+	m.StatusOverride = bool(mem.status_override)
+	m.StatusRcOk = bool(mem.status_rc_ok)
+	m.StatusRcPpm = bool(mem.status_rc_ppm)
+	m.StatusRcDsm = bool(mem.status_rc_dsm)
+	m.StatusRcSbus = bool(mem.status_rc_sbus)
+	m.StatusFmuOk = bool(mem.status_fmu_ok)
+	m.StatusRawPwm = bool(mem.status_raw_pwm)
+	m.StatusMixerOk = bool(mem.status_mixer_ok)
+	m.StatusArmSync = bool(mem.status_arm_sync)
+	m.StatusInitOk = bool(mem.status_init_ok)
+	m.StatusFailsafe = bool(mem.status_failsafe)
+	m.StatusSafetyOff = bool(mem.status_safety_off)
+	m.StatusFmuInitialized = bool(mem.status_fmu_initialized)
+	m.StatusRcSt24 = bool(mem.status_rc_st24)
+	m.StatusRcSumd = bool(mem.status_rc_sumd)
+	m.AlarmVbattLow = bool(mem.alarm_vbatt_low)
+	m.AlarmTemperature = bool(mem.alarm_temperature)
+	m.AlarmServoCurrent = bool(mem.alarm_servo_current)
+	m.AlarmAccCurrent = bool(mem.alarm_acc_current)
+	m.AlarmFmuLost = bool(mem.alarm_fmu_lost)
+	m.AlarmRcLost = bool(mem.alarm_rc_lost)
+	m.AlarmPwmError = bool(mem.alarm_pwm_error)
+	m.AlarmVservoFault = bool(mem.alarm_vservo_fault)
+	m.ArmingIoArmOk = bool(mem.arming_io_arm_ok)
+	m.ArmingFmuArmed = bool(mem.arming_fmu_armed)
+	m.ArmingFmuPrearmed = bool(mem.arming_fmu_prearmed)
+	m.ArmingManualOverrideOk = bool(mem.arming_manual_override_ok)
+	m.ArmingFailsafeCustom = bool(mem.arming_failsafe_custom)
+	m.ArmingInairRestartOk = bool(mem.arming_inair_restart_ok)
+	m.ArmingAlwaysPwmEnable = bool(mem.arming_always_pwm_enable)
+	m.ArmingRcHandlingDisabled = bool(mem.arming_rc_handling_disabled)
+	m.ArmingLockdown = bool(mem.arming_lockdown)
+	m.ArmingForceFailsafe = bool(mem.arming_force_failsafe)
+	m.ArmingTerminationFailsafe = bool(mem.arming_termination_failsafe)
+	m.ArmingOverrideImmediate = bool(mem.arming_override_immediate)
+	cSlice_actuators := mem.actuators[:]
+	rosidl_runtime_c.Int16__Array_to_Go(m.Actuators[:], *(*[]rosidl_runtime_c.CInt16)(unsafe.Pointer(&cSlice_actuators)))
+	cSlice_servos := mem.servos[:]
+	rosidl_runtime_c.Uint16__Array_to_Go(m.Servos[:], *(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_servos)))
+	cSlice_raw_inputs := mem.raw_inputs[:]
+	rosidl_runtime_c.Uint16__Array_to_Go(m.RawInputs[:], *(*[]rosidl_runtime_c.CUint16)(unsafe.Pointer(&cSlice_raw_inputs)))
+}
+
+func (t _Px4IoStatusTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__px4_msgs__msg__Px4IoStatus())
 }
 
 type CPx4IoStatus = C.px4_msgs__msg__Px4IoStatus
@@ -222,8 +236,7 @@ func Px4IoStatus__Sequence_to_Go(goSlice *[]Px4IoStatus, cSlice CPx4IoStatus__Se
 		cIdx := (*C.px4_msgs__msg__Px4IoStatus__Sequence)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__Px4IoStatus * uintptr(i)),
 		))
-		(*goSlice)[i] = Px4IoStatus{}
-		(*goSlice)[i].AsGoStruct(unsafe.Pointer(cIdx))
+		Px4IoStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
 func Px4IoStatus__Sequence_to_C(cSlice *CPx4IoStatus__Sequence, goSlice []Px4IoStatus) {
@@ -238,18 +251,16 @@ func Px4IoStatus__Sequence_to_C(cSlice *CPx4IoStatus__Sequence, goSlice []Px4IoS
 		cIdx := (*C.px4_msgs__msg__Px4IoStatus)(unsafe.Pointer(
 			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_px4_msgs__msg__Px4IoStatus * uintptr(i)),
 		))
-		*cIdx = *(*C.px4_msgs__msg__Px4IoStatus)(v.AsCStruct())
+		Px4IoStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
 func Px4IoStatus__Array_to_Go(goSlice []Px4IoStatus, cSlice []CPx4IoStatus) {
 	for i := 0; i < len(cSlice); i++ {
-		goSlice[i].AsGoStruct(unsafe.Pointer(&cSlice[i]))
+		Px4IoStatusTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
 func Px4IoStatus__Array_to_C(cSlice []CPx4IoStatus, goSlice []Px4IoStatus) {
 	for i := 0; i < len(goSlice); i++ {
-		cSlice[i] = *(*C.px4_msgs__msg__Px4IoStatus)(goSlice[i].AsCStruct())
+		Px4IoStatusTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-
-

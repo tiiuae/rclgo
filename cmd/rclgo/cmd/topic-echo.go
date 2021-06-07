@@ -20,8 +20,8 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/tiiuae/rclgo/pkg/ros2"
-	_ "github.com/tiiuae/rclgo/pkg/ros2/msgs" // Load all the available ROS2 Message types. In Go one cannot dynamically import.
+	"github.com/tiiuae/rclgo/pkg/rclgo"
+	_ "github.com/tiiuae/rclgo/pkg/rclgo/msgs" // Load all the available ROS2 Message types. In Go one cannot dynamically import.
 )
 
 // echoCmd represents the echo command
@@ -41,14 +41,14 @@ var echoCmd = &cobra.Command{
 			<-terminationSignals
 		}()
 
-		rclContext, errs := ros2.SubscriberBundle(
+		rclContext, errs := rclgo.SubscriberBundle(
 			ctx, nil, nil,
 			viper.GetString("namespace"),
 			viper.GetString("node-name"),
 			viper.GetString("topic-name"),
 			viper.GetString("msg-type"),
-			ros2.NewRCLArgsMust(viper.GetString("ros-args")),
-			func(s *ros2.Subscription) {
+			rclgo.NewRCLArgsMust(viper.GetString("ros-args")),
+			func(s *rclgo.Subscription) {
 				msg := s.Ros2MsgType.New()
 				rmi, err := s.TakeMessage(msg)
 				if err != nil {

@@ -138,7 +138,7 @@ type rosidl_runtime_c_type_mapping struct {
 	SkipAutogen bool
 }
 
-var ROSIDL_RUNTIME_C_PRIMITIVE_TYPES_MAPPING = map[string]rosidl_runtime_c_type_mapping{
+var primitiveTypeMappings = map[string]rosidl_runtime_c_type_mapping{
 	"string":   {RosType: "string", GoType: "string", CStructName: "String", CType: "String", SkipAutogen: true},
 	"time":     {RosType: "time", GoType: "Time", CStructName: "Time", CType: "time", SkipAutogen: true},
 	"duration": {RosType: "duration", GoType: "Duration", CStructName: "Duration", CType: "duration", SkipAutogen: true},
@@ -160,18 +160,18 @@ var ROSIDL_RUNTIME_C_PRIMITIVE_TYPES_MAPPING = map[string]rosidl_runtime_c_type_
 }
 
 /*
-ROS2_MESSAGES_BLACKLIST is matched against the paths gogen inspects if it is a ROS2 Message file and needs to be turned into a Go type.
+blacklistedMessages is matched against the paths gogen inspects if it is a ROS2 Message file and needs to be turned into a Go type.
 If the path matches the blacklist, it is ignored and a notification is logged.
 */
-var ROS2_MESSAGES_BLACKLIST = []string{
+var blacklistedMessages = []string{
 	"libstatistics_collector/msg/DummyMessage",
 	"this-is-a-test-blacklist-entry-do-not-remove-used-for-internal-testing",
 }
 
 /*
-ROS2_ERROR_TYPES_C_FILES are looked for #definitions and parsed as Golang ros2 error types
+cErrorTypeFiles are looked for #definitions and parsed as Golang ros2 error types
 */
-var ROS2_ERROR_TYPES_C_FILES = []string{
+var cErrorTypeFiles = []string{
 	"rcl/types.h",
 	"rmw/ret_types.h",
 }

@@ -24,7 +24,7 @@ import (
 
 func ucFirst(s string) string { return strings.Title(s) }
 
-func SnakeToCamel(in string) string {
+func snakeToCamel(in string) string {
 	tmp := []rune(in)
 	tmp[0] = unicode.ToUpper(tmp[0])
 	for i := 0; i < len(tmp); i++ {
@@ -157,6 +157,12 @@ func defaultValueSanitizer_(ros2type, defaultValue string) string {
 func srvNameFromSrvMsgName(s string) string {
 	re.S(&s, `s/_(Request|Response)$//`)
 	return s
+}
+
+func cReturnCodeNameToGo(n string) string {
+	re.S(&n, `s/^RCL_RET_//`)
+	re.S(&n, `s/^RMW_RET_/RMW_/`)
+	return snakeToCamel(strings.ToLower(n))
 }
 
 /* So many ways to skin a ROS2 defaults field

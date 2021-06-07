@@ -19,10 +19,10 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/tiiuae/rclgo/pkg/ros2"
-	"github.com/tiiuae/rclgo/pkg/ros2/types"
+	"github.com/tiiuae/rclgo/pkg/rclgo"
+	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 
-	_ "github.com/tiiuae/rclgo/pkg/ros2/msgs" // Load all the available ROS2 Message types. In Go one cannot dynamically import.
+	_ "github.com/tiiuae/rclgo/pkg/rclgo/msgs" // Load all the available ROS2 Message types. In Go one cannot dynamically import.
 )
 
 // pubCmd represents the pub command
@@ -36,8 +36,8 @@ var pubCmd = &cobra.Command{
 		terminationSignals := make(chan os.Signal, 1)
 		signal.Notify(terminationSignals, syscall.SIGINT, syscall.SIGTERM)
 
-		rclContext, errs := ros2.PublisherBundleTimer(context.Background(), nil, nil, viper.GetString("namespace"), viper.GetString("node-name"), viper.GetString("topic-name"), viper.GetString("msg-type"), ros2.NewRCLArgsMust(viper.GetString("ros-args")), 1000*time.Millisecond, viper.GetString("payload"),
-			func(p *ros2.Publisher, m types.Message) bool {
+		rclContext, errs := rclgo.PublisherBundleTimer(context.Background(), nil, nil, viper.GetString("namespace"), viper.GetString("node-name"), viper.GetString("topic-name"), viper.GetString("msg-type"), rclgo.NewRCLArgsMust(viper.GetString("ros-args")), 1000*time.Millisecond, viper.GetString("payload"),
+			func(p *rclgo.Publisher, m types.Message) bool {
 				fmt.Printf("%+v\n", m)
 				return true
 			})

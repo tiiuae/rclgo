@@ -43,7 +43,7 @@
     },
     Constants: ([]*gogen.ROS2Constant) <nil>,
     GoImports: (map[string]string) (len=1) {
-      (string) (len=49) "github.com/tiiuae/rclgo/pkg/ros2/rosidl_runtime_c": (string) (len=16) "rosidl_runtime_c"
+      (string) (len=44) "github.com/tiiuae/rclgo/pkg/rclgo/primitives": (string) (len=10) "primitives"
     },
     CImports: (map[string]bool) {
     }

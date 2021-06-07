@@ -25,7 +25,7 @@ func init() {
 prepareBlacklistMatchingRegexp is a convenience function to be more easily able to define the files to blacklist without needing to fiddle with complex regexp
 */
 func prepareBlacklistMatchingRegexp() {
-	blacklistMatchingRegexp = "(" + strings.Join(ROS2_MESSAGES_BLACKLIST, ")|(") + ")"
+	blacklistMatchingRegexp = "(" + strings.Join(blacklistedMessages, ")|(") + ")"
 	re.S(&blacklistMatchingRegexp, `s!\!!\!!`)
 	blacklistMatchingRegexp = "m!" + blacklistMatchingRegexp + "!"
 }
@@ -35,7 +35,7 @@ func blacklisted(path string) (bool, string) {
 		var matchedBlackListRegex string
 		for i := 1; i < len(r.S); i++ {
 			if r.S[i] != "" {
-				matchedBlackListRegex = ROS2_MESSAGES_BLACKLIST[i-1]
+				matchedBlackListRegex = blacklistedMessages[i-1]
 			}
 		}
 		return true, matchedBlackListRegex

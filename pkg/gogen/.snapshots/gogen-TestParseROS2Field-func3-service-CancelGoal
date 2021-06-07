@@ -30,7 +30,7 @@
     },
     Constants: ([]*gogen.ROS2Constant) <nil>,
     GoImports: (map[string]string) (len=1) {
-      (string) (len=53) "github.com/tiiuae/rclgo/pkg/ros2/msgs/action_msgs/msg": (string) (len=15) "action_msgs_msg"
+      (string) (len=54) "github.com/tiiuae/rclgo/pkg/rclgo/msgs/action_msgs/msg": (string) (len=15) "action_msgs_msg"
     },
     CImports: (map[string]bool) (len=1) {
       (string) (len=11) "action_msgs": (bool) true
@@ -115,7 +115,7 @@
       })
     },
     GoImports: (map[string]string) (len=1) {
-      (string) (len=53) "github.com/tiiuae/rclgo/pkg/ros2/msgs/action_msgs/msg": (string) (len=15) "action_msgs_msg"
+      (string) (len=54) "github.com/tiiuae/rclgo/pkg/rclgo/msgs/action_msgs/msg": (string) (len=15) "action_msgs_msg"
     },
     CImports: (map[string]bool) (len=1) {
       (string) (len=11) "action_msgs": (bool) true

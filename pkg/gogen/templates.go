@@ -17,8 +17,6 @@ import (
 var templateFuncMap template.FuncMap = template.FuncMap{
 	"lc":                    strings.ToLower,
 	"camelToSnake":          camelToSnake,
-	"cSerializationCode":    cSerializationCode,
-	"goSerializationCode":   goSerializationCode,
 	"defaultCode":           defaultCode,
 	"ucFirst":               ucFirst,
 	"srvNameFromSrvMsgName": srvNameFromSrvMsgName,
@@ -26,7 +24,7 @@ var templateFuncMap template.FuncMap = template.FuncMap{
 }
 
 var ros2MsgToGolangTypeTemplate = template.Must(template.New("ros2MsgToGolangTypeTemplate").Funcs(templateFuncMap).Parse(
-	`/*{{ $Md := . }}
+	`/*{{ $Md := .Message }}
 This file is part of rclgo
 
 Copyright © 2021 Technology Innovation Institute, United Arab Emirates
@@ -43,8 +41,8 @@ package {{ $Md.GoPackage }}
 import (
 	"unsafe"
 
-	"github.com/tiiuae/rclgo/pkg/rclgo/types"
-	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
+	"{{.Config.RclgoImportPath}}/pkg/rclgo/types"
+	"{{.Config.RclgoImportPath}}/pkg/rclgo/typemap"
 	{{range $path, $name := $Md.GoImports -}}
 	{{$name}} "{{$path}}"
 	{{""}}{{- end}}
@@ -68,7 +66,7 @@ import (
 import "C"
 
 func init() {
-	typemap.RegisterMessage("{{.Package}}/{{.Name}}", {{.Name}}TypeSupport)
+	typemap.RegisterMessage("{{$Md.Package}}/{{$Md.Name}}", {{$Md.Name}}TypeSupport)
 }
 
 {{- if $Md.Constants }}
@@ -79,112 +77,112 @@ const (
 )
 {{- end }}
 
-// Do not create instances of this type directly. Always use New{{.Name}}
+// Do not create instances of this type directly. Always use New{{$Md.Name}}
 // function instead.
-type {{.Name}} struct {
-	{{- range $k, $v := .Fields }}
+type {{$Md.Name}} struct {
+	{{- range $k, $v := $Md.Fields }}
 	{{$v.GoName }} {{$v.TypeArray}}{{$v.GoPkgReference}}{{$v.GoType}}` +
 		"{{\"\"}} `yaml:\"{{$v.RosName}}\"`" + `{{if .Comment -}} // {{.Comment}}{{- end}}
 	{{- end }}
 }
 
-// New{{.Name}} creates a new {{.Name}} with default values.
-func New{{.Name}}() *{{.Name}} {
-	self := {{.Name}}{}
+// New{{$Md.Name}} creates a new {{$Md.Name}} with default values.
+func New{{$Md.Name}}() *{{$Md.Name}} {
+	self := {{$Md.Name}}{}
 	self.SetDefaults()
 	return &self
 }
 
-func (t *{{.Name}}) Clone() types.Message {
+func (t *{{$Md.Name}}) Clone() types.Message {
 	clone := *t
 	return &clone
 }
 
-func (t *{{.Name}}) SetDefaults() {
-	{{ range $k, $v := .Fields -}}
+func (t *{{$Md.Name}}) SetDefaults() {
+	{{ range $k, $v := $Md.Fields -}}
 	{{defaultCode $v}}
 	{{- end }}
 }
 
 // Modifying this variable is undefined behavior.
-var {{.Name}}TypeSupport types.MessageTypeSupport = _{{.Name}}TypeSupport{}
+var {{$Md.Name}}TypeSupport types.MessageTypeSupport = _{{$Md.Name}}TypeSupport{}
 
-type _{{.Name}}TypeSupport struct{}
+type _{{$Md.Name}}TypeSupport struct{}
 
-func (t _{{.Name}}TypeSupport) New() types.Message {
-	return New{{.Name}}()
+func (t _{{$Md.Name}}TypeSupport) New() types.Message {
+	return New{{$Md.Name}}()
 }
 
-func (t _{{.Name}}TypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.{{.Package}}__{{.Type}}__{{.Name}}
-	return (unsafe.Pointer)(C.{{.Package}}__{{.Type}}__{{.Name}}__create())
+func (t _{{$Md.Name}}TypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.{{$Md.Package}}__{{$Md.Type}}__{{$Md.Name}}
+	return (unsafe.Pointer)(C.{{$Md.Package}}__{{$Md.Type}}__{{$Md.Name}}__create())
 }
 
-func (t _{{.Name}}TypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.{{.Package}}__{{.Type}}__{{.Name}}__destroy((*C.{{.Package}}__{{.Type}}__{{.Name}})(pointer_to_free))
+func (t _{{$Md.Name}}TypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.{{$Md.Package}}__{{$Md.Type}}__{{$Md.Name}}__destroy((*C.{{$Md.Package}}__{{$Md.Type}}__{{$Md.Name}})(pointer_to_free))
 }
 
-func (t _{{.Name}}TypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
-	{{ if .Fields -}}
-	m := msg.(*{{.Name}})
-	mem := (*C.{{.Package}}__{{.Type}}__{{.Name}})(dst)
-	{{- range .Fields }}
-	{{cSerializationCode . $Md}}
+func (t _{{$Md.Name}}TypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	{{ if $Md.Fields -}}
+	m := msg.(*{{$Md.Name}})
+	mem := (*C.{{$Md.Package}}__{{$Md.Type}}__{{$Md.Name}})(dst)
+	{{- range $Md.Fields }}
+	{{call $.cSerializationCode . $Md}}
 	{{- end }}
 	{{- end }}
 }
 
-func (t _{{.Name}}TypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
-	{{if .Fields -}}
-	m := msg.(*{{.Name}})
-	mem := (*C.{{.Package}}__{{.Type}}__{{.Name}})(ros2_message_buffer)
-	{{- range .Fields }}
-	{{goSerializationCode . $Md}}
+func (t _{{$Md.Name}}TypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	{{if $Md.Fields -}}
+	m := msg.(*{{$Md.Name}})
+	mem := (*C.{{$Md.Package}}__{{$Md.Type}}__{{$Md.Name}})(ros2_message_buffer)
+	{{- range $Md.Fields }}
+	{{call $.goSerializationCode . $Md}}
 	{{- end }}
 	{{- end }}
 }
 
-func (t _{{.Name}}TypeSupport) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__{{.Package}}__{{.Type}}__{{.Name}}())
+func (t _{{$Md.Name}}TypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__{{$Md.Package}}__{{$Md.Type}}__{{$Md.Name}}())
 }
 
-type C{{.Name}} = C.{{.Package}}__{{.Type}}__{{.Name}}
-type C{{.Name}}__Sequence = C.{{.Package}}__{{.Type}}__{{.Name}}__Sequence
+type C{{$Md.Name}} = C.{{$Md.Package}}__{{$Md.Type}}__{{$Md.Name}}
+type C{{$Md.Name}}__Sequence = C.{{$Md.Package}}__{{$Md.Type}}__{{$Md.Name}}__Sequence
 
-func {{.Name}}__Sequence_to_Go(goSlice *[]{{.Name}}, cSlice C{{.Name}}__Sequence) {
+func {{$Md.Name}}__Sequence_to_Go(goSlice *[]{{$Md.Name}}, cSlice C{{$Md.Name}}__Sequence) {
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]{{.Name}}, int64(cSlice.size))
+	*goSlice = make([]{{$Md.Name}}, int64(cSlice.size))
 	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.{{.Package}}__{{.Type}}__{{.Name}}__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_{{.Package}}__{{.Type}}__{{.Name}} * uintptr(i)),
+		cIdx := (*C.{{$Md.Package}}__{{$Md.Type}}__{{$Md.Name}}__Sequence)(unsafe.Pointer(
+			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_{{$Md.Package}}__{{$Md.Type}}__{{$Md.Name}} * uintptr(i)),
 		))
-		{{.Name}}TypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+		{{$Md.Name}}TypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
 	}
 }
-func {{.Name}}__Sequence_to_C(cSlice *C{{.Name}}__Sequence, goSlice []{{.Name}}) {
+func {{$Md.Name}}__Sequence_to_C(cSlice *C{{$Md.Name}}__Sequence, goSlice []{{$Md.Name}}) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.{{.Package}}__{{.Type}}__{{.Name}})(C.malloc((C.size_t)(C.sizeof_struct_{{.Package}}__{{.Type}}__{{.Name}} * uintptr(len(goSlice)))))
+	cSlice.data = (*C.{{$Md.Package}}__{{$Md.Type}}__{{$Md.Name}})(C.malloc((C.size_t)(C.sizeof_struct_{{$Md.Package}}__{{$Md.Type}}__{{$Md.Name}} * uintptr(len(goSlice)))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
 
 	for i, v := range goSlice {
-		cIdx := (*C.{{.Package}}__{{.Type}}__{{.Name}})(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_{{.Package}}__{{.Type}}__{{.Name}} * uintptr(i)),
+		cIdx := (*C.{{$Md.Package}}__{{$Md.Type}}__{{$Md.Name}})(unsafe.Pointer(
+			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_{{$Md.Package}}__{{$Md.Type}}__{{$Md.Name}} * uintptr(i)),
 		))
-		{{.Name}}TypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+		{{$Md.Name}}TypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
 	}
 }
-func {{.Name}}__Array_to_Go(goSlice []{{.Name}}, cSlice []C{{.Name}}) {
+func {{$Md.Name}}__Array_to_Go(goSlice []{{$Md.Name}}, cSlice []C{{$Md.Name}}) {
 	for i := 0; i < len(cSlice); i++ {
-		{{.Name}}TypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
+		{{$Md.Name}}TypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
-func {{.Name}}__Array_to_C(cSlice []C{{.Name}}, goSlice []{{.Name}}) {
+func {{$Md.Name}}__Array_to_C(cSlice []C{{$Md.Name}}, goSlice []{{$Md.Name}}) {
 	for i := 0; i < len(goSlice); i++ {
-		{{.Name}}TypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
+		{{$Md.Name}}TypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
 `))
@@ -203,49 +201,49 @@ Licensed under the Apache License, Version 2.0 (the "License");
 THIS FILE IS AUTOGENERATED BY 'rclgo-gen generate'
 */
 
-package {{ .GoPackage }}
+package {{ .Service.GoPackage }}
 
 /*
 #cgo LDFLAGS: -L/opt/ros/foxy/lib -Wl,-rpath=/opt/ros/foxy/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
-#cgo LDFLAGS: -l{{.Package}}__rosidl_typesupport_c -l{{.Package}}__rosidl_generator_c
+#cgo LDFLAGS: -l{{.Service.Package}}__rosidl_typesupport_c -l{{.Service.Package}}__rosidl_generator_c
 #cgo CFLAGS: -I/opt/ros/foxy/include
 
 #include <rosidl_runtime_c/message_type_support_struct.h>
-#include <{{.Package}}/srv/{{.Name | camelToSnake}}.h>
+#include <{{.Service.Package}}/srv/{{.Service.Name | camelToSnake}}.h>
 */
 import "C"
 
 import (
-	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
-	"github.com/tiiuae/rclgo/pkg/rclgo/types"
+	"{{.Config.RclgoImportPath}}/pkg/rclgo/typemap"
+	"{{.Config.RclgoImportPath}}/pkg/rclgo/types"
 
 	"unsafe"
 )
 
 func init() {
-	typemap.RegisterService("{{.Package}}/{{.Name}}", {{ .Name }}TypeSupport)
+	typemap.RegisterService("{{.Service.Package}}/{{.Service.Name}}", {{ .Service.Name }}TypeSupport)
 }
 
-type _{{.Name}}TypeSupport struct {}
+type _{{.Service.Name}}TypeSupport struct {}
 
-func (s _{{.Name}}TypeSupport) Request() types.MessageTypeSupport {
-	return {{.Request.Name}}TypeSupport
+func (s _{{.Service.Name}}TypeSupport) Request() types.MessageTypeSupport {
+	return {{.Service.Request.Name}}TypeSupport
 }
 
-func (s _{{.Name}}TypeSupport) Response() types.MessageTypeSupport {
-	return {{.Response.Name}}TypeSupport
+func (s _{{.Service.Name}}TypeSupport) Response() types.MessageTypeSupport {
+	return {{.Service.Response.Name}}TypeSupport
 }
 
-func (s _{{.Name}}TypeSupport) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__{{.Package}}__{{.Type}}__{{.Name}}())
+func (s _{{.Service.Name}}TypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_service_type_support_handle__{{.Service.Package}}__{{.Service.Type}}__{{.Service.Name}}())
 }
 
 // Modifying this variable is undefined behavior.
-var {{ .Name }}TypeSupport types.ServiceTypeSupport = _{{.Name}}TypeSupport{}
+var {{ .Service.Name }}TypeSupport types.ServiceTypeSupport = _{{.Service.Name}}TypeSupport{}
 `))
 
 var primitiveTypes = template.Must(template.New("primitiveTypes").Funcs(templateFuncMap).Parse(
-	`/*{{ $Md := . }}
+	`/*
 This file is part of rclgo
 
 Copyright © 2021 Technology Innovation Institute, United Arab Emirates
@@ -335,9 +333,9 @@ THIS FILE IS AUTOGENERATED BY 'rclgo-gen generate'
 package msgs
 
 import (
-	{{range $import, $unused := . -}}
-	_ "github.com/tiiuae/rclgo/pkg/rclgo/msgs/{{$import}}" //
-	{{""}}{{- end}}
+	{{- range $import, $unused := .Packages }}
+	_ "{{$.Config.MessageModulePrefix}}/{{$import}}" //
+	{{- end }}
 )
 `))
 

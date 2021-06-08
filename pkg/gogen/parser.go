@@ -33,7 +33,11 @@ func cName(rosName string) string {
 	return rosName
 }
 
-func parseService(service *ROS2Service, source string) error {
+type parser struct {
+	config *Config
+}
+
+func (p *parser) parseService(service *ROS2Service, source string) error {
 	currentMsg := service.Request
 	for i, line := range strings.Split(source, "\n") {
 		if line == "---" {
@@ -43,15 +47,15 @@ func parseService(service *ROS2Service, source string) error {
 			currentMsg = service.Response
 			continue
 		}
-		if err := parseLine(currentMsg, line); err != nil {
+		if err := p.parseLine(currentMsg, line); err != nil {
 			return lineErr(i+1, err)
 		}
 	}
 	return nil
 }
 
-func parseLine(msg *ROS2Message, line string) error {
-	obj, err := parseMessageLine(line, msg)
+func (p *parser) parseLine(msg *ROS2Message, line string) error {
+	obj, err := p.parseMessageLine(line, msg)
 	if err != nil {
 		return err
 	}
@@ -67,9 +71,9 @@ func parseLine(msg *ROS2Message, line string) error {
 		case "time":
 			msg.GoImports["time"] = ""
 		case "primitives":
-			msg.GoImports["github.com/tiiuae/rclgo/pkg/rclgo/"+obj.PkgName] = obj.GoPkgName
+			msg.GoImports[p.config.RclgoImportPath+"/pkg/rclgo/"+obj.PkgName] = obj.GoPkgName
 		default:
-			msg.GoImports["github.com/tiiuae/rclgo/pkg/rclgo/msgs/"+obj.PkgName+"/msg"] = obj.GoPkgName
+			msg.GoImports[p.config.MessageModulePrefix+"/"+obj.PkgName+"/msg"] = obj.GoPkgName
 			msg.CImports[obj.PkgName] = true
 		}
 	case nil:
@@ -84,9 +88,9 @@ func lineErr(line int, err error) error {
 }
 
 // ParseROS2Message parses a message definition.
-func ParseROS2Message(res *ROS2Message, content string) error {
+func (p *parser) ParseROS2Message(res *ROS2Message, content string) error {
 	for i, line := range strings.Split(content, "\n") {
-		if err := parseLine(res, line); err != nil {
+		if err := p.parseLine(res, line); err != nil {
 			return lineErr(i+1, err)
 		}
 	}
@@ -95,7 +99,7 @@ func ParseROS2Message(res *ROS2Message, content string) error {
 
 var ros2messagesCommentsBuffer = strings.Builder{} // Collect pre-field comments here to be included in the comments. Flushed on empty lines.
 
-func parseMessageLine(testRow string, ros2msg *ROS2Message) (interface{}, error) {
+func (p *parser) parseMessageLine(testRow string, ros2msg *ROS2Message) (interface{}, error) {
 	testRow = strings.TrimSpace(testRow)
 
 	re.R(&testRow, `m!^#\s*(.*)$!`) // Extract comments from comment-only lines to be included in the pre-field comments
@@ -118,7 +122,7 @@ func parseMessageLine(testRow string, ros2msg *ROS2Message) (interface{}, error)
 			return con, err
 		}
 	case 'f':
-		f, err := ParseROS2MessageField(capture, ros2msg)
+		f, err := p.ParseROS2MessageField(capture, ros2msg)
 		if err == nil {
 			return f, err
 		}
@@ -182,7 +186,7 @@ func ParseROS2MessageConstant(capture map[string]string, ros2msg *ROS2Message) (
 	return d, nil
 }
 
-func ParseROS2MessageField(capture map[string]string, ros2msg *ROS2Message) (*ROS2Field, error) {
+func (p *parser) ParseROS2MessageField(capture map[string]string, ros2msg *ROS2Message) (*ROS2Field, error) {
 	size, err := strconv.ParseInt(capture["size"], 10, 32)
 	if err != nil && capture["size"] != "" {
 		return nil, err
@@ -220,8 +224,8 @@ func ParseROS2MessageField(capture map[string]string, ros2msg *ROS2Message) (*RO
 		f.GoPkgName = f.PkgName + "_msg"
 	}
 	// Prepopulate extra Go imports
-	cSerializationCode(f, ros2msg)
-	goSerializationCode(f, ros2msg)
+	p.cSerializationCode(f, ros2msg)
+	p.goSerializationCode(f, ros2msg)
 
 	return f, nil
 }
@@ -266,7 +270,7 @@ func translateROS2Type(f *ROS2Field, m *ROS2Message) (pkgName string, cType stri
 	return ".", f.RosType, f.RosType
 }
 
-func cSerializationCode(f *ROS2Field, m *ROS2Message) string {
+func (p *parser) cSerializationCode(f *ROS2Field, m *ROS2Message) string {
 	if f.PkgName == "" {
 	}
 	if f.TypeArray != "" && f.ArraySize > 0 && f.PkgName != "" && f.PkgIsLocal {
@@ -291,13 +295,13 @@ func cSerializationCode(f *ROS2Field, m *ROS2Message) string {
 
 	} else if f.TypeArray != "" && f.ArraySize > 0 && f.PkgName == "" {
 		// Primitive value Array
-		m.GoImports["github.com/tiiuae/rclgo/pkg/rclgo/primitives"] = "primitives"
+		m.GoImports[p.config.RclgoImportPath+"/pkg/rclgo/primitives"] = "primitives"
 		return `cSlice_` + f.RosName + ` := mem.` + f.CName + `[:]
 	` + `primitives.` + ucFirst(f.RosType) + `__Array_to_C(*(*[]primitives.C` + ucFirst(f.RosType) + `)(unsafe.Pointer(&cSlice_` + f.RosName + `)), m.` + f.GoName + `[:])`
 
 	} else if f.TypeArray != "" && f.ArraySize == 0 && f.PkgName == "" {
 		// Primitive value Slice
-		m.GoImports["github.com/tiiuae/rclgo/pkg/rclgo/primitives"] = "primitives"
+		m.GoImports[p.config.RclgoImportPath+"/pkg/rclgo/primitives"] = "primitives"
 		return `primitives.` + ucFirst(f.RosType) + `__Sequence_to_C((*primitives.C` + ucFirst(f.RosType) + `__Sequence)(unsafe.Pointer(&mem.` + f.CName + `)), m.` + f.GoName + `)`
 
 	} else if f.TypeArray == "" && f.PkgName == "" {
@@ -307,10 +311,10 @@ func cSerializationCode(f *ROS2Field, m *ROS2Message) string {
 		// serialization implementations but still use a non-generated type in
 		// generated message fields.
 		if f.RosType == "string" {
-			m.GoImports["github.com/tiiuae/rclgo/pkg/rclgo/primitives"] = "primitives"
+			m.GoImports[p.config.RclgoImportPath+"/pkg/rclgo/primitives"] = "primitives"
 			return "primitives.StringAsCStruct(unsafe.Pointer(&mem." + f.CName + "), m." + f.GoName + ")"
 		} else if f.RosType == "U16String" {
-			m.GoImports["github.com/tiiuae/rclgo/pkg/rclgo/primitives"] = "primitives"
+			m.GoImports[p.config.RclgoImportPath+"/pkg/rclgo/primitives"] = "primitives"
 			return "primitives.U16StringAsCStruct(unsafe.Pointer(&mem." + f.CName + "), m." + f.GoName + ")"
 		}
 		return `mem.` + f.CName + ` = C.` + f.CType + `(m.` + f.GoName + `)`
@@ -331,7 +335,7 @@ func cStructName(f *ROS2Field, m *ROS2Message) string {
 	return "<MISSING cStructName!!>"
 }
 
-func goSerializationCode(f *ROS2Field, m *ROS2Message) string {
+func (p *parser) goSerializationCode(f *ROS2Field, m *ROS2Message) string {
 
 	if f.TypeArray != "" && f.ArraySize > 0 && f.PkgName != "" && f.PkgIsLocal {
 		// Complex value Array local package reference
@@ -356,13 +360,13 @@ func goSerializationCode(f *ROS2Field, m *ROS2Message) string {
 
 	} else if f.TypeArray != "" && f.ArraySize > 0 && f.PkgName == "" {
 		// Primitive value Array
-		m.GoImports["github.com/tiiuae/rclgo/pkg/rclgo/primitives"] = "primitives"
+		m.GoImports[p.config.RclgoImportPath+"/pkg/rclgo/primitives"] = "primitives"
 		return `cSlice_` + f.RosName + ` := mem.` + f.CName + `[:]
 	` + `primitives.` + ucFirst(f.RosType) + `__Array_to_Go(m.` + f.GoName + `[:], *(*[]primitives.C` + ucFirst(f.RosType) + `)(unsafe.Pointer(&cSlice_` + f.RosName + `)))`
 
 	} else if f.TypeArray != "" && f.ArraySize == 0 && f.PkgName == "" {
 		// Primitive value Slice
-		m.GoImports["github.com/tiiuae/rclgo/pkg/rclgo/primitives"] = "primitives"
+		m.GoImports[p.config.RclgoImportPath+"/pkg/rclgo/primitives"] = "primitives"
 		return `primitives.` + ucFirst(f.RosType) + `__Sequence_to_Go(&m.` + f.GoName + `, *(*primitives.C` + ucFirst(f.RosType) + `__Sequence)(unsafe.Pointer(&mem.` + f.CName + `)))`
 
 	} else if f.TypeArray == "" && f.PkgName == "" {
@@ -372,10 +376,10 @@ func goSerializationCode(f *ROS2Field, m *ROS2Message) string {
 		// serialization implementations but still use a non-generated type in
 		// generated message fields.
 		if f.RosType == "string" {
-			m.GoImports["github.com/tiiuae/rclgo/pkg/rclgo/primitives"] = "primitives"
+			m.GoImports[p.config.RclgoImportPath+"/pkg/rclgo/primitives"] = "primitives"
 			return "primitives.StringAsGoStruct(&m." + f.GoName + ", unsafe.Pointer(&mem." + f.CName + "))"
 		} else if f.RosType == "U16String" {
-			m.GoImports["github.com/tiiuae/rclgo/pkg/rclgo/primitives"] = "primitives"
+			m.GoImports[p.config.RclgoImportPath+"/pkg/rclgo/primitives"] = "primitives"
 			return "primitives.U16StringAsGoStruct(&m." + f.GoName + ", unsafe.Pointer(&mem." + f.CName + "))"
 		}
 		return `m.` + f.GoName + ` = ` + f.GoType + `(mem.` + f.CName + `)`

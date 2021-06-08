@@ -57,5 +57,4 @@ import (
 	_ "github.com/tiiuae/rclgo/pkg/rclgo/msgs/unique_identifier_msgs/msg" //
 	_ "github.com/tiiuae/rclgo/pkg/rclgo/msgs/visualization_msgs/msg" //
 	_ "github.com/tiiuae/rclgo/pkg/rclgo/msgs/visualization_msgs/srv" //
-	
 )

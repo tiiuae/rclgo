@@ -22,6 +22,7 @@ var nilAry []string
 
 func TestParseROS2Field(t *testing.T) {
 	SetDefaultFailureMode(FailureContinues)
+	parser := parser{config: &DefaultConfig}
 
 	testFunc := func(description string, line string, ros2msg *ROS2Message) {
 		testName := ros2msg.Package + "." + ros2msg.Name + " " + line
@@ -29,7 +30,7 @@ func TestParseROS2Field(t *testing.T) {
 			testName += " : " + description
 		}
 		Convey(testName, func() {
-			m, err := parseMessageLine(line, ros2msg)
+			m, err := parser.parseMessageLine(line, ros2msg)
 			So(err, ShouldBeNil)
 			sum := md5.Sum([]byte(line))
 			So(cupaloy.SnapshotMulti(hex.EncodeToString(sum[:]), m), ShouldBeNil)
@@ -93,7 +94,7 @@ func TestParseROS2Field(t *testing.T) {
 
 	testParseService := func(pkg, name, source string) {
 		s := NewROS2Service(pkg, name)
-		So(parseService(s, source), ShouldBeNil)
+		So(parser.parseService(s, source), ShouldBeNil)
 		So(cupaloy.SnapshotMulti("service-"+name, s), ShouldBeNil)
 	}
 

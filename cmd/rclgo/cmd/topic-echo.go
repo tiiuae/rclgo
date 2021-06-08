@@ -20,8 +20,8 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
+	_ "github.com/tiiuae/rclgo-msgs" // Load all the available ROS2 Message types. In Go one cannot dynamically import.
 	"github.com/tiiuae/rclgo/pkg/rclgo"
-	_ "github.com/tiiuae/rclgo/pkg/rclgo/msgs" // Load all the available ROS2 Message types. In Go one cannot dynamically import.
 )
 
 // echoCmd represents the echo command

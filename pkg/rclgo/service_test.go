@@ -7,7 +7,7 @@ import (
 	"time"
 
 	. "github.com/smartystreets/goconvey/convey"
-	example_interfaces_srv "github.com/tiiuae/rclgo/pkg/rclgo/msgs/example_interfaces/srv"
+	example_interfaces_srv "github.com/tiiuae/rclgo/internal/msgs/example_interfaces/srv"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 )
 

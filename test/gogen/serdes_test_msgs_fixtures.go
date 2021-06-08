@@ -225,7 +225,7 @@ test_msgs__msg__WStrings * test_msgs__msg__WStrings__fixture() {
 */
 import "C"
 import (
-	test_msgs "github.com/tiiuae/rclgo/pkg/rclgo/msgs/test_msgs/msg"
+	test_msgs "github.com/tiiuae/rclgo/internal/msgs/test_msgs/msg"
 )
 
 func Fixture_C_test_msgs__Arrays() *C.test_msgs__msg__Arrays {

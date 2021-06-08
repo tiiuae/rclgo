@@ -14,8 +14,8 @@ import (
 	"time"
 
 	. "github.com/smartystreets/goconvey/convey"
-	std_msgs "github.com/tiiuae/rclgo/pkg/rclgo/msgs/std_msgs/msg"
-	std_srvs_srv "github.com/tiiuae/rclgo/pkg/rclgo/msgs/std_srvs/srv"
+	std_msgs "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
+	std_srvs_srv "github.com/tiiuae/rclgo/internal/msgs/std_srvs/srv"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 )
 

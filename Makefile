@@ -1,5 +1,8 @@
 GO111MODULE = on
 
+.ONESHELL:
+SHELL = /bin/bash
+
 all: configure build #default make target
 
 configure:
@@ -15,10 +18,30 @@ install:
 
 .PHONY: test
 test:
-	go test -v `go list ./... | sed -e '\@^github\.com/tiiuae/rclgo/pkg/rclgo/msgs@D' -e '\@^github\.com/tiiuae/rclgo/cmd@D'`
+	go test -v ./...
 
 generate:
-	go run cmd/rclgo-gen/main.go generate -d ./pkg/rclgo/msgs
+	@pkgs=(
+	    builtin_interfaces
+	    example_interfaces
+	    geometry_msgs
+	    sensor_msgs
+	    std_msgs
+	    std_srvs
+	    test_msgs
+	)
+
+	dest_path=internal/msgs
+
+	rm -rf "$$dest_path/*"
+	for pkg in $${pkgs[@]}; do
+	    go run ./cmd/rclgo-gen generate \
+	        --message-module-prefix "github.com/tiiuae/rclgo/$$dest_path" \
+	        -r "/opt/ros/foxy/share/$$pkg" \
+	        -d "$$dest_path" \
+			|| exit 1
+	done
+	rm "$$dest_path/msgs.gen.go" || exit 1
 	go run cmd/rclgo-gen/main.go generate-rclgo
 
 vet:

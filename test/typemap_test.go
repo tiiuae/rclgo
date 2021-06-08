@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
-	std_srvs_srv "github.com/tiiuae/rclgo/pkg/rclgo/msgs/std_srvs/srv"
+	std_srvs_srv "github.com/tiiuae/rclgo/internal/msgs/std_srvs/srv"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 )
 

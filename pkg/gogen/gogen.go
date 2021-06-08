@@ -28,7 +28,7 @@ type Config struct {
 
 var DefaultConfig = Config{
 	RclgoImportPath:     "github.com/tiiuae/rclgo",
-	MessageModulePrefix: "github.com/tiiuae/rclgo/pkg/rclgo/msgs",
+	MessageModulePrefix: "github.com/tiiuae/rclgo-msgs",
 }
 
 // RclgoRepoRootPath returns the path to the root of the rclgo repository.

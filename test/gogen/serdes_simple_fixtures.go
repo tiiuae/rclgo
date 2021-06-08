@@ -89,9 +89,9 @@ std_msgs__msg__String * std_msgs__msg__String__fixture() {
 */
 import "C"
 import (
-	builtin_interfaces "github.com/tiiuae/rclgo/pkg/rclgo/msgs/builtin_interfaces/msg"
-	sensor_msgs "github.com/tiiuae/rclgo/pkg/rclgo/msgs/sensor_msgs/msg"
-	std_msgs "github.com/tiiuae/rclgo/pkg/rclgo/msgs/std_msgs/msg"
+	builtin_interfaces "github.com/tiiuae/rclgo/internal/msgs/builtin_interfaces/msg"
+	sensor_msgs "github.com/tiiuae/rclgo/internal/msgs/sensor_msgs/msg"
+	std_msgs "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
 )
 
 func Fixture_C_sensor_msgs__ChannelFloat32() *C.sensor_msgs__msg__ChannelFloat32 {

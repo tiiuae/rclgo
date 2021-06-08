@@ -13,8 +13,8 @@ import (
 	"time"
 
 	. "github.com/smartystreets/goconvey/convey"
-	std_msgs "github.com/tiiuae/rclgo/pkg/rclgo/msgs/std_msgs/msg"
-	test_msgs "github.com/tiiuae/rclgo/pkg/rclgo/msgs/test_msgs/msg"
+	std_msgs "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
+	test_msgs "github.com/tiiuae/rclgo/internal/msgs/test_msgs/msg"
 )
 
 func TestPubSub(t *testing.T) {

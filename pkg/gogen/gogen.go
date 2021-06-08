@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -20,38 +21,23 @@ import (
 	"github.com/kivilahtio/go-re/v0"
 )
 
-/*
-Looks up where the rclgo-module is installed and returns a path where to write Golang bindings for ROS2 messages.
-*/
-func GetGoConvertedROS2MsgPackagesDir() string {
-	_, file, _, _ := runtime.Caller(0)
-	return filepath.Join(file, "../../rclgo/msgs")
+// RclgoRepoRootPath returns the path to the root of the rclgo repository.
+// Panics if the path can't be determined.
+func RclgoRepoRootPath() string {
+	_, file, _, ok := runtime.Caller(0)
+	if !ok {
+		panic("could not determine rclgo repo root path")
+	}
+	return filepath.Join(file, "../../..")
 }
 
-func Generate(rootPath, destPath string) {
-	err := generatePrimitives(destPath)
-	if err != nil {
-		fmt.Printf("Error: '%+v'\n", err)
-	}
-	err = GenerateROS2ErrorTypes(rootPath, destPath)
-	if err != nil {
-		fmt.Printf("Error: '%+v'\n", err)
-	}
-	ros2MessagesAry := GenerateGolangMessageTypes(rootPath, destPath)
-	err = GenerateROS2AllMessagesImporter(destPath, ros2MessagesAry)
-	if err != nil {
-		fmt.Printf("Error: '%+v'\n", err)
-	}
-}
-
-func generatePrimitives(destPathPkgRoot string) error {
-
-	destFilePath := filepath.Join(destPathPkgRoot, "..", "primitives", "primitives.gen.go")
-
+func GeneratePrimitives(destFilePath string) error {
+	destFilePath = filepath.Join(destFilePath, "pkg/rclgo/primitives/primitives.gen.go")
 	destFile, err := mkdir_p(destFilePath)
 	if err != nil {
 		return err
 	}
+	defer destFile.Close()
 
 	fmt.Printf("Generating primitive types: %s\n", destFilePath)
 	return primitiveTypes.Execute(destFile, map[string]interface{}{
@@ -59,22 +45,37 @@ func generatePrimitives(destPathPkgRoot string) error {
 	})
 }
 
-func GenerateROS2AllMessagesImporter(destPathPkgRoot string, ros2Messages map[string]struct{}) error {
+func GenerateROS2AllMessagesImporter(destPathPkgRoot string) error {
+	msgDirs, err := filepath.Glob(filepath.Join(destPathPkgRoot, "*/msg"))
+	if err != nil {
+		return err
+	}
+	srvDirs, err := filepath.Glob(filepath.Join(destPathPkgRoot, "*/srv"))
+	if err != nil {
+		return err
+	}
+	pkgs := map[string]struct{}{}
+	for _, d := range msgDirs {
+		pkgs[path.Join(path.Base(path.Dir(d)), path.Base(d))] = struct{}{}
+	}
+	for _, d := range srvDirs {
+		pkgs[path.Join(path.Base(path.Dir(d)), path.Base(d))] = struct{}{}
+	}
 
-	destFilePath := filepath.Join(destPathPkgRoot, "..", "msgs", "msgs.gen.go")
+	destFilePath := filepath.Join(destPathPkgRoot, "msgs.gen.go")
 
 	destFile, err := mkdir_p(destFilePath)
 	if err != nil {
 		return err
 	}
+	defer destFile.Close()
 
 	fmt.Printf("Generating all importer: %s\n", destFilePath)
-	return ros2MsgImportAllPackage.Execute(destFile, ros2Messages)
+	return ros2MsgImportAllPackage.Execute(destFile, pkgs)
 }
 
-func GenerateGolangMessageTypes(rootPath string, destPath string) map[string]struct{} {
-	generatedMessages := map[string]struct{}{}
-	filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
+func GenerateGolangMessageTypes(rootPath string, destPath string) error {
+	return filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
 		skip, blacklistEntry := blacklisted(path)
 		if skip {
 			fmt.Printf("Blacklisted: %s, matched regex '%s'\n", path, blacklistEntry)
@@ -83,24 +84,20 @@ func GenerateGolangMessageTypes(rootPath string, destPath string) map[string]str
 
 		if re.M(path, `m!/msg/.+?\.msg$!`) {
 			fmt.Printf("Generating: %s\n", path)
-			md, err := generateMessage(path, destPath)
+			_, err := generateMessage(path, destPath)
 			if err != nil {
 				fmt.Printf("Error converting ROS2 Message '%s' to '%s', error: %v\n", path, destPath, err)
 			}
-			generatedMessages[md.Package+"/"+md.Type] = struct{}{}
 		} else if re.M(path, `m!/srv/.+?\.srv$!`) {
 			fmt.Printf("Generating: %s\n", path)
-			srv, err := generateService(path, destPath)
+			_, err := generateService(path, destPath)
 			if err != nil {
 				fmt.Printf("Error converting ROS2 Service '%s' to '%s', error: %v\n", path, destPath, err)
 				return nil
 			}
-			generatedMessages[srv.Request.Package+"/"+srv.Request.Type] = struct{}{}
-			generatedMessages[srv.Request.Package+"/"+srv.Request.Type] = struct{}{}
 		}
 		return nil
 	})
-	return generatedMessages
 }
 
 func generateMessage(sourcePath string, destPathPkgRoot string) (*ROS2Message, error) {
@@ -122,7 +119,7 @@ func generateMessage(sourcePath string, destPathPkgRoot string) (*ROS2Message, e
 		return nil, err
 	}
 
-	destFile, err := CreateTargetGolangTypeFile(destPathPkgRoot, md.Metadata)
+	destFile, err := createTargetGolangTypeFile(destPathPkgRoot, md.Metadata)
 	if err != nil {
 		return nil, err
 	}
@@ -153,7 +150,7 @@ func parseMetadataFromPath(p string) (*Metadata, error) {
 	return m, nil
 }
 
-func CreateTargetGolangTypeFile(destPathPkgRoot string, m *Metadata) (*os.File, error) {
+func createTargetGolangTypeFile(destPathPkgRoot string, m *Metadata) (*os.File, error) {
 	destFilePath := filepath.Join(destPathPkgRoot, m.ImportPath(), m.Name+".gen.go")
 	destFile, err := mkdir_p(destFilePath)
 	if err != nil {
@@ -176,7 +173,7 @@ func generateService(srcPath, dstPathPkgRoot string) (*ROS2Service, error) {
 		return nil, err
 	}
 
-	srvFile, err := CreateTargetGolangTypeFile(dstPathPkgRoot, service.Metadata)
+	srvFile, err := createTargetGolangTypeFile(dstPathPkgRoot, service.Metadata)
 	if err != nil {
 		return nil, err
 	}
@@ -186,7 +183,7 @@ func generateService(srcPath, dstPathPkgRoot string) (*ROS2Service, error) {
 		return nil, err
 	}
 
-	reqFile, err := CreateTargetGolangTypeFile(dstPathPkgRoot, service.Request.Metadata)
+	reqFile, err := createTargetGolangTypeFile(dstPathPkgRoot, service.Request.Metadata)
 	if err != nil {
 		return nil, err
 	}
@@ -196,7 +193,7 @@ func generateService(srcPath, dstPathPkgRoot string) (*ROS2Service, error) {
 		return nil, err
 	}
 
-	respFile, err := CreateTargetGolangTypeFile(dstPathPkgRoot, service.Response.Metadata)
+	respFile, err := createTargetGolangTypeFile(dstPathPkgRoot, service.Response.Metadata)
 	if err != nil {
 		return nil, err
 	}

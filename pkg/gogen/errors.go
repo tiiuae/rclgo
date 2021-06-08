@@ -21,14 +21,13 @@ func init() {
 prepareErrorTypesCFileMatchingRegexp is a convenience function to be more easily able to define the C header files to look for error definitions without needing to fiddle with complex regexp
 */
 func prepareErrorTypesCFileMatchingRegexp() {
-	errorTypesCFileMatchingRegexp = "(" + strings.Join(ROS2_ERROR_TYPES_C_FILES, ")|(") + ")"
+	errorTypesCFileMatchingRegexp = "(" + strings.Join(cErrorTypeFiles, ")|(") + ")"
 	re.R(&errorTypesCFileMatchingRegexp, `s!\!!\!!`)
 	errorTypesCFileMatchingRegexp = "m!" + errorTypesCFileMatchingRegexp + "!"
 }
 
-func GenerateROS2ErrorTypes(rootPath, destPathPkgRoot string) error {
-	destFilePath := filepath.Join(destPathPkgRoot, "..", "errortypes.gen.go")
-
+func GenerateROS2ErrorTypes(rootPath, destFilePath string) error {
+	destFilePath = filepath.Join(destFilePath, "pkg/rclgo/errortypes.gen.go")
 	ros2ErrorsList := list.New()
 
 	includeLookupDir := rootPath
@@ -38,7 +37,7 @@ func GenerateROS2ErrorTypes(rootPath, destPathPkgRoot string) error {
 		filepath.Walk(includeLookupDir, func(path string, info os.FileInfo, err error) error {
 			if re.M(path, errorTypesCFileMatchingRegexp) {
 				fmt.Printf("Analyzing: %s\n", path)
-				md, err := GenerateGolangErrorTypesFromROS2ErrorDefinitionsPath(path)
+				md, err := generateGolangErrorTypesFromROS2ErrorDefinitionsPath(path)
 				if err != nil {
 					fmt.Printf("Error converting ROS2 Errors from '%s' to '%s', error: %v\n", path, destFilePath, err)
 				}
@@ -72,6 +71,7 @@ func GenerateROS2ErrorTypes(rootPath, destPathPkgRoot string) error {
 	if err != nil {
 		return err
 	}
+	defer destFile.Close()
 
 	fmt.Printf("Generating ROS2 Error definitions: %s\n", destFilePath)
 	return ros2ErrorCodes.Execute(destFile, map[string]interface{}{
@@ -81,7 +81,7 @@ func GenerateROS2ErrorTypes(rootPath, destPathPkgRoot string) error {
 	})
 }
 
-func GenerateGolangErrorTypesFromROS2ErrorDefinitionsPath(path string) (*list.List, error) {
+func generateGolangErrorTypesFromROS2ErrorDefinitionsPath(path string) (*list.List, error) {
 	var errorTypes = list.List{}
 
 	content, err := ioutil.ReadFile(path)
@@ -90,7 +90,7 @@ func GenerateGolangErrorTypesFromROS2ErrorDefinitionsPath(path string) (*list.Li
 	}
 
 	for _, line := range strings.Split(string(content), "\n") {
-		errType, err := ParseROS2ErrorType(line)
+		errType, err := parseROS2ErrorType(line)
 		if err != nil {
 			return nil, err
 		}
@@ -106,7 +106,7 @@ var ros2errorTypesCommentsBuffer = strings.Builder{}                  // Collect
 var ros2errorTypesDeduplicationMap = make(map[string]string, 1024)    // Some RMW and RCL error codes overlap, so we need to deduplicate them from the dynamic type casting switch-case
 var ros2errorTypesDeduplicationFilter = make(map[string]string, 1024) // Entries ending up here actually filter template entries
 
-func ParseROS2ErrorType(row string) (*ROS2ErrorType, error) {
+func parseROS2ErrorType(row string) (*ROS2ErrorType, error) {
 	if re.M(row, `m!
 		^
 		\#define\s+

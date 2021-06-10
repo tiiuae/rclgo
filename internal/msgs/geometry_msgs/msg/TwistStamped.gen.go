@@ -52,15 +52,29 @@ func NewTwistStamped() *TwistStamped {
 	return &self
 }
 
-func (t *TwistStamped) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *TwistStamped) Clone() *TwistStamped {
+	c := &TwistStamped{}
+	c.Header = *t.Header.Clone()
+	c.Twist = *t.Twist.Clone()
+	return c
+}
+
+func (t *TwistStamped) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *TwistStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Twist.SetDefaults()
 	
+}
+
+// CloneTwistStampedSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneTwistStampedSlice(dst, src []TwistStamped) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

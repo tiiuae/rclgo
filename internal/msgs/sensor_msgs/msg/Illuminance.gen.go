@@ -53,14 +53,29 @@ func NewIlluminance() *Illuminance {
 	return &self
 }
 
-func (t *Illuminance) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Illuminance) Clone() *Illuminance {
+	c := &Illuminance{}
+	c.Header = *t.Header.Clone()
+	c.Illuminance = t.Illuminance
+	c.Variance = t.Variance
+	return c
+}
+
+func (t *Illuminance) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Illuminance) SetDefaults() {
 	t.Header.SetDefaults()
 	
+}
+
+// CloneIlluminanceSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneIlluminanceSlice(dst, src []Illuminance) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

@@ -48,13 +48,25 @@ func NewEmpty_Response() *Empty_Response {
 	return &self
 }
 
-func (t *Empty_Response) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Empty_Response) Clone() *Empty_Response {
+	c := &Empty_Response{}
+	return c
+}
+
+func (t *Empty_Response) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Empty_Response) SetDefaults() {
 	
+}
+
+// CloneEmpty_ResponseSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneEmpty_ResponseSlice(dst, src []Empty_Response) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

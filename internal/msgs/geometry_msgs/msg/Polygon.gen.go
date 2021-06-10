@@ -49,13 +49,29 @@ func NewPolygon() *Polygon {
 	return &self
 }
 
-func (t *Polygon) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Polygon) Clone() *Polygon {
+	c := &Polygon{}
+	if t.Points != nil {
+		c.Points = make([]Point32, len(t.Points))
+		ClonePoint32Slice(c.Points, t.Points)
+	}
+	return c
+}
+
+func (t *Polygon) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Polygon) SetDefaults() {
 	
+}
+
+// ClonePolygonSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func ClonePolygonSlice(dst, src []Polygon) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

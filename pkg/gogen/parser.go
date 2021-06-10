@@ -430,3 +430,29 @@ func defaultCode(f *ROS2Field) string {
 	}
 	return "//<MISSING defaultCode!!>"
 }
+
+func cloneCode(f *ROS2Field) string {
+	if f.PkgName != "" && f.TypeArray != "" && f.ArraySize == 0 {
+		// complex value slice
+		return "if t." + f.GoName + " != nil {\n" +
+			"\t\tc." + f.GoName + " = make([]" + f.GoPkgReference() + f.GoType + ", len(t." + f.GoName + "))\n" +
+			"\t\t" + f.GoPkgReference() + "Clone" + f.GoType + "Slice(c." + f.GoName + ", t." + f.GoName + ")\n" +
+			"\t}"
+	} else if f.PkgName != "" && f.TypeArray != "" && f.ArraySize > 0 {
+		// complex value array
+		return f.GoPkgReference() + "Clone" + f.GoType + "Slice(c." + f.GoName + "[:], t." + f.GoName + "[:])"
+	} else if f.PkgName != "" && f.TypeArray == "" {
+		// complex value single
+		return "c." + f.GoName + " = *t." + f.GoName + ".Clone()"
+	} else if f.PkgName == "" && f.TypeArray != "" && f.ArraySize == 0 {
+		// primitive value slice
+		return "if t." + f.GoName + " != nil {\n" +
+			"\t\tc." + f.GoName + " = make([]" + f.GoType + ", len(t." + f.GoName + "))\n" +
+			"\t\tcopy(c." + f.GoName + ", t." + f.GoName + ")\n" +
+			"\t}"
+	} else if f.PkgName == "" {
+		// primitive value single and array
+		return "c." + f.GoName + " = t." + f.GoName
+	}
+	return "//<MISSING cloneCode!!>"
+}

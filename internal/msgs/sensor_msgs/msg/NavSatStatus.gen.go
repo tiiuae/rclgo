@@ -60,13 +60,27 @@ func NewNavSatStatus() *NavSatStatus {
 	return &self
 }
 
-func (t *NavSatStatus) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *NavSatStatus) Clone() *NavSatStatus {
+	c := &NavSatStatus{}
+	c.Status = t.Status
+	c.Service = t.Service
+	return c
+}
+
+func (t *NavSatStatus) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *NavSatStatus) SetDefaults() {
 	
+}
+
+// CloneNavSatStatusSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneNavSatStatusSlice(dst, src []NavSatStatus) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

@@ -51,13 +51,28 @@ func NewPose2D() *Pose2D {
 	return &self
 }
 
-func (t *Pose2D) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Pose2D) Clone() *Pose2D {
+	c := &Pose2D{}
+	c.X = t.X
+	c.Y = t.Y
+	c.Theta = t.Theta
+	return c
+}
+
+func (t *Pose2D) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Pose2D) SetDefaults() {
 	
+}
+
+// ClonePose2DSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func ClonePose2DSlice(dst, src []Pose2D) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

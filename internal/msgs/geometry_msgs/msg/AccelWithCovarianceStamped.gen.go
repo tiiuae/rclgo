@@ -52,15 +52,29 @@ func NewAccelWithCovarianceStamped() *AccelWithCovarianceStamped {
 	return &self
 }
 
-func (t *AccelWithCovarianceStamped) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *AccelWithCovarianceStamped) Clone() *AccelWithCovarianceStamped {
+	c := &AccelWithCovarianceStamped{}
+	c.Header = *t.Header.Clone()
+	c.Accel = *t.Accel.Clone()
+	return c
+}
+
+func (t *AccelWithCovarianceStamped) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *AccelWithCovarianceStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Accel.SetDefaults()
 	
+}
+
+// CloneAccelWithCovarianceStampedSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneAccelWithCovarianceStampedSlice(dst, src []AccelWithCovarianceStamped) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

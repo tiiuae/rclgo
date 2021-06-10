@@ -50,13 +50,27 @@ func NewTime() *Time {
 	return &self
 }
 
-func (t *Time) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Time) Clone() *Time {
+	c := &Time{}
+	c.Sec = t.Sec
+	c.Nanosec = t.Nanosec
+	return c
+}
+
+func (t *Time) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Time) SetDefaults() {
 	
+}
+
+// CloneTimeSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneTimeSlice(dst, src []Time) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

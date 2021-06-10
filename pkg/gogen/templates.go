@@ -21,6 +21,7 @@ var templateFuncMap template.FuncMap = template.FuncMap{
 	"ucFirst":               ucFirst,
 	"srvNameFromSrvMsgName": srvNameFromSrvMsgName,
 	"cReturnCodeNameToGo":   cReturnCodeNameToGo,
+	"cloneCode":             cloneCode,
 }
 
 var ros2MsgToGolangTypeTemplate = template.Must(template.New("ros2MsgToGolangTypeTemplate").Funcs(templateFuncMap).Parse(
@@ -93,15 +94,30 @@ func New{{$Md.Name}}() *{{$Md.Name}} {
 	return &self
 }
 
-func (t *{{$Md.Name}}) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *{{$Md.Name}}) Clone() *{{$Md.Name}} {
+	c := &{{$Md.Name}}{}
+	{{- range $f := $Md.Fields }}
+	{{cloneCode $f}}
+	{{- end }}
+	return c
+}
+
+func (t *{{$Md.Name}}) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *{{$Md.Name}}) SetDefaults() {
 	{{ range $k, $v := $Md.Fields -}}
 	{{defaultCode $v}}
 	{{- end }}
+}
+
+// Clone{{$Md.Name}}Slice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func Clone{{$Md.Name}}Slice(dst, src []{{$Md.Name}}) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

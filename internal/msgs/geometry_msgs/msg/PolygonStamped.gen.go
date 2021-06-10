@@ -52,15 +52,29 @@ func NewPolygonStamped() *PolygonStamped {
 	return &self
 }
 
-func (t *PolygonStamped) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *PolygonStamped) Clone() *PolygonStamped {
+	c := &PolygonStamped{}
+	c.Header = *t.Header.Clone()
+	c.Polygon = *t.Polygon.Clone()
+	return c
+}
+
+func (t *PolygonStamped) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *PolygonStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Polygon.SetDefaults()
 	
+}
+
+// ClonePolygonStampedSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func ClonePolygonStampedSlice(dst, src []PolygonStamped) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

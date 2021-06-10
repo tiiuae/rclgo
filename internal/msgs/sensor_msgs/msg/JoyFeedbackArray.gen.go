@@ -49,13 +49,29 @@ func NewJoyFeedbackArray() *JoyFeedbackArray {
 	return &self
 }
 
-func (t *JoyFeedbackArray) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *JoyFeedbackArray) Clone() *JoyFeedbackArray {
+	c := &JoyFeedbackArray{}
+	if t.Array != nil {
+		c.Array = make([]JoyFeedback, len(t.Array))
+		CloneJoyFeedbackSlice(c.Array, t.Array)
+	}
+	return c
+}
+
+func (t *JoyFeedbackArray) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *JoyFeedbackArray) SetDefaults() {
 	
+}
+
+// CloneJoyFeedbackArraySlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneJoyFeedbackArraySlice(dst, src []JoyFeedbackArray) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

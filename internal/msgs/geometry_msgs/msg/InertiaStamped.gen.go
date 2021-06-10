@@ -52,15 +52,29 @@ func NewInertiaStamped() *InertiaStamped {
 	return &self
 }
 
-func (t *InertiaStamped) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *InertiaStamped) Clone() *InertiaStamped {
+	c := &InertiaStamped{}
+	c.Header = *t.Header.Clone()
+	c.Inertia = *t.Inertia.Clone()
+	return c
+}
+
+func (t *InertiaStamped) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *InertiaStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Inertia.SetDefaults()
 	
+}
+
+// CloneInertiaStampedSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneInertiaStampedSlice(dst, src []InertiaStamped) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

@@ -52,15 +52,29 @@ func NewWrenchStamped() *WrenchStamped {
 	return &self
 }
 
-func (t *WrenchStamped) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *WrenchStamped) Clone() *WrenchStamped {
+	c := &WrenchStamped{}
+	c.Header = *t.Header.Clone()
+	c.Wrench = *t.Wrench.Clone()
+	return c
+}
+
+func (t *WrenchStamped) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *WrenchStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Wrench.SetDefaults()
 	
+}
+
+// CloneWrenchStampedSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneWrenchStampedSlice(dst, src []WrenchStamped) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

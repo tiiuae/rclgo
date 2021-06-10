@@ -51,14 +51,31 @@ func NewByteMultiArray() *ByteMultiArray {
 	return &self
 }
 
-func (t *ByteMultiArray) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *ByteMultiArray) Clone() *ByteMultiArray {
+	c := &ByteMultiArray{}
+	c.Layout = *t.Layout.Clone()
+	if t.Data != nil {
+		c.Data = make([]byte, len(t.Data))
+		copy(c.Data, t.Data)
+	}
+	return c
+}
+
+func (t *ByteMultiArray) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *ByteMultiArray) SetDefaults() {
 	t.Layout.SetDefaults()
 	
+}
+
+// CloneByteMultiArraySlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneByteMultiArraySlice(dst, src []ByteMultiArray) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

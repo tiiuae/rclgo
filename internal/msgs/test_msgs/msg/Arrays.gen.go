@@ -81,9 +81,45 @@ func NewArrays() *Arrays {
 	return &self
 }
 
-func (t *Arrays) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Arrays) Clone() *Arrays {
+	c := &Arrays{}
+	c.BoolValues = t.BoolValues
+	c.ByteValues = t.ByteValues
+	c.CharValues = t.CharValues
+	c.Float32Values = t.Float32Values
+	c.Float64Values = t.Float64Values
+	c.Int8Values = t.Int8Values
+	c.Uint8Values = t.Uint8Values
+	c.Int16Values = t.Int16Values
+	c.Uint16Values = t.Uint16Values
+	c.Int32Values = t.Int32Values
+	c.Uint32Values = t.Uint32Values
+	c.Int64Values = t.Int64Values
+	c.Uint64Values = t.Uint64Values
+	c.StringValues = t.StringValues
+	CloneBasicTypesSlice(c.BasicTypesValues[:], t.BasicTypesValues[:])
+	CloneConstantsSlice(c.ConstantsValues[:], t.ConstantsValues[:])
+	CloneDefaultsSlice(c.DefaultsValues[:], t.DefaultsValues[:])
+	c.BoolValuesDefault = t.BoolValuesDefault
+	c.ByteValuesDefault = t.ByteValuesDefault
+	c.CharValuesDefault = t.CharValuesDefault
+	c.Float32ValuesDefault = t.Float32ValuesDefault
+	c.Float64ValuesDefault = t.Float64ValuesDefault
+	c.Int8ValuesDefault = t.Int8ValuesDefault
+	c.Uint8ValuesDefault = t.Uint8ValuesDefault
+	c.Int16ValuesDefault = t.Int16ValuesDefault
+	c.Uint16ValuesDefault = t.Uint16ValuesDefault
+	c.Int32ValuesDefault = t.Int32ValuesDefault
+	c.Uint32ValuesDefault = t.Uint32ValuesDefault
+	c.Int64ValuesDefault = t.Int64ValuesDefault
+	c.Uint64ValuesDefault = t.Uint64ValuesDefault
+	c.StringValuesDefault = t.StringValuesDefault
+	c.AlignmentCheck = t.AlignmentCheck
+	return c
+}
+
+func (t *Arrays) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Arrays) SetDefaults() {
@@ -111,6 +147,14 @@ func (t *Arrays) SetDefaults() {
 	t.Uint64ValuesDefault = [3]uint64{0,1,18446744073709551615}
 	t.StringValuesDefault = [3]string{"","max value","min value"}
 	
+}
+
+// CloneArraysSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneArraysSlice(dst, src []Arrays) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

@@ -53,14 +53,29 @@ func NewTemperature() *Temperature {
 	return &self
 }
 
-func (t *Temperature) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Temperature) Clone() *Temperature {
+	c := &Temperature{}
+	c.Header = *t.Header.Clone()
+	c.Temperature = t.Temperature
+	c.Variance = t.Variance
+	return c
+}
+
+func (t *Temperature) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Temperature) SetDefaults() {
 	t.Header.SetDefaults()
 	
+}
+
+// CloneTemperatureSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneTemperatureSlice(dst, src []Temperature) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

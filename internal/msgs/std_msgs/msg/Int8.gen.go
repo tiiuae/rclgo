@@ -49,13 +49,26 @@ func NewInt8() *Int8 {
 	return &self
 }
 
-func (t *Int8) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Int8) Clone() *Int8 {
+	c := &Int8{}
+	c.Data = t.Data
+	return c
+}
+
+func (t *Int8) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Int8) SetDefaults() {
 	
+}
+
+// CloneInt8Slice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneInt8Slice(dst, src []Int8) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

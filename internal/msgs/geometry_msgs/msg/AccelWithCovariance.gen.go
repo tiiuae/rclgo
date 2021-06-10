@@ -51,14 +51,28 @@ func NewAccelWithCovariance() *AccelWithCovariance {
 	return &self
 }
 
-func (t *AccelWithCovariance) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *AccelWithCovariance) Clone() *AccelWithCovariance {
+	c := &AccelWithCovariance{}
+	c.Accel = *t.Accel.Clone()
+	c.Covariance = t.Covariance
+	return c
+}
+
+func (t *AccelWithCovariance) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *AccelWithCovariance) SetDefaults() {
 	t.Accel.SetDefaults()
 	
+}
+
+// CloneAccelWithCovarianceSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneAccelWithCovarianceSlice(dst, src []AccelWithCovariance) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

@@ -52,15 +52,29 @@ func NewQuaternionStamped() *QuaternionStamped {
 	return &self
 }
 
-func (t *QuaternionStamped) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *QuaternionStamped) Clone() *QuaternionStamped {
+	c := &QuaternionStamped{}
+	c.Header = *t.Header.Clone()
+	c.Quaternion = *t.Quaternion.Clone()
+	return c
+}
+
+func (t *QuaternionStamped) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *QuaternionStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Quaternion.SetDefaults()
 	
+}
+
+// CloneQuaternionStampedSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneQuaternionStampedSlice(dst, src []QuaternionStamped) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

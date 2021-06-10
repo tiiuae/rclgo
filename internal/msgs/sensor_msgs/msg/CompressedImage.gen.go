@@ -54,14 +54,32 @@ func NewCompressedImage() *CompressedImage {
 	return &self
 }
 
-func (t *CompressedImage) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *CompressedImage) Clone() *CompressedImage {
+	c := &CompressedImage{}
+	c.Header = *t.Header.Clone()
+	c.Format = t.Format
+	if t.Data != nil {
+		c.Data = make([]uint8, len(t.Data))
+		copy(c.Data, t.Data)
+	}
+	return c
+}
+
+func (t *CompressedImage) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *CompressedImage) SetDefaults() {
 	t.Header.SetDefaults()
 	
+}
+
+// CloneCompressedImageSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneCompressedImageSlice(dst, src []CompressedImage) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

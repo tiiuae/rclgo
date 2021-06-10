@@ -12,7 +12,7 @@ package types
 import "unsafe"
 
 type Message interface {
-	Clone() Message
+	CloneMsg() Message
 	SetDefaults()
 }
 

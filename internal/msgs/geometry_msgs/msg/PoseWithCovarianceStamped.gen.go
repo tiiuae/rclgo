@@ -52,15 +52,29 @@ func NewPoseWithCovarianceStamped() *PoseWithCovarianceStamped {
 	return &self
 }
 
-func (t *PoseWithCovarianceStamped) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *PoseWithCovarianceStamped) Clone() *PoseWithCovarianceStamped {
+	c := &PoseWithCovarianceStamped{}
+	c.Header = *t.Header.Clone()
+	c.Pose = *t.Pose.Clone()
+	return c
+}
+
+func (t *PoseWithCovarianceStamped) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *PoseWithCovarianceStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Pose.SetDefaults()
 	
+}
+
+// ClonePoseWithCovarianceStampedSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func ClonePoseWithCovarianceStampedSlice(dst, src []PoseWithCovarianceStamped) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

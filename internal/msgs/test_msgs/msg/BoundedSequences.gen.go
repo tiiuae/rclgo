@@ -81,9 +81,138 @@ func NewBoundedSequences() *BoundedSequences {
 	return &self
 }
 
-func (t *BoundedSequences) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *BoundedSequences) Clone() *BoundedSequences {
+	c := &BoundedSequences{}
+	if t.BoolValues != nil {
+		c.BoolValues = make([]bool, len(t.BoolValues))
+		copy(c.BoolValues, t.BoolValues)
+	}
+	if t.ByteValues != nil {
+		c.ByteValues = make([]byte, len(t.ByteValues))
+		copy(c.ByteValues, t.ByteValues)
+	}
+	if t.CharValues != nil {
+		c.CharValues = make([]byte, len(t.CharValues))
+		copy(c.CharValues, t.CharValues)
+	}
+	if t.Float32Values != nil {
+		c.Float32Values = make([]float32, len(t.Float32Values))
+		copy(c.Float32Values, t.Float32Values)
+	}
+	if t.Float64Values != nil {
+		c.Float64Values = make([]float64, len(t.Float64Values))
+		copy(c.Float64Values, t.Float64Values)
+	}
+	if t.Int8Values != nil {
+		c.Int8Values = make([]int8, len(t.Int8Values))
+		copy(c.Int8Values, t.Int8Values)
+	}
+	if t.Uint8Values != nil {
+		c.Uint8Values = make([]uint8, len(t.Uint8Values))
+		copy(c.Uint8Values, t.Uint8Values)
+	}
+	if t.Int16Values != nil {
+		c.Int16Values = make([]int16, len(t.Int16Values))
+		copy(c.Int16Values, t.Int16Values)
+	}
+	if t.Uint16Values != nil {
+		c.Uint16Values = make([]uint16, len(t.Uint16Values))
+		copy(c.Uint16Values, t.Uint16Values)
+	}
+	if t.Int32Values != nil {
+		c.Int32Values = make([]int32, len(t.Int32Values))
+		copy(c.Int32Values, t.Int32Values)
+	}
+	if t.Uint32Values != nil {
+		c.Uint32Values = make([]uint32, len(t.Uint32Values))
+		copy(c.Uint32Values, t.Uint32Values)
+	}
+	if t.Int64Values != nil {
+		c.Int64Values = make([]int64, len(t.Int64Values))
+		copy(c.Int64Values, t.Int64Values)
+	}
+	if t.Uint64Values != nil {
+		c.Uint64Values = make([]uint64, len(t.Uint64Values))
+		copy(c.Uint64Values, t.Uint64Values)
+	}
+	if t.StringValues != nil {
+		c.StringValues = make([]string, len(t.StringValues))
+		copy(c.StringValues, t.StringValues)
+	}
+	if t.BasicTypesValues != nil {
+		c.BasicTypesValues = make([]BasicTypes, len(t.BasicTypesValues))
+		CloneBasicTypesSlice(c.BasicTypesValues, t.BasicTypesValues)
+	}
+	if t.ConstantsValues != nil {
+		c.ConstantsValues = make([]Constants, len(t.ConstantsValues))
+		CloneConstantsSlice(c.ConstantsValues, t.ConstantsValues)
+	}
+	if t.DefaultsValues != nil {
+		c.DefaultsValues = make([]Defaults, len(t.DefaultsValues))
+		CloneDefaultsSlice(c.DefaultsValues, t.DefaultsValues)
+	}
+	if t.BoolValuesDefault != nil {
+		c.BoolValuesDefault = make([]bool, len(t.BoolValuesDefault))
+		copy(c.BoolValuesDefault, t.BoolValuesDefault)
+	}
+	if t.ByteValuesDefault != nil {
+		c.ByteValuesDefault = make([]byte, len(t.ByteValuesDefault))
+		copy(c.ByteValuesDefault, t.ByteValuesDefault)
+	}
+	if t.CharValuesDefault != nil {
+		c.CharValuesDefault = make([]byte, len(t.CharValuesDefault))
+		copy(c.CharValuesDefault, t.CharValuesDefault)
+	}
+	if t.Float32ValuesDefault != nil {
+		c.Float32ValuesDefault = make([]float32, len(t.Float32ValuesDefault))
+		copy(c.Float32ValuesDefault, t.Float32ValuesDefault)
+	}
+	if t.Float64ValuesDefault != nil {
+		c.Float64ValuesDefault = make([]float64, len(t.Float64ValuesDefault))
+		copy(c.Float64ValuesDefault, t.Float64ValuesDefault)
+	}
+	if t.Int8ValuesDefault != nil {
+		c.Int8ValuesDefault = make([]int8, len(t.Int8ValuesDefault))
+		copy(c.Int8ValuesDefault, t.Int8ValuesDefault)
+	}
+	if t.Uint8ValuesDefault != nil {
+		c.Uint8ValuesDefault = make([]uint8, len(t.Uint8ValuesDefault))
+		copy(c.Uint8ValuesDefault, t.Uint8ValuesDefault)
+	}
+	if t.Int16ValuesDefault != nil {
+		c.Int16ValuesDefault = make([]int16, len(t.Int16ValuesDefault))
+		copy(c.Int16ValuesDefault, t.Int16ValuesDefault)
+	}
+	if t.Uint16ValuesDefault != nil {
+		c.Uint16ValuesDefault = make([]uint16, len(t.Uint16ValuesDefault))
+		copy(c.Uint16ValuesDefault, t.Uint16ValuesDefault)
+	}
+	if t.Int32ValuesDefault != nil {
+		c.Int32ValuesDefault = make([]int32, len(t.Int32ValuesDefault))
+		copy(c.Int32ValuesDefault, t.Int32ValuesDefault)
+	}
+	if t.Uint32ValuesDefault != nil {
+		c.Uint32ValuesDefault = make([]uint32, len(t.Uint32ValuesDefault))
+		copy(c.Uint32ValuesDefault, t.Uint32ValuesDefault)
+	}
+	if t.Int64ValuesDefault != nil {
+		c.Int64ValuesDefault = make([]int64, len(t.Int64ValuesDefault))
+		copy(c.Int64ValuesDefault, t.Int64ValuesDefault)
+	}
+	if t.Uint64ValuesDefault != nil {
+		c.Uint64ValuesDefault = make([]uint64, len(t.Uint64ValuesDefault))
+		copy(c.Uint64ValuesDefault, t.Uint64ValuesDefault)
+	}
+	if t.StringValuesDefault != nil {
+		c.StringValuesDefault = make([]string, len(t.StringValuesDefault))
+		copy(c.StringValuesDefault, t.StringValuesDefault)
+	}
+	c.AlignmentCheck = t.AlignmentCheck
+	return c
+}
+
+func (t *BoundedSequences) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *BoundedSequences) SetDefaults() {
@@ -102,6 +231,14 @@ func (t *BoundedSequences) SetDefaults() {
 	t.Uint64ValuesDefault = []uint64{0,1,18446744073709551615}
 	t.StringValuesDefault = []string{"","max value","min value"}
 	
+}
+
+// CloneBoundedSequencesSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneBoundedSequencesSlice(dst, src []BoundedSequences) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

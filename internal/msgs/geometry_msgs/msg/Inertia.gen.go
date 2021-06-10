@@ -56,14 +56,34 @@ func NewInertia() *Inertia {
 	return &self
 }
 
-func (t *Inertia) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Inertia) Clone() *Inertia {
+	c := &Inertia{}
+	c.M = t.M
+	c.Com = *t.Com.Clone()
+	c.Ixx = t.Ixx
+	c.Ixy = t.Ixy
+	c.Ixz = t.Ixz
+	c.Iyy = t.Iyy
+	c.Iyz = t.Iyz
+	c.Izz = t.Izz
+	return c
+}
+
+func (t *Inertia) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Inertia) SetDefaults() {
 	t.Com.SetDefaults()
 	
+}
+
+// CloneInertiaSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneInertiaSlice(dst, src []Inertia) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

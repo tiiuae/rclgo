@@ -49,13 +49,26 @@ func NewAddTwoInts_Response() *AddTwoInts_Response {
 	return &self
 }
 
-func (t *AddTwoInts_Response) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *AddTwoInts_Response) Clone() *AddTwoInts_Response {
+	c := &AddTwoInts_Response{}
+	c.Sum = t.Sum
+	return c
+}
+
+func (t *AddTwoInts_Response) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *AddTwoInts_Response) SetDefaults() {
 	
+}
+
+// CloneAddTwoInts_ResponseSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneAddTwoInts_ResponseSlice(dst, src []AddTwoInts_Response) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

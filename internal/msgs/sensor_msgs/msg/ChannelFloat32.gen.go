@@ -51,13 +51,30 @@ func NewChannelFloat32() *ChannelFloat32 {
 	return &self
 }
 
-func (t *ChannelFloat32) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *ChannelFloat32) Clone() *ChannelFloat32 {
+	c := &ChannelFloat32{}
+	c.Name = t.Name
+	if t.Values != nil {
+		c.Values = make([]float32, len(t.Values))
+		copy(c.Values, t.Values)
+	}
+	return c
+}
+
+func (t *ChannelFloat32) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *ChannelFloat32) SetDefaults() {
 	
+}
+
+// CloneChannelFloat32Slice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneChannelFloat32Slice(dst, src []ChannelFloat32) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

@@ -56,15 +56,30 @@ func NewTimeReference() *TimeReference {
 	return &self
 }
 
-func (t *TimeReference) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *TimeReference) Clone() *TimeReference {
+	c := &TimeReference{}
+	c.Header = *t.Header.Clone()
+	c.TimeRef = *t.TimeRef.Clone()
+	c.Source = t.Source
+	return c
+}
+
+func (t *TimeReference) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *TimeReference) SetDefaults() {
 	t.Header.SetDefaults()
 	t.TimeRef.SetDefaults()
 	
+}
+
+// CloneTimeReferenceSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneTimeReferenceSlice(dst, src []TimeReference) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

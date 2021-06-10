@@ -53,13 +53,30 @@ func NewRegionOfInterest() *RegionOfInterest {
 	return &self
 }
 
-func (t *RegionOfInterest) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *RegionOfInterest) Clone() *RegionOfInterest {
+	c := &RegionOfInterest{}
+	c.XOffset = t.XOffset
+	c.YOffset = t.YOffset
+	c.Height = t.Height
+	c.Width = t.Width
+	c.DoRectify = t.DoRectify
+	return c
+}
+
+func (t *RegionOfInterest) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *RegionOfInterest) SetDefaults() {
 	
+}
+
+// CloneRegionOfInterestSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneRegionOfInterestSlice(dst, src []RegionOfInterest) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

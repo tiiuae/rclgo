@@ -48,13 +48,25 @@ func NewEmpty_Request() *Empty_Request {
 	return &self
 }
 
-func (t *Empty_Request) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Empty_Request) Clone() *Empty_Request {
+	c := &Empty_Request{}
+	return c
+}
+
+func (t *Empty_Request) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Empty_Request) SetDefaults() {
 	
+}
+
+// CloneEmpty_RequestSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneEmpty_RequestSlice(dst, src []Empty_Request) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

@@ -63,13 +63,39 @@ func NewBasicTypes_Request() *BasicTypes_Request {
 	return &self
 }
 
-func (t *BasicTypes_Request) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *BasicTypes_Request) Clone() *BasicTypes_Request {
+	c := &BasicTypes_Request{}
+	c.BoolValue = t.BoolValue
+	c.ByteValue = t.ByteValue
+	c.CharValue = t.CharValue
+	c.Float32Value = t.Float32Value
+	c.Float64Value = t.Float64Value
+	c.Int8Value = t.Int8Value
+	c.Uint8Value = t.Uint8Value
+	c.Int16Value = t.Int16Value
+	c.Uint16Value = t.Uint16Value
+	c.Int32Value = t.Int32Value
+	c.Uint32Value = t.Uint32Value
+	c.Int64Value = t.Int64Value
+	c.Uint64Value = t.Uint64Value
+	c.StringValue = t.StringValue
+	return c
+}
+
+func (t *BasicTypes_Request) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *BasicTypes_Request) SetDefaults() {
 	
+}
+
+// CloneBasicTypes_RequestSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneBasicTypes_RequestSlice(dst, src []BasicTypes_Request) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

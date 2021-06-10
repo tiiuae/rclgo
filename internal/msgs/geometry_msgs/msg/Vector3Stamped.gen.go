@@ -52,15 +52,29 @@ func NewVector3Stamped() *Vector3Stamped {
 	return &self
 }
 
-func (t *Vector3Stamped) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Vector3Stamped) Clone() *Vector3Stamped {
+	c := &Vector3Stamped{}
+	c.Header = *t.Header.Clone()
+	c.Vector = *t.Vector.Clone()
+	return c
+}
+
+func (t *Vector3Stamped) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Vector3Stamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Vector.SetDefaults()
 	
+}
+
+// CloneVector3StampedSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneVector3StampedSlice(dst, src []Vector3Stamped) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

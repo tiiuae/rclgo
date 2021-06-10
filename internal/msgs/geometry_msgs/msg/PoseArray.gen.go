@@ -52,14 +52,31 @@ func NewPoseArray() *PoseArray {
 	return &self
 }
 
-func (t *PoseArray) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *PoseArray) Clone() *PoseArray {
+	c := &PoseArray{}
+	c.Header = *t.Header.Clone()
+	if t.Poses != nil {
+		c.Poses = make([]Pose, len(t.Poses))
+		ClonePoseSlice(c.Poses, t.Poses)
+	}
+	return c
+}
+
+func (t *PoseArray) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *PoseArray) SetDefaults() {
 	t.Header.SetDefaults()
 	
+}
+
+// ClonePoseArraySlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func ClonePoseArraySlice(dst, src []PoseArray) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

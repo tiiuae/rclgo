@@ -64,15 +64,34 @@ func NewNavSatFix() *NavSatFix {
 	return &self
 }
 
-func (t *NavSatFix) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *NavSatFix) Clone() *NavSatFix {
+	c := &NavSatFix{}
+	c.Header = *t.Header.Clone()
+	c.Status = *t.Status.Clone()
+	c.Latitude = t.Latitude
+	c.Longitude = t.Longitude
+	c.Altitude = t.Altitude
+	c.PositionCovariance = t.PositionCovariance
+	c.PositionCovarianceType = t.PositionCovarianceType
+	return c
+}
+
+func (t *NavSatFix) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *NavSatFix) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Status.SetDefaults()
 	
+}
+
+// CloneNavSatFixSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneNavSatFixSlice(dst, src []NavSatFix) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

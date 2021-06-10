@@ -57,9 +57,40 @@ func NewMultiNested() *MultiNested {
 	return &self
 }
 
-func (t *MultiNested) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *MultiNested) Clone() *MultiNested {
+	c := &MultiNested{}
+	CloneArraysSlice(c.ArrayOfArrays[:], t.ArrayOfArrays[:])
+	CloneBoundedSequencesSlice(c.ArrayOfBoundedSequences[:], t.ArrayOfBoundedSequences[:])
+	CloneUnboundedSequencesSlice(c.ArrayOfUnboundedSequences[:], t.ArrayOfUnboundedSequences[:])
+	if t.BoundedSequenceOfArrays != nil {
+		c.BoundedSequenceOfArrays = make([]Arrays, len(t.BoundedSequenceOfArrays))
+		CloneArraysSlice(c.BoundedSequenceOfArrays, t.BoundedSequenceOfArrays)
+	}
+	if t.BoundedSequenceOfBoundedSequences != nil {
+		c.BoundedSequenceOfBoundedSequences = make([]BoundedSequences, len(t.BoundedSequenceOfBoundedSequences))
+		CloneBoundedSequencesSlice(c.BoundedSequenceOfBoundedSequences, t.BoundedSequenceOfBoundedSequences)
+	}
+	if t.BoundedSequenceOfUnboundedSequences != nil {
+		c.BoundedSequenceOfUnboundedSequences = make([]UnboundedSequences, len(t.BoundedSequenceOfUnboundedSequences))
+		CloneUnboundedSequencesSlice(c.BoundedSequenceOfUnboundedSequences, t.BoundedSequenceOfUnboundedSequences)
+	}
+	if t.UnboundedSequenceOfArrays != nil {
+		c.UnboundedSequenceOfArrays = make([]Arrays, len(t.UnboundedSequenceOfArrays))
+		CloneArraysSlice(c.UnboundedSequenceOfArrays, t.UnboundedSequenceOfArrays)
+	}
+	if t.UnboundedSequenceOfBoundedSequences != nil {
+		c.UnboundedSequenceOfBoundedSequences = make([]BoundedSequences, len(t.UnboundedSequenceOfBoundedSequences))
+		CloneBoundedSequencesSlice(c.UnboundedSequenceOfBoundedSequences, t.UnboundedSequenceOfBoundedSequences)
+	}
+	if t.UnboundedSequenceOfUnboundedSequences != nil {
+		c.UnboundedSequenceOfUnboundedSequences = make([]UnboundedSequences, len(t.UnboundedSequenceOfUnboundedSequences))
+		CloneUnboundedSequencesSlice(c.UnboundedSequenceOfUnboundedSequences, t.UnboundedSequenceOfUnboundedSequences)
+	}
+	return c
+}
+
+func (t *MultiNested) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *MultiNested) SetDefaults() {
@@ -73,6 +104,14 @@ func (t *MultiNested) SetDefaults() {
 	t.ArrayOfUnboundedSequences[1].SetDefaults()
 	t.ArrayOfUnboundedSequences[2].SetDefaults()
 	
+}
+
+// CloneMultiNestedSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneMultiNestedSlice(dst, src []MultiNested) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

@@ -55,14 +55,35 @@ func NewPointCloud() *PointCloud {
 	return &self
 }
 
-func (t *PointCloud) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *PointCloud) Clone() *PointCloud {
+	c := &PointCloud{}
+	c.Header = *t.Header.Clone()
+	if t.Points != nil {
+		c.Points = make([]geometry_msgs_msg.Point32, len(t.Points))
+		geometry_msgs_msg.ClonePoint32Slice(c.Points, t.Points)
+	}
+	if t.Channels != nil {
+		c.Channels = make([]ChannelFloat32, len(t.Channels))
+		CloneChannelFloat32Slice(c.Channels, t.Channels)
+	}
+	return c
+}
+
+func (t *PointCloud) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *PointCloud) SetDefaults() {
 	t.Header.SetDefaults()
 	
+}
+
+// ClonePointCloudSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func ClonePointCloudSlice(dst, src []PointCloud) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

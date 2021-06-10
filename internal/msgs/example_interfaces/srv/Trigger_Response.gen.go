@@ -51,13 +51,27 @@ func NewTrigger_Response() *Trigger_Response {
 	return &self
 }
 
-func (t *Trigger_Response) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Trigger_Response) Clone() *Trigger_Response {
+	c := &Trigger_Response{}
+	c.Success = t.Success
+	c.Message = t.Message
+	return c
+}
+
+func (t *Trigger_Response) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Trigger_Response) SetDefaults() {
 	
+}
+
+// CloneTrigger_ResponseSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneTrigger_ResponseSlice(dst, src []Trigger_Response) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

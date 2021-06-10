@@ -54,14 +54,35 @@ func NewJoy() *Joy {
 	return &self
 }
 
-func (t *Joy) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Joy) Clone() *Joy {
+	c := &Joy{}
+	c.Header = *t.Header.Clone()
+	if t.Axes != nil {
+		c.Axes = make([]float32, len(t.Axes))
+		copy(c.Axes, t.Axes)
+	}
+	if t.Buttons != nil {
+		c.Buttons = make([]int32, len(t.Buttons))
+		copy(c.Buttons, t.Buttons)
+	}
+	return c
+}
+
+func (t *Joy) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Joy) SetDefaults() {
 	t.Header.SetDefaults()
 	
+}
+
+// CloneJoySlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneJoySlice(dst, src []Joy) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

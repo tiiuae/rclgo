@@ -51,14 +51,31 @@ func NewFloat64MultiArray() *Float64MultiArray {
 	return &self
 }
 
-func (t *Float64MultiArray) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Float64MultiArray) Clone() *Float64MultiArray {
+	c := &Float64MultiArray{}
+	c.Layout = *t.Layout.Clone()
+	if t.Data != nil {
+		c.Data = make([]float64, len(t.Data))
+		copy(c.Data, t.Data)
+	}
+	return c
+}
+
+func (t *Float64MultiArray) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Float64MultiArray) SetDefaults() {
 	t.Layout.SetDefaults()
 	
+}
+
+// CloneFloat64MultiArraySlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneFloat64MultiArraySlice(dst, src []Float64MultiArray) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

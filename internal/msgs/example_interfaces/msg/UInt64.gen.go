@@ -49,13 +49,26 @@ func NewUInt64() *UInt64 {
 	return &self
 }
 
-func (t *UInt64) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *UInt64) Clone() *UInt64 {
+	c := &UInt64{}
+	c.Data = t.Data
+	return c
+}
+
+func (t *UInt64) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *UInt64) SetDefaults() {
 	
+}
+
+// CloneUInt64Slice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneUInt64Slice(dst, src []UInt64) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

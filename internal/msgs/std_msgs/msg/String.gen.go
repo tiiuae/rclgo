@@ -50,13 +50,26 @@ func NewString() *String {
 	return &self
 }
 
-func (t *String) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *String) Clone() *String {
+	c := &String{}
+	c.Data = t.Data
+	return c
+}
+
+func (t *String) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *String) SetDefaults() {
 	
+}
+
+// CloneStringSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneStringSlice(dst, src []String) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

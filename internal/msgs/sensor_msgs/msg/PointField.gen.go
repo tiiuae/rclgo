@@ -63,13 +63,29 @@ func NewPointField() *PointField {
 	return &self
 }
 
-func (t *PointField) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *PointField) Clone() *PointField {
+	c := &PointField{}
+	c.Name = t.Name
+	c.Offset = t.Offset
+	c.Datatype = t.Datatype
+	c.Count = t.Count
+	return c
+}
+
+func (t *PointField) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *PointField) SetDefaults() {
 	
+}
+
+// ClonePointFieldSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func ClonePointFieldSlice(dst, src []PointField) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

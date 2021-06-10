@@ -53,14 +53,29 @@ func NewFluidPressure() *FluidPressure {
 	return &self
 }
 
-func (t *FluidPressure) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *FluidPressure) Clone() *FluidPressure {
+	c := &FluidPressure{}
+	c.Header = *t.Header.Clone()
+	c.FluidPressure = t.FluidPressure
+	c.Variance = t.Variance
+	return c
+}
+
+func (t *FluidPressure) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *FluidPressure) SetDefaults() {
 	t.Header.SetDefaults()
 	
+}
+
+// CloneFluidPressureSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneFluidPressureSlice(dst, src []FluidPressure) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

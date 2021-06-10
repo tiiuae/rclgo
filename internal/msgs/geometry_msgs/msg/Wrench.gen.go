@@ -50,15 +50,29 @@ func NewWrench() *Wrench {
 	return &self
 }
 
-func (t *Wrench) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Wrench) Clone() *Wrench {
+	c := &Wrench{}
+	c.Force = *t.Force.Clone()
+	c.Torque = *t.Torque.Clone()
+	return c
+}
+
+func (t *Wrench) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Wrench) SetDefaults() {
 	t.Force.SetDefaults()
 	t.Torque.SetDefaults()
 	
+}
+
+// CloneWrenchSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneWrenchSlice(dst, src []Wrench) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

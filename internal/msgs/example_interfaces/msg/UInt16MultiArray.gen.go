@@ -51,14 +51,31 @@ func NewUInt16MultiArray() *UInt16MultiArray {
 	return &self
 }
 
-func (t *UInt16MultiArray) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *UInt16MultiArray) Clone() *UInt16MultiArray {
+	c := &UInt16MultiArray{}
+	c.Layout = *t.Layout.Clone()
+	if t.Data != nil {
+		c.Data = make([]uint16, len(t.Data))
+		copy(c.Data, t.Data)
+	}
+	return c
+}
+
+func (t *UInt16MultiArray) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *UInt16MultiArray) SetDefaults() {
 	t.Layout.SetDefaults()
 	
+}
+
+// CloneUInt16MultiArraySlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneUInt16MultiArraySlice(dst, src []UInt16MultiArray) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

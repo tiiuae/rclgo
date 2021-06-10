@@ -52,13 +52,30 @@ func NewMultiArrayLayout() *MultiArrayLayout {
 	return &self
 }
 
-func (t *MultiArrayLayout) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *MultiArrayLayout) Clone() *MultiArrayLayout {
+	c := &MultiArrayLayout{}
+	if t.Dim != nil {
+		c.Dim = make([]std_msgs_msg.MultiArrayDimension, len(t.Dim))
+		std_msgs_msg.CloneMultiArrayDimensionSlice(c.Dim, t.Dim)
+	}
+	c.DataOffset = t.DataOffset
+	return c
+}
+
+func (t *MultiArrayLayout) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *MultiArrayLayout) SetDefaults() {
 	
+}
+
+// CloneMultiArrayLayoutSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneMultiArrayLayoutSlice(dst, src []MultiArrayLayout) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

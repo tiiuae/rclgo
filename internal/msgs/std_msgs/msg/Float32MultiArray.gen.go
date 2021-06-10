@@ -51,14 +51,31 @@ func NewFloat32MultiArray() *Float32MultiArray {
 	return &self
 }
 
-func (t *Float32MultiArray) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Float32MultiArray) Clone() *Float32MultiArray {
+	c := &Float32MultiArray{}
+	c.Layout = *t.Layout.Clone()
+	if t.Data != nil {
+		c.Data = make([]float32, len(t.Data))
+		copy(c.Data, t.Data)
+	}
+	return c
+}
+
+func (t *Float32MultiArray) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Float32MultiArray) SetDefaults() {
 	t.Layout.SetDefaults()
 	
+}
+
+// CloneFloat32MultiArraySlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneFloat32MultiArraySlice(dst, src []Float32MultiArray) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

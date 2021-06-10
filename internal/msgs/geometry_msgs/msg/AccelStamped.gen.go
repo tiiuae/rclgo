@@ -52,15 +52,29 @@ func NewAccelStamped() *AccelStamped {
 	return &self
 }
 
-func (t *AccelStamped) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *AccelStamped) Clone() *AccelStamped {
+	c := &AccelStamped{}
+	c.Header = *t.Header.Clone()
+	c.Accel = *t.Accel.Clone()
+	return c
+}
+
+func (t *AccelStamped) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *AccelStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Accel.SetDefaults()
 	
+}
+
+// CloneAccelStampedSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneAccelStampedSlice(dst, src []AccelStamped) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

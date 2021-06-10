@@ -52,13 +52,28 @@ func NewMultiArrayDimension() *MultiArrayDimension {
 	return &self
 }
 
-func (t *MultiArrayDimension) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *MultiArrayDimension) Clone() *MultiArrayDimension {
+	c := &MultiArrayDimension{}
+	c.Label = t.Label
+	c.Size = t.Size
+	c.Stride = t.Stride
+	return c
+}
+
+func (t *MultiArrayDimension) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *MultiArrayDimension) SetDefaults() {
 	
+}
+
+// CloneMultiArrayDimensionSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneMultiArrayDimensionSlice(dst, src []MultiArrayDimension) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

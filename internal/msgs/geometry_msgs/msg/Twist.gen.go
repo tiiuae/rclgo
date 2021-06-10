@@ -50,15 +50,29 @@ func NewTwist() *Twist {
 	return &self
 }
 
-func (t *Twist) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Twist) Clone() *Twist {
+	c := &Twist{}
+	c.Linear = *t.Linear.Clone()
+	c.Angular = *t.Angular.Clone()
+	return c
+}
+
+func (t *Twist) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Twist) SetDefaults() {
 	t.Linear.SetDefaults()
 	t.Angular.SetDefaults()
 	
+}
+
+// CloneTwistSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneTwistSlice(dst, src []Twist) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

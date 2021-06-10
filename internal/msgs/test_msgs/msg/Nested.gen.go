@@ -49,14 +49,27 @@ func NewNested() *Nested {
 	return &self
 }
 
-func (t *Nested) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Nested) Clone() *Nested {
+	c := &Nested{}
+	c.BasicTypesValue = *t.BasicTypesValue.Clone()
+	return c
+}
+
+func (t *Nested) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Nested) SetDefaults() {
 	t.BasicTypesValue.SetDefaults()
 	
+}
+
+// CloneNestedSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneNestedSlice(dst, src []Nested) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

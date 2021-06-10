@@ -51,13 +51,28 @@ func NewVector3() *Vector3 {
 	return &self
 }
 
-func (t *Vector3) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Vector3) Clone() *Vector3 {
+	c := &Vector3{}
+	c.X = t.X
+	c.Y = t.Y
+	c.Z = t.Z
+	return c
+}
+
+func (t *Vector3) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Vector3) SetDefaults() {
 	
+}
+
+// CloneVector3Slice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneVector3Slice(dst, src []Vector3) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

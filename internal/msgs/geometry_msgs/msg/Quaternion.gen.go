@@ -52,9 +52,17 @@ func NewQuaternion() *Quaternion {
 	return &self
 }
 
-func (t *Quaternion) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Quaternion) Clone() *Quaternion {
+	c := &Quaternion{}
+	c.X = t.X
+	c.Y = t.Y
+	c.Z = t.Z
+	c.W = t.W
+	return c
+}
+
+func (t *Quaternion) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Quaternion) SetDefaults() {
@@ -63,6 +71,14 @@ func (t *Quaternion) SetDefaults() {
 	t.Z = 0
 	t.W = 1
 	
+}
+
+// CloneQuaternionSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneQuaternionSlice(dst, src []Quaternion) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

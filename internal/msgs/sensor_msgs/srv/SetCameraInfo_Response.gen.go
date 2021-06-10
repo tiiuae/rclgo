@@ -51,13 +51,27 @@ func NewSetCameraInfo_Response() *SetCameraInfo_Response {
 	return &self
 }
 
-func (t *SetCameraInfo_Response) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *SetCameraInfo_Response) Clone() *SetCameraInfo_Response {
+	c := &SetCameraInfo_Response{}
+	c.Success = t.Success
+	c.StatusMessage = t.StatusMessage
+	return c
+}
+
+func (t *SetCameraInfo_Response) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *SetCameraInfo_Response) SetDefaults() {
 	
+}
+
+// CloneSetCameraInfo_ResponseSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneSetCameraInfo_ResponseSlice(dst, src []SetCameraInfo_Response) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

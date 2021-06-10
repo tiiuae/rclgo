@@ -60,14 +60,42 @@ func NewMultiEchoLaserScan() *MultiEchoLaserScan {
 	return &self
 }
 
-func (t *MultiEchoLaserScan) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *MultiEchoLaserScan) Clone() *MultiEchoLaserScan {
+	c := &MultiEchoLaserScan{}
+	c.Header = *t.Header.Clone()
+	c.AngleMin = t.AngleMin
+	c.AngleMax = t.AngleMax
+	c.AngleIncrement = t.AngleIncrement
+	c.TimeIncrement = t.TimeIncrement
+	c.ScanTime = t.ScanTime
+	c.RangeMin = t.RangeMin
+	c.RangeMax = t.RangeMax
+	if t.Ranges != nil {
+		c.Ranges = make([]LaserEcho, len(t.Ranges))
+		CloneLaserEchoSlice(c.Ranges, t.Ranges)
+	}
+	if t.Intensities != nil {
+		c.Intensities = make([]LaserEcho, len(t.Intensities))
+		CloneLaserEchoSlice(c.Intensities, t.Intensities)
+	}
+	return c
+}
+
+func (t *MultiEchoLaserScan) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *MultiEchoLaserScan) SetDefaults() {
 	t.Header.SetDefaults()
 	
+}
+
+// CloneMultiEchoLaserScanSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneMultiEchoLaserScanSlice(dst, src []MultiEchoLaserScan) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

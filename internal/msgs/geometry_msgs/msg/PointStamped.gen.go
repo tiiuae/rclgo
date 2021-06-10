@@ -52,15 +52,29 @@ func NewPointStamped() *PointStamped {
 	return &self
 }
 
-func (t *PointStamped) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *PointStamped) Clone() *PointStamped {
+	c := &PointStamped{}
+	c.Header = *t.Header.Clone()
+	c.Point = *t.Point.Clone()
+	return c
+}
+
+func (t *PointStamped) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *PointStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Point.SetDefaults()
 	
+}
+
+// ClonePointStampedSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func ClonePointStampedSlice(dst, src []PointStamped) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

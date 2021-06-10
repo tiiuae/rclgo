@@ -60,9 +60,20 @@ func NewImu() *Imu {
 	return &self
 }
 
-func (t *Imu) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Imu) Clone() *Imu {
+	c := &Imu{}
+	c.Header = *t.Header.Clone()
+	c.Orientation = *t.Orientation.Clone()
+	c.OrientationCovariance = t.OrientationCovariance
+	c.AngularVelocity = *t.AngularVelocity.Clone()
+	c.AngularVelocityCovariance = t.AngularVelocityCovariance
+	c.LinearAcceleration = *t.LinearAcceleration.Clone()
+	c.LinearAccelerationCovariance = t.LinearAccelerationCovariance
+	return c
+}
+
+func (t *Imu) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Imu) SetDefaults() {
@@ -71,6 +82,14 @@ func (t *Imu) SetDefaults() {
 	t.AngularVelocity.SetDefaults()
 	t.LinearAcceleration.SetDefaults()
 	
+}
+
+// CloneImuSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneImuSlice(dst, src []Imu) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

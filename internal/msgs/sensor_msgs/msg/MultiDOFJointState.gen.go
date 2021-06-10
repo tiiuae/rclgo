@@ -58,14 +58,43 @@ func NewMultiDOFJointState() *MultiDOFJointState {
 	return &self
 }
 
-func (t *MultiDOFJointState) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *MultiDOFJointState) Clone() *MultiDOFJointState {
+	c := &MultiDOFJointState{}
+	c.Header = *t.Header.Clone()
+	if t.JointNames != nil {
+		c.JointNames = make([]string, len(t.JointNames))
+		copy(c.JointNames, t.JointNames)
+	}
+	if t.Transforms != nil {
+		c.Transforms = make([]geometry_msgs_msg.Transform, len(t.Transforms))
+		geometry_msgs_msg.CloneTransformSlice(c.Transforms, t.Transforms)
+	}
+	if t.Twist != nil {
+		c.Twist = make([]geometry_msgs_msg.Twist, len(t.Twist))
+		geometry_msgs_msg.CloneTwistSlice(c.Twist, t.Twist)
+	}
+	if t.Wrench != nil {
+		c.Wrench = make([]geometry_msgs_msg.Wrench, len(t.Wrench))
+		geometry_msgs_msg.CloneWrenchSlice(c.Wrench, t.Wrench)
+	}
+	return c
+}
+
+func (t *MultiDOFJointState) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *MultiDOFJointState) SetDefaults() {
 	t.Header.SetDefaults()
 	
+}
+
+// CloneMultiDOFJointStateSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneMultiDOFJointStateSlice(dst, src []MultiDOFJointState) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

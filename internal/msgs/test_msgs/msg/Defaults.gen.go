@@ -61,9 +61,26 @@ func NewDefaults() *Defaults {
 	return &self
 }
 
-func (t *Defaults) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Defaults) Clone() *Defaults {
+	c := &Defaults{}
+	c.BoolValue = t.BoolValue
+	c.ByteValue = t.ByteValue
+	c.CharValue = t.CharValue
+	c.Float32Value = t.Float32Value
+	c.Float64Value = t.Float64Value
+	c.Int8Value = t.Int8Value
+	c.Uint8Value = t.Uint8Value
+	c.Int16Value = t.Int16Value
+	c.Uint16Value = t.Uint16Value
+	c.Int32Value = t.Int32Value
+	c.Uint32Value = t.Uint32Value
+	c.Int64Value = t.Int64Value
+	c.Uint64Value = t.Uint64Value
+	return c
+}
+
+func (t *Defaults) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Defaults) SetDefaults() {
@@ -81,6 +98,14 @@ func (t *Defaults) SetDefaults() {
 	t.Int64Value = -40000000
 	t.Uint64Value = 50000000
 	
+}
+
+// CloneDefaultsSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneDefaultsSlice(dst, src []Defaults) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

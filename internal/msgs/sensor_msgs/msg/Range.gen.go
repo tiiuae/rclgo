@@ -60,14 +60,32 @@ func NewRange() *Range {
 	return &self
 }
 
-func (t *Range) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Range) Clone() *Range {
+	c := &Range{}
+	c.Header = *t.Header.Clone()
+	c.RadiationType = t.RadiationType
+	c.FieldOfView = t.FieldOfView
+	c.MinRange = t.MinRange
+	c.MaxRange = t.MaxRange
+	c.Range = t.Range
+	return c
+}
+
+func (t *Range) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Range) SetDefaults() {
 	t.Header.SetDefaults()
 	
+}
+
+// CloneRangeSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneRangeSlice(dst, src []Range) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

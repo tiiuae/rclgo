@@ -50,15 +50,29 @@ func NewAccel() *Accel {
 	return &self
 }
 
-func (t *Accel) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Accel) Clone() *Accel {
+	c := &Accel{}
+	c.Linear = *t.Linear.Clone()
+	c.Angular = *t.Angular.Clone()
+	return c
+}
+
+func (t *Accel) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Accel) SetDefaults() {
 	t.Linear.SetDefaults()
 	t.Angular.SetDefaults()
 	
+}
+
+// CloneAccelSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneAccelSlice(dst, src []Accel) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

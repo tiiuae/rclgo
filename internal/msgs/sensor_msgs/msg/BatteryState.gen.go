@@ -90,14 +90,48 @@ func NewBatteryState() *BatteryState {
 	return &self
 }
 
-func (t *BatteryState) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *BatteryState) Clone() *BatteryState {
+	c := &BatteryState{}
+	c.Header = *t.Header.Clone()
+	c.Voltage = t.Voltage
+	c.Temperature = t.Temperature
+	c.Current = t.Current
+	c.Charge = t.Charge
+	c.Capacity = t.Capacity
+	c.DesignCapacity = t.DesignCapacity
+	c.Percentage = t.Percentage
+	c.PowerSupplyStatus = t.PowerSupplyStatus
+	c.PowerSupplyHealth = t.PowerSupplyHealth
+	c.PowerSupplyTechnology = t.PowerSupplyTechnology
+	c.Present = t.Present
+	if t.CellVoltage != nil {
+		c.CellVoltage = make([]float32, len(t.CellVoltage))
+		copy(c.CellVoltage, t.CellVoltage)
+	}
+	if t.CellTemperature != nil {
+		c.CellTemperature = make([]float32, len(t.CellTemperature))
+		copy(c.CellTemperature, t.CellTemperature)
+	}
+	c.Location = t.Location
+	c.SerialNumber = t.SerialNumber
+	return c
+}
+
+func (t *BatteryState) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *BatteryState) SetDefaults() {
 	t.Header.SetDefaults()
 	
+}
+
+// CloneBatteryStateSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneBatteryStateSlice(dst, src []BatteryState) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

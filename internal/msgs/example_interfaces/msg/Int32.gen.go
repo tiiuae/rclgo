@@ -49,13 +49,26 @@ func NewInt32() *Int32 {
 	return &self
 }
 
-func (t *Int32) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Int32) Clone() *Int32 {
+	c := &Int32{}
+	c.Data = t.Data
+	return c
+}
+
+func (t *Int32) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Int32) SetDefaults() {
 	
+}
+
+// CloneInt32Slice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneInt32Slice(dst, src []Int32) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

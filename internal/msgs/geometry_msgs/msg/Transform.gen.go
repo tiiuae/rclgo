@@ -50,15 +50,29 @@ func NewTransform() *Transform {
 	return &self
 }
 
-func (t *Transform) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Transform) Clone() *Transform {
+	c := &Transform{}
+	c.Translation = *t.Translation.Clone()
+	c.Rotation = *t.Rotation.Clone()
+	return c
+}
+
+func (t *Transform) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Transform) SetDefaults() {
 	t.Translation.SetDefaults()
 	t.Rotation.SetDefaults()
 	
+}
+
+// CloneTransformSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneTransformSlice(dst, src []Transform) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

@@ -50,13 +50,29 @@ func NewLaserEcho() *LaserEcho {
 	return &self
 }
 
-func (t *LaserEcho) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *LaserEcho) Clone() *LaserEcho {
+	c := &LaserEcho{}
+	if t.Echoes != nil {
+		c.Echoes = make([]float32, len(t.Echoes))
+		copy(c.Echoes, t.Echoes)
+	}
+	return c
+}
+
+func (t *LaserEcho) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *LaserEcho) SetDefaults() {
 	
+}
+
+// CloneLaserEchoSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneLaserEchoSlice(dst, src []LaserEcho) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

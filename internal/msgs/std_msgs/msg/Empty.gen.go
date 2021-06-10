@@ -48,13 +48,25 @@ func NewEmpty() *Empty {
 	return &self
 }
 
-func (t *Empty) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Empty) Clone() *Empty {
+	c := &Empty{}
+	return c
+}
+
+func (t *Empty) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Empty) SetDefaults() {
 	
+}
+
+// CloneEmptySlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneEmptySlice(dst, src []Empty) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

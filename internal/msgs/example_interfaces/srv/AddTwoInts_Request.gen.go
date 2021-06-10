@@ -50,13 +50,27 @@ func NewAddTwoInts_Request() *AddTwoInts_Request {
 	return &self
 }
 
-func (t *AddTwoInts_Request) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *AddTwoInts_Request) Clone() *AddTwoInts_Request {
+	c := &AddTwoInts_Request{}
+	c.A = t.A
+	c.B = t.B
+	return c
+}
+
+func (t *AddTwoInts_Request) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *AddTwoInts_Request) SetDefaults() {
 	
+}
+
+// CloneAddTwoInts_RequestSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneAddTwoInts_RequestSlice(dst, src []AddTwoInts_Request) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

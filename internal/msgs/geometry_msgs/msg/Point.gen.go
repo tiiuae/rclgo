@@ -51,13 +51,28 @@ func NewPoint() *Point {
 	return &self
 }
 
-func (t *Point) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Point) Clone() *Point {
+	c := &Point{}
+	c.X = t.X
+	c.Y = t.Y
+	c.Z = t.Z
+	return c
+}
+
+func (t *Point) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Point) SetDefaults() {
 	
+}
+
+// ClonePointSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func ClonePointSlice(dst, src []Point) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

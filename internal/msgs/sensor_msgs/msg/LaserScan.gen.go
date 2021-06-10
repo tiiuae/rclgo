@@ -61,14 +61,42 @@ func NewLaserScan() *LaserScan {
 	return &self
 }
 
-func (t *LaserScan) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *LaserScan) Clone() *LaserScan {
+	c := &LaserScan{}
+	c.Header = *t.Header.Clone()
+	c.AngleMin = t.AngleMin
+	c.AngleMax = t.AngleMax
+	c.AngleIncrement = t.AngleIncrement
+	c.TimeIncrement = t.TimeIncrement
+	c.ScanTime = t.ScanTime
+	c.RangeMin = t.RangeMin
+	c.RangeMax = t.RangeMax
+	if t.Ranges != nil {
+		c.Ranges = make([]float32, len(t.Ranges))
+		copy(c.Ranges, t.Ranges)
+	}
+	if t.Intensities != nil {
+		c.Intensities = make([]float32, len(t.Intensities))
+		copy(c.Intensities, t.Intensities)
+	}
+	return c
+}
+
+func (t *LaserScan) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *LaserScan) SetDefaults() {
 	t.Header.SetDefaults()
 	
+}
+
+// CloneLaserScanSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneLaserScanSlice(dst, src []LaserScan) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

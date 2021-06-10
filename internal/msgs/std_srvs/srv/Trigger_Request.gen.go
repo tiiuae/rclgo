@@ -48,13 +48,25 @@ func NewTrigger_Request() *Trigger_Request {
 	return &self
 }
 
-func (t *Trigger_Request) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Trigger_Request) Clone() *Trigger_Request {
+	c := &Trigger_Request{}
+	return c
+}
+
+func (t *Trigger_Request) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Trigger_Request) SetDefaults() {
 	
+}
+
+// CloneTrigger_RequestSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneTrigger_RequestSlice(dst, src []Trigger_Request) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

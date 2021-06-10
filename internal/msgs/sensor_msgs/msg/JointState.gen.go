@@ -56,14 +56,43 @@ func NewJointState() *JointState {
 	return &self
 }
 
-func (t *JointState) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *JointState) Clone() *JointState {
+	c := &JointState{}
+	c.Header = *t.Header.Clone()
+	if t.Name != nil {
+		c.Name = make([]string, len(t.Name))
+		copy(c.Name, t.Name)
+	}
+	if t.Position != nil {
+		c.Position = make([]float64, len(t.Position))
+		copy(c.Position, t.Position)
+	}
+	if t.Velocity != nil {
+		c.Velocity = make([]float64, len(t.Velocity))
+		copy(c.Velocity, t.Velocity)
+	}
+	if t.Effort != nil {
+		c.Effort = make([]float64, len(t.Effort))
+		copy(c.Effort, t.Effort)
+	}
+	return c
+}
+
+func (t *JointState) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *JointState) SetDefaults() {
 	t.Header.SetDefaults()
 	
+}
+
+// CloneJointStateSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneJointStateSlice(dst, src []JointState) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

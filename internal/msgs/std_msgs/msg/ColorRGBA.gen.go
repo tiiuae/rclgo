@@ -52,13 +52,29 @@ func NewColorRGBA() *ColorRGBA {
 	return &self
 }
 
-func (t *ColorRGBA) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *ColorRGBA) Clone() *ColorRGBA {
+	c := &ColorRGBA{}
+	c.R = t.R
+	c.G = t.G
+	c.B = t.B
+	c.A = t.A
+	return c
+}
+
+func (t *ColorRGBA) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *ColorRGBA) SetDefaults() {
 	
+}
+
+// CloneColorRGBASlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneColorRGBASlice(dst, src []ColorRGBA) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

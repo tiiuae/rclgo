@@ -58,14 +58,36 @@ func NewImage() *Image {
 	return &self
 }
 
-func (t *Image) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Image) Clone() *Image {
+	c := &Image{}
+	c.Header = *t.Header.Clone()
+	c.Height = t.Height
+	c.Width = t.Width
+	c.Encoding = t.Encoding
+	c.IsBigendian = t.IsBigendian
+	c.Step = t.Step
+	if t.Data != nil {
+		c.Data = make([]uint8, len(t.Data))
+		copy(c.Data, t.Data)
+	}
+	return c
+}
+
+func (t *Image) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Image) SetDefaults() {
 	t.Header.SetDefaults()
 	
+}
+
+// CloneImageSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneImageSlice(dst, src []Image) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

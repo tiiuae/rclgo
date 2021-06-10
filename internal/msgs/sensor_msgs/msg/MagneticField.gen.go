@@ -56,15 +56,30 @@ func NewMagneticField() *MagneticField {
 	return &self
 }
 
-func (t *MagneticField) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *MagneticField) Clone() *MagneticField {
+	c := &MagneticField{}
+	c.Header = *t.Header.Clone()
+	c.MagneticField = *t.MagneticField.Clone()
+	c.MagneticFieldCovariance = t.MagneticFieldCovariance
+	return c
+}
+
+func (t *MagneticField) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *MagneticField) SetDefaults() {
 	t.Header.SetDefaults()
 	t.MagneticField.SetDefaults()
 	
+}
+
+// CloneMagneticFieldSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneMagneticFieldSlice(dst, src []MagneticField) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

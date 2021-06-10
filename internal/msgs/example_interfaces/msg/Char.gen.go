@@ -49,13 +49,26 @@ func NewChar() *Char {
 	return &self
 }
 
-func (t *Char) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Char) Clone() *Char {
+	c := &Char{}
+	c.Data = t.Data
+	return c
+}
+
+func (t *Char) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Char) SetDefaults() {
 	
+}
+
+// CloneCharSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneCharSlice(dst, src []Char) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

@@ -49,13 +49,26 @@ func NewSetBool_Request() *SetBool_Request {
 	return &self
 }
 
-func (t *SetBool_Request) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *SetBool_Request) Clone() *SetBool_Request {
+	c := &SetBool_Request{}
+	c.Data = t.Data
+	return c
+}
+
+func (t *SetBool_Request) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *SetBool_Request) SetDefaults() {
 	
+}
+
+// CloneSetBool_RequestSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneSetBool_RequestSlice(dst, src []SetBool_Request) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

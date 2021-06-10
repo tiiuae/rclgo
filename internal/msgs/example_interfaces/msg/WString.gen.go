@@ -50,13 +50,26 @@ func NewWString() *WString {
 	return &self
 }
 
-func (t *WString) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *WString) Clone() *WString {
+	c := &WString{}
+	c.Data = t.Data
+	return c
+}
+
+func (t *WString) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *WString) SetDefaults() {
 	
+}
+
+// CloneWStringSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneWStringSlice(dst, src []WString) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

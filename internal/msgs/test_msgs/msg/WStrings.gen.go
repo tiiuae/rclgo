@@ -56,9 +56,26 @@ func NewWStrings() *WStrings {
 	return &self
 }
 
-func (t *WStrings) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *WStrings) Clone() *WStrings {
+	c := &WStrings{}
+	c.WstringValue = t.WstringValue
+	c.WstringValueDefault1 = t.WstringValueDefault1
+	c.WstringValueDefault2 = t.WstringValueDefault2
+	c.WstringValueDefault3 = t.WstringValueDefault3
+	c.ArrayOfWstrings = t.ArrayOfWstrings
+	if t.BoundedSequenceOfWstrings != nil {
+		c.BoundedSequenceOfWstrings = make([]string, len(t.BoundedSequenceOfWstrings))
+		copy(c.BoundedSequenceOfWstrings, t.BoundedSequenceOfWstrings)
+	}
+	if t.UnboundedSequenceOfWstrings != nil {
+		c.UnboundedSequenceOfWstrings = make([]string, len(t.UnboundedSequenceOfWstrings))
+		copy(c.UnboundedSequenceOfWstrings, t.UnboundedSequenceOfWstrings)
+	}
+	return c
+}
+
+func (t *WStrings) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *WStrings) SetDefaults() {
@@ -66,6 +83,14 @@ func (t *WStrings) SetDefaults() {
 	t.WstringValueDefault2 = "Hellö wörld!"
 	t.WstringValueDefault3 = "ハローワールド"
 	
+}
+
+// CloneWStringsSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneWStringsSlice(dst, src []WStrings) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

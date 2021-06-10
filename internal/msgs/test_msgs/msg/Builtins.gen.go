@@ -52,15 +52,29 @@ func NewBuiltins() *Builtins {
 	return &self
 }
 
-func (t *Builtins) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Builtins) Clone() *Builtins {
+	c := &Builtins{}
+	c.DurationValue = *t.DurationValue.Clone()
+	c.TimeValue = *t.TimeValue.Clone()
+	return c
+}
+
+func (t *Builtins) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Builtins) SetDefaults() {
 	t.DurationValue.SetDefaults()
 	t.TimeValue.SetDefaults()
 	
+}
+
+// CloneBuiltinsSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneBuiltinsSlice(dst, src []Builtins) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

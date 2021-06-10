@@ -60,14 +60,41 @@ func NewPointCloud2() *PointCloud2 {
 	return &self
 }
 
-func (t *PointCloud2) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *PointCloud2) Clone() *PointCloud2 {
+	c := &PointCloud2{}
+	c.Header = *t.Header.Clone()
+	c.Height = t.Height
+	c.Width = t.Width
+	if t.Fields != nil {
+		c.Fields = make([]PointField, len(t.Fields))
+		ClonePointFieldSlice(c.Fields, t.Fields)
+	}
+	c.IsBigendian = t.IsBigendian
+	c.PointStep = t.PointStep
+	c.RowStep = t.RowStep
+	if t.Data != nil {
+		c.Data = make([]uint8, len(t.Data))
+		copy(c.Data, t.Data)
+	}
+	c.IsDense = t.IsDense
+	return c
+}
+
+func (t *PointCloud2) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *PointCloud2) SetDefaults() {
 	t.Header.SetDefaults()
 	
+}
+
+// ClonePointCloud2Slice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func ClonePointCloud2Slice(dst, src []PointCloud2) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

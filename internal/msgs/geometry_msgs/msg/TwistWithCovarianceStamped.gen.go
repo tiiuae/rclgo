@@ -52,15 +52,29 @@ func NewTwistWithCovarianceStamped() *TwistWithCovarianceStamped {
 	return &self
 }
 
-func (t *TwistWithCovarianceStamped) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *TwistWithCovarianceStamped) Clone() *TwistWithCovarianceStamped {
+	c := &TwistWithCovarianceStamped{}
+	c.Header = *t.Header.Clone()
+	c.Twist = *t.Twist.Clone()
+	return c
+}
+
+func (t *TwistWithCovarianceStamped) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *TwistWithCovarianceStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Twist.SetDefaults()
 	
+}
+
+// CloneTwistWithCovarianceStampedSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneTwistWithCovarianceStampedSlice(dst, src []TwistWithCovarianceStamped) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

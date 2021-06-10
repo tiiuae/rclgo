@@ -52,15 +52,29 @@ func NewPoseStamped() *PoseStamped {
 	return &self
 }
 
-func (t *PoseStamped) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *PoseStamped) Clone() *PoseStamped {
+	c := &PoseStamped{}
+	c.Header = *t.Header.Clone()
+	c.Pose = *t.Pose.Clone()
+	return c
+}
+
+func (t *PoseStamped) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *PoseStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Pose.SetDefaults()
 	
+}
+
+// ClonePoseStampedSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func ClonePoseStampedSlice(dst, src []PoseStamped) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

@@ -49,13 +49,26 @@ func NewFloat64() *Float64 {
 	return &self
 }
 
-func (t *Float64) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Float64) Clone() *Float64 {
+	c := &Float64{}
+	c.Data = t.Data
+	return c
+}
+
+func (t *Float64) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Float64) SetDefaults() {
 	
+}
+
+// CloneFloat64Slice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneFloat64Slice(dst, src []Float64) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

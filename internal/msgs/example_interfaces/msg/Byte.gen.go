@@ -49,13 +49,26 @@ func NewByte() *Byte {
 	return &self
 }
 
-func (t *Byte) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Byte) Clone() *Byte {
+	c := &Byte{}
+	c.Data = t.Data
+	return c
+}
+
+func (t *Byte) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Byte) SetDefaults() {
 	
+}
+
+// CloneByteSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneByteSlice(dst, src []Byte) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

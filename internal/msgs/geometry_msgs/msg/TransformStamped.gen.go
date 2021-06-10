@@ -54,15 +54,30 @@ func NewTransformStamped() *TransformStamped {
 	return &self
 }
 
-func (t *TransformStamped) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *TransformStamped) Clone() *TransformStamped {
+	c := &TransformStamped{}
+	c.Header = *t.Header.Clone()
+	c.ChildFrameId = t.ChildFrameId
+	c.Transform = *t.Transform.Clone()
+	return c
+}
+
+func (t *TransformStamped) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *TransformStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Transform.SetDefaults()
 	
+}
+
+// CloneTransformStampedSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneTransformStampedSlice(dst, src []TransformStamped) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

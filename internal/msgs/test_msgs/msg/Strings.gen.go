@@ -64,9 +64,25 @@ func NewStrings() *Strings {
 	return &self
 }
 
-func (t *Strings) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Strings) Clone() *Strings {
+	c := &Strings{}
+	c.StringValue = t.StringValue
+	c.StringValueDefault1 = t.StringValueDefault1
+	c.StringValueDefault2 = t.StringValueDefault2
+	c.StringValueDefault3 = t.StringValueDefault3
+	c.StringValueDefault4 = t.StringValueDefault4
+	c.StringValueDefault5 = t.StringValueDefault5
+	c.BoundedStringValue = t.BoundedStringValue
+	c.BoundedStringValueDefault1 = t.BoundedStringValueDefault1
+	c.BoundedStringValueDefault2 = t.BoundedStringValueDefault2
+	c.BoundedStringValueDefault3 = t.BoundedStringValueDefault3
+	c.BoundedStringValueDefault4 = t.BoundedStringValueDefault4
+	c.BoundedStringValueDefault5 = t.BoundedStringValueDefault5
+	return c
+}
+
+func (t *Strings) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Strings) SetDefaults() {
@@ -81,6 +97,14 @@ func (t *Strings) SetDefaults() {
 	t.BoundedStringValueDefault4 = "Hello'world!"
 	t.BoundedStringValueDefault5 = "Hello\"world!"
 	
+}
+
+// CloneStringsSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneStringsSlice(dst, src []Strings) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

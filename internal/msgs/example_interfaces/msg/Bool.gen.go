@@ -49,13 +49,26 @@ func NewBool() *Bool {
 	return &self
 }
 
-func (t *Bool) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Bool) Clone() *Bool {
+	c := &Bool{}
+	c.Data = t.Data
+	return c
+}
+
+func (t *Bool) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Bool) SetDefaults() {
 	
+}
+
+// CloneBoolSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneBoolSlice(dst, src []Bool) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

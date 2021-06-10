@@ -63,13 +63,25 @@ func NewConstants() *Constants {
 	return &self
 }
 
-func (t *Constants) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Constants) Clone() *Constants {
+	c := &Constants{}
+	return c
+}
+
+func (t *Constants) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Constants) SetDefaults() {
 	
+}
+
+// CloneConstantsSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneConstantsSlice(dst, src []Constants) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

@@ -53,14 +53,28 @@ func NewHeader() *Header {
 	return &self
 }
 
-func (t *Header) Clone() types.Message {
-	clone := *t
-	return &clone
+func (t *Header) Clone() *Header {
+	c := &Header{}
+	c.Stamp = *t.Stamp.Clone()
+	c.FrameId = t.FrameId
+	return c
+}
+
+func (t *Header) CloneMsg() types.Message {
+	return t.Clone()
 }
 
 func (t *Header) SetDefaults() {
 	t.Stamp.SetDefaults()
 	
+}
+
+// CloneHeaderSlice clones src to dst by calling Clone for each element in
+// src. Panics if len(dst) < len(src).
+func CloneHeaderSlice(dst, src []Header) {
+	for i := range src {
+		dst[i] = *src[i].Clone()
+	}
 }
 
 // Modifying this variable is undefined behavior.

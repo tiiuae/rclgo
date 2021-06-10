@@ -66,7 +66,6 @@ func (t *TwistWithCovarianceStamped) CloneMsg() types.Message {
 func (t *TwistWithCovarianceStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Twist.SetDefaults()
-	
 }
 
 // CloneTwistWithCovarianceStampedSlice clones src to dst by calling Clone for each element in

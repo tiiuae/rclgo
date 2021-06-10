@@ -60,7 +60,7 @@ func (t *Float64) CloneMsg() types.Message {
 }
 
 func (t *Float64) SetDefaults() {
-	
+	t.Data = 0
 }
 
 // CloneFloat64Slice clones src to dst by calling Clone for each element in

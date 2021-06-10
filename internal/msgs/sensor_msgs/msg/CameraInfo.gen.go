@@ -87,8 +87,16 @@ func (t *CameraInfo) CloneMsg() types.Message {
 
 func (t *CameraInfo) SetDefaults() {
 	t.Header.SetDefaults()
+	t.Height = 0
+	t.Width = 0
+	t.DistortionModel = ""
+	t.D = nil
+	t.K = [9]float64{}
+	t.R = [9]float64{}
+	t.P = [12]float64{}
+	t.BinningX = 0
+	t.BinningY = 0
 	t.Roi.SetDefaults()
-	
 }
 
 // CloneCameraInfoSlice clones src to dst by calling Clone for each element in

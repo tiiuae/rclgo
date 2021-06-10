@@ -66,7 +66,6 @@ func (t *PoseStamped) CloneMsg() types.Message {
 func (t *PoseStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Pose.SetDefaults()
-	
 }
 
 // ClonePoseStampedSlice clones src to dst by calling Clone for each element in

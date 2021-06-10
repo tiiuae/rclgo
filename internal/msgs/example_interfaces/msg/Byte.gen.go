@@ -60,7 +60,7 @@ func (t *Byte) CloneMsg() types.Message {
 }
 
 func (t *Byte) SetDefaults() {
-	
+	t.Data = 0
 }
 
 // CloneByteSlice clones src to dst by calling Clone for each element in

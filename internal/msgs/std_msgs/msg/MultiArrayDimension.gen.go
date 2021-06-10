@@ -65,7 +65,9 @@ func (t *MultiArrayDimension) CloneMsg() types.Message {
 }
 
 func (t *MultiArrayDimension) SetDefaults() {
-	
+	t.Label = ""
+	t.Size = 0
+	t.Stride = 0
 }
 
 // CloneMultiArrayDimensionSlice clones src to dst by calling Clone for each element in

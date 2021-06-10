@@ -66,7 +66,6 @@ func (t *WrenchStamped) CloneMsg() types.Message {
 func (t *WrenchStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Wrench.SetDefaults()
-	
 }
 
 // CloneWrenchStampedSlice clones src to dst by calling Clone for each element in

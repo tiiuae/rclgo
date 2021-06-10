@@ -63,7 +63,7 @@ func (t *JoyFeedbackArray) CloneMsg() types.Message {
 }
 
 func (t *JoyFeedbackArray) SetDefaults() {
-	
+	t.Array = nil
 }
 
 // CloneJoyFeedbackArraySlice clones src to dst by calling Clone for each element in

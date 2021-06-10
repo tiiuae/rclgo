@@ -58,7 +58,6 @@ func (t *Empty_Request) CloneMsg() types.Message {
 }
 
 func (t *Empty_Request) SetDefaults() {
-	
 }
 
 // CloneEmpty_RequestSlice clones src to dst by calling Clone for each element in

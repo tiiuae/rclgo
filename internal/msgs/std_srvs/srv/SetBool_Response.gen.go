@@ -63,7 +63,8 @@ func (t *SetBool_Response) CloneMsg() types.Message {
 }
 
 func (t *SetBool_Response) SetDefaults() {
-	
+	t.Success = false
+	t.Message = ""
 }
 
 // CloneSetBool_ResponseSlice clones src to dst by calling Clone for each element in

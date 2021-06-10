@@ -66,7 +66,6 @@ func (t *PolygonStamped) CloneMsg() types.Message {
 func (t *PolygonStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Polygon.SetDefaults()
-	
 }
 
 // ClonePolygonStampedSlice clones src to dst by calling Clone for each element in

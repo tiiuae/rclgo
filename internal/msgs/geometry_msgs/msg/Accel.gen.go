@@ -64,7 +64,6 @@ func (t *Accel) CloneMsg() types.Message {
 func (t *Accel) SetDefaults() {
 	t.Linear.SetDefaults()
 	t.Angular.SetDefaults()
-	
 }
 
 // CloneAccelSlice clones src to dst by calling Clone for each element in

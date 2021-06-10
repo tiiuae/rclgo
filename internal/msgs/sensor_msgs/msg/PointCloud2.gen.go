@@ -86,7 +86,14 @@ func (t *PointCloud2) CloneMsg() types.Message {
 
 func (t *PointCloud2) SetDefaults() {
 	t.Header.SetDefaults()
-	
+	t.Height = 0
+	t.Width = 0
+	t.Fields = nil
+	t.IsBigendian = false
+	t.PointStep = 0
+	t.RowStep = 0
+	t.Data = nil
+	t.IsDense = false
 }
 
 // ClonePointCloud2Slice clones src to dst by calling Clone for each element in

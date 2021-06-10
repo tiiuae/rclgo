@@ -64,7 +64,9 @@ func (t *Point) CloneMsg() types.Message {
 }
 
 func (t *Point) SetDefaults() {
-	
+	t.X = 0
+	t.Y = 0
+	t.Z = 0
 }
 
 // ClonePointSlice clones src to dst by calling Clone for each element in

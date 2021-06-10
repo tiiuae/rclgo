@@ -64,7 +64,7 @@ func (t *LaserEcho) CloneMsg() types.Message {
 }
 
 func (t *LaserEcho) SetDefaults() {
-	
+	t.Echoes = nil
 }
 
 // CloneLaserEchoSlice clones src to dst by calling Clone for each element in

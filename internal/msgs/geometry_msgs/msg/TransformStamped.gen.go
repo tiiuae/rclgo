@@ -68,8 +68,8 @@ func (t *TransformStamped) CloneMsg() types.Message {
 
 func (t *TransformStamped) SetDefaults() {
 	t.Header.SetDefaults()
+	t.ChildFrameId = ""
 	t.Transform.SetDefaults()
-	
 }
 
 // CloneTransformStampedSlice clones src to dst by calling Clone for each element in

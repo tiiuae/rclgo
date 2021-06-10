@@ -86,7 +86,10 @@ func (t *MultiDOFJointState) CloneMsg() types.Message {
 
 func (t *MultiDOFJointState) SetDefaults() {
 	t.Header.SetDefaults()
-	
+	t.JointNames = nil
+	t.Transforms = nil
+	t.Twist = nil
+	t.Wrench = nil
 }
 
 // CloneMultiDOFJointStateSlice clones src to dst by calling Clone for each element in

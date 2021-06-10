@@ -68,7 +68,7 @@ func (t *PoseArray) CloneMsg() types.Message {
 
 func (t *PoseArray) SetDefaults() {
 	t.Header.SetDefaults()
-	
+	t.Poses = nil
 }
 
 // ClonePoseArraySlice clones src to dst by calling Clone for each element in

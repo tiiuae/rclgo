@@ -83,7 +83,11 @@ func (t *NavSatFix) CloneMsg() types.Message {
 func (t *NavSatFix) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Status.SetDefaults()
-	
+	t.Latitude = 0
+	t.Longitude = 0
+	t.Altitude = 0
+	t.PositionCovariance = [9]float64{}
+	t.PositionCovarianceType = 0
 }
 
 // CloneNavSatFixSlice clones src to dst by calling Clone for each element in

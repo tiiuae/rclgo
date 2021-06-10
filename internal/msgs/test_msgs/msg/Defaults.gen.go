@@ -97,7 +97,6 @@ func (t *Defaults) SetDefaults() {
 	t.Uint32Value = 60000
 	t.Int64Value = -40000000
 	t.Uint64Value = 50000000
-	
 }
 
 // CloneDefaultsSlice clones src to dst by calling Clone for each element in

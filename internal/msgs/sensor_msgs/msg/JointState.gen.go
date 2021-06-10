@@ -84,7 +84,10 @@ func (t *JointState) CloneMsg() types.Message {
 
 func (t *JointState) SetDefaults() {
 	t.Header.SetDefaults()
-	
+	t.Name = nil
+	t.Position = nil
+	t.Velocity = nil
+	t.Effort = nil
 }
 
 // CloneJointStateSlice clones src to dst by calling Clone for each element in

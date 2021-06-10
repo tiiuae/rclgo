@@ -63,7 +63,7 @@ func (t *Polygon) CloneMsg() types.Message {
 }
 
 func (t *Polygon) SetDefaults() {
-	
+	t.Points = nil
 }
 
 // ClonePolygonSlice clones src to dst by calling Clone for each element in

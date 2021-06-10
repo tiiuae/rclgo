@@ -71,7 +71,7 @@ func (t *TimeReference) CloneMsg() types.Message {
 func (t *TimeReference) SetDefaults() {
 	t.Header.SetDefaults()
 	t.TimeRef.SetDefaults()
-	
+	t.Source = ""
 }
 
 // CloneTimeReferenceSlice clones src to dst by calling Clone for each element in

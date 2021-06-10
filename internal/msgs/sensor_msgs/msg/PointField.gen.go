@@ -77,7 +77,10 @@ func (t *PointField) CloneMsg() types.Message {
 }
 
 func (t *PointField) SetDefaults() {
-	
+	t.Name = ""
+	t.Offset = 0
+	t.Datatype = 0
+	t.Count = 0
 }
 
 // ClonePointFieldSlice clones src to dst by calling Clone for each element in

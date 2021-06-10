@@ -66,7 +66,6 @@ func (t *PoseWithCovarianceStamped) CloneMsg() types.Message {
 func (t *PoseWithCovarianceStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Pose.SetDefaults()
-	
 }
 
 // ClonePoseWithCovarianceStampedSlice clones src to dst by calling Clone for each element in

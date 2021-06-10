@@ -64,7 +64,6 @@ func (t *Transform) CloneMsg() types.Message {
 func (t *Transform) SetDefaults() {
 	t.Translation.SetDefaults()
 	t.Rotation.SetDefaults()
-	
 }
 
 // CloneTransformSlice clones src to dst by calling Clone for each element in

@@ -60,7 +60,7 @@ func (t *Bool) CloneMsg() types.Message {
 }
 
 func (t *Bool) SetDefaults() {
-	
+	t.Data = false
 }
 
 // CloneBoolSlice clones src to dst by calling Clone for each element in

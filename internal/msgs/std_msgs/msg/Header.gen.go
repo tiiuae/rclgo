@@ -66,7 +66,7 @@ func (t *Header) CloneMsg() types.Message {
 
 func (t *Header) SetDefaults() {
 	t.Stamp.SetDefaults()
-	
+	t.FrameId = ""
 }
 
 // CloneHeaderSlice clones src to dst by calling Clone for each element in

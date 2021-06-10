@@ -123,15 +123,29 @@ func (t *Arrays) CloneMsg() types.Message {
 }
 
 func (t *Arrays) SetDefaults() {
-	t.BasicTypesValues[0].SetDefaults()
-	t.BasicTypesValues[1].SetDefaults()
-	t.BasicTypesValues[2].SetDefaults()
-	t.ConstantsValues[0].SetDefaults()
-	t.ConstantsValues[1].SetDefaults()
-	t.ConstantsValues[2].SetDefaults()
-	t.DefaultsValues[0].SetDefaults()
-	t.DefaultsValues[1].SetDefaults()
-	t.DefaultsValues[2].SetDefaults()
+	t.BoolValues = [3]bool{}
+	t.ByteValues = [3]byte{}
+	t.CharValues = [3]byte{}
+	t.Float32Values = [3]float32{}
+	t.Float64Values = [3]float64{}
+	t.Int8Values = [3]int8{}
+	t.Uint8Values = [3]uint8{}
+	t.Int16Values = [3]int16{}
+	t.Uint16Values = [3]uint16{}
+	t.Int32Values = [3]int32{}
+	t.Uint32Values = [3]uint32{}
+	t.Int64Values = [3]int64{}
+	t.Uint64Values = [3]uint64{}
+	t.StringValues = [3]string{}
+	for i := range t.BasicTypesValues {
+		t.BasicTypesValues[i].SetDefaults()
+	}
+	for i := range t.ConstantsValues {
+		t.ConstantsValues[i].SetDefaults()
+	}
+	for i := range t.DefaultsValues {
+		t.DefaultsValues[i].SetDefaults()
+	}
 	t.BoolValuesDefault = [3]bool{false,true,false}
 	t.ByteValuesDefault = [3]byte{0,1,255}
 	t.CharValuesDefault = [3]byte{0,1,127}
@@ -146,7 +160,7 @@ func (t *Arrays) SetDefaults() {
 	t.Int64ValuesDefault = [3]int64{0,9223372036854775807,-9223372036854775808}
 	t.Uint64ValuesDefault = [3]uint64{0,1,18446744073709551615}
 	t.StringValuesDefault = [3]string{"","max value","min value"}
-	
+	t.AlignmentCheck = 0
 }
 
 // CloneArraysSlice clones src to dst by calling Clone for each element in

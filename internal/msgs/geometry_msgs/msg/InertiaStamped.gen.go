@@ -66,7 +66,6 @@ func (t *InertiaStamped) CloneMsg() types.Message {
 func (t *InertiaStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Inertia.SetDefaults()
-	
 }
 
 // CloneInertiaStampedSlice clones src to dst by calling Clone for each element in

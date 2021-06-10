@@ -64,7 +64,7 @@ func (t *PoseWithCovariance) CloneMsg() types.Message {
 
 func (t *PoseWithCovariance) SetDefaults() {
 	t.Pose.SetDefaults()
-	
+	t.Covariance = [36]float64{}
 }
 
 // ClonePoseWithCovarianceSlice clones src to dst by calling Clone for each element in

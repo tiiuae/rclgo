@@ -67,7 +67,7 @@ func (t *ByteMultiArray) CloneMsg() types.Message {
 
 func (t *ByteMultiArray) SetDefaults() {
 	t.Layout.SetDefaults()
-	
+	t.Data = nil
 }
 
 // CloneByteMultiArraySlice clones src to dst by calling Clone for each element in

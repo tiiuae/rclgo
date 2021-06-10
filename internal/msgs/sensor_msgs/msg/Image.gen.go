@@ -79,7 +79,12 @@ func (t *Image) CloneMsg() types.Message {
 
 func (t *Image) SetDefaults() {
 	t.Header.SetDefaults()
-	
+	t.Height = 0
+	t.Width = 0
+	t.Encoding = ""
+	t.IsBigendian = 0
+	t.Step = 0
+	t.Data = nil
 }
 
 // CloneImageSlice clones src to dst by calling Clone for each element in

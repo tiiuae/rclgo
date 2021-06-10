@@ -61,7 +61,7 @@ func (t *String) CloneMsg() types.Message {
 }
 
 func (t *String) SetDefaults() {
-	
+	t.Data = ""
 }
 
 // CloneStringSlice clones src to dst by calling Clone for each element in

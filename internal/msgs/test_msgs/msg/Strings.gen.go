@@ -86,17 +86,18 @@ func (t *Strings) CloneMsg() types.Message {
 }
 
 func (t *Strings) SetDefaults() {
+	t.StringValue = ""
 	t.StringValueDefault1 = "Hello world!"
 	t.StringValueDefault2 = "Hello'world!"
 	t.StringValueDefault3 = "Hello\"world!"
 	t.StringValueDefault4 = "Hello'world!"
 	t.StringValueDefault5 = "Hello\"world!"
+	t.BoundedStringValue = ""
 	t.BoundedStringValueDefault1 = "Hello world!"
 	t.BoundedStringValueDefault2 = "Hello'world!"
 	t.BoundedStringValueDefault3 = "Hello\"world!"
 	t.BoundedStringValueDefault4 = "Hello'world!"
 	t.BoundedStringValueDefault5 = "Hello\"world!"
-	
 }
 
 // CloneStringsSlice clones src to dst by calling Clone for each element in

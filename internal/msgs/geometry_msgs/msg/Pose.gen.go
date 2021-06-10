@@ -64,7 +64,6 @@ func (t *Pose) CloneMsg() types.Message {
 func (t *Pose) SetDefaults() {
 	t.Position.SetDefaults()
 	t.Orientation.SetDefaults()
-	
 }
 
 // ClonePoseSlice clones src to dst by calling Clone for each element in

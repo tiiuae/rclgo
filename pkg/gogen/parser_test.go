@@ -218,10 +218,9 @@ string input
 			GoName:       "StringValues",
 			CName:        "string_values",
 			Comment:      "",
-		}), ShouldEqual, `t.StringValues[0].SetDefaults()
-	t.StringValues[1].SetDefaults()
-	t.StringValues[2].SetDefaults()
-	`)
+		}), ShouldEqual, `for i := range t.StringValues {
+		t.StringValues[i].SetDefaults()
+	}`)
 	})
 }
 

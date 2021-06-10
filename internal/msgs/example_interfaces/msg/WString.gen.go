@@ -61,7 +61,7 @@ func (t *WString) CloneMsg() types.Message {
 }
 
 func (t *WString) SetDefaults() {
-	
+	t.Data = ""
 }
 
 // CloneWStringSlice clones src to dst by calling Clone for each element in

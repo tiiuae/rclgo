@@ -67,7 +67,8 @@ func (t *MultiArrayLayout) CloneMsg() types.Message {
 }
 
 func (t *MultiArrayLayout) SetDefaults() {
-	
+	t.Dim = nil
+	t.DataOffset = 0
 }
 
 // CloneMultiArrayLayoutSlice clones src to dst by calling Clone for each element in

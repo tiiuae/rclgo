@@ -64,7 +64,7 @@ func (t *AccelWithCovariance) CloneMsg() types.Message {
 
 func (t *AccelWithCovariance) SetDefaults() {
 	t.Accel.SetDefaults()
-	
+	t.Covariance = [36]float64{}
 }
 
 // CloneAccelWithCovarianceSlice clones src to dst by calling Clone for each element in

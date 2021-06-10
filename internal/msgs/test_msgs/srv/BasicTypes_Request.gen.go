@@ -87,7 +87,20 @@ func (t *BasicTypes_Request) CloneMsg() types.Message {
 }
 
 func (t *BasicTypes_Request) SetDefaults() {
-	
+	t.BoolValue = false
+	t.ByteValue = 0
+	t.CharValue = 0
+	t.Float32Value = 0
+	t.Float64Value = 0
+	t.Int8Value = 0
+	t.Uint8Value = 0
+	t.Int16Value = 0
+	t.Uint16Value = 0
+	t.Int32Value = 0
+	t.Uint32Value = 0
+	t.Int64Value = 0
+	t.Uint64Value = 0
+	t.StringValue = ""
 }
 
 // CloneBasicTypes_RequestSlice clones src to dst by calling Clone for each element in

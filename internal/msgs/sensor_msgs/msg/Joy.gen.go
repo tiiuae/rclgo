@@ -74,7 +74,8 @@ func (t *Joy) CloneMsg() types.Message {
 
 func (t *Joy) SetDefaults() {
 	t.Header.SetDefaults()
-	
+	t.Axes = nil
+	t.Buttons = nil
 }
 
 // CloneJoySlice clones src to dst by calling Clone for each element in

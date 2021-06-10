@@ -60,7 +60,7 @@ func (t *SetBool_Request) CloneMsg() types.Message {
 }
 
 func (t *SetBool_Request) SetDefaults() {
-	
+	t.Data = false
 }
 
 // CloneSetBool_RequestSlice clones src to dst by calling Clone for each element in

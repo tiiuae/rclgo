@@ -63,7 +63,6 @@ func (t *SetCameraInfo_Request) CloneMsg() types.Message {
 
 func (t *SetCameraInfo_Request) SetDefaults() {
 	t.CameraInfo.SetDefaults()
-	
 }
 
 // CloneSetCameraInfo_RequestSlice clones src to dst by calling Clone for each element in

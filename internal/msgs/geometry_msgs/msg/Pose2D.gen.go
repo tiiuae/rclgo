@@ -64,7 +64,9 @@ func (t *Pose2D) CloneMsg() types.Message {
 }
 
 func (t *Pose2D) SetDefaults() {
-	
+	t.X = 0
+	t.Y = 0
+	t.Theta = 0
 }
 
 // ClonePose2DSlice clones src to dst by calling Clone for each element in

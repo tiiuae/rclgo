@@ -66,7 +66,6 @@ func (t *QuaternionStamped) CloneMsg() types.Message {
 func (t *QuaternionStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Quaternion.SetDefaults()
-	
 }
 
 // CloneQuaternionStampedSlice clones src to dst by calling Clone for each element in

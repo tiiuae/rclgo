@@ -61,7 +61,6 @@ func (t *Nested) CloneMsg() types.Message {
 
 func (t *Nested) SetDefaults() {
 	t.BasicTypesValue.SetDefaults()
-	
 }
 
 // CloneNestedSlice clones src to dst by calling Clone for each element in

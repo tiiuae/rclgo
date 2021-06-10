@@ -66,7 +66,6 @@ func (t *PointStamped) CloneMsg() types.Message {
 func (t *PointStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Point.SetDefaults()
-	
 }
 
 // ClonePointStampedSlice clones src to dst by calling Clone for each element in

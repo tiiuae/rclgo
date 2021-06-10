@@ -64,7 +64,6 @@ func (t *Twist) CloneMsg() types.Message {
 func (t *Twist) SetDefaults() {
 	t.Linear.SetDefaults()
 	t.Angular.SetDefaults()
-	
 }
 
 // CloneTwistSlice clones src to dst by calling Clone for each element in

@@ -64,7 +64,6 @@ func (t *Wrench) CloneMsg() types.Message {
 func (t *Wrench) SetDefaults() {
 	t.Force.SetDefaults()
 	t.Torque.SetDefaults()
-	
 }
 
 // CloneWrenchSlice clones src to dst by calling Clone for each element in

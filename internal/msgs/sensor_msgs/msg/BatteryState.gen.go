@@ -123,7 +123,21 @@ func (t *BatteryState) CloneMsg() types.Message {
 
 func (t *BatteryState) SetDefaults() {
 	t.Header.SetDefaults()
-	
+	t.Voltage = 0
+	t.Temperature = 0
+	t.Current = 0
+	t.Charge = 0
+	t.Capacity = 0
+	t.DesignCapacity = 0
+	t.Percentage = 0
+	t.PowerSupplyStatus = 0
+	t.PowerSupplyHealth = 0
+	t.PowerSupplyTechnology = 0
+	t.Present = false
+	t.CellVoltage = nil
+	t.CellTemperature = nil
+	t.Location = ""
+	t.SerialNumber = ""
 }
 
 // CloneBatteryStateSlice clones src to dst by calling Clone for each element in

@@ -66,7 +66,10 @@ func (t *ColorRGBA) CloneMsg() types.Message {
 }
 
 func (t *ColorRGBA) SetDefaults() {
-	
+	t.R = 0
+	t.G = 0
+	t.B = 0
+	t.A = 0
 }
 
 // CloneColorRGBASlice clones src to dst by calling Clone for each element in

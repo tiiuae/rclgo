@@ -71,7 +71,7 @@ func (t *MagneticField) CloneMsg() types.Message {
 func (t *MagneticField) SetDefaults() {
 	t.Header.SetDefaults()
 	t.MagneticField.SetDefaults()
-	
+	t.MagneticFieldCovariance = [9]float64{}
 }
 
 // CloneMagneticFieldSlice clones src to dst by calling Clone for each element in

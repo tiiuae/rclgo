@@ -72,7 +72,8 @@ func (t *NavSatStatus) CloneMsg() types.Message {
 }
 
 func (t *NavSatStatus) SetDefaults() {
-	
+	t.Status = 0
+	t.Service = 0
 }
 
 // CloneNavSatStatusSlice clones src to dst by calling Clone for each element in

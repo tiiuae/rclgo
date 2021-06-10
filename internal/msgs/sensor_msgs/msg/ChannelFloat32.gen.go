@@ -66,7 +66,8 @@ func (t *ChannelFloat32) CloneMsg() types.Message {
 }
 
 func (t *ChannelFloat32) SetDefaults() {
-	
+	t.Name = ""
+	t.Values = nil
 }
 
 // CloneChannelFloat32Slice clones src to dst by calling Clone for each element in

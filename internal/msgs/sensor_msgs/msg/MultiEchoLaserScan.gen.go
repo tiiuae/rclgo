@@ -87,7 +87,15 @@ func (t *MultiEchoLaserScan) CloneMsg() types.Message {
 
 func (t *MultiEchoLaserScan) SetDefaults() {
 	t.Header.SetDefaults()
-	
+	t.AngleMin = 0
+	t.AngleMax = 0
+	t.AngleIncrement = 0
+	t.TimeIncrement = 0
+	t.ScanTime = 0
+	t.RangeMin = 0
+	t.RangeMax = 0
+	t.Ranges = nil
+	t.Intensities = nil
 }
 
 // CloneMultiEchoLaserScanSlice clones src to dst by calling Clone for each element in

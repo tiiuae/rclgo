@@ -74,8 +74,14 @@ func (t *Inertia) CloneMsg() types.Message {
 }
 
 func (t *Inertia) SetDefaults() {
+	t.M = 0
 	t.Com.SetDefaults()
-	
+	t.Ixx = 0
+	t.Ixy = 0
+	t.Ixz = 0
+	t.Iyy = 0
+	t.Iyz = 0
+	t.Izz = 0
 }
 
 // CloneInertiaSlice clones src to dst by calling Clone for each element in

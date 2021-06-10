@@ -60,7 +60,7 @@ func (t *Int16) CloneMsg() types.Message {
 }
 
 func (t *Int16) SetDefaults() {
-	
+	t.Data = 0
 }
 
 // CloneInt16Slice clones src to dst by calling Clone for each element in

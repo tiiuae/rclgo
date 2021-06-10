@@ -70,7 +70,6 @@ func (t *Quaternion) SetDefaults() {
 	t.Y = 0
 	t.Z = 0
 	t.W = 1
-	
 }
 
 // CloneQuaternionSlice clones src to dst by calling Clone for each element in

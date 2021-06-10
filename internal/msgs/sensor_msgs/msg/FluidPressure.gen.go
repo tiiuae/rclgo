@@ -67,7 +67,8 @@ func (t *FluidPressure) CloneMsg() types.Message {
 
 func (t *FluidPressure) SetDefaults() {
 	t.Header.SetDefaults()
-	
+	t.FluidPressure = 0
+	t.Variance = 0
 }
 
 // CloneFluidPressureSlice clones src to dst by calling Clone for each element in

@@ -60,7 +60,7 @@ func (t *Char) CloneMsg() types.Message {
 }
 
 func (t *Char) SetDefaults() {
-	
+	t.Data = 0
 }
 
 // CloneCharSlice clones src to dst by calling Clone for each element in

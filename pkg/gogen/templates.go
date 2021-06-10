@@ -107,7 +107,7 @@ func (t *{{$Md.Name}}) CloneMsg() types.Message {
 }
 
 func (t *{{$Md.Name}}) SetDefaults() {
-	{{ range $k, $v := $Md.Fields -}}
+	{{- range $k, $v := $Md.Fields }}
 	{{defaultCode $v}}
 	{{- end }}
 }

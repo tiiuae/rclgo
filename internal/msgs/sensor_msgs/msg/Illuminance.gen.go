@@ -67,7 +67,8 @@ func (t *Illuminance) CloneMsg() types.Message {
 
 func (t *Illuminance) SetDefaults() {
 	t.Header.SetDefaults()
-	
+	t.Illuminance = 0
+	t.Variance = 0
 }
 
 // CloneIlluminanceSlice clones src to dst by calling Clone for each element in

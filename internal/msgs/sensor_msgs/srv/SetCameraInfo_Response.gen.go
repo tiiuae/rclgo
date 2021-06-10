@@ -63,7 +63,8 @@ func (t *SetCameraInfo_Response) CloneMsg() types.Message {
 }
 
 func (t *SetCameraInfo_Response) SetDefaults() {
-	
+	t.Success = false
+	t.StatusMessage = ""
 }
 
 // CloneSetCameraInfo_ResponseSlice clones src to dst by calling Clone for each element in

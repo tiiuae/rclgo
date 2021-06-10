@@ -67,7 +67,8 @@ func (t *RelativeHumidity) CloneMsg() types.Message {
 
 func (t *RelativeHumidity) SetDefaults() {
 	t.Header.SetDefaults()
-	
+	t.RelativeHumidity = 0
+	t.Variance = 0
 }
 
 // CloneRelativeHumiditySlice clones src to dst by calling Clone for each element in

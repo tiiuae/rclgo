@@ -77,7 +77,11 @@ func (t *Range) CloneMsg() types.Message {
 
 func (t *Range) SetDefaults() {
 	t.Header.SetDefaults()
-	
+	t.RadiationType = 0
+	t.FieldOfView = 0
+	t.MinRange = 0
+	t.MaxRange = 0
+	t.Range = 0
 }
 
 // CloneRangeSlice clones src to dst by calling Clone for each element in

@@ -69,7 +69,9 @@ func (t *JoyFeedback) CloneMsg() types.Message {
 }
 
 func (t *JoyFeedback) SetDefaults() {
-	
+	t.Type = 0
+	t.Id = 0
+	t.Intensity = 0
 }
 
 // CloneJoyFeedbackSlice clones src to dst by calling Clone for each element in

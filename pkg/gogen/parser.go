@@ -389,29 +389,37 @@ func (p *parser) goSerializationCode(f *ROS2Field, m *ROS2Message) string {
 }
 
 func defaultCode(f *ROS2Field) string {
-	if f.PkgName != "" && f.TypeArray != "" {
+	if f.PkgName != "" && f.TypeArray != "" && f.DefaultValue == "" {
+		// Complex value array and slice common default
+		if f.ArraySize == 0 {
+			return "t." + f.GoName + " = nil"
+		}
+		return "for i := range t." + f.GoName + " {\n" +
+			"\t\tt." + f.GoName + "[i].SetDefaults()\n" +
+			"\t}"
+
+	} else if f.PkgName != "" && f.TypeArray != "" {
 		defaultValues := splitMsgDefaultArrayValues(f.RosType, f.DefaultValue)
 		// Complex value array and slice
 		sb := strings.Builder{}
 		var indexesCount int
 		if f.ArraySize > 0 {
 			indexesCount = f.ArraySize
-			sb.Grow(indexesCount)
 		} else if len(defaultValues) > 0 { // Init a slice
 			indexesCount = len(defaultValues)
-			sb.Grow(indexesCount + 1)
-
-			sb.WriteString(`t.` + f.GoName + ` = make(` + f.TypeArray + f.GoPkgReference() + f.GoType + `, ` + strconv.Itoa(indexesCount) + `)` + "\n\t")
+			fmt.Fprint(&sb, `t.`, f.GoName, ` = make(`, f.TypeArray, f.GoPkgReference(), f.GoType, `, `, indexesCount, ")\n\t")
 		}
 
-		for i := 0; i < indexesCount; i++ {
-			sb.WriteString(`t.` + f.GoName + `[` + strconv.Itoa(i) + "].SetDefaults()\n\t")
-		}
+		fmt.Fprint(&sb,
+			"for i := range t.", f.GoName, " {\n",
+			"\t\tt.", f.GoName, "[i].SetDefaults()\n",
+			"\t}",
+		)
 		return sb.String()
 
 	} else if f.PkgName != "" && f.TypeArray == "" {
 		// Complex value single
-		return `t.` + f.GoName + ".SetDefaults()\n\t"
+		return `t.` + f.GoName + ".SetDefaults()"
 
 	} else if f.DefaultValue != "" && f.TypeArray != "" {
 		// Primitive value array and slice
@@ -419,16 +427,38 @@ func defaultCode(f *ROS2Field) string {
 		for i := range defaultValues {
 			defaultValues[i] = defaultValueSanitizer(f.RosType, defaultValues[i])
 		}
-		return `t.` + f.GoName + ` = ` + f.TypeArray + f.GoPkgReference() + f.GoType + `{` + strings.Join(defaultValues, ",") + `}` + "\n\t"
+		return `t.` + f.GoName + ` = ` + f.TypeArray + f.GoPkgReference() + f.GoType + `{` + strings.Join(defaultValues, ",") + `}`
+
+	} else if f.DefaultValue == "" && f.TypeArray != "" {
+		// Primitive value array and slice common default
+		if f.ArraySize == 0 {
+			return "t." + f.GoName + " = nil"
+		}
+		return fmt.Sprint("t.", f.GoName, " = [", f.ArraySize, "]", f.GoType, "{}")
 
 	} else if f.DefaultValue != "" {
 		// Primitive value single
-		return `t.` + f.GoName + ` = ` + defaultValueSanitizer(f.RosType, f.DefaultValue) + "\n\t"
+		return `t.` + f.GoName + ` = ` + defaultValueSanitizer(f.RosType, f.DefaultValue)
 
 	} else if f.DefaultValue == "" {
-		return ""
+		// Primitive value single common default
+		return "t." + f.GoName + " = " + primitiveCommonDefault(f)
 	}
 	return "//<MISSING defaultCode!!>"
+}
+
+func primitiveCommonDefault(f *ROS2Field) string {
+	switch f.RosType {
+	case "string", "wstring", "U16String":
+		return `""`
+	case "bool":
+		return "false"
+	case "float32", "float64", "byte", "char", "int8", "int16",
+		"int32", "int64", "uint8", "uint16", "uint32", "uint64":
+		return "0"
+	default:
+		panic("common default value for ROS type " + f.RosType + " is not defined")
+	}
 }
 
 func cloneCode(f *ROS2Field) string {

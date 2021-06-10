@@ -67,7 +67,8 @@ func (t *Temperature) CloneMsg() types.Message {
 
 func (t *Temperature) SetDefaults() {
 	t.Header.SetDefaults()
-	
+	t.Temperature = 0
+	t.Variance = 0
 }
 
 // CloneTemperatureSlice clones src to dst by calling Clone for each element in

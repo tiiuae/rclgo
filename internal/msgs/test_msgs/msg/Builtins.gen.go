@@ -66,7 +66,6 @@ func (t *Builtins) CloneMsg() types.Message {
 func (t *Builtins) SetDefaults() {
 	t.DurationValue.SetDefaults()
 	t.TimeValue.SetDefaults()
-	
 }
 
 // CloneBuiltinsSlice clones src to dst by calling Clone for each element in

@@ -64,7 +64,9 @@ func (t *Vector3) CloneMsg() types.Message {
 }
 
 func (t *Vector3) SetDefaults() {
-	
+	t.X = 0
+	t.Y = 0
+	t.Z = 0
 }
 
 // CloneVector3Slice clones src to dst by calling Clone for each element in

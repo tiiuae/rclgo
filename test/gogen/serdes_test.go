@@ -281,3 +281,115 @@ func TestClone(t *testing.T) {
 		}
 	})
 }
+
+func TestSetDefaults(t *testing.T) {
+	SetDefaultFailureMode(FailureContinues)
+
+	Convey("SetDefaults works", t, func() {
+		{
+			newMsg := std_msgs.NewColorRGBA()
+			fxMsg := Fixture_Go_std_msgs__ColorRGBA()
+			So(fxMsg, ShouldNotResemble, newMsg)
+			fxMsg.SetDefaults()
+			So(fxMsg, ShouldResemble, newMsg)
+		}
+		{
+			newMsg := std_msgs.NewString()
+			fxMsg := Fixture_Go_std_msgs__String()
+			So(newMsg, ShouldNotResemble, fxMsg)
+			fxMsg.SetDefaults()
+			So(newMsg, ShouldResemble, fxMsg)
+		}
+		{
+			newMsg := sensor_msgs.NewChannelFloat32()
+			fxMsg := Fixture_Go_sensor_msgs__ChannelFloat32()
+			So(newMsg, ShouldNotResemble, fxMsg)
+			fxMsg.SetDefaults()
+			So(newMsg, ShouldResemble, fxMsg)
+		}
+		{
+			newMsg := sensor_msgs.NewIlluminance()
+			fxMsg := Fixture_Go_sensor_msgs__Illuminance()
+			So(newMsg, ShouldNotResemble, fxMsg)
+			fxMsg.SetDefaults()
+			So(newMsg, ShouldResemble, fxMsg)
+		}
+		{
+			newMsg := std_msgs.NewInt64MultiArray()
+			fxMsg := Fixture_Go_std_msgs__Int64MultiArray()
+			So(newMsg, ShouldNotResemble, fxMsg)
+			fxMsg.SetDefaults()
+			So(newMsg, ShouldResemble, fxMsg)
+		}
+		{
+			newMsg := test_msgs.NewArrays()
+			fxMsg := Fixture_Go_test_msgs__Arrays()
+			So(newMsg, ShouldNotResemble, fxMsg)
+			fxMsg.SetDefaults()
+			So(newMsg, ShouldResemble, fxMsg)
+		}
+		{
+			newMsg := test_msgs.NewBasicTypes()
+			fxMsg := Fixture_Go_test_msgs__BasicTypes()
+			So(newMsg, ShouldNotResemble, fxMsg)
+			fxMsg.SetDefaults()
+			So(newMsg, ShouldResemble, fxMsg)
+		}
+		{
+			newMsg := test_msgs.NewBuiltins()
+			fxMsg := Fixture_Go_test_msgs__Builtins()
+			So(newMsg, ShouldNotResemble, fxMsg)
+			fxMsg.SetDefaults()
+			So(newMsg, ShouldResemble, fxMsg)
+		}
+		{
+			newMsg := test_msgs.NewBoundedSequences()
+			fxMsg := Fixture_Go_test_msgs__BoundedSequences()
+			So(newMsg, ShouldNotResemble, fxMsg)
+			fxMsg.SetDefaults()
+			So(newMsg, ShouldResemble, fxMsg)
+		}
+		{
+			newMsg := test_msgs.NewConstants()
+			fxMsg := Fixture_Go_test_msgs__Constants()
+			So(newMsg, ShouldResemble, fxMsg)
+			fxMsg.SetDefaults()
+			So(newMsg, ShouldResemble, fxMsg)
+		}
+		{
+			newMsg := test_msgs.NewDefaults()
+			fxMsg := Fixture_Go_test_msgs__Defaults()
+			So(newMsg, ShouldResemble, fxMsg)
+			fxMsg.SetDefaults()
+			So(newMsg, ShouldResemble, fxMsg)
+		}
+		{
+			newMsg := test_msgs.NewMultiNested()
+			fxMsg := Fixture_Go_test_msgs__MultiNested()
+			So(newMsg, ShouldNotResemble, fxMsg)
+			fxMsg.SetDefaults()
+			So(newMsg, ShouldResemble, fxMsg)
+		}
+		{
+			newMsg := test_msgs.NewNested()
+			fxMsg := Fixture_Go_test_msgs__Nested()
+			So(newMsg, ShouldNotResemble, fxMsg)
+			fxMsg.SetDefaults()
+			So(newMsg, ShouldResemble, fxMsg)
+		}
+		{
+			newMsg := test_msgs.NewUnboundedSequences()
+			fxMsg := Fixture_Go_test_msgs__UnboundedSequences()
+			So(newMsg, ShouldNotResemble, fxMsg)
+			fxMsg.SetDefaults()
+			So(newMsg, ShouldResemble, fxMsg)
+		}
+		{
+			newMsg := test_msgs.NewWStrings()
+			fxMsg := Fixture_Go_test_msgs__WStrings()
+			So(newMsg, ShouldNotResemble, fxMsg)
+			fxMsg.SetDefaults()
+			So(newMsg, ShouldResemble, fxMsg)
+		}
+	})
+}

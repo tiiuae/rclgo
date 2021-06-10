@@ -62,7 +62,8 @@ func (t *Duration) CloneMsg() types.Message {
 }
 
 func (t *Duration) SetDefaults() {
-	
+	t.Sec = 0
+	t.Nanosec = 0
 }
 
 // CloneDurationSlice clones src to dst by calling Clone for each element in

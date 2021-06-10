@@ -63,7 +63,8 @@ func (t *Trigger_Response) CloneMsg() types.Message {
 }
 
 func (t *Trigger_Response) SetDefaults() {
-	
+	t.Success = false
+	t.Message = ""
 }
 
 // CloneTrigger_ResponseSlice clones src to dst by calling Clone for each element in

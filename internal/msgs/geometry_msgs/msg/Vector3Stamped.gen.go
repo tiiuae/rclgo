@@ -66,7 +66,6 @@ func (t *Vector3Stamped) CloneMsg() types.Message {
 func (t *Vector3Stamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Vector.SetDefaults()
-	
 }
 
 // CloneVector3StampedSlice clones src to dst by calling Clone for each element in

@@ -79,9 +79,11 @@ func (t *Imu) CloneMsg() types.Message {
 func (t *Imu) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Orientation.SetDefaults()
+	t.OrientationCovariance = [9]float64{}
 	t.AngularVelocity.SetDefaults()
+	t.AngularVelocityCovariance = [9]float64{}
 	t.LinearAcceleration.SetDefaults()
-	
+	t.LinearAccelerationCovariance = [9]float64{}
 }
 
 // CloneImuSlice clones src to dst by calling Clone for each element in

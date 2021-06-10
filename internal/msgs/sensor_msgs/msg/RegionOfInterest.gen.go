@@ -68,7 +68,11 @@ func (t *RegionOfInterest) CloneMsg() types.Message {
 }
 
 func (t *RegionOfInterest) SetDefaults() {
-	
+	t.XOffset = 0
+	t.YOffset = 0
+	t.Height = 0
+	t.Width = 0
+	t.DoRectify = false
 }
 
 // CloneRegionOfInterestSlice clones src to dst by calling Clone for each element in

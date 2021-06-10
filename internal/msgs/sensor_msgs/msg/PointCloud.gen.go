@@ -75,7 +75,8 @@ func (t *PointCloud) CloneMsg() types.Message {
 
 func (t *PointCloud) SetDefaults() {
 	t.Header.SetDefaults()
-	
+	t.Points = nil
+	t.Channels = nil
 }
 
 // ClonePointCloudSlice clones src to dst by calling Clone for each element in

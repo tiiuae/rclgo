@@ -67,7 +67,7 @@ func (t *UInt8MultiArray) CloneMsg() types.Message {
 
 func (t *UInt8MultiArray) SetDefaults() {
 	t.Layout.SetDefaults()
-	
+	t.Data = nil
 }
 
 // CloneUInt8MultiArraySlice clones src to dst by calling Clone for each element in

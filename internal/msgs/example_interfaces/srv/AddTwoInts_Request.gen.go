@@ -62,7 +62,8 @@ func (t *AddTwoInts_Request) CloneMsg() types.Message {
 }
 
 func (t *AddTwoInts_Request) SetDefaults() {
-	
+	t.A = 0
+	t.B = 0
 }
 
 // CloneAddTwoInts_RequestSlice clones src to dst by calling Clone for each element in

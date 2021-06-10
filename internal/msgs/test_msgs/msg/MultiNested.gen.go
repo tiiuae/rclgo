@@ -94,16 +94,21 @@ func (t *MultiNested) CloneMsg() types.Message {
 }
 
 func (t *MultiNested) SetDefaults() {
-	t.ArrayOfArrays[0].SetDefaults()
-	t.ArrayOfArrays[1].SetDefaults()
-	t.ArrayOfArrays[2].SetDefaults()
-	t.ArrayOfBoundedSequences[0].SetDefaults()
-	t.ArrayOfBoundedSequences[1].SetDefaults()
-	t.ArrayOfBoundedSequences[2].SetDefaults()
-	t.ArrayOfUnboundedSequences[0].SetDefaults()
-	t.ArrayOfUnboundedSequences[1].SetDefaults()
-	t.ArrayOfUnboundedSequences[2].SetDefaults()
-	
+	for i := range t.ArrayOfArrays {
+		t.ArrayOfArrays[i].SetDefaults()
+	}
+	for i := range t.ArrayOfBoundedSequences {
+		t.ArrayOfBoundedSequences[i].SetDefaults()
+	}
+	for i := range t.ArrayOfUnboundedSequences {
+		t.ArrayOfUnboundedSequences[i].SetDefaults()
+	}
+	t.BoundedSequenceOfArrays = nil
+	t.BoundedSequenceOfBoundedSequences = nil
+	t.BoundedSequenceOfUnboundedSequences = nil
+	t.UnboundedSequenceOfArrays = nil
+	t.UnboundedSequenceOfBoundedSequences = nil
+	t.UnboundedSequenceOfUnboundedSequences = nil
 }
 
 // CloneMultiNestedSlice clones src to dst by calling Clone for each element in

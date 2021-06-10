@@ -71,7 +71,8 @@ func (t *CompressedImage) CloneMsg() types.Message {
 
 func (t *CompressedImage) SetDefaults() {
 	t.Header.SetDefaults()
-	
+	t.Format = ""
+	t.Data = nil
 }
 
 // CloneCompressedImageSlice clones src to dst by calling Clone for each element in

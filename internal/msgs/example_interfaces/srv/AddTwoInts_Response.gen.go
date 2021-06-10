@@ -60,7 +60,7 @@ func (t *AddTwoInts_Response) CloneMsg() types.Message {
 }
 
 func (t *AddTwoInts_Response) SetDefaults() {
-	
+	t.Sum = 0
 }
 
 // CloneAddTwoInts_ResponseSlice clones src to dst by calling Clone for each element in

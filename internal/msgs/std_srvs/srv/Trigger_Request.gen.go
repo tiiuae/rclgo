@@ -58,7 +58,6 @@ func (t *Trigger_Request) CloneMsg() types.Message {
 }
 
 func (t *Trigger_Request) SetDefaults() {
-	
 }
 
 // CloneTrigger_RequestSlice clones src to dst by calling Clone for each element in

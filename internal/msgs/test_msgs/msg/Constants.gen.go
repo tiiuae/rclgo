@@ -73,7 +73,6 @@ func (t *Constants) CloneMsg() types.Message {
 }
 
 func (t *Constants) SetDefaults() {
-	
 }
 
 // CloneConstantsSlice clones src to dst by calling Clone for each element in

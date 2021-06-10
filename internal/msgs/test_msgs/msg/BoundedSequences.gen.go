@@ -216,6 +216,23 @@ func (t *BoundedSequences) CloneMsg() types.Message {
 }
 
 func (t *BoundedSequences) SetDefaults() {
+	t.BoolValues = nil
+	t.ByteValues = nil
+	t.CharValues = nil
+	t.Float32Values = nil
+	t.Float64Values = nil
+	t.Int8Values = nil
+	t.Uint8Values = nil
+	t.Int16Values = nil
+	t.Uint16Values = nil
+	t.Int32Values = nil
+	t.Uint32Values = nil
+	t.Int64Values = nil
+	t.Uint64Values = nil
+	t.StringValues = nil
+	t.BasicTypesValues = nil
+	t.ConstantsValues = nil
+	t.DefaultsValues = nil
 	t.BoolValuesDefault = []bool{false,true,false}
 	t.ByteValuesDefault = []byte{0,1,255}
 	t.CharValuesDefault = []byte{0,1,127}
@@ -230,7 +247,7 @@ func (t *BoundedSequences) SetDefaults() {
 	t.Int64ValuesDefault = []int64{0,9223372036854775807,-9223372036854775808}
 	t.Uint64ValuesDefault = []uint64{0,1,18446744073709551615}
 	t.StringValuesDefault = []string{"","max value","min value"}
-	
+	t.AlignmentCheck = 0
 }
 
 // CloneBoundedSequencesSlice clones src to dst by calling Clone for each element in

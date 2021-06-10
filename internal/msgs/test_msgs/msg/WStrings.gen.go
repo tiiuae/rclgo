@@ -79,10 +79,13 @@ func (t *WStrings) CloneMsg() types.Message {
 }
 
 func (t *WStrings) SetDefaults() {
+	t.WstringValue = ""
 	t.WstringValueDefault1 = "Hello world!"
 	t.WstringValueDefault2 = "Hellö wörld!"
 	t.WstringValueDefault3 = "ハローワールド"
-	
+	t.ArrayOfWstrings = [3]string{}
+	t.BoundedSequenceOfWstrings = nil
+	t.UnboundedSequenceOfWstrings = nil
 }
 
 // CloneWStringsSlice clones src to dst by calling Clone for each element in

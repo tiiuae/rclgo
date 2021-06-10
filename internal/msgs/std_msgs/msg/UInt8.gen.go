@@ -60,7 +60,7 @@ func (t *UInt8) CloneMsg() types.Message {
 }
 
 func (t *UInt8) SetDefaults() {
-	
+	t.Data = 0
 }
 
 // CloneUInt8Slice clones src to dst by calling Clone for each element in

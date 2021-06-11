@@ -33,7 +33,7 @@ generate:
 
 	dest_path=internal/msgs
 
-	rm -rf "$$dest_path/*"
+	rm -rf "$$dest_path/"*
 	for pkg in $${pkgs[@]}; do
 	    go run ./cmd/rclgo-gen generate \
 	        --message-module-prefix "github.com/tiiuae/rclgo/$$dest_path" \

@@ -70,7 +70,7 @@ type RmwQosProfile struct {
 	AvoidRosNamespaceConventions bool
 }
 
-func NewRmwQosProfileServicesDefault() RmwQosProfile {
+func NewRmwQosProfileDefault() RmwQosProfile {
 	return RmwQosProfile{
 		History:                      RmwQosHistoryPolicyKeepLast,
 		Depth:                        10,
@@ -82,6 +82,10 @@ func NewRmwQosProfileServicesDefault() RmwQosProfile {
 		LivelinessLeaseDuration:      0,
 		AvoidRosNamespaceConventions: false,
 	}
+}
+
+func NewRmwQosProfileServicesDefault() RmwQosProfile {
+	return NewRmwQosProfileDefault()
 }
 
 func (p *RmwQosProfile) asCStruct(dst *C.rmw_qos_profile_t) {

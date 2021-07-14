@@ -126,13 +126,13 @@ func TestMultipleSubscribersInSingleWaitSet(t *testing.T) {
 		Convey("And a publisher on the first topic", func() {
 			node, err := rclCtxPub.NewNode("pub1", "/test")
 			So(err, ShouldBeNil)
-			pub1, err = node.NewPublisher("/topic1", std_msgs.StringTypeSupport)
+			pub1, err = node.NewPublisher("/topic1", std_msgs.StringTypeSupport, nil)
 			So(err, ShouldBeNil)
 		})
 		Convey("And a publisher on the second topic", func() {
 			node, err := rclCtxPub.NewNode("pub2", "/test")
 			So(err, ShouldBeNil)
-			pub2, err = node.NewPublisher("/topic1", std_msgs.StringTypeSupport)
+			pub2, err = node.NewPublisher("/topic1", std_msgs.StringTypeSupport, nil)
 			So(err, ShouldBeNil)
 		})
 		Convey("And the waitset is started", func() {

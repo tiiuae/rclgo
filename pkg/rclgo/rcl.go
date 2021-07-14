@@ -314,6 +314,14 @@ func (self *Node) Close() error {
 	return err.ErrorOrNil()
 }
 
+type PublisherOptions struct {
+	Qos RmwQosProfile
+}
+
+func NewDefaultPublisherOptions() *PublisherOptions {
+	return &PublisherOptions{Qos: NewRmwQosProfileDefault()}
+}
+
 type Publisher struct {
 	rosID
 	TopicName       string
@@ -323,7 +331,18 @@ type Publisher struct {
 	topicName       *C.char
 }
 
-func (self *Node) NewPublisher(topicName string, ros2msg types.MessageTypeSupport) (pub *Publisher, err error) {
+// NewPublisher creates a new publisher.
+//
+// options must not be modified after passing it to this function. If options is
+// nil, default options are used.
+func (self *Node) NewPublisher(
+	topicName string,
+	ros2msg types.MessageTypeSupport,
+	options *PublisherOptions,
+) (pub *Publisher, err error) {
+	if options == nil {
+		options = NewDefaultPublisherOptions()
+	}
 	pub = &Publisher{
 		TopicName:       topicName,
 		typeSupport:     ros2msg,
@@ -334,7 +353,8 @@ func (self *Node) NewPublisher(topicName string, ros2msg types.MessageTypeSuppor
 	defer onErr(&err, pub.Close)
 	*pub.rcl_publisher_t = C.rcl_get_zero_initialized_publisher()
 	rcl_publisher_options_t := C.rcl_publisher_get_default_options()
-	rcl_publisher_options_t.qos.reliability = C.RMW_QOS_POLICY_RELIABILITY_SYSTEM_DEFAULT
+	rcl_publisher_options_t.allocator = *self.context.rcl_allocator_t
+	options.Qos.asCStruct(&rcl_publisher_options_t.qos)
 
 	var rc C.rcl_ret_t = C.rcl_publisher_init(
 		pub.rcl_publisher_t,

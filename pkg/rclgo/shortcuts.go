@@ -79,7 +79,7 @@ func PublisherBundle(rclContext *Context, wg *sync.WaitGroup, namespace, nodeNam
 		return rclContext, nil, multierror.Append(errs, err)
 	}
 
-	publisher, err := rclNode.NewPublisher(topicName, msgType)
+	publisher, err := rclNode.NewPublisher(topicName, msgType, nil)
 	if err != nil {
 		return rclContext, nil, multierror.Append(errs, err)
 	}

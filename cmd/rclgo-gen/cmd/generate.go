@@ -10,6 +10,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -21,23 +22,31 @@ import (
 )
 
 func validateGenerateArgs(cmd *cobra.Command, args []string) error {
-	if getString(cmd, "root-path") == "" {
+	rootPath := getString(cmd, "root-path")
+	if rootPath == "" {
 		if os.Getenv("AMENT_PREFIX_PATH") == "" {
 			return fmt.Errorf("You haven't sourced your ROS2 environment! Cannot autodetect --root-path. Source your ROS2 or pass --root-path")
 		}
 		return fmt.Errorf("root-path is required")
 	}
-	_, err := os.Stat(getString(cmd, "root-path"))
+	_, err := os.Stat(rootPath)
 	if err != nil {
 		return fmt.Errorf("root-path error: %v", err)
 	}
-	if getString(cmd, "dest-path") == "" {
+
+	destPath := getString(cmd, "dest-path")
+	if destPath == "" {
 		return fmt.Errorf("dest-path is required")
 	}
-	_, err = os.Stat(getString(cmd, "dest-path"))
+
+	_, err = os.Stat(destPath)
+	if errors.Is(err, os.ErrNotExist) {
+		err = os.MkdirAll(destPath, 0755)
+	}
 	if err != nil {
 		return fmt.Errorf("dest-path error: %v", err)
 	}
+
 	return nil
 }
 

@@ -46,11 +46,15 @@ type rosResource interface {
 // rosResourceStore manages ROS resources. When Close is called, all resources in
 // the store are Closed. The zero value is ready for use.
 type rosResourceStore struct {
+	sync.Mutex
 	resources map[uint64]rosResource
 	idCounter uint64
 }
 
 func (s *rosResourceStore) addResource(r rosResource) {
+	s.Mutex.Lock()
+	defer s.Mutex.Unlock()
+
 	if s.resources == nil {
 		s.resources = make(map[uint64]rosResource)
 		// The counter starts at one to allow removing zero-initialized
@@ -63,6 +67,9 @@ func (s *rosResourceStore) addResource(r rosResource) {
 }
 
 func (s *rosResourceStore) removeResource(r rosResource) {
+	s.Mutex.Lock()
+	defer s.Mutex.Unlock()
+
 	delete(s.resources, r.GetID())
 }
 

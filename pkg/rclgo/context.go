@@ -29,31 +29,31 @@ import (
 
 type rosID uint64
 
-func (r *rosID) GetID() uint64 {
+func (r *rosID) getID() uint64 {
 	return uint64(*r)
 }
 
-func (r *rosID) SetID(x uint64) {
+func (r *rosID) setID(x uint64) {
 	*r = rosID(x)
 }
 
 type rosResource interface {
 	io.Closer
-	GetID() uint64
-	SetID(x uint64)
+	getID() uint64
+	setID(x uint64)
 }
 
 // rosResourceStore manages ROS resources. When Close is called, all resources in
 // the store are Closed. The zero value is ready for use.
 type rosResourceStore struct {
-	sync.Mutex
+	mutex     sync.Mutex
 	resources map[uint64]rosResource
 	idCounter uint64
 }
 
 func (s *rosResourceStore) addResource(r rosResource) {
-	s.Mutex.Lock()
-	defer s.Mutex.Unlock()
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
 
 	if s.resources == nil {
 		s.resources = make(map[uint64]rosResource)
@@ -61,16 +61,15 @@ func (s *rosResourceStore) addResource(r rosResource) {
 		// resources.
 		s.idCounter = 1
 	}
-	r.SetID(s.idCounter)
+	r.setID(s.idCounter)
 	s.resources[s.idCounter] = r
 	s.idCounter++
 }
 
 func (s *rosResourceStore) removeResource(r rosResource) {
-	s.Mutex.Lock()
-	defer s.Mutex.Unlock()
-
-	delete(s.resources, r.GetID())
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	delete(s.resources, r.getID())
 }
 
 func (s *rosResourceStore) Close() error {

@@ -1070,16 +1070,15 @@ func NewDefaultClientOptions() *ClientOptions {
 
 // Client is used to send requests to and receive responses from a service.
 //
-// Calling Send is thread-safe. Creating and closing clients is not thread-safe.
+// Calling Send and Close is thread-safe. Creating clients is not thread-safe.
 type Client struct {
 	rosID
-	node                 *Node
-	rclClient            *C.struct_rcl_client_t
-	serviceName          *C.char
-	pendingRequests      map[C.long]chan *clientSendResult
-	pendingRequestsMutex sync.Mutex
-	requestTypeSupport   types.MessageTypeSupport
-	responseTypeSupport  types.MessageTypeSupport
+	node                *Node
+	rclClient           *C.struct_rcl_client_t
+	pendingRequests     map[C.long]chan *clientSendResult
+	mutex               sync.Mutex
+	requestTypeSupport  types.MessageTypeSupport
+	responseTypeSupport types.MessageTypeSupport
 }
 
 // NewClient creates a new client.
@@ -1100,17 +1099,18 @@ func (n *Node) NewClient(
 		pendingRequests:     make(map[C.long]chan *clientSendResult),
 		node:                n,
 		rclClient:           (*C.struct_rcl_client_t)(C.malloc(C.sizeof_struct_rcl_client_t)),
-		serviceName:         C.CString(serviceName),
 	}
 	defer onErr(&err, c.Close)
 	*c.rclClient = C.rcl_get_zero_initialized_client()
 	opts := C.struct_rcl_client_options_t{allocator: *n.context.rcl_allocator_t}
 	options.Qos.asCStruct(&opts.qos)
+	cserviceName := C.CString(serviceName)
+	defer C.free(unsafe.Pointer(cserviceName))
 	rc := C.rcl_client_init(
 		c.rclClient,
 		n.rcl_node_t,
 		(*C.struct_rosidl_service_type_support_t)(typeSupport.TypeSupport()),
-		c.serviceName,
+		cserviceName,
 		&opts,
 	)
 	if rc != C.RCL_RET_OK {
@@ -1121,19 +1121,17 @@ func (n *Node) NewClient(
 }
 
 func (c *Client) Close() error {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
 	if c.rclClient == nil {
 		return closeErr("client")
 	}
 	var err *multierror.Error
 	c.node.removeResource(c)
-	func() {
-		c.pendingRequestsMutex.Lock()
-		defer c.pendingRequestsMutex.Unlock()
-		for _, resultChan := range c.pendingRequests {
-			close(resultChan)
-		}
-	}()
-
+	for seqNum, ch := range c.pendingRequests {
+		close(ch)
+		delete(c.pendingRequests, seqNum)
+	}
 	rc := C.rcl_client_fini(c.rclClient, c.node.rcl_node_t)
 	if rc != C.RCL_RET_OK {
 		err = multierror.Append(err, errorsCastC(rc, "failed to finalize client"))
@@ -1141,16 +1139,15 @@ func (c *Client) Close() error {
 	C.free(unsafe.Pointer(c.rclClient))
 	c.rclClient = nil
 
-	C.free(unsafe.Pointer(c.serviceName))
-
 	return err.ErrorOrNil()
 }
 
 func (c *Client) Send(ctx context.Context, req types.Message) (types.Message, *RmwServiceInfo, error) {
-	resultChan, err := c.sendRequest(req)
+	resultChan, remove, err := c.addPendingRequest(req)
 	if err != nil {
 		return nil, nil, err
 	}
+	defer remove()
 	select {
 	case <-ctx.Done():
 		return nil, nil, ctx.Err()
@@ -1162,39 +1159,50 @@ func (c *Client) Send(ctx context.Context, req types.Message) (types.Message, *R
 	}
 }
 
-func (c *Client) sendRequest(req types.Message) (chan *clientSendResult, error) {
-	c.pendingRequestsMutex.Lock()
-	defer c.pendingRequestsMutex.Unlock()
-
+func (c *Client) addPendingRequest(req types.Message) (chan *clientSendResult, func(), error) {
 	reqBuf := c.requestTypeSupport.PrepareMemory()
 	defer c.requestTypeSupport.ReleaseMemory(reqBuf)
 	c.requestTypeSupport.AsCStruct(reqBuf, req)
 
-	var sequenceNumber C.long
-	rc := C.rcl_send_request(c.rclClient, reqBuf, &sequenceNumber)
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+
+	var seqNum C.long
+	rc := C.rcl_send_request(c.rclClient, reqBuf, &seqNum)
 	if rc != C.RCL_RET_OK {
-		return nil, errorsCastC(rc, "failed to send request")
+		return nil, nil, errorsCastC(rc, "failed to send request")
 	}
 	resultChan := make(chan *clientSendResult, 1)
-	c.pendingRequests[sequenceNumber] = resultChan
+	c.pendingRequests[seqNum] = resultChan
 
-	return resultChan, nil
+	return resultChan, func() {
+		c.mutex.Lock()
+		defer c.mutex.Unlock()
+		delete(c.pendingRequests, seqNum)
+	}, nil
 }
 
 func (c *Client) handleResponse() {
-	c.pendingRequestsMutex.Lock()
-	defer c.pendingRequestsMutex.Unlock()
-
 	var respHeader C.struct_rmw_service_info_t
 	respBuf := c.responseTypeSupport.PrepareMemory()
 	defer c.responseTypeSupport.ReleaseMemory(respBuf)
-	rc := C.rcl_take_response_with_info(c.rclClient, &respHeader, respBuf)
-	if rc != C.RCL_RET_OK {
-		log.Println(errorsCastC(rc, "failed to take response"))
+
+	respChan := func() chan *clientSendResult {
+		c.mutex.Lock()
+		defer c.mutex.Unlock()
+		rc := C.rcl_take_response_with_info(c.rclClient, &respHeader, respBuf)
+		if rc != C.RCL_RET_OK {
+			log.Println(errorsCastC(rc, "failed to take response"))
+			return nil
+		}
+		ch := c.pendingRequests[respHeader.request_id.sequence_number]
+		delete(c.pendingRequests, respHeader.request_id.sequence_number)
+		return ch
+	}()
+	if respChan == nil {
 		return
 	}
-	defer delete(c.pendingRequests, respHeader.request_id.sequence_number)
-	defer close(c.pendingRequests[respHeader.request_id.sequence_number])
+	defer close(respChan)
 
 	result := &clientSendResult{
 		resp: c.responseTypeSupport.New(),
@@ -1208,8 +1216,7 @@ func (c *Client) handleResponse() {
 		},
 	}
 	c.responseTypeSupport.AsGoStruct(result.resp, respBuf)
-
-	c.pendingRequests[respHeader.request_id.sequence_number] <- result
+	respChan <- result
 }
 
 type clientSendResult struct {

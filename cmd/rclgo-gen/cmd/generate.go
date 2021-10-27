@@ -13,12 +13,14 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path"
 	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	"github.com/tiiuae/rclgo/pkg/gogen"
+	"golang.org/x/tools/go/packages"
 )
 
 func validateGenerateArgs(cmd *cobra.Command, args []string) error {
@@ -132,8 +134,20 @@ func bindPFlags(cmd *cobra.Command) {
 }
 
 func getGogenConfig(cmd *cobra.Command) *gogen.Config {
+	modulePrefix := getString(cmd, "message-module-prefix")
+
+	fmt.Println("MODULE_PREFIX=", modulePrefix)
+
+	if modulePrefix == gogen.DefaultConfig.MessageModulePrefix {
+		destPath := getString(cmd, "dest-path")
+		pkgs, err := packages.Load(&packages.Config{})
+		if err == nil && len(pkgs) > 0 {
+			modulePrefix = path.Join(pkgs[0].PkgPath, destPath)
+		}
+	}
+
 	return &gogen.Config{
 		RclgoImportPath:     getString(cmd, "rclgo-import-path"),
-		MessageModulePrefix: getString(cmd, "message-module-prefix"),
+		MessageModulePrefix: modulePrefix,
 	}
 }

@@ -136,8 +136,6 @@ func bindPFlags(cmd *cobra.Command) {
 func getGogenConfig(cmd *cobra.Command) *gogen.Config {
 	modulePrefix := getString(cmd, "message-module-prefix")
 
-	fmt.Println("MODULE_PREFIX=", modulePrefix)
-
 	if modulePrefix == gogen.DefaultConfig.MessageModulePrefix {
 		destPath := getString(cmd, "dest-path")
 		pkgs, err := packages.Load(&packages.Config{})

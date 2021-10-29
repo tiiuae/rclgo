@@ -544,29 +544,46 @@ type Subscription struct {
 	topicName          *C.char
 }
 
-func (self *Node) NewSubscription(topic_name string, ros2msg types.MessageTypeSupport, subscriptionCallback SubscriptionCallback) (sub *Subscription, err error) {
+func (n *Node) NewSubscription(
+	topicName string,
+	typeSupport types.MessageTypeSupport,
+	callBack SubscriptionCallback,
+) (*Subscription, error) {
+	return n.NewSubscriptionWithOpts(topicName, typeSupport, nil, callBack)
+}
+
+func (self *Node) NewSubscriptionWithOpts(
+	topicName string,
+	ros2msg types.MessageTypeSupport,
+	opts *SubscriptionOptions,
+	subscriptionCallback SubscriptionCallback,
+) (sub *Subscription, err error) {
+	if opts == nil {
+		opts = NewDefaultSubscriptionOptions()
+	}
 	sub = &Subscription{
-		TopicName:          topic_name,
+		TopicName:          topicName,
 		Ros2MsgType:        ros2msg,
 		Callback:           subscriptionCallback,
 		node:               self,
 		rcl_subscription_t: (*C.rcl_subscription_t)(C.malloc(C.sizeof_rcl_subscription_t)),
-		topicName:          C.CString(topic_name),
+		topicName:          C.CString(topicName),
 	}
 	defer onErr(&err, sub.Close)
 	*sub.rcl_subscription_t = C.rcl_get_zero_initialized_subscription()
-
-	opts := C.rcl_subscription_get_default_options()
-	opts.qos.reliability = C.RMW_QOS_POLICY_RELIABILITY_SYSTEM_DEFAULT
+	rclOpts := C.rcl_subscription_get_default_options()
+	rclOpts.allocator = *self.context.rcl_allocator_t
+	opts.Qos.asCStruct(&rclOpts.qos)
 
 	rc := C.rcl_subscription_init(
 		sub.rcl_subscription_t,
 		self.rcl_node_t,
 		(*C.rosidl_message_type_support_t)(ros2msg.TypeSupport()),
-		C.CString(topic_name),
-		&opts)
+		sub.topicName,
+		&rclOpts,
+	)
 	if rc != C.RCL_RET_OK {
-		return sub, errorsCastC(rc, fmt.Sprintf("Topic name '%s'", topic_name))
+		return sub, errorsCastC(rc, fmt.Sprintf("Topic name '%s'", topicName))
 	}
 
 	self.addResource(sub)

@@ -32,12 +32,12 @@ Define action bundles which generate typical use-cases with minimal effort
 Creates a ROS2 RCL context with a single subscriber subscribing to the given topic and waiting for termination via the given/returned context.
 All parameters except the first one are optional.
 */
-func SubscriberBundle(ctx context.Context, rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *RCLArgs, subscriberCallback SubscriptionCallback) (*Context, error) {
+func SubscriberBundle(ctx context.Context, rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *Args, subscriberCallback SubscriptionCallback) (*Context, error) {
 	c, _, err := SubscriberBundleReturnWaitSet(ctx, rclContext, wg, namespace, nodeName, topicName, msgTypeName, rosArgs, subscriberCallback)
 	return c, err
 }
 
-func SubscriberBundleReturnWaitSet(ctx context.Context, rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *RCLArgs, subscriberCallback SubscriptionCallback) (*Context, *WaitSet, error) {
+func SubscriberBundleReturnWaitSet(ctx context.Context, rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *Args, subscriberCallback SubscriptionCallback) (*Context, *WaitSet, error) {
 	var errs error
 	var msgType types.MessageTypeSupport
 	rclContext, wg, msgType, errs = bundleDefaults(rclContext, wg, &namespace, &nodeName, &topicName, &msgTypeName, rosArgs)
@@ -66,7 +66,7 @@ func SubscriberBundleReturnWaitSet(ctx context.Context, rclContext *Context, wg 
 	return rclContext, waitSet, errs
 }
 
-func PublisherBundle(rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *RCLArgs) (*Context, *Publisher, error) {
+func PublisherBundle(rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *Args) (*Context, *Publisher, error) {
 	var errs error
 	var msgType types.MessageTypeSupport
 	rclContext, _, msgType, errs = bundleDefaults(rclContext, wg, &namespace, &nodeName, &topicName, &msgTypeName, rosArgs)
@@ -87,7 +87,7 @@ func PublisherBundle(rclContext *Context, wg *sync.WaitGroup, namespace, nodeNam
 	return rclContext, publisher, errs
 }
 
-func PublisherBundleTimer(ctx context.Context, rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *RCLArgs, interval time.Duration, payload string, publisherCallback func(*Publisher, types.Message) bool) (*Context, error) {
+func PublisherBundleTimer(ctx context.Context, rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName string, rosArgs *Args, interval time.Duration, payload string, publisherCallback func(*Publisher, types.Message) bool) (*Context, error) {
 	var errs error
 	var publisher *Publisher
 	rclContext, publisher, errs = PublisherBundle(rclContext, wg, namespace, nodeName, topicName, msgTypeName, rosArgs)
@@ -128,21 +128,13 @@ func PublisherBundleTimer(ctx context.Context, rclContext *Context, wg *sync.Wai
 /*
 bundleDefaults creates a default context from the given parameters.
 */
-func bundleDefaults(rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName *string, rosArgs *RCLArgs) (*Context, *sync.WaitGroup, types.MessageTypeSupport, error) {
+func bundleDefaults(rclContext *Context, wg *sync.WaitGroup, namespace, nodeName, topicName, msgTypeName *string, rosArgs *Args) (*Context, *sync.WaitGroup, types.MessageTypeSupport, error) {
 	var err, errs error
 
 	if rosArgs == nil {
-		rosArgs, err = NewRCLArgs("")
+		rosArgs, _, err = ParseArgs(os.Args)
 		if err != nil {
-			errs = multierror.Append(errs, err)
-		} else {
-			oldArgs := os.Args
-			defer func() { os.Args = oldArgs }()
-			os.Args = []string{}
-			rosArgs, err = NewRCLArgs("")
-			if err != nil {
-				return nil, wg, nil, multierror.Append(errs, err)
-			}
+			return nil, wg, nil, err
 		}
 	}
 

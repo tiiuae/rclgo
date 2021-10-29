@@ -80,8 +80,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"reflect"
 	"runtime"
-	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -89,7 +89,6 @@ import (
 
 	"github.com/google/shlex"
 	"github.com/hashicorp/go-multierror"
-	"github.com/kivilahtio/go-re/v0"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 )
 
@@ -108,117 +107,126 @@ const (
 	ClockTypeSteadyTime    ClockType = 3
 )
 
-// ROS2 RCL is configured via CLI arguments, so merge them from different sources. See. http://design.ros2.org/articles/ros_command_line_arguments.html
-type RCLArgs struct {
-	GoArgs []string
-	CArgv  **C.char
-	CArgc  C.int
-}
+// RCLArgs is a deprecated alias of Args.
+//
+// Deprecated: use Args instead.
+type RCLArgs = Args
 
-/*
-NewRCLArgs parses ROS2 RCL commandline arguments from the given rclArgs or from
-os.Args. If rclArgs is nil returns a string containing the prepared parameters
-in the form the RCL can understand them.
-
-C memory is freed when the RCLArgs-object is GC'd.
-
-Example
-
-    oldOSArgs := os.Args
-    defer func() { os.Args = oldOSArgs }()
-
-    os.Args = []string{"--extra0", "args0", "--ros-args", "--log-level", "DEBUG", "--", "--extra1", "args1"}
-    rosArgs, err := NewRCLArgs("")
-    if err != nil {
-        panic(err)
-    }
-    fmt.Printf("rosArgs: %+v\n", rosArgs.GoArgs) // -> [--extra0 args0 --ros-args --log-level DEBUG -- --extra1 args1]
-
-    rosArgs, err = NewRCLArgs("--log-level INFO")
-    if err != nil {
-        panic(err)
-    }
-    fmt.Printf("rosArgs: %+v\n", rosArgs.GoArgs) // -> [--ros-args --log-level INFO]
-
-    os.Args = []string{"--extra0", "args0", "--extra1", "args1"}
-    rosArgs, err = NewRCLArgs("")
-    if err != nil {
-        panic(err)
-    }
-    fmt.Printf("rosArgs: %+v\n", rosArgs.GoArgs) // -> []
-
-    // Output: rosArgs: [--extra0 args0 --ros-args --log-level DEBUG -- --extra1 args1]
-    // rosArgs: [--ros-args --log-level INFO]
-    // rosArgs: []
-*/
-func NewRCLArgs(rclArgs string) (*RCLArgs, error) {
-	var goArgs []string
-	var err error
-	rclArgs = strings.Trim(rclArgs, `'"`)
-	if r := re.Mr(rclArgs, `m!--ros-args\s+(.+?)\s*(?:--|$)!`); r.Matches > 0 {
-		goArgs, err = shlex.Split(rclArgs)
+// NewRCLArgs is a deprecated wrapper of ParseArgs.
+//
+// Deprecated: use ParseArgs instead.
+func NewRCLArgs(s string) (args *RCLArgs, err error) {
+	unparsed := os.Args
+	if s != "" {
+		unparsed, err = shlex.Split(s)
 		if err != nil {
-			return nil, &InvalidArgument{rclRetStruct{1003, fmt.Sprintf("%s", err), ""}}
+			return nil, fmt.Errorf("failed to split arguments: %w", err)
 		}
-	} else if rclArgs != "" {
-		goArgs, err = shlex.Split("--ros-args " + rclArgs)
-		if err != nil {
-			return nil, &InvalidArgument{rclRetStruct{1003, fmt.Sprintf("%s", err), ""}}
-		}
-	} else if r := re.Mr(strings.Join(os.Args, " "), `m!--ros-args\s+(.+?)\s*(?:--|$)!`); r.Matches > 0 {
-		goArgs = os.Args
 	}
-
-	ra := &RCLArgs{GoArgs: goArgs, CArgc: C.int(len(goArgs))}
-	if len(goArgs) > 0 {
-		// Turn the Golang []string into stone, erm. **C.char
-		argc := C.size_t(len(goArgs))
-		ra.CArgv = (**C.char)(C.malloc(C.size_t(unsafe.Sizeof(uintptr(1))) * argc))
-		cargv := (*[1 << 30]*C.char)(unsafe.Pointer(ra.CArgv))
-		for i, arg := range goArgs {
-			cargv[i] = C.CString(arg)
-		}
-	} else {
-		ra.CArgv = nil
-	}
-
-	runtime.SetFinalizer(ra, func(obj *RCLArgs) {
-		ra.Close()
-	})
-	return ra, nil
+	args, _, err = ParseArgs(unparsed)
+	return args, err
 }
 
-/*
-Close frees the allocated memory
-*/
-func (self *RCLArgs) Close() error {
-	if self.CArgv == nil {
-		return closeErr("rcl args")
-	}
-	cargv := (*[1 << 30]*C.char)(unsafe.Pointer(self.CArgv))
-	for i := 0; i < int(self.CArgc); i++ {
-		C.free(unsafe.Pointer(cargv[i]))
-	}
-	C.free(unsafe.Pointer(self.CArgv))
-	self.CArgv = nil
-	return nil
-}
-
-/*
-NewRCLArgsMust behaves the same as NewRCLArgs except on error it panic()s!
-*/
-func NewRCLArgsMust(rclArgs string) *RCLArgs {
-	args, err := NewRCLArgs(rclArgs)
+// NewRCLArgsMust is like NewRCLArgs but panics on errors.
+//
+// Deprecated: use ParseArgs instead.
+func NewRCLArgsMust(s string) *RCLArgs {
+	args, err := NewRCLArgs(s)
 	if err != nil {
-		panic(err)
+		panic("failed to parse rcl arguments: " + err.Error())
 	}
 	return args
 }
 
-func rclInit(rclArgs *RCLArgs, ctx *Context) error {
+// Close is a no-op.
+//
+// Deprecated: Close is not needed anymore.
+func (a *RCLArgs) Close() error { return nil }
+
+// ROS2 is configured via CLI arguments, so merge them from different sources.
+// See http://design.ros2.org/articles/ros_command_line_arguments.html for
+// details.
+type Args struct {
+	unparsed []*C.char
+	parsed   C.rcl_arguments_t
+}
+
+// ParseArgs parses ROS 2 command line arguments from the given slice. Returns
+// the parsed ROS 2 arguments and the remaining non-ROS arguments.
+//
+// ParseArgs expects ROS 2 arguments to be wrapped between a pair of
+// "--ros-args" and "--" arguments. See
+// http://design.ros2.org/articles/ros_command_line_arguments.html for details.
+func ParseArgs(args []string) (*Args, []string, error) {
+	rclArgs := &Args{
+		unparsed: []*C.char{C.CString("--ros-args")},
+		parsed:   C.rcl_get_zero_initialized_arguments(),
+	}
+	runtime.SetFinalizer(rclArgs, func(a *Args) {
+		for _, arg := range a.unparsed {
+			C.free(unsafe.Pointer(arg))
+		}
+		a.unparsed = nil
+		C.rcl_arguments_fini(&a.parsed)
+	})
+	var restArgs []string
+	isROSArg := false
+	for _, arg := range args {
+		if arg == "--ros-args" {
+			isROSArg = true
+		} else if isROSArg {
+			if arg == "--" {
+				isROSArg = false
+			} else {
+				rclArgs.unparsed = append(rclArgs.unparsed, C.CString(arg))
+			}
+		} else {
+			restArgs = append(restArgs, arg)
+		}
+	}
+	rc := C.rcl_parse_arguments(
+		rclArgs.argc(),
+		rclArgs.argv(),
+		C.rcl_get_default_allocator(),
+		&rclArgs.parsed,
+	)
+	if rc != C.RCL_RET_OK {
+		return nil, restArgs, errorsCastC(rc, "rcl_parse_arguments")
+	}
+	return rclArgs, restArgs, nil
+}
+
+func (a *Args) argc() C.int {
+	return C.int(len(a.unparsed))
+}
+
+func (a *Args) argv() **C.char {
+	s := (*reflect.SliceHeader)(unsafe.Pointer(&a.unparsed))
+	return (**C.char)(unsafe.Pointer(s.Data))
+}
+
+func (a *Args) String() string {
+	var s []byte
+	for i, p := range a.unparsed[1:] {
+		if i > 0 {
+			s = append(s, ' ')
+		}
+		for *p != 0 {
+			s = append(s, byte(*p))
+			p = (*C.char)(unsafe.Pointer(uintptr(unsafe.Pointer(p)) + 1))
+		}
+	}
+	runtime.KeepAlive(a)
+	return string(s)
+}
+
+func rclInit(rclArgs *Args, ctx *Context) (err error) {
 	var rc C.rcl_ret_t
 	if rclArgs == nil {
-		rclArgs, _ = NewRCLArgs("")
+		rclArgs, _, err = ParseArgs(nil)
+		if err != nil {
+			return err
+		}
 	}
 
 	ctx.rcl_allocator_t = (*C.rcl_allocator_t)(C.malloc(C.sizeof_rcl_allocator_t))
@@ -234,21 +242,17 @@ func rclInit(rclArgs *RCLArgs, ctx *Context) error {
 		return errorsCast(rc)
 	}
 
-	rc = C.rcl_init(rclArgs.CArgc, rclArgs.CArgv, &rcl_init_options_t, ctx.rcl_context_t)
+	rc = C.rcl_init(rclArgs.argc(), rclArgs.argv(), &rcl_init_options_t, ctx.rcl_context_t)
+	runtime.KeepAlive(rclArgs)
 	if rc != C.RCL_RET_OK {
 		return errorsCast(rc)
 	}
 	return nil
 }
 
-func rclInitLogging(rclArgs *RCLArgs, allocator *C.rcl_allocator_t) error {
-	rcl_arguments := C.rcl_get_zero_initialized_arguments()
-	rc := C.rcl_parse_arguments(rclArgs.CArgc, rclArgs.CArgv, *allocator, &rcl_arguments)
-	if rc != C.RCL_RET_OK {
-		return errorsCastC(rc, "rclInitLogging -> rcl_parse_arguments()")
-	}
-
-	rc = C.rcl_logging_configure(&rcl_arguments, allocator)
+func rclInitLogging(rclArgs *Args, allocator *C.rcl_allocator_t) error {
+	rc := C.rcl_logging_configure(&rclArgs.parsed, allocator)
+	runtime.KeepAlive(rclArgs)
 	if rc != C.RCL_RET_OK {
 		return errorsCastC(rc, "rclInitLogging -> rcl_logging_configure()")
 	}

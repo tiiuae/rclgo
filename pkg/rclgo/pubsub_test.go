@@ -30,7 +30,7 @@ func TestPubSub(t *testing.T) {
 	Convey("Scenario: Publisher publishes, Subscriber subscribes, garbage is collected", t, func() {
 
 		Convey("Given a Subscriber", func() {
-			rclContextSub, waitSet, errsSub = SubscriberBundleReturnWaitSet(subCtx, rclContextSub, nil, "/test", "", "/topic", "std_msgs/ColorRGBA", NewRCLArgsMust("--ros-args --log-level DEBUG"),
+			rclContextSub, waitSet, errsSub = SubscriberBundleReturnWaitSet(subCtx, rclContextSub, nil, "/test", "", "/topic", "std_msgs/ColorRGBA", parseArgsMust("--ros-args --log-level DEBUG"),
 				func(s *Subscription) {
 					var m std_msgs.ColorRGBA
 					if _, err := s.TakeMessage(&m); err != nil {
@@ -41,7 +41,7 @@ func TestPubSub(t *testing.T) {
 			So(errsSub, ShouldBeNil)
 		})
 		Convey("And a Publisher", func() {
-			rclContextPub, publisher, errsPub = PublisherBundle(rclContextPub, nil, "/test", "", "/topic", "std_msgs/ColorRGBA", NewRCLArgsMust("--ros-args --log-level DEBUG"))
+			rclContextPub, publisher, errsPub = PublisherBundle(rclContextPub, nil, "/test", "", "/topic", "std_msgs/ColorRGBA", parseArgsMust("--ros-args --log-level DEBUG"))
 			So(errsPub, ShouldBeNil)
 		})
 		Convey("And the Subscriber is ready to work", func() {
@@ -383,14 +383,15 @@ func receiveNothing(subs interface{}) {
 }
 
 func newDefaultRCLContext() (*Context, error) {
-	return NewContext(&sync.WaitGroup{}, 0, defaultRCLArgs())
+	return NewContext(&sync.WaitGroup{}, 0, parseArgsMust(""))
 }
 
-func defaultRCLArgs() *RCLArgs {
-	osArgs := os.Args
-	defer func() { os.Args = osArgs }()
-	os.Args = []string{}
-	return NewRCLArgsMust("")
+func parseArgsMust(args string) *Args {
+	a, _, err := ParseArgs(strings.Split(args, " "))
+	if err != nil {
+		panic("failed to parse args: " + err.Error())
+	}
+	return a
 }
 
 func sendToChan(c chan<- receiveResult) func(s *Subscription) {

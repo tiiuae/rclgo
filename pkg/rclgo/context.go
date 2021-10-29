@@ -98,7 +98,7 @@ parent can be nil, a new context.Background is created
 clockType can be nil, then no clock is initialized, you can later initialize it with NewClock()
 rclArgs can be nil
 */
-func NewContext(wg *sync.WaitGroup, clockType ClockType, rclArgs *RCLArgs) (ctx *Context, err error) {
+func NewContext(wg *sync.WaitGroup, clockType ClockType, rclArgs *Args) (ctx *Context, err error) {
 	ctx = &Context{WG: wg}
 	defer onErr(&err, ctx.Close)
 

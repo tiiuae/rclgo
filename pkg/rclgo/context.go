@@ -92,22 +92,25 @@ type Context struct {
 }
 
 /*
-NewRCLContext initializes a new RCL context.
+NewContext initializes a new RCL context.
 
-parent can be nil, a new context.Background is created
-clockType can be nil, then no clock is initialized, you can later initialize it with NewClock()
-rclArgs can be nil
+If clockType == 0, no clock is created. You can always create a clock by calling
+NewClock.
+
+A nil rclArgs is treated as en empty argument list.
+
+If logging has not yet been initialized, NewContext will initialize it
+automatically using rclArgs for logging configuration.
 */
 func NewContext(wg *sync.WaitGroup, clockType ClockType, rclArgs *Args) (ctx *Context, err error) {
+	if wg == nil {
+		wg = &sync.WaitGroup{}
+	}
 	ctx = &Context{WG: wg}
 	defer onErr(&err, ctx.Close)
 
 	if err = rclInit(rclArgs, ctx); err != nil {
 		return nil, err
-	}
-
-	if wg == nil {
-		ctx.WG = &sync.WaitGroup{}
 	}
 
 	if clockType != 0 {
@@ -129,14 +132,19 @@ func (c *Context) Close() error {
 	var errs *multierror.Error
 	errs = multierror.Append(errs, c.rosResourceStore.Close())
 
-	if rc := C.rcl_shutdown(c.rcl_context_t); rc != C.RCL_RET_OK {
-		errs = multierror.Append(errs, errorsCastC(rc, fmt.Sprintf("C.rcl_shutdown(%+v)", c.rcl_context_t)))
-	} else if rc := C.rcl_context_fini(c.rcl_context_t); rc != C.RCL_RET_OK {
-		errs = multierror.Append(errs, errorsCastC(rc, "rcl_context_fini failed"))
+	if c.rcl_context_t != nil {
+		if rc := C.rcl_shutdown(c.rcl_context_t); rc != C.RCL_RET_OK {
+			errs = multierror.Append(errs, errorsCastC(rc, fmt.Sprintf("C.rcl_shutdown(%+v)", c.rcl_context_t)))
+		} else if rc := C.rcl_context_fini(c.rcl_context_t); rc != C.RCL_RET_OK {
+			errs = multierror.Append(errs, errorsCastC(rc, "rcl_context_fini failed"))
+		}
+		C.free(unsafe.Pointer(c.rcl_context_t))
+		c.rcl_context_t = nil
 	}
-	C.free(unsafe.Pointer(c.rcl_context_t))
-	C.free(unsafe.Pointer(c.rcl_allocator_t))
-	c.rcl_allocator_t = nil
+	if c.rcl_allocator_t != nil {
+		C.free(unsafe.Pointer(c.rcl_allocator_t))
+		c.rcl_allocator_t = nil
+	}
 
 	c.WG = nil
 	return errs.ErrorOrNil()

@@ -78,7 +78,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	"reflect"
 	"runtime"
@@ -234,7 +233,9 @@ func rclInit(rclArgs *Args, ctx *Context) (err error) {
 	ctx.rcl_context_t = (*C.rcl_context_t)(C.malloc(C.sizeof_rcl_context_t))
 	*ctx.rcl_context_t = C.rcl_get_zero_initialized_context()
 
-	rclInitLogging(rclArgs, ctx.rcl_allocator_t)
+	if err := rclInitLogging(rclArgs, false); err != nil {
+		return err
+	}
 
 	rcl_init_options_t := C.rcl_get_zero_initialized_init_options()
 	rc = C.rcl_init_options_init(&rcl_init_options_t, *ctx.rcl_allocator_t)
@@ -250,21 +251,13 @@ func rclInit(rclArgs *Args, ctx *Context) (err error) {
 	return nil
 }
 
-func rclInitLogging(rclArgs *Args, allocator *C.rcl_allocator_t) error {
-	rc := C.rcl_logging_configure(&rclArgs.parsed, allocator)
-	runtime.KeepAlive(rclArgs)
-	if rc != C.RCL_RET_OK {
-		return errorsCastC(rc, "rclInitLogging -> rcl_logging_configure()")
-	}
-	return nil
-}
-
 type Node struct {
 	rosID
 	rosResourceStore
 	rcl_node_t      *C.rcl_node_t
 	context         *Context
 	name, namespace *C.char
+	logger          *Logger
 }
 
 func (c *Context) NewNode(node_name, namespace string) (node *Node, err error) {
@@ -288,6 +281,11 @@ func (c *Context) NewNode(node_name, namespace string) (node *Node, err error) {
 	if rc != C.RCL_RET_OK {
 		return nil, errorsCastC(rc, "failed to create node:")
 	}
+	name := C.rcl_node_get_logger_name(node.rcl_node_t)
+	if name == nil {
+		return nil, errors.New("unexpectedly invalid node")
+	}
+	node.logger = GetLogger(C.GoString(name))
 
 	c.addResource(node)
 	return node, nil
@@ -316,6 +314,11 @@ func (self *Node) Close() error {
 	C.free(unsafe.Pointer(self.namespace))
 
 	return err.ErrorOrNil()
+}
+
+// Logger returns the logger associated with n.
+func (n *Node) Logger() *Logger {
+	return n.logger
 }
 
 type PublisherOptions struct {
@@ -530,6 +533,14 @@ func (self *Timer) Close() error {
 	C.free(unsafe.Pointer(self.rcl_timer_t))
 	self.rcl_timer_t = nil
 	return err.ErrorOrNil()
+}
+
+type SubscriptionOptions struct {
+	Qos RmwQosProfile
+}
+
+func NewDefaultSubscriptionOptions() *SubscriptionOptions {
+	return &SubscriptionOptions{Qos: NewRmwQosProfileDefault()}
 }
 
 type SubscriptionCallback func(*Subscription)
@@ -812,7 +823,7 @@ func (self *WaitSet) RunGoroutine(ctx context.Context) {
 	go func() {
 		defer self.context.WG.Done()
 		if err := self.Run(ctx); err != nil {
-			fmt.Printf("RunGoroutine error: '%+v'\n", err)
+			GetLogger("").Debugf("RunGoroutine error: '%+v'\n", err)
 		}
 	}()
 }
@@ -1052,7 +1063,7 @@ func (s *Service) handleRequest() {
 	defer s.requestTypeSupport.ReleaseMemory(reqBuffer)
 	rc := C.rcl_take_request_with_info(s.rclService, &reqHeader, reqBuffer)
 	if rc != C.RCL_RET_OK {
-		log.Println(errorsCastC(rc, "failed to take request"))
+		s.node.Logger().Debug(errorsCastC(rc, "failed to take request"))
 		return
 	}
 	info := RmwServiceInfo{
@@ -1213,7 +1224,7 @@ func (c *Client) handleResponse() {
 		defer c.mutex.Unlock()
 		rc := C.rcl_take_response_with_info(c.rclClient, &respHeader, respBuf)
 		if rc != C.RCL_RET_OK {
-			log.Println(errorsCastC(rc, "failed to take response"))
+			c.node.Logger().Debug(errorsCastC(rc, "failed to take response"))
 			return nil
 		}
 		ch := c.pendingRequests[respHeader.request_id.sequence_number]

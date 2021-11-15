@@ -187,7 +187,7 @@ type Logger struct {
 	cname *C.char
 }
 
-var validLoggerNameRegex = regexp.MustCompile(`(^\.)|(\.$)|\.\.`)
+var invalidLoggerNameRegex = regexp.MustCompile(`(^\.)|(\.$)|(\.\.)`)
 
 // GetLogger returns the logger named name. If name is empty, the default logger
 // is returned. Returns nil if name is invalid.
@@ -195,7 +195,7 @@ func GetLogger(name string) *Logger {
 	if name == "" {
 		return defaultLogger
 	}
-	if validLoggerNameRegex.MatchString(name) {
+	if invalidLoggerNameRegex.MatchString(name) {
 		return nil
 	}
 	l := &Logger{
@@ -203,7 +203,7 @@ func GetLogger(name string) *Logger {
 		cname: C.CString(name),
 	}
 	runtime.SetFinalizer(l, func(l *Logger) {
-		C.free(unsafe.Pointer(l))
+		C.free(unsafe.Pointer(l.cname))
 		l.cname = nil
 	})
 	return l
@@ -223,7 +223,8 @@ func (l *Logger) Parent() *Logger {
 	return GetLogger(l.name[:i])
 }
 
-// Child returns the child logger of l named name.
+// Child returns the child logger of l named name. Returns nil if name is
+// invalid.
 func (l *Logger) Child(name string) *Logger {
 	if l.name == "" {
 		return GetLogger(name)

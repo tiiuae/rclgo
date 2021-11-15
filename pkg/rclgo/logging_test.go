@@ -62,6 +62,36 @@ func TestInitLogging(t *testing.T) {
 	})
 }
 
+func TestGetLogger(t *testing.T) {
+	Convey("Scenario: GetLogger returns correct loggers", t, func() {
+		So(GetLogger(""), ShouldEqual, defaultLogger)
+		So(GetLogger(""), ShouldEqual, GetLogger(""))
+
+		a := GetLogger("a")
+		So(a, ShouldNotBeNil)
+		So(a.Name(), ShouldEqual, GetLogger("a").Name())
+		So(a.Parent(), ShouldEqual, GetLogger(""))
+
+		ab := GetLogger("a.b")
+		So(ab, ShouldNotBeNil)
+		So(ab.Name(), ShouldEqual, GetLogger("a.b").Name())
+		So(ab.Name(), ShouldNotEqual, a.Name())
+		So(ab.Parent().Name(), ShouldEqual, a.Name())
+		So(a.Child("b").Name(), ShouldEqual, ab.Name())
+		So(a.Child("."), ShouldBeNil)
+		So(a.Child(".b"), ShouldBeNil)
+		So(a.Child("b."), ShouldBeNil)
+
+		So(GetLogger("."), ShouldBeNil)
+		So(GetLogger(".."), ShouldBeNil)
+		So(GetLogger("..."), ShouldBeNil)
+		So(GetLogger(".a."), ShouldBeNil)
+		So(GetLogger(".a.b"), ShouldBeNil)
+		So(GetLogger("a.b."), ShouldBeNil)
+		So(GetLogger("a..b"), ShouldBeNil)
+	})
+}
+
 func TestNodeLogger(t *testing.T) {
 	var (
 		ctx    *Context

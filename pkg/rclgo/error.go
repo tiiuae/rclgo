@@ -19,7 +19,6 @@ package rclgo
 */
 import "C"
 import (
-	"errors"
 	"fmt"
 )
 
@@ -86,6 +85,12 @@ func onErr(err *error, f func() error) {
 	}
 }
 
+type closeError string
+
+func (e closeError) Error() string {
+	return string(e)
+}
+
 func closeErr(s string) error {
-	return errors.New("tried to close a closed " + s)
+	return closeError("tried to close a closed " + s)
 }

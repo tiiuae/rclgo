@@ -27,6 +27,7 @@ package rclgo
 #include <rcl/timer.h>
 #include <rcl/time.h>
 #include <rcl/wait.h>
+#include <rcl/guard_condition.h>
 #include <rcl/validate_topic_name.h>
 #include <rcl/node_options.h>
 #include <rcl/node.h>
@@ -82,7 +83,6 @@ import (
 	"reflect"
 	"runtime"
 	"sync"
-	"sync/atomic"
 	"time"
 	"unsafe"
 
@@ -319,6 +319,25 @@ func (self *Node) Close() error {
 // Logger returns the logger associated with n.
 func (n *Node) Logger() *Logger {
 	return n.logger
+}
+
+func spinErr(spinner string, err error) error {
+	if err == nil {
+		return nil
+	}
+	return fmt.Errorf("failed to spin %s: %w", spinner, err)
+}
+
+// Spin starts and waits for all ROS resources in the node that need waiting
+// such as subscriptions. Spin returns when an error occurs or ctx is canceled.
+func (n *Node) Spin(ctx context.Context) error {
+	ws, err := n.context.NewWaitSet()
+	if err != nil {
+		return spinErr("node", err)
+	}
+	defer ws.Close()
+	ws.addResources(&n.rosResourceStore)
+	return spinErr("node", ws.Run(ctx))
 }
 
 type PublisherOptions struct {
@@ -619,23 +638,6 @@ func (s *Subscription) TakeMessage(out types.Message) (*RmwMessageInfo, error) {
 	}, nil
 }
 
-func spinErr(thing string, err error) error {
-	return fmt.Errorf("failed to spin %s: %w", thing, err)
-}
-
-func (s *Subscription) Spin(ctx context.Context, timeout time.Duration) error {
-	ws, err := s.node.context.NewWaitSet(timeout)
-	if err != nil {
-		return spinErr("subscription", err)
-	}
-	defer ws.Close()
-	ws.AddSubscriptions(s)
-	if err = ws.Run(ctx); err != nil {
-		return spinErr("subscription", err)
-	}
-	return nil
-}
-
 /*
 Close frees the allocated memory
 */
@@ -723,22 +725,66 @@ func TopicGetTopicNamesAndTypes(rclContext RCLContext, rcl_node *C.rcl_node_t) (
 }
 */
 
-type WaitSet struct {
+type guardCondition struct {
 	rosID
-	Timeout       time.Duration
-	Subscriptions []*Subscription
-	Timers        []*Timer
-	services      []*Service
-	clients       []*Client
-	// Flag to notify the outside gothreads that this WaitSet is ready to
-	// receive messages. Use waitSet.WaitForReady() to synchronize. Value of 0
-	// means not ready and any other value means ready.
-	ready          uint32
-	rcl_wait_set_t C.rcl_wait_set_t
-	context        *Context
+	rclGuardCondition *C.rcl_guard_condition_t
+	context           *Context
 }
 
-func (c *Context) NewWaitSet(timeout time.Duration) (ws *WaitSet, err error) {
+func (c *Context) newGuardCondition() (g *guardCondition, err error) {
+	g = &guardCondition{
+		rclGuardCondition: (*C.rcl_guard_condition_t)(C.malloc(C.sizeof_rcl_guard_condition_t)),
+		context:           c,
+	}
+	*g.rclGuardCondition = C.rcl_get_zero_initialized_guard_condition()
+	defer onErr(&err, g.Close)
+	rc := C.rcl_guard_condition_init(
+		g.rclGuardCondition,
+		c.rcl_context_t,
+		C.rcl_guard_condition_get_default_options(),
+	)
+	if rc != C.RCL_RET_OK {
+		return nil, errorsCast(rc)
+	}
+	c.addResource(g)
+	return g, nil
+}
+
+func (c *guardCondition) Close() error {
+	if c.rclGuardCondition == nil {
+		return closeErr("guard condition")
+	}
+	c.context.removeResource(c)
+	rc := C.rcl_guard_condition_fini(c.rclGuardCondition)
+	C.free(unsafe.Pointer(c.rclGuardCondition))
+	c.rclGuardCondition = nil
+	if rc == C.RCL_RET_OK {
+		return nil
+	}
+	return errorsCast(rc)
+}
+
+func (c *guardCondition) Trigger() error {
+	rc := C.rcl_trigger_guard_condition(c.rclGuardCondition)
+	if rc != C.RCL_RET_OK {
+		return errorsCast(rc)
+	}
+	return nil
+}
+
+type WaitSet struct {
+	rosID
+	Subscriptions   []*Subscription
+	Timers          []*Timer
+	Services        []*Service
+	Clients         []*Client
+	guardConditions []*guardCondition
+	rcl_wait_set_t  C.rcl_wait_set_t
+	cancelWait      *guardCondition
+	context         *Context
+}
+
+func (c *Context) NewWaitSet() (ws *WaitSet, err error) {
 	const (
 		subscriptionsCount   = 0
 		guardConditionsCount = 0
@@ -749,11 +795,10 @@ func (c *Context) NewWaitSet(timeout time.Duration) (ws *WaitSet, err error) {
 	)
 	ws = &WaitSet{
 		context:        c,
-		Timeout:        timeout,
 		Subscriptions:  []*Subscription{},
 		Timers:         []*Timer{},
-		services:       []*Service{},
-		clients:        []*Client{},
+		Services:       []*Service{},
+		Clients:        []*Client{},
 		rcl_wait_set_t: C.rcl_get_zero_initialized_wait_set(),
 	}
 	defer onErr(&err, ws.Close)
@@ -771,7 +816,11 @@ func (c *Context) NewWaitSet(timeout time.Duration) (ws *WaitSet, err error) {
 	if rc != C.RCL_RET_OK {
 		return nil, errorsCast(rc)
 	}
-
+	ws.cancelWait, err = c.newGuardCondition()
+	if err != nil {
+		return nil, err
+	}
+	ws.addGuardConditions(ws.cancelWait)
 	c.addResource(ws)
 	return ws, nil
 }
@@ -785,103 +834,101 @@ func (w *WaitSet) AddTimers(timers ...*Timer) {
 }
 
 func (w *WaitSet) AddServices(services ...*Service) {
-	w.services = append(w.services, services...)
+	w.Services = append(w.Services, services...)
 }
 
 func (w *WaitSet) AddClients(clients ...*Client) {
-	w.clients = append(w.clients, clients...)
+	w.Clients = append(w.Clients, clients...)
 }
 
-func (w *WaitSet) Ready() bool {
-	return atomic.LoadUint32(&w.ready) > 0
+func (w *WaitSet) addGuardConditions(guardConditions ...*guardCondition) {
+	w.guardConditions = append(w.guardConditions, guardConditions...)
 }
 
-func (w *WaitSet) markReady() {
-	atomic.StoreUint32(&w.ready, 1)
-}
-
-func (self *WaitSet) WaitForReady(timeout, interval time.Duration) error {
-	after := time.After(timeout)
-	for {
-		if self.Ready() {
-			return nil
-		}
-		select {
-		case <-after:
-			if self.Ready() {
-				return nil
-			}
-			return errorsCastC(2, "WaitForReady:")
-		default:
-			time.Sleep(interval)
+func (w *WaitSet) addResources(res *rosResourceStore) {
+	for _, res := range res.resources {
+		switch res := res.(type) {
+		case *Subscription:
+			w.AddSubscriptions(res)
+		case *Timer:
+			w.AddTimers(res)
+		case *Service:
+			w.AddServices(res)
+		case *Client:
+			w.AddClients(res)
+		case *guardCondition: // Guard conditions are handled specially
+		case *Node:
+			w.addResources(&res.rosResourceStore)
 		}
 	}
-}
-
-func (self *WaitSet) RunGoroutine(ctx context.Context) {
-	self.context.WG.Add(1)
-	go func() {
-		defer self.context.WG.Done()
-		if err := self.Run(ctx); err != nil {
-			GetLogger("").Debugf("RunGoroutine error: '%+v'\n", err)
-		}
-	}()
 }
 
 /*
 Run causes the current goroutine to block on this given WaitSet.
 WaitSet executes the given timers and subscriptions and calls their callbacks on new events.
 */
-func (self *WaitSet) Run(ctx context.Context) error {
+func (self *WaitSet) Run(ctx context.Context) (err error) {
+	if ctx == nil {
+		return errors.New("context must not be nil")
+	}
+	errs := make(chan error, 1)
+	defer func() {
+		err = multierror.Append(err, <-errs).ErrorOrNil()
+	}()
+	errctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+	go func() {
+		defer close(errs)
+		<-errctx.Done()
+		errs <- self.cancelWait.Trigger()
+	}()
 	for {
-		select {
-		case <-ctx.Done():
-			return nil
-		default:
-			err := self.initEntities()
-			if err != nil {
-				return err
-			}
+		if err := self.initEntities(); err != nil {
+			return err
+		}
+		if rc := C.rcl_wait(&self.rcl_wait_set_t, -1); rc != C.RCL_RET_OK {
+			return errorsCast(rc)
+		}
 
-			var rc C.rcl_ret_t = C.rcl_wait(&self.rcl_wait_set_t, (C.long)(self.Timeout))
-			self.markReady()
-			if rc == C.RCL_RET_TIMEOUT {
-				continue
-			}
+		// Check if counts in rcl layer and Go layer differ. Guards against
+		// internal state representation mismatch. Due to some software bug
+		// the lists of waited resources could easily get out of sync. AND
+		// lead to very very difficult to detect bugs.
+		panicIfCountMismatch("timers", self.rcl_wait_set_t.size_of_timers, len(self.Timers))
+		panicIfCountMismatch("subscriptions", self.rcl_wait_set_t.size_of_subscriptions, len(self.Subscriptions))
+		panicIfCountMismatch("services", self.rcl_wait_set_t.size_of_services, len(self.Services))
+		panicIfCountMismatch("clients", self.rcl_wait_set_t.size_of_clients, len(self.Clients))
+		panicIfCountMismatch("guardConditions", self.rcl_wait_set_t.size_of_guard_conditions, len(self.guardConditions))
 
-			// Check if counts in rcl layer and Go layer differ. Guards against
-			// internal state representation mismatch. Due to some software bug
-			// the lists of waited resources could easily get out of sync. AND
-			// lead to very very difficult to detect bugs.
-			panicIfCountMismatch("timers", self.rcl_wait_set_t.size_of_timers, len(self.Timers))
-			panicIfCountMismatch("subscriptions", self.rcl_wait_set_t.size_of_subscriptions, len(self.Subscriptions))
-			panicIfCountMismatch("services", self.rcl_wait_set_t.size_of_services, len(self.services))
-			panicIfCountMismatch("clients", self.rcl_wait_set_t.size_of_clients, len(self.clients))
-
-			timers := (*[1 << 30]*C.struct_rcl_timer_t)(unsafe.Pointer(self.rcl_wait_set_t.timers))
-			for i, t := range self.Timers {
-				if timers[i] != nil {
-					t.Reset()
-					t.Callback(t)
-				}
+		timers := (*[1 << 30]*C.struct_rcl_timer_t)(unsafe.Pointer(self.rcl_wait_set_t.timers))
+		for i, t := range self.Timers {
+			if timers[i] != nil {
+				t.Reset()
+				t.Callback(t)
 			}
-			subs := (*[1 << 30]*C.struct_rcl_subscription_t)(unsafe.Pointer(self.rcl_wait_set_t.subscriptions))
-			for i, s := range self.Subscriptions {
-				if subs[i] != nil {
-					s.Callback(s)
-				}
+		}
+		subs := (*[1 << 30]*C.struct_rcl_subscription_t)(unsafe.Pointer(self.rcl_wait_set_t.subscriptions))
+		for i, s := range self.Subscriptions {
+			if subs[i] != nil {
+				s.Callback(s)
 			}
-			svcs := (*[1 << 30]*C.struct_rcl_service_t)(unsafe.Pointer(self.rcl_wait_set_t.services))
-			for i, s := range self.services {
-				if svcs[i] != nil {
-					s.handleRequest()
-				}
+		}
+		svcs := (*[1 << 30]*C.struct_rcl_service_t)(unsafe.Pointer(self.rcl_wait_set_t.services))
+		for i, s := range self.Services {
+			if svcs[i] != nil {
+				s.handleRequest()
 			}
-			clients := (*[1 << 30]*C.struct_rcl_client_t)(unsafe.Pointer(self.rcl_wait_set_t.clients))
-			for i, c := range self.clients {
-				if clients[i] != nil {
-					c.handleResponse()
-				}
+		}
+		clients := (*[1 << 30]*C.struct_rcl_client_t)(unsafe.Pointer(self.rcl_wait_set_t.clients))
+		for i, c := range self.Clients {
+			if clients[i] != nil {
+				c.handleResponse()
+			}
+		}
+		guardConditions := (*[1 << 30]*C.struct_rcl_guard_condition_t)(unsafe.Pointer(self.rcl_wait_set_t.guard_conditions))
+		for i := range self.guardConditions {
+			if guardConditions[i] == self.cancelWait.rclGuardCondition {
+				return ctx.Err()
 			}
 		}
 	}
@@ -909,10 +956,10 @@ func (self *WaitSet) initEntities() error {
 	rc = C.rcl_wait_set_resize(
 		&self.rcl_wait_set_t,
 		C.size_t(len(self.Subscriptions)),
-		self.rcl_wait_set_t.size_of_guard_conditions,
+		C.size_t(len(self.guardConditions)),
 		C.size_t(len(self.Timers)),
-		C.size_t(len(self.clients)),
-		C.size_t(len(self.services)),
+		C.size_t(len(self.Clients)),
+		C.size_t(len(self.Services)),
 		self.rcl_wait_set_t.size_of_events,
 	)
 	if rc != C.RCL_RET_OK {
@@ -930,16 +977,22 @@ func (self *WaitSet) initEntities() error {
 			return errorsCastC(rc, fmt.Sprintf("rcl_wait_set_add_timer() failed for wait_set='%v'", self))
 		}
 	}
-	for _, service := range self.services {
+	for _, service := range self.Services {
 		rc = C.rcl_wait_set_add_service(&self.rcl_wait_set_t, service.rclService, nil)
 		if rc != C.RCL_RET_OK {
 			return errorsCastC(rc, fmt.Sprintf("rcl_wait_set_add_service() failed for wait_set='%v'", self))
 		}
 	}
-	for _, client := range self.clients {
+	for _, client := range self.Clients {
 		rc = C.rcl_wait_set_add_client(&self.rcl_wait_set_t, client.rclClient, nil)
 		if rc != C.RCL_RET_OK {
 			return errorsCastC(rc, fmt.Sprintf("rcl_wait_set_add_client() failed for wait_set='%v'", self))
+		}
+	}
+	for _, guardCondition := range self.guardConditions {
+		rc = C.rcl_wait_set_add_guard_condition(&self.rcl_wait_set_t, guardCondition.rclGuardCondition, nil)
+		if rc != C.RCL_RET_OK {
+			return errorsCastC(rc, fmt.Sprintf("rcl_wait_set_add_guard_condition() failed for wait_set='%v'", self))
 		}
 	}
 	return nil
@@ -952,14 +1005,19 @@ func (self *WaitSet) Close() error {
 	if self.context == nil {
 		return closeErr("wait set")
 	}
-	var err *multierror.Error
+	var errs *multierror.Error
 	self.context.removeResource(self)
 	self.context = nil
 	rc := C.rcl_wait_set_fini(&self.rcl_wait_set_t)
 	if rc != C.RCL_RET_OK {
-		err = multierror.Append(err, errorsCast(rc))
+		errs = multierror.Append(errs, errorsCast(rc))
 	}
-	return err.ErrorOrNil()
+	var closeError closeError
+	err := self.cancelWait.Close()
+	if err != nil && !errors.As(err, &closeError) {
+		errs = multierror.Append(errs, err)
+	}
+	return errs.ErrorOrNil()
 }
 
 type RmwRequestID struct {

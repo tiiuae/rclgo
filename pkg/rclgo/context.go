@@ -19,6 +19,7 @@ package rclgo
 import "C"
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"sync"
@@ -82,8 +83,6 @@ func (s *rosResourceStore) Close() error {
 
 // Context manages resources for a set of RCL entities.
 type Context struct {
-	WG *sync.WaitGroup
-
 	rcl_allocator_t *C.rcutils_allocator_t
 	rcl_context_t   *C.rcl_context_t
 	Clock           *Clock
@@ -102,11 +101,8 @@ A nil rclArgs is treated as en empty argument list.
 If logging has not yet been initialized, NewContext will initialize it
 automatically using rclArgs for logging configuration.
 */
-func NewContext(wg *sync.WaitGroup, clockType ClockType, rclArgs *Args) (ctx *Context, err error) {
-	if wg == nil {
-		wg = &sync.WaitGroup{}
-	}
-	ctx = &Context{WG: wg}
+func NewContext(clockType ClockType, rclArgs *Args) (ctx *Context, err error) {
+	ctx = &Context{}
 	defer onErr(&err, ctx.Close)
 
 	if err = rclInit(rclArgs, ctx); err != nil {
@@ -124,14 +120,10 @@ func NewContext(wg *sync.WaitGroup, clockType ClockType, rclArgs *Args) (ctx *Co
 }
 
 func (c *Context) Close() error {
-	if c.WG == nil {
+	if c.rcl_context_t == nil && c.rcl_allocator_t == nil {
 		return closeErr("context")
 	}
-	c.WG.Wait() // Wait for gothreads to quit, before GC:ing. Otherwise a ton of null-pointers await.
-
-	var errs *multierror.Error
-	errs = multierror.Append(errs, c.rosResourceStore.Close())
-
+	errs := multierror.Append(c.rosResourceStore.Close())
 	if c.rcl_context_t != nil {
 		if rc := C.rcl_shutdown(c.rcl_context_t); rc != C.RCL_RET_OK {
 			errs = multierror.Append(errs, errorsCastC(rc, fmt.Sprintf("C.rcl_shutdown(%+v)", c.rcl_context_t)))
@@ -145,7 +137,18 @@ func (c *Context) Close() error {
 		C.free(unsafe.Pointer(c.rcl_allocator_t))
 		c.rcl_allocator_t = nil
 	}
-
-	c.WG = nil
 	return errs.ErrorOrNil()
+}
+
+// Spin starts and waits for all ROS resources in the context that need waiting
+// such as nodes and subscriptions. Spin returns when an error occurs or ctx is
+// canceled.
+func (c *Context) Spin(ctx context.Context) error {
+	ws, err := c.NewWaitSet()
+	if err != nil {
+		return spinErr("context", err)
+	}
+	defer ws.Close()
+	ws.addResources(&c.rosResourceStore)
+	return spinErr("context", ws.Run(ctx))
 }

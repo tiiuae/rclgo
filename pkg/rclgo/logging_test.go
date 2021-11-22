@@ -110,7 +110,7 @@ func TestNodeLogger(t *testing.T) {
 			args, _, err := ParseArgs(nil)
 			So(args, ShouldNotBeNil)
 			So(err, ShouldBeNil)
-			ctx, err = NewContext(nil, 0, args)
+			ctx, err = NewContext(0, args)
 			So(ctx, ShouldNotBeNil)
 			So(err, ShouldBeNil)
 

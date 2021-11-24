@@ -10,8 +10,8 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package rclgo
 
 /*
-#cgo LDFLAGS: -L/opt/ros/foxy/lib -Wl,-rpath=/opt/ros/foxy/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
-#cgo CFLAGS: -I/opt/ros/foxy/include
+#cgo LDFLAGS: -L/opt/ros/galactic/lib -Wl,-rpath=/opt/ros/galactic/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
+#cgo CFLAGS: -I/opt/ros/galactic/include
 
 #include <rcl/types.h>
 #include <rcutils/error_handling.h>

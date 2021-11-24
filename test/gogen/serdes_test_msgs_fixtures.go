@@ -5,9 +5,9 @@ Here we define test fixtures for each message type for a rather complete test co
 package test
 
 /*
-#cgo LDFLAGS: -L/opt/ros/foxy/lib -Wl,-rpath=/opt/ros/foxy/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation -lrcl_interfaces__rosidl_typesupport_c
+#cgo LDFLAGS: -L/opt/ros/galactic/lib -Wl,-rpath=/opt/ros/galactic/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation -lrcl_interfaces__rosidl_typesupport_c
 #cgo LDFLAGS: -ltest_msgs__rosidl_typesupport_c -ltest_msgs__rosidl_generator_c
-#cgo CFLAGS: -I/opt/ros/foxy/include
+#cgo CFLAGS: -I/opt/ros/galactic/include
 
 #include <float.h>
 #include <limits.h>

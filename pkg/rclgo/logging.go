@@ -53,7 +53,7 @@ import (
 // The severity levels of log messages / loggers.
 type LogSeverity uint32
 
-// Copypaste from /opt/ros/foxy/include/rcutils/logging.h
+// Copypaste from /opt/ros/galactic/include/rcutils/logging.h
 
 const (
 	LogSeverityUnset LogSeverity = 0  ///< The unset log level

@@ -10,7 +10,7 @@ on:
 jobs:
   rclgo:
     runs-on: ubuntu-latest
-    container: ros:foxy-ros-core
+    container: ros:galactic-ros-core
     steps:
       - uses: actions/checkout@v2
 
@@ -25,14 +25,14 @@ jobs:
           apt-get install -y \
             gcc \
             make \
-            ros-foxy-builtin-interfaces \
-            ros-foxy-example-interfaces \
-            ros-foxy-sensor-msgs \
-            ros-foxy-std-msgs \
-            ros-foxy-std-srvs \
-            ros-foxy-test-msgs
+            ros-galactic-builtin-interfaces \
+            ros-galactic-example-interfaces \
+            ros-galactic-sensor-msgs \
+            ros-galactic-std-msgs \
+            ros-galactic-std-srvs \
+            ros-galactic-test-msgs
 
       - name: Run tests
         run: |
-          . /opt/ros/foxy/setup.sh
+          . /opt/ros/galactic/setup.sh
           make test

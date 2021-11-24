@@ -38,41 +38,6 @@ package rclgo
 #include <rmw/types.h>
 #include <rmw/topic_endpoint_info.h>
 #include <rmw/topic_endpoint_info_array.h>
-
-///
-/// These gowrappers are needed to access C arrays
-///
-rcl_subscription_t* gowrapper_get_subscription(rcl_subscription_t** subscriptions, ulong i) {
-        return subscriptions[i];
-}
-rcl_timer_t* gowrapper_get_timer(rcl_timer_t** timers, ulong i) {
-        return timers[i];
-}
-rmw_topic_endpoint_info_t* gowrapper_get_rmw_topic_endpoint_info(rmw_topic_endpoint_info_array_t* infos, ulong i) {
-	return &(infos->info_array[i]);
-}
-
-char* gowrapper_get_rcutils_string_array_index(rcutils_string_array_t* haystack, int i) {
-	return *(haystack[i].data);
-}
-
-int gowrapper_find_rcutils_string_array_index(rcutils_string_array_t* haystack, char* needle, int needle_size) {
-	int i;
-	for (i = 0 ; i < haystack->size ; i++) {
-		char** data = haystack[i].data;
-		if (strncmp(*data, needle, needle_size) == 0) {
-			return i;
-		}
-	}
-
-	return -1;
-}
-
-
-void print_gid(rmw_gid_t gid) {
-	printf("gid:\n'%s'\n", gid.data); // gid.data looks like gibberish
-}
-
 */
 import "C"
 import (
@@ -656,74 +621,6 @@ func (self *Subscription) Close() error {
 	C.free(unsafe.Pointer(self.topicName))
 	return err.ErrorOrNil()
 }
-
-/*
-func PublishersInfoByTopic(rclContext RCLContext, rcl_node *C.rcl_node_t, topic_name string) (*C.rmw_topic_endpoint_info_array_t, error) {
-	re := GetRCLEntities(rclContext)
-	//TODO: This is actually an array of arrays and the memory allocation mechanisms inside ROS2 rcl are more complex! Need to review this on what to do here.
-	rmw_topic_endpoint_info_array := (*C.rmw_topic_endpoint_info_array_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rmw_topic_endpoint_info_array_t{}))))
-	*rmw_topic_endpoint_info_array = C.rcl_get_zero_initialized_topic_endpoint_info_array()
-	var rc C.rcl_ret_t = C.rcl_get_publishers_info_by_topic(rcl_node, re.rcl_allocator_t, C.CString(topic_name), false, rmw_topic_endpoint_info_array)
-	if rc != C.RCL_RET_OK {
-		return rmw_topic_endpoint_info_array, errorsCast(rc)
-	}
-	return rmw_topic_endpoint_info_array, nil
-}
-
-func TopicGetEndpointInfo(rclContext RCLContext, rcl_node *C.rcl_node_t, topic_name string) error {
-	//rmw_topic_endpoint_info_array, err := PublishersInfoByTopic(rclContext, rcl_node, topic_name)
-	//if err != nil {
-	//	return err
-	//}
-
-	//var rmw_topic_endpoint_info C.rmw_topic_endpoint_info_t = C.gowrapper_get_rmw_topic_endpoint_info(rmw_topic_endpoint_info_array, 0)
-	//rmw_topic_endpoint_info.
-	return nil
-}
-
-/*func TopicGetTopicTypeSupport(rclContext RclContext, rcl_node *C.rcl_node_t, topic_name string) (C.rosidl_message_type_support_t, error) {
-	typeString, err := TopicGetTopicTypeString(rclContext, rcl_node, topic_name)
-	if err == nil {
-		return nil, err
-	}
-	parts := strings.Split(typeString, "/")
-	if len(parts) == 0 {
-		return nil, errorsCastC(C.RCL_RET_TOPIC_NAME_INVALID, topic_name)
-	}
-
-	//cFuncName := fmt.Sprintf("rosidl_typesupport_c__get_message_type_support_handle__%s__%s__%s", parts[0], parts[1], parts[2])
-	return nil, nil
-}
-
-func TopicGetTopicTypeString(rclContext RCLContext, rcl_node *C.rcl_node_t, topic_name string) (string, error) {
-	rmw_names_and_types, err := TopicGetTopicNamesAndTypes(rclContext, rcl_node)
-	if err != nil {
-		return "", err
-	}
-
-	var i C.int = C.gowrapper_find_rcutils_string_array_index(&rmw_names_and_types.names, C.CString(topic_name), (C.int)(len(topic_name)))
-	if i == -1 {
-		return "", nil
-	}
-	var data *C.char = C.gowrapper_get_rcutils_string_array_index(rmw_names_and_types.types, i)
-	return C.GoString(data), nil
-}
-
-func TopicGetTopicNamesAndTypes(rclContext RCLContext, rcl_node *C.rcl_node_t) (*C.rmw_names_and_types_t, error) {
-	re := GetRCLEntities(rclContext)
-	var rmw_node *C.rmw_node_t = C.rcl_node_get_rmw_handle(rcl_node)
-
-	rmw_names_and_types := (*C.rmw_names_and_types_t)(C.malloc((C.size_t)(unsafe.Sizeof(C.rmw_names_and_types_t{}))))
-	*rmw_names_and_types = C.rmw_get_zero_initialized_names_and_types() // TODO: Array mnemory handling here
-
-	var rc C.rcl_ret_t = (C.rcl_ret_t)(C.rmw_get_topic_names_and_types(rmw_node, re.rcl_allocator_t, false, rmw_names_and_types)) // rmw_ret_t is aliased to rcl_ret_t
-	if rc != 0 {
-		return rmw_names_and_types, errorsCast(rc)
-	}
-
-	return rmw_names_and_types, nil
-}
-*/
 
 type guardCondition struct {
 	rosID

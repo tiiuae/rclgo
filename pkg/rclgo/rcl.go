@@ -267,8 +267,8 @@ func (c *Context) NewNode(node_name, namespace string) (node *Node, err error) {
 		name:       C.CString(node_name),
 		namespace:  C.CString(namespace),
 	}
-	defer onErr(&err, node.Close)
 	*node.rcl_node_t = C.rcl_get_zero_initialized_node()
+	defer onErr(&err, node.Close)
 
 	rcl_node_options := C.rcl_node_get_default_options()
 	rc := C.rcl_node_init(
@@ -376,8 +376,8 @@ func (self *Node) NewPublisher(
 		rcl_publisher_t: (*C.rcl_publisher_t)(C.malloc(C.sizeof_rcl_publisher_t)),
 		topicName:       C.CString(topicName),
 	}
-	defer onErr(&err, pub.Close)
 	*pub.rcl_publisher_t = C.rcl_get_zero_initialized_publisher()
+	defer onErr(&err, pub.Close)
 	rcl_publisher_options_t := C.rcl_publisher_get_default_options()
 	rcl_publisher_options_t.allocator = *self.context.rcl_allocator_t
 	options.Qos.asCStruct(&rcl_publisher_options_t.qos)
@@ -442,7 +442,7 @@ func (c *Context) NewClock(clockType ClockType) (clock *Clock, err error) {
 	}
 	clock = &Clock{
 		context:     c,
-		rcl_clock_t: (*C.rcl_clock_t)(C.malloc(C.sizeof_rcl_clock_t)),
+		rcl_clock_t: (*C.rcl_clock_t)(C.calloc(1, C.sizeof_rcl_clock_t)),
 	}
 	defer onErr(&err, c.Close)
 	rc := C.rcl_clock_init(
@@ -491,8 +491,8 @@ func (c *Context) NewTimer(timeout time.Duration, timer_callback func(*Timer)) (
 		Callback:    timer_callback,
 		context:     c,
 	}
-	defer onErr(&err, timer.Close)
 	*timer.rcl_timer_t = C.rcl_get_zero_initialized_timer()
+	defer onErr(&err, timer.Close)
 
 	if c.Clock == nil {
 		var err error
@@ -599,8 +599,8 @@ func (self *Node) NewSubscriptionWithOpts(
 		rcl_subscription_t: (*C.rcl_subscription_t)(C.malloc(C.sizeof_rcl_subscription_t)),
 		topicName:          C.CString(topicName),
 	}
-	defer onErr(&err, sub.Close)
 	*sub.rcl_subscription_t = C.rcl_get_zero_initialized_subscription()
+	defer onErr(&err, sub.Close)
 	rclOpts := C.rcl_subscription_get_default_options()
 	rclOpts.allocator = *self.context.rcl_allocator_t
 	opts.Qos.asCStruct(&rclOpts.qos)
@@ -1082,8 +1082,8 @@ func (n *Node) NewService(
 		name:                C.CString(name),
 		handler:             handler,
 	}
-	defer onErr(&err, s.Close)
 	*s.rclService = C.rcl_get_zero_initialized_service()
+	defer onErr(&err, s.Close)
 	opts := C.rcl_service_options_t{allocator: *n.context.rcl_allocator_t}
 	options.Qos.asCStruct(&opts.qos)
 	retCode := C.rcl_service_init(
@@ -1190,8 +1190,8 @@ func (n *Node) NewClient(
 		node:                n,
 		rclClient:           (*C.struct_rcl_client_t)(C.malloc(C.sizeof_struct_rcl_client_t)),
 	}
-	defer onErr(&err, c.Close)
 	*c.rclClient = C.rcl_get_zero_initialized_client()
+	defer onErr(&err, c.Close)
 	opts := C.struct_rcl_client_options_t{allocator: *n.context.rcl_allocator_t}
 	options.Qos.asCStruct(&opts.qos)
 	cserviceName := C.CString(serviceName)

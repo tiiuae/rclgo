@@ -45,7 +45,7 @@ func TestContextClose(t *testing.T) {
 			So(err, ShouldBeNil)
 			_, err = node2.NewClient("client1", std_srvs_srv.EmptyTypeSupport, nil)
 			So(err, ShouldBeNil)
-			_, err = node2.NewSubscription("/test_topic", std_msgs.ColorRGBATypeSupport, func(s *Subscription) {})
+			_, err = node2.NewSubscription("/test_topic", std_msgs.StringTypeSupport, func(s *Subscription) {})
 			So(err, ShouldBeNil)
 			_, err = node2.NewPublisher("/test_topic2", std_msgs.ColorRGBATypeSupport, nil)
 			So(err, ShouldBeNil)

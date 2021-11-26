@@ -89,10 +89,10 @@ func (s LogSeverity) String() string {
 // Logging configuration can be updated by calling InitLogging again with the
 // desired args.
 //
-// If the logging system has not yet been initialized on the first call of
-// NewContext, logging is initialized by NewContext using the arguments passed
-// to it. Unlike InitLogging, NewContext will not update logging configuration
-// if logging has already been initialized.
+// If the logging system has not yet been initialized on the first call of Init
+// or NewContext, logging is initialized by that call using the passed
+// arguments. Unlike InitLogging, Init and NewContext will not update logging
+// configuration if logging has already been initialized.
 func InitLogging(args *Args) error {
 	return rclInitLogging(args, true)
 }

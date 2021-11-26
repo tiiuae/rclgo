@@ -184,38 +184,6 @@ func (a *Args) String() string {
 	return string(s)
 }
 
-func rclInit(rclArgs *Args, ctx *Context) (err error) {
-	var rc C.rcl_ret_t
-	if rclArgs == nil {
-		rclArgs, _, err = ParseArgs(nil)
-		if err != nil {
-			return err
-		}
-	}
-
-	ctx.rcl_allocator_t = (*C.rcl_allocator_t)(C.malloc(C.sizeof_rcl_allocator_t))
-	*ctx.rcl_allocator_t = C.rcl_get_default_allocator()
-	ctx.rcl_context_t = (*C.rcl_context_t)(C.malloc(C.sizeof_rcl_context_t))
-	*ctx.rcl_context_t = C.rcl_get_zero_initialized_context()
-
-	if err := rclInitLogging(rclArgs, false); err != nil {
-		return err
-	}
-
-	rcl_init_options_t := C.rcl_get_zero_initialized_init_options()
-	rc = C.rcl_init_options_init(&rcl_init_options_t, *ctx.rcl_allocator_t)
-	if rc != C.RCL_RET_OK {
-		return errorsCast(rc)
-	}
-
-	rc = C.rcl_init(rclArgs.argc(), rclArgs.argv(), &rcl_init_options_t, ctx.rcl_context_t)
-	runtime.KeepAlive(rclArgs)
-	if rc != C.RCL_RET_OK {
-		return errorsCast(rc)
-	}
-	return nil
-}
-
 type Node struct {
 	rosID
 	rosResourceStore
@@ -223,6 +191,13 @@ type Node struct {
 	context         *Context
 	name, namespace *C.char
 	logger          *Logger
+}
+
+func NewNode(nodeName, namespace string) (*Node, error) {
+	if defaultContext == nil {
+		return nil, initNotCalledErr
+	}
+	return defaultContext.NewNode(nodeName, namespace)
 }
 
 func (c *Context) NewNode(node_name, namespace string) (node *Node, err error) {
@@ -279,6 +254,11 @@ func (self *Node) Close() error {
 	C.free(unsafe.Pointer(self.namespace))
 
 	return err.ErrorOrNil()
+}
+
+// Context returns the context n belongs to.
+func (n *Node) Context() *Context {
+	return n.context
 }
 
 // Logger returns the logger associated with n.
@@ -362,6 +342,11 @@ func (self *Node) NewPublisher(
 	return pub, nil
 }
 
+// Node returns the node p belongs to.
+func (p *Publisher) Node() *Node {
+	return p.node
+}
+
 func (self *Publisher) Publish(ros2msg types.Message) error {
 	var rc C.rcl_ret_t
 
@@ -399,6 +384,13 @@ type Clock struct {
 	rosID
 	rcl_clock_t *C.rcl_clock_t
 	context     *Context
+}
+
+func NewClock(clockType ClockType) (*Clock, error) {
+	if defaultContext == nil {
+		return nil, initNotCalledErr
+	}
+	return defaultContext.NewClock(clockType)
 }
 
 func (c *Context) NewClock(clockType ClockType) (clock *Clock, err error) {
@@ -440,11 +432,23 @@ func (self *Clock) Close() error {
 	return err.ErrorOrNil()
 }
 
+// Context returns the context c belongs to.
+func (c *Clock) Context() *Context {
+	return c.context
+}
+
 type Timer struct {
 	rosID
 	rcl_timer_t *C.rcl_timer_t
 	Callback    func(*Timer)
 	context     *Context
+}
+
+func NewTimer(timeout time.Duration, timerCallback func(*Timer)) (*Timer, error) {
+	if defaultContext == nil {
+		return nil, initNotCalledErr
+	}
+	return defaultContext.NewTimer(timeout, timerCallback)
 }
 
 func (c *Context) NewTimer(timeout time.Duration, timer_callback func(*Timer)) (timer *Timer, err error) {
@@ -459,17 +463,9 @@ func (c *Context) NewTimer(timeout time.Duration, timer_callback func(*Timer)) (
 	*timer.rcl_timer_t = C.rcl_get_zero_initialized_timer()
 	defer onErr(&err, timer.Close)
 
-	if c.Clock == nil {
-		var err error
-		c.Clock, err = c.NewClock(ClockTypeROSTime) // http://design.ros2.org/articles/clock_and_time.html // It is expected that the default choice of time will be to use the ROSTime source
-		if err != nil {
-			return nil, err
-		}
-	}
-
 	rc := C.rcl_timer_init(
 		timer.rcl_timer_t,
-		c.Clock.rcl_clock_t,
+		c.Clock().rcl_clock_t,
 		c.rcl_context_t,
 		(C.long)(timeout),
 		nil,
@@ -481,6 +477,11 @@ func (c *Context) NewTimer(timeout time.Duration, timer_callback func(*Timer)) (
 
 	c.addResource(timer)
 	return timer, nil
+}
+
+// Context returns the context t belongs to.
+func (t *Timer) Context() *Context {
+	return t.context
 }
 
 func (self *Timer) GetTimeUntilNextCall() (int64, error) {
@@ -585,6 +586,11 @@ func (self *Node) NewSubscriptionWithOpts(
 	return sub, nil
 }
 
+// Node returns the node s belongs to.
+func (s *Subscription) Node() *Node {
+	return s.node
+}
+
 func (s *Subscription) TakeMessage(out types.Message) (*RmwMessageInfo, error) {
 	rmw_message_info := C.rmw_get_zero_initialized_message_info()
 
@@ -681,6 +687,13 @@ type WaitSet struct {
 	context         *Context
 }
 
+func NewWaitSet() (*WaitSet, error) {
+	if defaultContext == nil {
+		return nil, initNotCalledErr
+	}
+	return defaultContext.NewWaitSet()
+}
+
 func (c *Context) NewWaitSet() (ws *WaitSet, err error) {
 	const (
 		subscriptionsCount   = 0
@@ -720,6 +733,11 @@ func (c *Context) NewWaitSet() (ws *WaitSet, err error) {
 	ws.addGuardConditions(ws.cancelWait)
 	c.addResource(ws)
 	return ws, nil
+}
+
+// Context returns the context s belongs to.
+func (s *WaitSet) Context() *Context {
+	return s.context
 }
 
 func (w *WaitSet) AddSubscriptions(subs ...*Subscription) {
@@ -1012,6 +1030,11 @@ func (s *Service) Close() (err error) {
 	return err
 }
 
+// Node returns the node s belongs to.
+func (s *Service) Node() *Node {
+	return s.node
+}
+
 func (s *Service) handleRequest() {
 	var reqHeader C.struct_rmw_service_info_t
 	reqBuffer := s.requestTypeSupport.PrepareMemory()
@@ -1127,6 +1150,11 @@ func (c *Client) Close() error {
 	c.rclClient = nil
 
 	return err.ErrorOrNil()
+}
+
+// Node returns the node c belongs to.
+func (c *Client) Node() *Node {
+	return c.node
 }
 
 func (c *Client) Send(ctx context.Context, req types.Message) (types.Message, *RmwServiceInfo, error) {

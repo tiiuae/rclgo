@@ -20,8 +20,10 @@ import "C"
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
+	"runtime"
 	"sync"
 	"unsafe"
 
@@ -81,11 +83,53 @@ func (s *rosResourceStore) Close() error {
 	return err.ErrorOrNil()
 }
 
+var (
+	defaultContext   *Context
+	initNotCalledErr = errors.New("Init has not been called")
+)
+
+// DefaultContext returns the global default context or nil if Init has not yet
+// been called.
+func DefaultContext() *Context { return defaultContext }
+
+// Init initializes the global default context and logging system if they have
+// not been initalized yet. Calling Init multiple times after a successful
+// (returning nil) call is a no-op.
+func Init(args *Args) (err error) {
+	if defaultContext == nil {
+		defaultContext, err = NewContext(0, args)
+	}
+	return
+}
+
+// Uninit uninitializes the default context if it has been initialized. Calling
+// Uninit multiple times without calling Init in between the calls is a no-op.
+// Uninit should be called before program termination if Init has been called
+// successfully.
+func Uninit() (err error) {
+	if defaultContext != nil {
+		err = defaultContext.Close()
+		defaultContext = nil
+	}
+	return
+}
+
+// Spin starts and waits for all ROS resources in DefaultContext() that need
+// waiting such as nodes and subscriptions. Spin returns when an error occurs or
+// ctx is canceled.
+func Spin(ctx context.Context) error {
+	if defaultContext == nil {
+		return initNotCalledErr
+	}
+	return defaultContext.Spin(ctx)
+}
+
 // Context manages resources for a set of RCL entities.
 type Context struct {
 	rcl_allocator_t *C.rcutils_allocator_t
 	rcl_context_t   *C.rcl_context_t
-	Clock           *Clock
+	defaultClock    *Clock
+	clock           *Clock
 
 	rosResourceStore
 }
@@ -93,8 +137,8 @@ type Context struct {
 /*
 NewContext initializes a new RCL context.
 
-If clockType == 0, no clock is created. You can always create a clock by calling
-NewClock.
+clockType is the type of the default clock created for the Context. If 0,
+ClockTypeROSTime is used.
 
 A nil rclArgs is treated as en empty argument list.
 
@@ -105,16 +149,42 @@ func NewContext(clockType ClockType, rclArgs *Args) (ctx *Context, err error) {
 	ctx = &Context{}
 	defer onErr(&err, ctx.Close)
 
-	if err = rclInit(rclArgs, ctx); err != nil {
-		return nil, err
-	}
-
-	if clockType != 0 {
-		ctx.Clock, err = ctx.NewClock(clockType)
+	if rclArgs == nil {
+		rclArgs, _, err = ParseArgs(nil)
 		if err != nil {
 			return nil, err
 		}
 	}
+
+	ctx.rcl_allocator_t = (*C.rcl_allocator_t)(C.malloc(C.sizeof_rcl_allocator_t))
+	*ctx.rcl_allocator_t = C.rcl_get_default_allocator()
+	ctx.rcl_context_t = (*C.rcl_context_t)(C.malloc(C.sizeof_rcl_context_t))
+	*ctx.rcl_context_t = C.rcl_get_zero_initialized_context()
+
+	if err := rclInitLogging(rclArgs, false); err != nil {
+		return nil, err
+	}
+
+	rcl_init_options_t := C.rcl_get_zero_initialized_init_options()
+	rc := C.rcl_init_options_init(&rcl_init_options_t, *ctx.rcl_allocator_t)
+	if rc != C.RCL_RET_OK {
+		return nil, errorsCast(rc)
+	}
+
+	rc = C.rcl_init(rclArgs.argc(), rclArgs.argv(), &rcl_init_options_t, ctx.rcl_context_t)
+	runtime.KeepAlive(rclArgs)
+	if rc != C.RCL_RET_OK {
+		return nil, errorsCast(rc)
+	}
+
+	if clockType == 0 {
+		clockType = ClockTypeROSTime
+	}
+	ctx.defaultClock, err = ctx.NewClock(clockType)
+	if err != nil {
+		return nil, err
+	}
+	ctx.clock = ctx.defaultClock
 
 	return ctx, nil
 }
@@ -138,6 +208,18 @@ func (c *Context) Close() error {
 		c.rcl_allocator_t = nil
 	}
 	return errs.ErrorOrNil()
+}
+
+func (c *Context) Clock() *Clock {
+	return c.clock
+}
+
+func (c *Context) SetClock(newClock *Clock) {
+	if newClock == nil {
+		c.clock = c.defaultClock
+	} else {
+		c.clock = newClock
+	}
 }
 
 // Spin starts and waits for all ROS resources in the context that need waiting

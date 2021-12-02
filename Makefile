@@ -37,7 +37,7 @@ generate:
 	for pkg in $${pkgs[@]}; do
 	    go run ./cmd/rclgo-gen generate \
 	        --message-module-prefix "github.com/tiiuae/rclgo/$$dest_path" \
-	        -r "/opt/ros/foxy/share/$$pkg" \
+	        -r "/opt/ros/galactic/share/$$pkg" \
 	        -d "$$dest_path" \
 			|| exit 1
 	done

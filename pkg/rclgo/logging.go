@@ -9,7 +9,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 
 package rclgo
 
-/// The severity levels of log messages / loggers. // Copypaste from /opt/ros/foxy/include/rcutils/logging.h
+/// The severity levels of log messages / loggers. // Copypaste from /opt/ros/galactic/include/rcutils/logging.h
 type LogSeverity uint32
 
 const (

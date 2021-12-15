@@ -154,6 +154,7 @@ func (s *{{$Md.Name}}Subscription) TakeMessage(out *{{$Md.Name}}) (*rclgo.RmwMes
 	return s.Subscription.TakeMessage(out)
 }
 
+
 // Clone{{$Md.Name}}Slice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func Clone{{$Md.Name}}Slice(dst, src []{{$Md.Name}}) {
@@ -276,10 +277,13 @@ package {{ .Service.GoPackage }}
 import "C"
 
 import (
+	"context"
+	"errors"
+	"unsafe"
+
+	"{{.Config.RclgoImportPath}}/pkg/rclgo"
 	"{{.Config.RclgoImportPath}}/pkg/rclgo/typemap"
 	"{{.Config.RclgoImportPath}}/pkg/rclgo/types"
-
-	"unsafe"
 )
 
 func init() {
@@ -302,6 +306,34 @@ func (s _{{.Service.Name}}TypeSupport) TypeSupport() unsafe.Pointer {
 
 // Modifying this variable is undefined behavior.
 var {{ .Service.Name }}TypeSupport types.ServiceTypeSupport = _{{.Service.Name}}TypeSupport{}
+
+// {{.Service.Name}}Client wraps rclgo.Client to provide type safe helper
+// functions
+type {{.Service.Name}}Client struct {
+	*rclgo.Client
+}
+
+// New{{.Service.Name}}Client creates and returns a new client for the
+// {{.Service.Name}}
+func New{{.Service.Name}}Client(node *rclgo.Node, serviceName string, options *rclgo.ClientOptions) (*{{.Service.Name}}Client, error) {
+	client, err := node.NewClient(serviceName, {{.Service.Name}}TypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &{{.Service.Name}}Client{client}, nil
+}
+
+func (s *{{.Service.Name}}Client) Send(ctx context.Context, req *{{.Service.Request.Name}}) (*{{.Service.Response.Name}}, *rclgo.RmwServiceInfo, error) {
+	msg, rmw, err := s.Client.Send(ctx, req)
+	if err != nil {
+		return nil, rmw, err
+	}
+	typedMessage, ok := msg.(*{{.Service.Response.Name}})
+	if !ok {
+		return nil, rmw, errors.New("invalid message type returned")
+	}
+	return typedMessage, rmw, err
+}
 `),
 )
 

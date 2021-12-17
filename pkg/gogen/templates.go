@@ -335,11 +335,12 @@ func (s *{{.Service.Name}}Client) Send(ctx context.Context, req *{{.Service.Requ
 	return typedMessage, rmw, err
 }
 
-type {{.Service.Name}}ServiceResponseSender func(resp *{{.Service.Response.Name}}) error
+type {{.Service.Name}}ServiceResponseSender struct {
+	sender rclgo.ServiceResponseSender
+}
 
-func (s {{.Service.Name}}ServiceResponseSender) SendResponse(resp types.Message) error {
-	r := resp.(*{{.Service.Response.Name}})
-	return s(r)
+func (s {{.Service.Name}}ServiceResponseSender) SendResponse(resp *{{.Service.Response.Name}}) error {
+	return s.sender.SendResponse(resp)
 }
 
 type {{.Service.Name}}ServiceRequestHandler func(*rclgo.RmwServiceInfo, *{{.Service.Request.Name}}, {{.Service.Name}}ServiceResponseSender)
@@ -355,11 +356,7 @@ type {{.Service.Name}}Service struct {
 func New{{.Service.Name}}Service(node *rclgo.Node, name string, options *rclgo.ServiceOptions, handler {{.Service.Name}}ServiceRequestHandler) (*{{.Service.Name}}Service, error) {
 	h := func(rmw *rclgo.RmwServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
 		m := msg.(*{{.Service.Request.Name}})
-		responseSender := {{.Service.Name}}ServiceResponseSender(
-			func(resp *{{.Service.Response.Name}}) error {
-				return rs.SendResponse(resp)
-			},
-		)
+		responseSender := {{.Service.Name}}ServiceResponseSender{sender: rs} 
 		handler(rmw, m, responseSender)
 	}
 	service, err := node.NewService(name, {{.Service.Name}}TypeSupport, options, h)

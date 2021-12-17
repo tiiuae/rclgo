@@ -334,6 +334,41 @@ func (s *{{.Service.Name}}Client) Send(ctx context.Context, req *{{.Service.Requ
 	}
 	return typedMessage, rmw, err
 }
+
+type {{.Service.Name}}ServiceResponseSender func(resp *{{.Service.Response.Name}}) error
+
+func (s {{.Service.Name}}ServiceResponseSender) SendResponse(resp types.Message) error {
+	r := resp.(*{{.Service.Response.Name}})
+	return s(r)
+}
+
+type {{.Service.Name}}ServiceRequestHandler func(*rclgo.RmwServiceInfo, *{{.Service.Request.Name}}, {{.Service.Name}}ServiceResponseSender)
+
+// {{.Service.Name}}Service wraps rclgo.Service to provide type safe helper
+// functions
+type {{.Service.Name}}Service struct {
+	*rclgo.Service
+}
+
+// New{{.Service.Name}}Service creates and returns a new service for the
+// {{.Service.Name}}
+func New{{.Service.Name}}Service(node *rclgo.Node, name string, options *rclgo.ServiceOptions, handler {{.Service.Name}}ServiceRequestHandler) (*{{.Service.Name}}Service, error) {
+	h := func(rmw *rclgo.RmwServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
+		m := msg.(*{{.Service.Request.Name}})
+		responseSender := {{.Service.Name}}ServiceResponseSender(
+			func(resp *{{.Service.Response.Name}}) error {
+				return rs.SendResponse(resp)
+			},
+		)
+		handler(rmw, m, responseSender)
+	}
+	service, err := node.NewService(name, {{.Service.Name}}TypeSupport, options, h)
+	if err != nil {
+		return nil, err
+	}
+	return &{{.Service.Name}}Service{service}, nil
+}
+
 `),
 )
 

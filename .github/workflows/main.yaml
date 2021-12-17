@@ -10,29 +10,17 @@ on:
 jobs:
   rclgo:
     runs-on: ubuntu-latest
-    container: ros:foxy-ros-core
+    container: ghcr.io/tiiuae/tii-golang-ros:galactic-go1.17
     steps:
       - uses: actions/checkout@v2
-
-      - name: Setup Go environment
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.16
 
       - name: Install additional tools and libraries
         run: |
           apt-get update
           apt-get install -y \
-            gcc \
             make \
-            ros-foxy-builtin-interfaces \
-            ros-foxy-example-interfaces \
-            ros-foxy-sensor-msgs \
-            ros-foxy-std-msgs \
-            ros-foxy-std-srvs \
-            ros-foxy-test-msgs
+            ros-galactic-example-interfaces \
+            ros-galactic-test-msgs
 
       - name: Run tests
-        run: |
-          . /opt/ros/foxy/setup.sh
-          make test
+        run: make test

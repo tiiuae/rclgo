@@ -10,16 +10,16 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package rclgo
 
 /*
-#cgo LDFLAGS: -L/opt/ros/foxy/lib -Wl,-rpath=/opt/ros/foxy/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
-#cgo CFLAGS: -I/opt/ros/foxy/include
+#cgo LDFLAGS: -L/opt/ros/galactic/lib -Wl,-rpath=/opt/ros/galactic/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
+#cgo CFLAGS: -I/opt/ros/galactic/include
 
 #include <rcl/types.h>
 #include <rcutils/error_handling.h>
 
 */
 import "C"
+
 import (
-	"errors"
 	"fmt"
 )
 
@@ -54,7 +54,7 @@ func (e *rclRetStruct) Error() string {
  * \return The current error string, with file and line number, or "error not set" if not set.
  */
 func errorString() string {
-	var rcutils_error_string_str = C.rcutils_get_error_string().str // TODO: Do I need to free this or not?
+	rcutils_error_string_str := C.rcutils_get_error_string().str // TODO: Do I need to free this or not?
 
 	// Because the C string is null-terminated, we need to find the NULL-character to know where the string ends.
 	// Otherwise we create a Go string of length 1024 of NULLs and gibberish
@@ -68,8 +68,8 @@ func errorString() string {
 	return string(bytes)
 
 	// This would be much faster I guess.
-	//upt := (*[1024]byte)(unsafe.Pointer(uintptr(unsafe.Pointer(&rcutils_error_string_str))))
-	//return string((*upt)[:])
+	// upt := (*[1024]byte)(unsafe.Pointer(uintptr(unsafe.Pointer(&rcutils_error_string_str))))
+	// return string((*upt)[:])
 }
 
 func errorsBuildContext(e error, ctx string, stackTrace string) string {
@@ -86,6 +86,12 @@ func onErr(err *error, f func() error) {
 	}
 }
 
+type closeError string
+
+func (e closeError) Error() string {
+	return string(e)
+}
+
 func closeErr(s string) error {
-	return errors.New("tried to close a closed " + s)
+	return closeError("tried to close a closed " + s)
 }

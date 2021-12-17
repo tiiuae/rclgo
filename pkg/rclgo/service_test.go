@@ -22,11 +22,11 @@ func TestServiceAndClient(t *testing.T) {
 	}
 	var (
 		serviceCtx, clientCtx *rclgo.Context
-		serviceWS, clientWS   *rclgo.WaitSet
 		client                *rclgo.Client
 		err                   error
 
 		spinCtx, cancelSpin = context.WithCancel(context.Background())
+		spinErrs            = make(chan error, 2)
 
 		requestReceivedChan = make(
 			chan *example_interfaces_srv.AddTwoInts_Request,
@@ -62,7 +62,7 @@ func TestServiceAndClient(t *testing.T) {
 			So(err, ShouldBeNil)
 			node, err := serviceCtx.NewNode("service_node", "/test")
 			So(err, ShouldBeNil)
-			service, err := node.NewService(
+			_, err = node.NewService(
 				"add",
 				example_interfaces_srv.AddTwoIntsTypeSupport,
 				&rclgo.ServiceOptions{Qos: qosProfile},
@@ -75,11 +75,7 @@ func TestServiceAndClient(t *testing.T) {
 				},
 			)
 			So(err, ShouldBeNil)
-			serviceWS, err = serviceCtx.NewWaitSet(200 * time.Millisecond)
-			So(err, ShouldBeNil)
-			serviceWS.AddServices(service)
-			serviceWS.RunGoroutine(spinCtx)
-			serviceWS.WaitForReady(2*time.Second, 100*time.Millisecond)
+			go func() { spinErrs <- serviceCtx.Spin(spinCtx) }()
 		})
 		Convey("Create a client", func() {
 			clientCtx, err = newDefaultRCLContext()
@@ -92,13 +88,10 @@ func TestServiceAndClient(t *testing.T) {
 				&rclgo.ClientOptions{Qos: qosProfile},
 			)
 			So(err, ShouldBeNil)
-			clientWS, err = clientCtx.NewWaitSet(200 * time.Millisecond)
-			So(err, ShouldBeNil)
-			clientWS.AddClients(client)
-			clientWS.RunGoroutine(spinCtx)
-			clientWS.WaitForReady(2*time.Second, 100*time.Millisecond)
+			go func() { spinErrs <- clientCtx.Spin(spinCtx) }()
 		})
 		Convey("The client sends a request", func() {
+			time.Sleep(200 * time.Millisecond)
 			var result *testSendResult
 			timeOut(2000, func() { result = sendReq(3, -7) }, "Sending request")
 
@@ -139,6 +132,8 @@ func TestServiceAndClient(t *testing.T) {
 		})
 		Convey("The service and client are stopped", func() {
 			cancelSpin()
+			So(<-spinErrs, shouldContainError, context.Canceled)
+			So(<-spinErrs, shouldContainError, context.Canceled)
 		})
 		Convey("The service context is closed without errors", func() {
 			timeOut(2000, func() {

@@ -11,7 +11,6 @@ package rclgo_test
 
 import (
 	"testing"
-	"time"
 
 	. "github.com/smartystreets/goconvey/convey"
 	std_msgs "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -40,7 +39,7 @@ func TestContextClose(t *testing.T) {
 				So(err, ShouldBeNil)
 				node2, err := context.NewNode("node2", "/test/context_close")
 				So(err, ShouldBeNil)
-				_, err = context.NewWaitSet(time.Second)
+				_, err = context.NewWaitSet()
 				So(err, ShouldBeNil)
 				_, err = node2.NewClient(
 					"client2",
@@ -64,7 +63,7 @@ func TestContextClose(t *testing.T) {
 				So(err, ShouldBeNil)
 				_, err = node2.NewSubscription(
 					"/test_topic",
-					std_msgs.ColorRGBATypeSupport,
+					std_msgs.StringTypeSupport,
 					func(s *rclgo.Subscription) {},
 				)
 				So(err, ShouldBeNil)

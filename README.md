@@ -22,7 +22,7 @@ ROS2 message converter
 rclgo expects a Golang-implementation of all the ROS2 messages to exists.
 To use rclgo with your set of ROS2 plugins and modules, you need to generate the Golang-bindings before first use.
 
-    rclgo-gen generate /opt/ros/foxy/share/px4_msgs/msg/AdcReport.msg
+    rclgo-gen generate /opt/ros/galactic/share/px4_msgs/msg/AdcReport.msg
 
 Usage
 -----

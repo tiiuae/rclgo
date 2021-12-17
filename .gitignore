@@ -21,3 +21,6 @@ cmd/ros2ctest/roslogging
 
 #go tool cgo output
 _obj
+
+# Local VS Code configuration
+.vscode/bookmarks.json

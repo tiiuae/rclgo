@@ -1,6 +1,6 @@
 {
     "C_Cpp.default.includePath": [
-        "/opt/ros/foxy/include"
+        "/opt/ros/galactic/include"
     ],
     "files.associations": {
         "string.h": "c",
@@ -12,7 +12,7 @@
         "wait.h": "c"
     },
     "go.testEnvVars": {
-        "LD_LIBRARY_PATH": "/opt/ros/foxy/opt/yaml_cpp_vendor/lib:/opt/ros/foxy/lib/x86_64-linux-gnu:/opt/ros/foxy/lib",
+        "LD_LIBRARY_PATH": "/opt/ros/galactic/opt/yaml_cpp_vendor/lib:/opt/ros/galactic/lib/x86_64-linux-gnu:/opt/ros/galactic/lib",
     },
     "go.lintTool": "golint",
     "go.lintOnSave": "off"

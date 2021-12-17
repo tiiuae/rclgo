@@ -11,7 +11,7 @@ package rclgo
 
 /*
 #cgo LDFLAGS: -lrmw_implementation
-#cgo CFLAGS: -I/opt/ros/foxy/include
+#cgo CFLAGS: -I/opt/ros/galactic/include
 
 #include "rmw/rmw.h"
 */

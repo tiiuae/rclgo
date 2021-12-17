@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -83,6 +84,47 @@ func (t *Range) SetDefaults() {
 	t.MaxRange = 0
 	t.Range = 0
 }
+
+// RangePublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type RangePublisher struct {
+	*rclgo.Publisher
+}
+
+// NewRangePublisher creates and returns a new publisher for the
+// Range
+func NewRangePublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*RangePublisher, error) {
+	pub, err := node.NewPublisher(topic_name, RangeTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &RangePublisher{pub}, nil
+}
+
+func (p *RangePublisher) Publish(msg *Range) error {
+	return p.Publisher.Publish(msg)
+}
+
+// RangeSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type RangeSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewRangeSubscription creates and returns a new subscription for the
+// Range
+func NewRangeSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*RangeSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, RangeTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &RangeSubscription{sub}, nil
+}
+
+func (s *RangeSubscription) TakeMessage(out *Range) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneRangeSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

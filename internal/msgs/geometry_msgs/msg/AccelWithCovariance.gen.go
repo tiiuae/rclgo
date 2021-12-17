@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	primitives "github.com/tiiuae/rclgo/pkg/rclgo/primitives"
@@ -66,6 +67,47 @@ func (t *AccelWithCovariance) SetDefaults() {
 	t.Accel.SetDefaults()
 	t.Covariance = [36]float64{}
 }
+
+// AccelWithCovariancePublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type AccelWithCovariancePublisher struct {
+	*rclgo.Publisher
+}
+
+// NewAccelWithCovariancePublisher creates and returns a new publisher for the
+// AccelWithCovariance
+func NewAccelWithCovariancePublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*AccelWithCovariancePublisher, error) {
+	pub, err := node.NewPublisher(topic_name, AccelWithCovarianceTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &AccelWithCovariancePublisher{pub}, nil
+}
+
+func (p *AccelWithCovariancePublisher) Publish(msg *AccelWithCovariance) error {
+	return p.Publisher.Publish(msg)
+}
+
+// AccelWithCovarianceSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type AccelWithCovarianceSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewAccelWithCovarianceSubscription creates and returns a new subscription for the
+// AccelWithCovariance
+func NewAccelWithCovarianceSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*AccelWithCovarianceSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, AccelWithCovarianceTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &AccelWithCovarianceSubscription{sub}, nil
+}
+
+func (s *AccelWithCovarianceSubscription) TakeMessage(out *AccelWithCovariance) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneAccelWithCovarianceSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

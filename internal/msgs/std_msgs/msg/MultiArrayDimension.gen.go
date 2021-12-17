@@ -15,6 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	primitives "github.com/tiiuae/rclgo/pkg/rclgo/primitives"
@@ -69,6 +70,47 @@ func (t *MultiArrayDimension) SetDefaults() {
 	t.Size = 0
 	t.Stride = 0
 }
+
+// MultiArrayDimensionPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type MultiArrayDimensionPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewMultiArrayDimensionPublisher creates and returns a new publisher for the
+// MultiArrayDimension
+func NewMultiArrayDimensionPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*MultiArrayDimensionPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, MultiArrayDimensionTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &MultiArrayDimensionPublisher{pub}, nil
+}
+
+func (p *MultiArrayDimensionPublisher) Publish(msg *MultiArrayDimension) error {
+	return p.Publisher.Publish(msg)
+}
+
+// MultiArrayDimensionSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type MultiArrayDimensionSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewMultiArrayDimensionSubscription creates and returns a new subscription for the
+// MultiArrayDimension
+func NewMultiArrayDimensionSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*MultiArrayDimensionSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, MultiArrayDimensionTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &MultiArrayDimensionSubscription{sub}, nil
+}
+
+func (s *MultiArrayDimensionSubscription) TakeMessage(out *MultiArrayDimension) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneMultiArrayDimensionSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

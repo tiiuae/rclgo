@@ -15,6 +15,7 @@ package example_interfaces_srv
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -62,6 +63,47 @@ func (t *SetBool_Request) CloneMsg() types.Message {
 func (t *SetBool_Request) SetDefaults() {
 	t.Data = false
 }
+
+// SetBool_RequestPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type SetBool_RequestPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewSetBool_RequestPublisher creates and returns a new publisher for the
+// SetBool_Request
+func NewSetBool_RequestPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*SetBool_RequestPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, SetBool_RequestTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &SetBool_RequestPublisher{pub}, nil
+}
+
+func (p *SetBool_RequestPublisher) Publish(msg *SetBool_Request) error {
+	return p.Publisher.Publish(msg)
+}
+
+// SetBool_RequestSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type SetBool_RequestSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewSetBool_RequestSubscription creates and returns a new subscription for the
+// SetBool_Request
+func NewSetBool_RequestSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*SetBool_RequestSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, SetBool_RequestTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &SetBool_RequestSubscription{sub}, nil
+}
+
+func (s *SetBool_RequestSubscription) TakeMessage(out *SetBool_Request) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneSetBool_RequestSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

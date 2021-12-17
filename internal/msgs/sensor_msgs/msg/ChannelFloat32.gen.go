@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	primitives "github.com/tiiuae/rclgo/pkg/rclgo/primitives"
@@ -69,6 +70,47 @@ func (t *ChannelFloat32) SetDefaults() {
 	t.Name = ""
 	t.Values = nil
 }
+
+// ChannelFloat32Publisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type ChannelFloat32Publisher struct {
+	*rclgo.Publisher
+}
+
+// NewChannelFloat32Publisher creates and returns a new publisher for the
+// ChannelFloat32
+func NewChannelFloat32Publisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*ChannelFloat32Publisher, error) {
+	pub, err := node.NewPublisher(topic_name, ChannelFloat32TypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &ChannelFloat32Publisher{pub}, nil
+}
+
+func (p *ChannelFloat32Publisher) Publish(msg *ChannelFloat32) error {
+	return p.Publisher.Publish(msg)
+}
+
+// ChannelFloat32Subscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type ChannelFloat32Subscription struct {
+	*rclgo.Subscription
+}
+
+// NewChannelFloat32Subscription creates and returns a new subscription for the
+// ChannelFloat32
+func NewChannelFloat32Subscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*ChannelFloat32Subscription, error) {
+	sub, err := node.NewSubscription(topic_name, ChannelFloat32TypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &ChannelFloat32Subscription{sub}, nil
+}
+
+func (s *ChannelFloat32Subscription) TakeMessage(out *ChannelFloat32) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneChannelFloat32Slice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

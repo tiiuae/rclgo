@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -75,6 +76,47 @@ func (t *NavSatStatus) SetDefaults() {
 	t.Status = 0
 	t.Service = 0
 }
+
+// NavSatStatusPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type NavSatStatusPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewNavSatStatusPublisher creates and returns a new publisher for the
+// NavSatStatus
+func NewNavSatStatusPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*NavSatStatusPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, NavSatStatusTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &NavSatStatusPublisher{pub}, nil
+}
+
+func (p *NavSatStatusPublisher) Publish(msg *NavSatStatus) error {
+	return p.Publisher.Publish(msg)
+}
+
+// NavSatStatusSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type NavSatStatusSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewNavSatStatusSubscription creates and returns a new subscription for the
+// NavSatStatus
+func NewNavSatStatusSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*NavSatStatusSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, NavSatStatusTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &NavSatStatusSubscription{sub}, nil
+}
+
+func (s *NavSatStatusSubscription) TakeMessage(out *NavSatStatus) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneNavSatStatusSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

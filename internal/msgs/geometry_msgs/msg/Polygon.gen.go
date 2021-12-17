@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -65,6 +66,47 @@ func (t *Polygon) CloneMsg() types.Message {
 func (t *Polygon) SetDefaults() {
 	t.Points = nil
 }
+
+// PolygonPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type PolygonPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewPolygonPublisher creates and returns a new publisher for the
+// Polygon
+func NewPolygonPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*PolygonPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, PolygonTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &PolygonPublisher{pub}, nil
+}
+
+func (p *PolygonPublisher) Publish(msg *Polygon) error {
+	return p.Publisher.Publish(msg)
+}
+
+// PolygonSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type PolygonSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewPolygonSubscription creates and returns a new subscription for the
+// Polygon
+func NewPolygonSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*PolygonSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, PolygonTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &PolygonSubscription{sub}, nil
+}
+
+func (s *PolygonSubscription) TakeMessage(out *Polygon) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // ClonePolygonSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

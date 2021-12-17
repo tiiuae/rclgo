@@ -24,10 +24,13 @@ package sensor_msgs_srv
 import "C"
 
 import (
+	"context"
+	"errors"
+	"unsafe"
+
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
-
-	"unsafe"
 )
 
 func init() {
@@ -50,3 +53,63 @@ func (s _SetCameraInfoTypeSupport) TypeSupport() unsafe.Pointer {
 
 // Modifying this variable is undefined behavior.
 var SetCameraInfoTypeSupport types.ServiceTypeSupport = _SetCameraInfoTypeSupport{}
+
+// SetCameraInfoClient wraps rclgo.Client to provide type safe helper
+// functions
+type SetCameraInfoClient struct {
+	*rclgo.Client
+}
+
+// NewSetCameraInfoClient creates and returns a new client for the
+// SetCameraInfo
+func NewSetCameraInfoClient(node *rclgo.Node, serviceName string, options *rclgo.ClientOptions) (*SetCameraInfoClient, error) {
+	client, err := node.NewClient(serviceName, SetCameraInfoTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &SetCameraInfoClient{client}, nil
+}
+
+func (s *SetCameraInfoClient) Send(ctx context.Context, req *SetCameraInfo_Request) (*SetCameraInfo_Response, *rclgo.RmwServiceInfo, error) {
+	msg, rmw, err := s.Client.Send(ctx, req)
+	if err != nil {
+		return nil, rmw, err
+	}
+	typedMessage, ok := msg.(*SetCameraInfo_Response)
+	if !ok {
+		return nil, rmw, errors.New("invalid message type returned")
+	}
+	return typedMessage, rmw, err
+}
+
+type SetCameraInfoServiceResponseSender struct {
+	sender rclgo.ServiceResponseSender
+}
+
+func (s SetCameraInfoServiceResponseSender) SendResponse(resp *SetCameraInfo_Response) error {
+	return s.sender.SendResponse(resp)
+}
+
+type SetCameraInfoServiceRequestHandler func(*rclgo.RmwServiceInfo, *SetCameraInfo_Request, SetCameraInfoServiceResponseSender)
+
+// SetCameraInfoService wraps rclgo.Service to provide type safe helper
+// functions
+type SetCameraInfoService struct {
+	*rclgo.Service
+}
+
+// NewSetCameraInfoService creates and returns a new service for the
+// SetCameraInfo
+func NewSetCameraInfoService(node *rclgo.Node, name string, options *rclgo.ServiceOptions, handler SetCameraInfoServiceRequestHandler) (*SetCameraInfoService, error) {
+	h := func(rmw *rclgo.RmwServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
+		m := msg.(*SetCameraInfo_Request)
+		responseSender := SetCameraInfoServiceResponseSender{sender: rs} 
+		handler(rmw, m, responseSender)
+	}
+	service, err := node.NewService(name, SetCameraInfoTypeSupport, options, h)
+	if err != nil {
+		return nil, err
+	}
+	return &SetCameraInfoService{service}, nil
+}
+

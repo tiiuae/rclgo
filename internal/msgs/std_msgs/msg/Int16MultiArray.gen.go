@@ -15,6 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	primitives "github.com/tiiuae/rclgo/pkg/rclgo/primitives"
@@ -69,6 +70,47 @@ func (t *Int16MultiArray) SetDefaults() {
 	t.Layout.SetDefaults()
 	t.Data = nil
 }
+
+// Int16MultiArrayPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type Int16MultiArrayPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewInt16MultiArrayPublisher creates and returns a new publisher for the
+// Int16MultiArray
+func NewInt16MultiArrayPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*Int16MultiArrayPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, Int16MultiArrayTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &Int16MultiArrayPublisher{pub}, nil
+}
+
+func (p *Int16MultiArrayPublisher) Publish(msg *Int16MultiArray) error {
+	return p.Publisher.Publish(msg)
+}
+
+// Int16MultiArraySubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type Int16MultiArraySubscription struct {
+	*rclgo.Subscription
+}
+
+// NewInt16MultiArraySubscription creates and returns a new subscription for the
+// Int16MultiArray
+func NewInt16MultiArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*Int16MultiArraySubscription, error) {
+	sub, err := node.NewSubscription(topic_name, Int16MultiArrayTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &Int16MultiArraySubscription{sub}, nil
+}
+
+func (s *Int16MultiArraySubscription) TakeMessage(out *Int16MultiArray) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneInt16MultiArraySlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

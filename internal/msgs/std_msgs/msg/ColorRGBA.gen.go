@@ -15,6 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -71,6 +72,47 @@ func (t *ColorRGBA) SetDefaults() {
 	t.B = 0
 	t.A = 0
 }
+
+// ColorRGBAPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type ColorRGBAPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewColorRGBAPublisher creates and returns a new publisher for the
+// ColorRGBA
+func NewColorRGBAPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*ColorRGBAPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, ColorRGBATypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &ColorRGBAPublisher{pub}, nil
+}
+
+func (p *ColorRGBAPublisher) Publish(msg *ColorRGBA) error {
+	return p.Publisher.Publish(msg)
+}
+
+// ColorRGBASubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type ColorRGBASubscription struct {
+	*rclgo.Subscription
+}
+
+// NewColorRGBASubscription creates and returns a new subscription for the
+// ColorRGBA
+func NewColorRGBASubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*ColorRGBASubscription, error) {
+	sub, err := node.NewSubscription(topic_name, ColorRGBATypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &ColorRGBASubscription{sub}, nil
+}
+
+func (s *ColorRGBASubscription) TakeMessage(out *ColorRGBA) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneColorRGBASlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

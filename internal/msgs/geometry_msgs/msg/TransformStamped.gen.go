@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -71,6 +72,47 @@ func (t *TransformStamped) SetDefaults() {
 	t.ChildFrameId = ""
 	t.Transform.SetDefaults()
 }
+
+// TransformStampedPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type TransformStampedPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewTransformStampedPublisher creates and returns a new publisher for the
+// TransformStamped
+func NewTransformStampedPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*TransformStampedPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, TransformStampedTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &TransformStampedPublisher{pub}, nil
+}
+
+func (p *TransformStampedPublisher) Publish(msg *TransformStamped) error {
+	return p.Publisher.Publish(msg)
+}
+
+// TransformStampedSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type TransformStampedSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewTransformStampedSubscription creates and returns a new subscription for the
+// TransformStamped
+func NewTransformStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*TransformStampedSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, TransformStampedTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &TransformStampedSubscription{sub}, nil
+}
+
+func (s *TransformStampedSubscription) TakeMessage(out *TransformStamped) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneTransformStampedSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

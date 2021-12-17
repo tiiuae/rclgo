@@ -15,6 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	primitives "github.com/tiiuae/rclgo/pkg/rclgo/primitives"
@@ -69,6 +70,47 @@ func (t *ByteMultiArray) SetDefaults() {
 	t.Layout.SetDefaults()
 	t.Data = nil
 }
+
+// ByteMultiArrayPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type ByteMultiArrayPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewByteMultiArrayPublisher creates and returns a new publisher for the
+// ByteMultiArray
+func NewByteMultiArrayPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*ByteMultiArrayPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, ByteMultiArrayTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &ByteMultiArrayPublisher{pub}, nil
+}
+
+func (p *ByteMultiArrayPublisher) Publish(msg *ByteMultiArray) error {
+	return p.Publisher.Publish(msg)
+}
+
+// ByteMultiArraySubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type ByteMultiArraySubscription struct {
+	*rclgo.Subscription
+}
+
+// NewByteMultiArraySubscription creates and returns a new subscription for the
+// ByteMultiArray
+func NewByteMultiArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*ByteMultiArraySubscription, error) {
+	sub, err := node.NewSubscription(topic_name, ByteMultiArrayTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &ByteMultiArraySubscription{sub}, nil
+}
+
+func (s *ByteMultiArraySubscription) TakeMessage(out *ByteMultiArray) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneByteMultiArraySlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

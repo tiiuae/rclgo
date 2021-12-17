@@ -15,6 +15,7 @@ package example_interfaces_srv
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -65,6 +66,47 @@ func (t *AddTwoInts_Request) SetDefaults() {
 	t.A = 0
 	t.B = 0
 }
+
+// AddTwoInts_RequestPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type AddTwoInts_RequestPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewAddTwoInts_RequestPublisher creates and returns a new publisher for the
+// AddTwoInts_Request
+func NewAddTwoInts_RequestPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*AddTwoInts_RequestPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, AddTwoInts_RequestTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &AddTwoInts_RequestPublisher{pub}, nil
+}
+
+func (p *AddTwoInts_RequestPublisher) Publish(msg *AddTwoInts_Request) error {
+	return p.Publisher.Publish(msg)
+}
+
+// AddTwoInts_RequestSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type AddTwoInts_RequestSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewAddTwoInts_RequestSubscription creates and returns a new subscription for the
+// AddTwoInts_Request
+func NewAddTwoInts_RequestSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*AddTwoInts_RequestSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, AddTwoInts_RequestTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &AddTwoInts_RequestSubscription{sub}, nil
+}
+
+func (s *AddTwoInts_RequestSubscription) TakeMessage(out *AddTwoInts_Request) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneAddTwoInts_RequestSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

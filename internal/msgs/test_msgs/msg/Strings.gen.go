@@ -15,6 +15,7 @@ package test_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	primitives "github.com/tiiuae/rclgo/pkg/rclgo/primitives"
@@ -99,6 +100,47 @@ func (t *Strings) SetDefaults() {
 	t.BoundedStringValueDefault4 = "Hello'world!"
 	t.BoundedStringValueDefault5 = "Hello\"world!"
 }
+
+// StringsPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type StringsPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewStringsPublisher creates and returns a new publisher for the
+// Strings
+func NewStringsPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*StringsPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, StringsTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &StringsPublisher{pub}, nil
+}
+
+func (p *StringsPublisher) Publish(msg *Strings) error {
+	return p.Publisher.Publish(msg)
+}
+
+// StringsSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type StringsSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewStringsSubscription creates and returns a new subscription for the
+// Strings
+func NewStringsSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*StringsSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, StringsTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &StringsSubscription{sub}, nil
+}
+
+func (s *StringsSubscription) TakeMessage(out *Strings) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneStringsSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

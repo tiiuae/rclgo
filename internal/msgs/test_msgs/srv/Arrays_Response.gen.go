@@ -15,6 +15,7 @@ package test_msgs_srv
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	test_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/test_msgs/msg"
@@ -161,6 +162,47 @@ func (t *Arrays_Response) SetDefaults() {
 	t.Uint64ValuesDefault = [3]uint64{0,1,18446744073709551615}
 	t.StringValuesDefault = [3]string{"","max value","min value"}
 }
+
+// Arrays_ResponsePublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type Arrays_ResponsePublisher struct {
+	*rclgo.Publisher
+}
+
+// NewArrays_ResponsePublisher creates and returns a new publisher for the
+// Arrays_Response
+func NewArrays_ResponsePublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*Arrays_ResponsePublisher, error) {
+	pub, err := node.NewPublisher(topic_name, Arrays_ResponseTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &Arrays_ResponsePublisher{pub}, nil
+}
+
+func (p *Arrays_ResponsePublisher) Publish(msg *Arrays_Response) error {
+	return p.Publisher.Publish(msg)
+}
+
+// Arrays_ResponseSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type Arrays_ResponseSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewArrays_ResponseSubscription creates and returns a new subscription for the
+// Arrays_Response
+func NewArrays_ResponseSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*Arrays_ResponseSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, Arrays_ResponseTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &Arrays_ResponseSubscription{sub}, nil
+}
+
+func (s *Arrays_ResponseSubscription) TakeMessage(out *Arrays_Response) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneArrays_ResponseSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

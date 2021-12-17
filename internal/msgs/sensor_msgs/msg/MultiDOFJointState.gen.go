@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	geometry_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/geometry_msgs/msg"
@@ -91,6 +92,47 @@ func (t *MultiDOFJointState) SetDefaults() {
 	t.Twist = nil
 	t.Wrench = nil
 }
+
+// MultiDOFJointStatePublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type MultiDOFJointStatePublisher struct {
+	*rclgo.Publisher
+}
+
+// NewMultiDOFJointStatePublisher creates and returns a new publisher for the
+// MultiDOFJointState
+func NewMultiDOFJointStatePublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*MultiDOFJointStatePublisher, error) {
+	pub, err := node.NewPublisher(topic_name, MultiDOFJointStateTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &MultiDOFJointStatePublisher{pub}, nil
+}
+
+func (p *MultiDOFJointStatePublisher) Publish(msg *MultiDOFJointState) error {
+	return p.Publisher.Publish(msg)
+}
+
+// MultiDOFJointStateSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type MultiDOFJointStateSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewMultiDOFJointStateSubscription creates and returns a new subscription for the
+// MultiDOFJointState
+func NewMultiDOFJointStateSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*MultiDOFJointStateSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, MultiDOFJointStateTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &MultiDOFJointStateSubscription{sub}, nil
+}
+
+func (s *MultiDOFJointStateSubscription) TakeMessage(out *MultiDOFJointState) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneMultiDOFJointStateSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

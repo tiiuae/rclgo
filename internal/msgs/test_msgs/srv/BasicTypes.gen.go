@@ -24,10 +24,13 @@ package test_msgs_srv
 import "C"
 
 import (
+	"context"
+	"errors"
+	"unsafe"
+
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
-
-	"unsafe"
 )
 
 func init() {
@@ -50,3 +53,63 @@ func (s _BasicTypesTypeSupport) TypeSupport() unsafe.Pointer {
 
 // Modifying this variable is undefined behavior.
 var BasicTypesTypeSupport types.ServiceTypeSupport = _BasicTypesTypeSupport{}
+
+// BasicTypesClient wraps rclgo.Client to provide type safe helper
+// functions
+type BasicTypesClient struct {
+	*rclgo.Client
+}
+
+// NewBasicTypesClient creates and returns a new client for the
+// BasicTypes
+func NewBasicTypesClient(node *rclgo.Node, serviceName string, options *rclgo.ClientOptions) (*BasicTypesClient, error) {
+	client, err := node.NewClient(serviceName, BasicTypesTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &BasicTypesClient{client}, nil
+}
+
+func (s *BasicTypesClient) Send(ctx context.Context, req *BasicTypes_Request) (*BasicTypes_Response, *rclgo.RmwServiceInfo, error) {
+	msg, rmw, err := s.Client.Send(ctx, req)
+	if err != nil {
+		return nil, rmw, err
+	}
+	typedMessage, ok := msg.(*BasicTypes_Response)
+	if !ok {
+		return nil, rmw, errors.New("invalid message type returned")
+	}
+	return typedMessage, rmw, err
+}
+
+type BasicTypesServiceResponseSender struct {
+	sender rclgo.ServiceResponseSender
+}
+
+func (s BasicTypesServiceResponseSender) SendResponse(resp *BasicTypes_Response) error {
+	return s.sender.SendResponse(resp)
+}
+
+type BasicTypesServiceRequestHandler func(*rclgo.RmwServiceInfo, *BasicTypes_Request, BasicTypesServiceResponseSender)
+
+// BasicTypesService wraps rclgo.Service to provide type safe helper
+// functions
+type BasicTypesService struct {
+	*rclgo.Service
+}
+
+// NewBasicTypesService creates and returns a new service for the
+// BasicTypes
+func NewBasicTypesService(node *rclgo.Node, name string, options *rclgo.ServiceOptions, handler BasicTypesServiceRequestHandler) (*BasicTypesService, error) {
+	h := func(rmw *rclgo.RmwServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
+		m := msg.(*BasicTypes_Request)
+		responseSender := BasicTypesServiceResponseSender{sender: rs} 
+		handler(rmw, m, responseSender)
+	}
+	service, err := node.NewService(name, BasicTypesTypeSupport, options, h)
+	if err != nil {
+		return nil, err
+	}
+	return &BasicTypesService{service}, nil
+}
+

@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -65,6 +66,47 @@ func (t *Transform) SetDefaults() {
 	t.Translation.SetDefaults()
 	t.Rotation.SetDefaults()
 }
+
+// TransformPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type TransformPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewTransformPublisher creates and returns a new publisher for the
+// Transform
+func NewTransformPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*TransformPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, TransformTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &TransformPublisher{pub}, nil
+}
+
+func (p *TransformPublisher) Publish(msg *Transform) error {
+	return p.Publisher.Publish(msg)
+}
+
+// TransformSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type TransformSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewTransformSubscription creates and returns a new subscription for the
+// Transform
+func NewTransformSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*TransformSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, TransformTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &TransformSubscription{sub}, nil
+}
+
+func (s *TransformSubscription) TakeMessage(out *Transform) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneTransformSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

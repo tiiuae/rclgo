@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -71,6 +72,47 @@ func (t *Quaternion) SetDefaults() {
 	t.Z = 0
 	t.W = 1
 }
+
+// QuaternionPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type QuaternionPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewQuaternionPublisher creates and returns a new publisher for the
+// Quaternion
+func NewQuaternionPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*QuaternionPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, QuaternionTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &QuaternionPublisher{pub}, nil
+}
+
+func (p *QuaternionPublisher) Publish(msg *Quaternion) error {
+	return p.Publisher.Publish(msg)
+}
+
+// QuaternionSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type QuaternionSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewQuaternionSubscription creates and returns a new subscription for the
+// Quaternion
+func NewQuaternionSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*QuaternionSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, QuaternionTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &QuaternionSubscription{sub}, nil
+}
+
+func (s *QuaternionSubscription) TakeMessage(out *Quaternion) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneQuaternionSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

@@ -15,6 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	primitives "github.com/tiiuae/rclgo/pkg/rclgo/primitives"
@@ -69,6 +70,47 @@ func (t *Float32MultiArray) SetDefaults() {
 	t.Layout.SetDefaults()
 	t.Data = nil
 }
+
+// Float32MultiArrayPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type Float32MultiArrayPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewFloat32MultiArrayPublisher creates and returns a new publisher for the
+// Float32MultiArray
+func NewFloat32MultiArrayPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*Float32MultiArrayPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, Float32MultiArrayTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &Float32MultiArrayPublisher{pub}, nil
+}
+
+func (p *Float32MultiArrayPublisher) Publish(msg *Float32MultiArray) error {
+	return p.Publisher.Publish(msg)
+}
+
+// Float32MultiArraySubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type Float32MultiArraySubscription struct {
+	*rclgo.Subscription
+}
+
+// NewFloat32MultiArraySubscription creates and returns a new subscription for the
+// Float32MultiArray
+func NewFloat32MultiArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*Float32MultiArraySubscription, error) {
+	sub, err := node.NewSubscription(topic_name, Float32MultiArrayTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &Float32MultiArraySubscription{sub}, nil
+}
+
+func (s *Float32MultiArraySubscription) TakeMessage(out *Float32MultiArray) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneFloat32MultiArraySlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

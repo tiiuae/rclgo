@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	geometry_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/geometry_msgs/msg"
@@ -85,6 +86,47 @@ func (t *Imu) SetDefaults() {
 	t.LinearAcceleration.SetDefaults()
 	t.LinearAccelerationCovariance = [9]float64{}
 }
+
+// ImuPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type ImuPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewImuPublisher creates and returns a new publisher for the
+// Imu
+func NewImuPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*ImuPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, ImuTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &ImuPublisher{pub}, nil
+}
+
+func (p *ImuPublisher) Publish(msg *Imu) error {
+	return p.Publisher.Publish(msg)
+}
+
+// ImuSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type ImuSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewImuSubscription creates and returns a new subscription for the
+// Imu
+func NewImuSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*ImuSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, ImuTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &ImuSubscription{sub}, nil
+}
+
+func (s *ImuSubscription) TakeMessage(out *Imu) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneImuSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

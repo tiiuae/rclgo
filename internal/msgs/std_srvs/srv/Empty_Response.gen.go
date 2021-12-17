@@ -15,6 +15,7 @@ package std_srvs_srv
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -59,6 +60,47 @@ func (t *Empty_Response) CloneMsg() types.Message {
 
 func (t *Empty_Response) SetDefaults() {
 }
+
+// Empty_ResponsePublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type Empty_ResponsePublisher struct {
+	*rclgo.Publisher
+}
+
+// NewEmpty_ResponsePublisher creates and returns a new publisher for the
+// Empty_Response
+func NewEmpty_ResponsePublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*Empty_ResponsePublisher, error) {
+	pub, err := node.NewPublisher(topic_name, Empty_ResponseTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &Empty_ResponsePublisher{pub}, nil
+}
+
+func (p *Empty_ResponsePublisher) Publish(msg *Empty_Response) error {
+	return p.Publisher.Publish(msg)
+}
+
+// Empty_ResponseSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type Empty_ResponseSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewEmpty_ResponseSubscription creates and returns a new subscription for the
+// Empty_Response
+func NewEmpty_ResponseSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*Empty_ResponseSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, Empty_ResponseTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &Empty_ResponseSubscription{sub}, nil
+}
+
+func (s *Empty_ResponseSubscription) TakeMessage(out *Empty_Response) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneEmpty_ResponseSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

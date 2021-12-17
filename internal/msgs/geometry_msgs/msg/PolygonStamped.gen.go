@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -67,6 +68,47 @@ func (t *PolygonStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Polygon.SetDefaults()
 }
+
+// PolygonStampedPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type PolygonStampedPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewPolygonStampedPublisher creates and returns a new publisher for the
+// PolygonStamped
+func NewPolygonStampedPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*PolygonStampedPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, PolygonStampedTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &PolygonStampedPublisher{pub}, nil
+}
+
+func (p *PolygonStampedPublisher) Publish(msg *PolygonStamped) error {
+	return p.Publisher.Publish(msg)
+}
+
+// PolygonStampedSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type PolygonStampedSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewPolygonStampedSubscription creates and returns a new subscription for the
+// PolygonStamped
+func NewPolygonStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*PolygonStampedSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, PolygonStampedTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &PolygonStampedSubscription{sub}, nil
+}
+
+func (s *PolygonStampedSubscription) TakeMessage(out *PolygonStamped) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // ClonePolygonStampedSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

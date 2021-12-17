@@ -24,10 +24,13 @@ package test_msgs_srv
 import "C"
 
 import (
+	"context"
+	"errors"
+	"unsafe"
+
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
-
-	"unsafe"
 )
 
 func init() {
@@ -50,3 +53,63 @@ func (s _ArraysTypeSupport) TypeSupport() unsafe.Pointer {
 
 // Modifying this variable is undefined behavior.
 var ArraysTypeSupport types.ServiceTypeSupport = _ArraysTypeSupport{}
+
+// ArraysClient wraps rclgo.Client to provide type safe helper
+// functions
+type ArraysClient struct {
+	*rclgo.Client
+}
+
+// NewArraysClient creates and returns a new client for the
+// Arrays
+func NewArraysClient(node *rclgo.Node, serviceName string, options *rclgo.ClientOptions) (*ArraysClient, error) {
+	client, err := node.NewClient(serviceName, ArraysTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &ArraysClient{client}, nil
+}
+
+func (s *ArraysClient) Send(ctx context.Context, req *Arrays_Request) (*Arrays_Response, *rclgo.RmwServiceInfo, error) {
+	msg, rmw, err := s.Client.Send(ctx, req)
+	if err != nil {
+		return nil, rmw, err
+	}
+	typedMessage, ok := msg.(*Arrays_Response)
+	if !ok {
+		return nil, rmw, errors.New("invalid message type returned")
+	}
+	return typedMessage, rmw, err
+}
+
+type ArraysServiceResponseSender struct {
+	sender rclgo.ServiceResponseSender
+}
+
+func (s ArraysServiceResponseSender) SendResponse(resp *Arrays_Response) error {
+	return s.sender.SendResponse(resp)
+}
+
+type ArraysServiceRequestHandler func(*rclgo.RmwServiceInfo, *Arrays_Request, ArraysServiceResponseSender)
+
+// ArraysService wraps rclgo.Service to provide type safe helper
+// functions
+type ArraysService struct {
+	*rclgo.Service
+}
+
+// NewArraysService creates and returns a new service for the
+// Arrays
+func NewArraysService(node *rclgo.Node, name string, options *rclgo.ServiceOptions, handler ArraysServiceRequestHandler) (*ArraysService, error) {
+	h := func(rmw *rclgo.RmwServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
+		m := msg.(*Arrays_Request)
+		responseSender := ArraysServiceResponseSender{sender: rs} 
+		handler(rmw, m, responseSender)
+	}
+	service, err := node.NewService(name, ArraysTypeSupport, options, h)
+	if err != nil {
+		return nil, err
+	}
+	return &ArraysService{service}, nil
+}
+

@@ -15,6 +15,7 @@ package example_interfaces_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -62,6 +63,47 @@ func (t *Bool) CloneMsg() types.Message {
 func (t *Bool) SetDefaults() {
 	t.Data = false
 }
+
+// BoolPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type BoolPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewBoolPublisher creates and returns a new publisher for the
+// Bool
+func NewBoolPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*BoolPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, BoolTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &BoolPublisher{pub}, nil
+}
+
+func (p *BoolPublisher) Publish(msg *Bool) error {
+	return p.Publisher.Publish(msg)
+}
+
+// BoolSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type BoolSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewBoolSubscription creates and returns a new subscription for the
+// Bool
+func NewBoolSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*BoolSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, BoolTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &BoolSubscription{sub}, nil
+}
+
+func (s *BoolSubscription) TakeMessage(out *Bool) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneBoolSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

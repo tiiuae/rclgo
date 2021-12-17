@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -74,6 +75,47 @@ func (t *CompressedImage) SetDefaults() {
 	t.Format = ""
 	t.Data = nil
 }
+
+// CompressedImagePublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type CompressedImagePublisher struct {
+	*rclgo.Publisher
+}
+
+// NewCompressedImagePublisher creates and returns a new publisher for the
+// CompressedImage
+func NewCompressedImagePublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*CompressedImagePublisher, error) {
+	pub, err := node.NewPublisher(topic_name, CompressedImageTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &CompressedImagePublisher{pub}, nil
+}
+
+func (p *CompressedImagePublisher) Publish(msg *CompressedImage) error {
+	return p.Publisher.Publish(msg)
+}
+
+// CompressedImageSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type CompressedImageSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewCompressedImageSubscription creates and returns a new subscription for the
+// CompressedImage
+func NewCompressedImageSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*CompressedImageSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, CompressedImageTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &CompressedImageSubscription{sub}, nil
+}
+
+func (s *CompressedImageSubscription) TakeMessage(out *CompressedImage) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneCompressedImageSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

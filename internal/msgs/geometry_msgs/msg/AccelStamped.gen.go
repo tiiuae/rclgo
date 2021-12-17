@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -67,6 +68,47 @@ func (t *AccelStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Accel.SetDefaults()
 }
+
+// AccelStampedPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type AccelStampedPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewAccelStampedPublisher creates and returns a new publisher for the
+// AccelStamped
+func NewAccelStampedPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*AccelStampedPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, AccelStampedTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &AccelStampedPublisher{pub}, nil
+}
+
+func (p *AccelStampedPublisher) Publish(msg *AccelStamped) error {
+	return p.Publisher.Publish(msg)
+}
+
+// AccelStampedSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type AccelStampedSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewAccelStampedSubscription creates and returns a new subscription for the
+// AccelStamped
+func NewAccelStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*AccelStampedSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, AccelStampedTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &AccelStampedSubscription{sub}, nil
+}
+
+func (s *AccelStampedSubscription) TakeMessage(out *AccelStamped) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneAccelStampedSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

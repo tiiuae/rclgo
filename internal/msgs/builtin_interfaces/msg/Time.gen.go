@@ -15,6 +15,7 @@ package builtin_interfaces_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -65,6 +66,47 @@ func (t *Time) SetDefaults() {
 	t.Sec = 0
 	t.Nanosec = 0
 }
+
+// TimePublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type TimePublisher struct {
+	*rclgo.Publisher
+}
+
+// NewTimePublisher creates and returns a new publisher for the
+// Time
+func NewTimePublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*TimePublisher, error) {
+	pub, err := node.NewPublisher(topic_name, TimeTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &TimePublisher{pub}, nil
+}
+
+func (p *TimePublisher) Publish(msg *Time) error {
+	return p.Publisher.Publish(msg)
+}
+
+// TimeSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type TimeSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewTimeSubscription creates and returns a new subscription for the
+// Time
+func NewTimeSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*TimeSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, TimeTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &TimeSubscription{sub}, nil
+}
+
+func (s *TimeSubscription) TakeMessage(out *Time) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneTimeSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

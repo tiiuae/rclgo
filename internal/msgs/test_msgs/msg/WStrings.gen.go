@@ -15,6 +15,7 @@ package test_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	primitives "github.com/tiiuae/rclgo/pkg/rclgo/primitives"
@@ -87,6 +88,47 @@ func (t *WStrings) SetDefaults() {
 	t.BoundedSequenceOfWstrings = nil
 	t.UnboundedSequenceOfWstrings = nil
 }
+
+// WStringsPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type WStringsPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewWStringsPublisher creates and returns a new publisher for the
+// WStrings
+func NewWStringsPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*WStringsPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, WStringsTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &WStringsPublisher{pub}, nil
+}
+
+func (p *WStringsPublisher) Publish(msg *WStrings) error {
+	return p.Publisher.Publish(msg)
+}
+
+// WStringsSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type WStringsSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewWStringsSubscription creates and returns a new subscription for the
+// WStrings
+func NewWStringsSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*WStringsSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, WStringsTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &WStringsSubscription{sub}, nil
+}
+
+func (s *WStringsSubscription) TakeMessage(out *WStrings) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneWStringsSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

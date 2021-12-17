@@ -15,6 +15,7 @@ package test_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	primitives "github.com/tiiuae/rclgo/pkg/rclgo/primitives"
@@ -249,6 +250,47 @@ func (t *UnboundedSequences) SetDefaults() {
 	t.StringValuesDefault = []string{"","max value","min value"}
 	t.AlignmentCheck = 0
 }
+
+// UnboundedSequencesPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type UnboundedSequencesPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewUnboundedSequencesPublisher creates and returns a new publisher for the
+// UnboundedSequences
+func NewUnboundedSequencesPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*UnboundedSequencesPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, UnboundedSequencesTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &UnboundedSequencesPublisher{pub}, nil
+}
+
+func (p *UnboundedSequencesPublisher) Publish(msg *UnboundedSequences) error {
+	return p.Publisher.Publish(msg)
+}
+
+// UnboundedSequencesSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type UnboundedSequencesSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewUnboundedSequencesSubscription creates and returns a new subscription for the
+// UnboundedSequences
+func NewUnboundedSequencesSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*UnboundedSequencesSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, UnboundedSequencesTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &UnboundedSequencesSubscription{sub}, nil
+}
+
+func (s *UnboundedSequencesSubscription) TakeMessage(out *UnboundedSequences) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneUnboundedSequencesSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

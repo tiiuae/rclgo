@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -68,6 +69,47 @@ func (t *Point32) SetDefaults() {
 	t.Y = 0
 	t.Z = 0
 }
+
+// Point32Publisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type Point32Publisher struct {
+	*rclgo.Publisher
+}
+
+// NewPoint32Publisher creates and returns a new publisher for the
+// Point32
+func NewPoint32Publisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*Point32Publisher, error) {
+	pub, err := node.NewPublisher(topic_name, Point32TypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &Point32Publisher{pub}, nil
+}
+
+func (p *Point32Publisher) Publish(msg *Point32) error {
+	return p.Publisher.Publish(msg)
+}
+
+// Point32Subscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type Point32Subscription struct {
+	*rclgo.Subscription
+}
+
+// NewPoint32Subscription creates and returns a new subscription for the
+// Point32
+func NewPoint32Subscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*Point32Subscription, error) {
+	sub, err := node.NewSubscription(topic_name, Point32TypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &Point32Subscription{sub}, nil
+}
+
+func (s *Point32Subscription) TakeMessage(out *Point32) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // ClonePoint32Slice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

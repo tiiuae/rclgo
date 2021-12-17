@@ -15,6 +15,7 @@ package test_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -98,6 +99,47 @@ func (t *BasicTypes) SetDefaults() {
 	t.Int64Value = 0
 	t.Uint64Value = 0
 }
+
+// BasicTypesPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type BasicTypesPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewBasicTypesPublisher creates and returns a new publisher for the
+// BasicTypes
+func NewBasicTypesPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*BasicTypesPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, BasicTypesTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &BasicTypesPublisher{pub}, nil
+}
+
+func (p *BasicTypesPublisher) Publish(msg *BasicTypes) error {
+	return p.Publisher.Publish(msg)
+}
+
+// BasicTypesSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type BasicTypesSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewBasicTypesSubscription creates and returns a new subscription for the
+// BasicTypes
+func NewBasicTypesSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*BasicTypesSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, BasicTypesTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &BasicTypesSubscription{sub}, nil
+}
+
+func (s *BasicTypesSubscription) TakeMessage(out *BasicTypes) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneBasicTypesSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

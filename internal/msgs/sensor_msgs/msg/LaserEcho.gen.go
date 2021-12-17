@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	primitives "github.com/tiiuae/rclgo/pkg/rclgo/primitives"
@@ -66,6 +67,47 @@ func (t *LaserEcho) CloneMsg() types.Message {
 func (t *LaserEcho) SetDefaults() {
 	t.Echoes = nil
 }
+
+// LaserEchoPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type LaserEchoPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewLaserEchoPublisher creates and returns a new publisher for the
+// LaserEcho
+func NewLaserEchoPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*LaserEchoPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, LaserEchoTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &LaserEchoPublisher{pub}, nil
+}
+
+func (p *LaserEchoPublisher) Publish(msg *LaserEcho) error {
+	return p.Publisher.Publish(msg)
+}
+
+// LaserEchoSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type LaserEchoSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewLaserEchoSubscription creates and returns a new subscription for the
+// LaserEcho
+func NewLaserEchoSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*LaserEchoSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, LaserEchoTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &LaserEchoSubscription{sub}, nil
+}
+
+func (s *LaserEchoSubscription) TakeMessage(out *LaserEcho) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneLaserEchoSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

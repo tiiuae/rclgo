@@ -15,6 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -62,6 +63,47 @@ func (t *UInt16) CloneMsg() types.Message {
 func (t *UInt16) SetDefaults() {
 	t.Data = 0
 }
+
+// UInt16Publisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type UInt16Publisher struct {
+	*rclgo.Publisher
+}
+
+// NewUInt16Publisher creates and returns a new publisher for the
+// UInt16
+func NewUInt16Publisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*UInt16Publisher, error) {
+	pub, err := node.NewPublisher(topic_name, UInt16TypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &UInt16Publisher{pub}, nil
+}
+
+func (p *UInt16Publisher) Publish(msg *UInt16) error {
+	return p.Publisher.Publish(msg)
+}
+
+// UInt16Subscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type UInt16Subscription struct {
+	*rclgo.Subscription
+}
+
+// NewUInt16Subscription creates and returns a new subscription for the
+// UInt16
+func NewUInt16Subscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*UInt16Subscription, error) {
+	sub, err := node.NewSubscription(topic_name, UInt16TypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &UInt16Subscription{sub}, nil
+}
+
+func (s *UInt16Subscription) TakeMessage(out *UInt16) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneUInt16Slice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

@@ -15,6 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -62,6 +63,47 @@ func (t *Byte) CloneMsg() types.Message {
 func (t *Byte) SetDefaults() {
 	t.Data = 0
 }
+
+// BytePublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type BytePublisher struct {
+	*rclgo.Publisher
+}
+
+// NewBytePublisher creates and returns a new publisher for the
+// Byte
+func NewBytePublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*BytePublisher, error) {
+	pub, err := node.NewPublisher(topic_name, ByteTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &BytePublisher{pub}, nil
+}
+
+func (p *BytePublisher) Publish(msg *Byte) error {
+	return p.Publisher.Publish(msg)
+}
+
+// ByteSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type ByteSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewByteSubscription creates and returns a new subscription for the
+// Byte
+func NewByteSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*ByteSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, ByteTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &ByteSubscription{sub}, nil
+}
+
+func (s *ByteSubscription) TakeMessage(out *Byte) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneByteSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

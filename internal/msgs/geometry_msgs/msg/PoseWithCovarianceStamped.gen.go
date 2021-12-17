@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -67,6 +68,47 @@ func (t *PoseWithCovarianceStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Pose.SetDefaults()
 }
+
+// PoseWithCovarianceStampedPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type PoseWithCovarianceStampedPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewPoseWithCovarianceStampedPublisher creates and returns a new publisher for the
+// PoseWithCovarianceStamped
+func NewPoseWithCovarianceStampedPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*PoseWithCovarianceStampedPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, PoseWithCovarianceStampedTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &PoseWithCovarianceStampedPublisher{pub}, nil
+}
+
+func (p *PoseWithCovarianceStampedPublisher) Publish(msg *PoseWithCovarianceStamped) error {
+	return p.Publisher.Publish(msg)
+}
+
+// PoseWithCovarianceStampedSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type PoseWithCovarianceStampedSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewPoseWithCovarianceStampedSubscription creates and returns a new subscription for the
+// PoseWithCovarianceStamped
+func NewPoseWithCovarianceStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*PoseWithCovarianceStampedSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, PoseWithCovarianceStampedTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &PoseWithCovarianceStampedSubscription{sub}, nil
+}
+
+func (s *PoseWithCovarianceStampedSubscription) TakeMessage(out *PoseWithCovarianceStamped) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // ClonePoseWithCovarianceStampedSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

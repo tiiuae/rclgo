@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -67,6 +68,47 @@ func (t *InertiaStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Inertia.SetDefaults()
 }
+
+// InertiaStampedPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type InertiaStampedPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewInertiaStampedPublisher creates and returns a new publisher for the
+// InertiaStamped
+func NewInertiaStampedPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*InertiaStampedPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, InertiaStampedTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &InertiaStampedPublisher{pub}, nil
+}
+
+func (p *InertiaStampedPublisher) Publish(msg *InertiaStamped) error {
+	return p.Publisher.Publish(msg)
+}
+
+// InertiaStampedSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type InertiaStampedSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewInertiaStampedSubscription creates and returns a new subscription for the
+// InertiaStamped
+func NewInertiaStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*InertiaStampedSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, InertiaStampedTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &InertiaStampedSubscription{sub}, nil
+}
+
+func (s *InertiaStampedSubscription) TakeMessage(out *InertiaStamped) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneInertiaStampedSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

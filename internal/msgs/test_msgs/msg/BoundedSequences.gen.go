@@ -15,6 +15,7 @@ package test_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	primitives "github.com/tiiuae/rclgo/pkg/rclgo/primitives"
@@ -249,6 +250,47 @@ func (t *BoundedSequences) SetDefaults() {
 	t.StringValuesDefault = []string{"","max value","min value"}
 	t.AlignmentCheck = 0
 }
+
+// BoundedSequencesPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type BoundedSequencesPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewBoundedSequencesPublisher creates and returns a new publisher for the
+// BoundedSequences
+func NewBoundedSequencesPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*BoundedSequencesPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, BoundedSequencesTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &BoundedSequencesPublisher{pub}, nil
+}
+
+func (p *BoundedSequencesPublisher) Publish(msg *BoundedSequences) error {
+	return p.Publisher.Publish(msg)
+}
+
+// BoundedSequencesSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type BoundedSequencesSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewBoundedSequencesSubscription creates and returns a new subscription for the
+// BoundedSequences
+func NewBoundedSequencesSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*BoundedSequencesSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, BoundedSequencesTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &BoundedSequencesSubscription{sub}, nil
+}
+
+func (s *BoundedSequencesSubscription) TakeMessage(out *BoundedSequences) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneBoundedSequencesSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

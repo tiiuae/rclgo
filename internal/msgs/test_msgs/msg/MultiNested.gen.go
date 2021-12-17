@@ -15,6 +15,7 @@ package test_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -110,6 +111,47 @@ func (t *MultiNested) SetDefaults() {
 	t.UnboundedSequenceOfBoundedSequences = nil
 	t.UnboundedSequenceOfUnboundedSequences = nil
 }
+
+// MultiNestedPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type MultiNestedPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewMultiNestedPublisher creates and returns a new publisher for the
+// MultiNested
+func NewMultiNestedPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*MultiNestedPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, MultiNestedTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &MultiNestedPublisher{pub}, nil
+}
+
+func (p *MultiNestedPublisher) Publish(msg *MultiNested) error {
+	return p.Publisher.Publish(msg)
+}
+
+// MultiNestedSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type MultiNestedSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewMultiNestedSubscription creates and returns a new subscription for the
+// MultiNested
+func NewMultiNestedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*MultiNestedSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, MultiNestedTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &MultiNestedSubscription{sub}, nil
+}
+
+func (s *MultiNestedSubscription) TakeMessage(out *MultiNested) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneMultiNestedSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

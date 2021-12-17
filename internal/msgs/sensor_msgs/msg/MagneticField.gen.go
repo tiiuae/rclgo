@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	geometry_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/geometry_msgs/msg"
@@ -73,6 +74,47 @@ func (t *MagneticField) SetDefaults() {
 	t.MagneticField.SetDefaults()
 	t.MagneticFieldCovariance = [9]float64{}
 }
+
+// MagneticFieldPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type MagneticFieldPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewMagneticFieldPublisher creates and returns a new publisher for the
+// MagneticField
+func NewMagneticFieldPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*MagneticFieldPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, MagneticFieldTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &MagneticFieldPublisher{pub}, nil
+}
+
+func (p *MagneticFieldPublisher) Publish(msg *MagneticField) error {
+	return p.Publisher.Publish(msg)
+}
+
+// MagneticFieldSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type MagneticFieldSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewMagneticFieldSubscription creates and returns a new subscription for the
+// MagneticField
+func NewMagneticFieldSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*MagneticFieldSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, MagneticFieldTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &MagneticFieldSubscription{sub}, nil
+}
+
+func (s *MagneticFieldSubscription) TakeMessage(out *MagneticField) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneMagneticFieldSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

@@ -15,6 +15,7 @@ package test_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -98,6 +99,47 @@ func (t *Defaults) SetDefaults() {
 	t.Int64Value = -40000000
 	t.Uint64Value = 50000000
 }
+
+// DefaultsPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type DefaultsPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewDefaultsPublisher creates and returns a new publisher for the
+// Defaults
+func NewDefaultsPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*DefaultsPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, DefaultsTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &DefaultsPublisher{pub}, nil
+}
+
+func (p *DefaultsPublisher) Publish(msg *Defaults) error {
+	return p.Publisher.Publish(msg)
+}
+
+// DefaultsSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type DefaultsSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewDefaultsSubscription creates and returns a new subscription for the
+// Defaults
+func NewDefaultsSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*DefaultsSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, DefaultsTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &DefaultsSubscription{sub}, nil
+}
+
+func (s *DefaultsSubscription) TakeMessage(out *Defaults) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneDefaultsSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

@@ -15,6 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -62,6 +63,47 @@ func (t *Char) CloneMsg() types.Message {
 func (t *Char) SetDefaults() {
 	t.Data = 0
 }
+
+// CharPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type CharPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewCharPublisher creates and returns a new publisher for the
+// Char
+func NewCharPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*CharPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, CharTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &CharPublisher{pub}, nil
+}
+
+func (p *CharPublisher) Publish(msg *Char) error {
+	return p.Publisher.Publish(msg)
+}
+
+// CharSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type CharSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewCharSubscription creates and returns a new subscription for the
+// Char
+func NewCharSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*CharSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, CharTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &CharSubscription{sub}, nil
+}
+
+func (s *CharSubscription) TakeMessage(out *Char) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneCharSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -67,6 +68,47 @@ func (t *Vector3Stamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Vector.SetDefaults()
 }
+
+// Vector3StampedPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type Vector3StampedPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewVector3StampedPublisher creates and returns a new publisher for the
+// Vector3Stamped
+func NewVector3StampedPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*Vector3StampedPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, Vector3StampedTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &Vector3StampedPublisher{pub}, nil
+}
+
+func (p *Vector3StampedPublisher) Publish(msg *Vector3Stamped) error {
+	return p.Publisher.Publish(msg)
+}
+
+// Vector3StampedSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type Vector3StampedSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewVector3StampedSubscription creates and returns a new subscription for the
+// Vector3Stamped
+func NewVector3StampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*Vector3StampedSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, Vector3StampedTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &Vector3StampedSubscription{sub}, nil
+}
+
+func (s *Vector3StampedSubscription) TakeMessage(out *Vector3Stamped) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneVector3StampedSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

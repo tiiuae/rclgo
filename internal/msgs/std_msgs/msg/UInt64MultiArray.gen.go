@@ -15,6 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	primitives "github.com/tiiuae/rclgo/pkg/rclgo/primitives"
@@ -69,6 +70,47 @@ func (t *UInt64MultiArray) SetDefaults() {
 	t.Layout.SetDefaults()
 	t.Data = nil
 }
+
+// UInt64MultiArrayPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type UInt64MultiArrayPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewUInt64MultiArrayPublisher creates and returns a new publisher for the
+// UInt64MultiArray
+func NewUInt64MultiArrayPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*UInt64MultiArrayPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, UInt64MultiArrayTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &UInt64MultiArrayPublisher{pub}, nil
+}
+
+func (p *UInt64MultiArrayPublisher) Publish(msg *UInt64MultiArray) error {
+	return p.Publisher.Publish(msg)
+}
+
+// UInt64MultiArraySubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type UInt64MultiArraySubscription struct {
+	*rclgo.Subscription
+}
+
+// NewUInt64MultiArraySubscription creates and returns a new subscription for the
+// UInt64MultiArray
+func NewUInt64MultiArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*UInt64MultiArraySubscription, error) {
+	sub, err := node.NewSubscription(topic_name, UInt64MultiArrayTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &UInt64MultiArraySubscription{sub}, nil
+}
+
+func (s *UInt64MultiArraySubscription) TakeMessage(out *UInt64MultiArray) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneUInt64MultiArraySlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

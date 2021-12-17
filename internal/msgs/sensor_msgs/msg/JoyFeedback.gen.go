@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -73,6 +74,47 @@ func (t *JoyFeedback) SetDefaults() {
 	t.Id = 0
 	t.Intensity = 0
 }
+
+// JoyFeedbackPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type JoyFeedbackPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewJoyFeedbackPublisher creates and returns a new publisher for the
+// JoyFeedback
+func NewJoyFeedbackPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*JoyFeedbackPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, JoyFeedbackTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &JoyFeedbackPublisher{pub}, nil
+}
+
+func (p *JoyFeedbackPublisher) Publish(msg *JoyFeedback) error {
+	return p.Publisher.Publish(msg)
+}
+
+// JoyFeedbackSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type JoyFeedbackSubscription struct {
+	*rclgo.Subscription
+}
+
+// NewJoyFeedbackSubscription creates and returns a new subscription for the
+// JoyFeedback
+func NewJoyFeedbackSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*JoyFeedbackSubscription, error) {
+	sub, err := node.NewSubscription(topic_name, JoyFeedbackTypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &JoyFeedbackSubscription{sub}, nil
+}
+
+func (s *JoyFeedbackSubscription) TakeMessage(out *JoyFeedback) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneJoyFeedbackSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

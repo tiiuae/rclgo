@@ -15,6 +15,7 @@ package example_interfaces_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -62,6 +63,47 @@ func (t *Int8) CloneMsg() types.Message {
 func (t *Int8) SetDefaults() {
 	t.Data = 0
 }
+
+// Int8Publisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type Int8Publisher struct {
+	*rclgo.Publisher
+}
+
+// NewInt8Publisher creates and returns a new publisher for the
+// Int8
+func NewInt8Publisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*Int8Publisher, error) {
+	pub, err := node.NewPublisher(topic_name, Int8TypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &Int8Publisher{pub}, nil
+}
+
+func (p *Int8Publisher) Publish(msg *Int8) error {
+	return p.Publisher.Publish(msg)
+}
+
+// Int8Subscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type Int8Subscription struct {
+	*rclgo.Subscription
+}
+
+// NewInt8Subscription creates and returns a new subscription for the
+// Int8
+func NewInt8Subscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*Int8Subscription, error) {
+	sub, err := node.NewSubscription(topic_name, Int8TypeSupport, subscriptionCallback)
+	if err != nil {
+		return nil, err
+	}
+	return &Int8Subscription{sub}, nil
+}
+
+func (s *Int8Subscription) TakeMessage(out *Int8) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneInt8Slice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

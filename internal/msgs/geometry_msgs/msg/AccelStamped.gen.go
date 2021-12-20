@@ -110,7 +110,6 @@ func (s *AccelStampedSubscription) TakeMessage(out *AccelStamped) (*rclgo.RmwMes
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneAccelStampedSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneAccelStampedSlice(dst, src []AccelStamped) {

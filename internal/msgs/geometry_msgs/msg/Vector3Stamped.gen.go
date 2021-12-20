@@ -110,7 +110,6 @@ func (s *Vector3StampedSubscription) TakeMessage(out *Vector3Stamped) (*rclgo.Rm
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneVector3StampedSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneVector3StampedSlice(dst, src []Vector3Stamped) {

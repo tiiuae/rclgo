@@ -113,7 +113,6 @@ func (s *UInt8MultiArraySubscription) TakeMessage(out *UInt8MultiArray) (*rclgo.
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneUInt8MultiArraySlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneUInt8MultiArraySlice(dst, src []UInt8MultiArray) {

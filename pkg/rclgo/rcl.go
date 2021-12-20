@@ -10,7 +10,9 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package rclgo
 
 /*
-#cgo LDFLAGS: -L/opt/ros/galactic/lib -Wl,-rpath=/opt/ros/galactic/lib -lrcl -lrmw -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
+#cgo LDFLAGS: -L/opt/ros/galactic/lib -Wl,-rpath=/opt/ros/galactic/lib
+#cgo LDFLAGS: -lrcl -lrmw -lrosidl_runtime_c -lrosidl_typesupport_c
+#cgo LDFLAGS: -lrcutils -lrcl_action -lrmw_implementation
 #cgo CFLAGS: -I/opt/ros/galactic/include
 
 #include <stdlib.h>
@@ -33,6 +35,7 @@ package rclgo
 #include <rcl/node.h>
 #include <rcl/service.h>
 #include <rcl/client.h>
+#include <rcl_action/wait.h>
 #include <rmw/get_topic_names_and_types.h>
 #include <rmw/names_and_types.h>
 #include <rmw/types.h>
@@ -398,9 +401,9 @@ func (c *Context) NewClock(clockType ClockType) (clock *Clock, err error) {
 		clockType = ClockTypeROSTime
 	}
 	clock = &Clock{
-		context:     c,
-		rcl_clock_t: (*C.rcl_clock_t)(C.calloc(1, C.sizeof_rcl_clock_t)),
+		context: c,
 	}
+	clock.rcl_clock_t = (*C.rcl_clock_t)(C.calloc(1, C.sizeof_rcl_clock_t))
 	defer onErr(&err, c.Close)
 	rc := C.rcl_clock_init(
 		uint32(clockType),
@@ -435,6 +438,15 @@ func (self *Clock) Close() error {
 // Context returns the context c belongs to.
 func (c *Clock) Context() *Context {
 	return c.context
+}
+
+func (c *Clock) now() (time.Duration, error) {
+	var t C.rcl_time_point_value_t
+	rc := C.rcl_clock_get_now(c.rcl_clock_t, &t)
+	if rc != C.RCL_RET_OK {
+		return 0, errorsCastC(rc, "failed to get current time")
+	}
+	return time.Duration(t), nil
 }
 
 type Timer struct {
@@ -681,6 +693,8 @@ type WaitSet struct {
 	Timers          []*Timer
 	Services        []*Service
 	Clients         []*Client
+	ActionClients   []*ActionClient
+	ActionServers   []*ActionServer
 	guardConditions []*guardCondition
 	rcl_wait_set_t  C.rcl_wait_set_t
 	cancelWait      *guardCondition
@@ -756,6 +770,14 @@ func (w *WaitSet) AddClients(clients ...*Client) {
 	w.Clients = append(w.Clients, clients...)
 }
 
+func (w *WaitSet) AddActionServers(servers ...*ActionServer) {
+	w.ActionServers = append(w.ActionServers, servers...)
+}
+
+func (w *WaitSet) AddActionClients(clients ...*ActionClient) {
+	w.ActionClients = append(w.ActionClients, clients...)
+}
+
 func (w *WaitSet) addGuardConditions(guardConditions ...*guardCondition) {
 	w.guardConditions = append(w.guardConditions, guardConditions...)
 }
@@ -771,6 +793,10 @@ func (w *WaitSet) addResources(res *rosResourceStore) {
 			w.AddServices(res)
 		case *Client:
 			w.AddClients(res)
+		case *ActionServer:
+			w.AddActionServers(res)
+		case *ActionClient:
+			w.AddActionClients(res)
 		case *guardCondition: // Guard conditions are handled specially
 		case *Node:
 			w.addResources(&res.rosResourceStore)
@@ -804,17 +830,6 @@ func (self *WaitSet) Run(ctx context.Context) (err error) {
 		if rc := C.rcl_wait(&self.rcl_wait_set_t, -1); rc != C.RCL_RET_OK {
 			return errorsCast(rc)
 		}
-
-		// Check if counts in rcl layer and Go layer differ. Guards against
-		// internal state representation mismatch. Due to some software bug
-		// the lists of waited resources could easily get out of sync. AND
-		// lead to very very difficult to detect bugs.
-		panicIfCountMismatch("timers", self.rcl_wait_set_t.size_of_timers, len(self.Timers))
-		panicIfCountMismatch("subscriptions", self.rcl_wait_set_t.size_of_subscriptions, len(self.Subscriptions))
-		panicIfCountMismatch("services", self.rcl_wait_set_t.size_of_services, len(self.Services))
-		panicIfCountMismatch("clients", self.rcl_wait_set_t.size_of_clients, len(self.Clients))
-		panicIfCountMismatch("guardConditions", self.rcl_wait_set_t.size_of_guard_conditions, len(self.guardConditions))
-
 		timers := (*[1 << 30]*C.struct_rcl_timer_t)(unsafe.Pointer(self.rcl_wait_set_t.timers))
 		for i, t := range self.Timers {
 			if timers[i] != nil {
@@ -840,6 +855,12 @@ func (self *WaitSet) Run(ctx context.Context) (err error) {
 				c.sender.HandleResponse()
 			}
 		}
+		for _, s := range self.ActionServers {
+			s.handleReadyEntities(ctx, self)
+		}
+		for _, c := range self.ActionClients {
+			c.handleReadyEntities(self)
+		}
 		guardConditions := (*[1 << 30]*C.struct_rcl_guard_condition_t)(unsafe.Pointer(self.rcl_wait_set_t.guard_conditions))
 		for i := range self.guardConditions {
 			if guardConditions[i] == self.cancelWait.rclGuardCondition {
@@ -849,20 +870,9 @@ func (self *WaitSet) Run(ctx context.Context) (err error) {
 	}
 }
 
-func panicIfCountMismatch(typ string, expected C.ulong, actual int) {
-	if int(expected) != actual {
-		panic(fmt.Sprintf(
-			"Wait set %s count mismatch! expected='%d' != actual='%d'",
-			typ,
-			expected,
-			actual))
-	}
-}
-
 func (self *WaitSet) initEntities() error {
 	if !C.rcl_wait_set_is_valid(&self.rcl_wait_set_t) {
-		//#define RCL_RET_WAIT_SET_INVALID 900
-		return errorsCastC(900, fmt.Sprintf("rcl_wait_set_is_valid() failed for wait_set='%v'", self))
+		return errorsCastC(C.RCL_RET_WAIT_SET_INVALID, fmt.Sprintf("rcl_wait_set_is_valid() failed for wait_set='%v'", self))
 	}
 	var rc C.rcl_ret_t = C.rcl_wait_set_clear(&self.rcl_wait_set_t)
 	if rc != C.RCL_RET_OK {
@@ -870,11 +880,11 @@ func (self *WaitSet) initEntities() error {
 	}
 	rc = C.rcl_wait_set_resize(
 		&self.rcl_wait_set_t,
-		C.size_t(len(self.Subscriptions)),
+		C.size_t(len(self.Subscriptions)+2*len(self.ActionClients)),
 		C.size_t(len(self.guardConditions)),
-		C.size_t(len(self.Timers)),
-		C.size_t(len(self.Clients)),
-		C.size_t(len(self.Services)),
+		C.size_t(len(self.Timers)+len(self.ActionServers)),
+		C.size_t(len(self.Clients)+3*len(self.ActionClients)),
+		C.size_t(len(self.Services)+3*len(self.ActionServers)),
 		self.rcl_wait_set_t.size_of_events,
 	)
 	if rc != C.RCL_RET_OK {
@@ -908,6 +918,18 @@ func (self *WaitSet) initEntities() error {
 		rc = C.rcl_wait_set_add_guard_condition(&self.rcl_wait_set_t, guardCondition.rclGuardCondition, nil)
 		if rc != C.RCL_RET_OK {
 			return errorsCastC(rc, fmt.Sprintf("rcl_wait_set_add_guard_condition() failed for wait_set='%v'", self))
+		}
+	}
+	for _, server := range self.ActionServers {
+		rc = C.rcl_action_wait_set_add_action_server(&self.rcl_wait_set_t, &server.rclServer, nil)
+		if rc != C.RCL_RET_OK {
+			return errorsCastC(rc, fmt.Sprintf("rcl_wait_set_add_action_server() failed for wait_set='%v'", self))
+		}
+	}
+	for _, client := range self.ActionClients {
+		rc = C.rcl_action_wait_set_add_action_client(&self.rcl_wait_set_t, &client.rclClient, nil, nil)
+		if rc != C.RCL_RET_OK {
+			return errorsCastC(rc, fmt.Sprintf("rcl_wait_set_add_action_client() failed for wait_set='%v'", self))
 		}
 	}
 	return nil

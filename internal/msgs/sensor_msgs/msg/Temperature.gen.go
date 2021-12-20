@@ -113,7 +113,6 @@ func (s *TemperatureSubscription) TakeMessage(out *Temperature) (*rclgo.RmwMessa
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneTemperatureSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneTemperatureSlice(dst, src []Temperature) {

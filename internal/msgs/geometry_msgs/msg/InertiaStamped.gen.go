@@ -110,7 +110,6 @@ func (s *InertiaStampedSubscription) TakeMessage(out *InertiaStamped) (*rclgo.Rm
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneInertiaStampedSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneInertiaStampedSlice(dst, src []InertiaStamped) {

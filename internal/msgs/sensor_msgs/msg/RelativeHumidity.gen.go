@@ -113,7 +113,6 @@ func (s *RelativeHumiditySubscription) TakeMessage(out *RelativeHumidity) (*rclg
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneRelativeHumiditySlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneRelativeHumiditySlice(dst, src []RelativeHumidity) {

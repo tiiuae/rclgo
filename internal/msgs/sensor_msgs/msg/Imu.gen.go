@@ -127,7 +127,6 @@ func (s *ImuSubscription) TakeMessage(out *Imu) (*rclgo.RmwMessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneImuSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneImuSlice(dst, src []Imu) {

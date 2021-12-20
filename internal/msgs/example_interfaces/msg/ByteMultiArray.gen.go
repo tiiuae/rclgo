@@ -113,7 +113,6 @@ func (s *ByteMultiArraySubscription) TakeMessage(out *ByteMultiArray) (*rclgo.Rm
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneByteMultiArraySlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneByteMultiArraySlice(dst, src []ByteMultiArray) {

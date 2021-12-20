@@ -106,4 +106,3 @@ func NewEmptyService(node *rclgo.Node, name string, options *rclgo.ServiceOption
 	}
 	return &EmptyService{service}, nil
 }
-

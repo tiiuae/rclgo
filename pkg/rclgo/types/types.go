@@ -9,7 +9,11 @@ Licensed under the Apache License, Version 2.0 (the "License");
 
 package types
 
-import "unsafe"
+import (
+	"encoding/hex"
+	"time"
+	"unsafe"
+)
 
 type Message interface {
 	CloneMsg() Message
@@ -29,4 +33,32 @@ type ServiceTypeSupport interface {
 	Request() MessageTypeSupport
 	Response() MessageTypeSupport
 	TypeSupport() unsafe.Pointer // *C.rosidl_service_type_support_t
+}
+
+const GoalIDLen = 16
+
+type GoalID [GoalIDLen]byte
+
+func (id *GoalID) String() string {
+	return hex.EncodeToString(id[:])
+}
+
+type ActionTypeSupport interface {
+	Goal() MessageTypeSupport
+	SendGoal() ServiceTypeSupport
+	NewSendGoalResponse(accepted bool, stamp time.Duration) Message
+
+	Result() MessageTypeSupport
+	GetResult() ServiceTypeSupport
+	NewGetResultResponse(status int8, result Message) Message
+
+	CancelGoal() ServiceTypeSupport
+
+	Feedback() MessageTypeSupport
+	FeedbackMessage() MessageTypeSupport
+	NewFeedbackMessage(goalID *GoalID, feedback Message) Message
+
+	GoalStatusArray() MessageTypeSupport
+
+	TypeSupport() unsafe.Pointer // *C.rosidl_action_type_support_t
 }

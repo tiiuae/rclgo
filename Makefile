@@ -22,6 +22,7 @@ test:
 
 generate:
 	@pkgs=(
+		action_msgs
 	    builtin_interfaces
 	    example_interfaces
 	    geometry_msgs
@@ -29,6 +30,7 @@ generate:
 	    std_msgs
 	    std_srvs
 	    test_msgs
+		unique_identifier_msgs
 	)
 
 	dest_path=internal/msgs

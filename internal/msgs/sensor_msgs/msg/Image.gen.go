@@ -129,7 +129,6 @@ func (s *ImageSubscription) TakeMessage(out *Image) (*rclgo.RmwMessageInfo, erro
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneImageSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneImageSlice(dst, src []Image) {

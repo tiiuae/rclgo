@@ -1,0 +1,85 @@
+([]rclgo_test.testResult) (len=4) {
+  (rclgo_test.testResult) {
+    Result: (*test_msgs_action.Fibonacci_GetResult_Response)({
+      Status: (int8) 4,
+      Result: (test_msgs_action.Fibonacci_Result) {
+        Sequence: ([]int32) <nil>
+      }
+    }),
+    Statuses: (rclgo_test.goalStatuses) (len=3) {
+      (rclgo_test.goalStatus) {
+        ID: (types.GoalID) (len=16) 01000000000000000000000000000000,
+        Status: (rclgo.GoalStatus) Accepted
+      },
+      (rclgo_test.goalStatus) {
+        ID: (types.GoalID) (len=16) 01000000000000000000000000000000,
+        Status: (rclgo.GoalStatus) Executing
+      },
+      (rclgo_test.goalStatus) {
+        ID: (types.GoalID) (len=16) 01000000000000000000000000000000,
+        Status: (rclgo.GoalStatus) Succeeded
+      }
+    },
+    Err: (error) <nil>
+  },
+  (rclgo_test.testResult) {
+    Result: (*test_msgs_action.Fibonacci_GetResult_Response)({
+      Status: (int8) 5,
+      Result: (test_msgs_action.Fibonacci_Result) {
+        Sequence: ([]int32) <nil>
+      }
+    }),
+    Statuses: (rclgo_test.goalStatuses) (len=4) {
+      (rclgo_test.goalStatus) {
+        ID: (types.GoalID) (len=16) 02000000000000000000000000000000,
+        Status: (rclgo.GoalStatus) Accepted
+      },
+      (rclgo_test.goalStatus) {
+        ID: (types.GoalID) (len=16) 02000000000000000000000000000000,
+        Status: (rclgo.GoalStatus) Executing
+      },
+      (rclgo_test.goalStatus) {
+        ID: (types.GoalID) (len=16) 02000000000000000000000000000000,
+        Status: (rclgo.GoalStatus) Canceling
+      },
+      (rclgo_test.goalStatus) {
+        ID: (types.GoalID) (len=16) 02000000000000000000000000000000,
+        Status: (rclgo.GoalStatus) Canceled
+      }
+    },
+    Err: (error) <nil>
+  },
+  (rclgo_test.testResult) {
+    Result: (*test_msgs_action.Fibonacci_GetResult_Response)({
+      Status: (int8) 0,
+      Result: (test_msgs_action.Fibonacci_Result) {
+        Sequence: ([]int32) <nil>
+      }
+    }),
+    Statuses: (rclgo_test.goalStatuses) <nil>,
+    Err: (error) <nil>
+  },
+  (rclgo_test.testResult) {
+    Result: (*test_msgs_action.Fibonacci_GetResult_Response)({
+      Status: (int8) 6,
+      Result: (test_msgs_action.Fibonacci_Result) {
+        Sequence: ([]int32) <nil>
+      }
+    }),
+    Statuses: (rclgo_test.goalStatuses) (len=3) {
+      (rclgo_test.goalStatus) {
+        ID: (types.GoalID) (len=16) 04000000000000000000000000000000,
+        Status: (rclgo.GoalStatus) Accepted
+      },
+      (rclgo_test.goalStatus) {
+        ID: (types.GoalID) (len=16) 04000000000000000000000000000000,
+        Status: (rclgo.GoalStatus) Executing
+      },
+      (rclgo_test.goalStatus) {
+        ID: (types.GoalID) (len=16) 04000000000000000000000000000000,
+        Status: (rclgo.GoalStatus) Aborted
+      }
+    },
+    Err: (error) <nil>
+  }
+}

@@ -106,4 +106,3 @@ func NewBasicTypesService(node *rclgo.Node, name string, options *rclgo.ServiceO
 	}
 	return &BasicTypesService{service}, nil
 }
-

@@ -57,27 +57,25 @@ func GeneratePrimitives(c *Config, destFilePath string) error {
 	defer destFile.Close()
 
 	fmt.Printf("Generating primitive types: %s\n", destFilePath)
-	return primitiveTypes.Execute(destFile, map[string]interface{}{
+	return primitiveTypes.Execute(destFile, templateData{
 		"PMap":   &primitiveTypeMappings,
 		"Config": c,
 	})
 }
 
 func GenerateROS2AllMessagesImporter(c *Config, destPathPkgRoot string) error {
-	msgDirs, err := filepath.Glob(filepath.Join(destPathPkgRoot, "*/msg"))
-	if err != nil {
-		return err
-	}
-	srvDirs, err := filepath.Glob(filepath.Join(destPathPkgRoot, "*/srv"))
-	if err != nil {
-		return err
-	}
 	pkgs := map[string]struct{}{}
-	for _, d := range msgDirs {
-		pkgs[path.Join(path.Base(path.Dir(d)), path.Base(d))] = struct{}{}
-	}
-	for _, d := range srvDirs {
-		pkgs[path.Join(path.Base(path.Dir(d)), path.Base(d))] = struct{}{}
+	for _, glob := range []string{"*/msg", "*/srv", "*/action"} {
+		dirs, err := filepath.Glob(filepath.Join(destPathPkgRoot, glob))
+		if err != nil {
+			return err
+		}
+		for _, d := range dirs {
+			pkgs[path.Join(
+				filepath.Base(filepath.Dir(d)),
+				filepath.Base(d),
+			)] = struct{}{}
+		}
 	}
 
 	destFilePath := filepath.Join(destPathPkgRoot, "msgs.gen.go")
@@ -89,7 +87,7 @@ func GenerateROS2AllMessagesImporter(c *Config, destPathPkgRoot string) error {
 	defer destFile.Close()
 
 	fmt.Printf("Generating all importer: %s\n", destFilePath)
-	return ros2MsgImportAllPackage.Execute(destFile, map[string]interface{}{
+	return ros2MsgImportAllPackage.Execute(destFile, templateData{
 		"Packages": pkgs,
 		"Config":   c,
 	})
@@ -126,6 +124,20 @@ func GenerateGolangMessageTypes(c *Config, rootPaths []string, destPath string) 
 			set := getOrDefault(result.GoPackage())
 			set.AddFrom(result.Request.CImports)
 			set.AddFrom(result.Response.CImports)
+		case "action":
+			result, err := g.generateAction(path, destPath)
+			if err != nil {
+				fmt.Printf("Error converting ROS2 Action '%s' to '%s', error: %v\n", path, destPath, err)
+			}
+			set := getOrDefault(result.GoPackage())
+			set.AddFrom(result.Goal.CImports)
+			set.AddFrom(result.SendGoal.Request.CImports)
+			set.AddFrom(result.SendGoal.Response.CImports)
+			set.AddFrom(result.Result.CImports)
+			set.AddFrom(result.GetResult.Request.CImports)
+			set.AddFrom(result.GetResult.Response.CImports)
+			set.AddFrom(result.Feedback.CImports)
+			set.AddFrom(result.FeedbackMessage.CImports)
 		default:
 			fmt.Printf("Interface file %s has an invalid type: %s\n", path, meta.Type)
 		}
@@ -148,7 +160,7 @@ func findInterfaceFiles(rootPaths []string) map[Metadata]string {
 				fmt.Printf("Blacklisted: %s, matched regex '%s'\n", path, blacklistEntry)
 				return nil
 			}
-			if re.M(filepath.ToSlash(path), `m!/(msg/.+\.msg)|(srv/.+\.srv)$!`) {
+			if re.M(filepath.ToSlash(path), `m!/(msg/.+\.msg)|(srv/.+\.srv)|(action/.+\.action)$!`) {
 				md, err := parseMetadataFromPath(path)
 				if err == nil {
 					files[*md] = path
@@ -219,7 +231,7 @@ func (g *generator) generateService(m *Metadata, srcPath, dstPathPkgRoot string)
 		return nil, err
 	}
 	parser := parser{config: g.config}
-	if err = parser.parseService(service, string(srcFile)); err != nil {
+	if err = parser.ParseService(service, string(srcFile)); err != nil {
 		return nil, err
 	}
 	err = g.generateServiceGoFiles(&parser, dstPathPkgRoot, service)
@@ -227,6 +239,56 @@ func (g *generator) generateService(m *Metadata, srcPath, dstPathPkgRoot string)
 		return nil, err
 	}
 	return service, nil
+}
+
+func (g *generator) generateAction(srcPath, dstPathPkgRoot string) (*ROS2Action, error) {
+	m, err := parseMetadataFromPath(srcPath)
+	if err != nil {
+		return nil, err
+	}
+	action := NewROS2Action(m.Package, m.Name)
+	srcFile, err := os.ReadFile(srcPath)
+	if err != nil {
+		return nil, err
+	}
+	parser := parser{config: g.config}
+	if err = parser.ParseAction(action, string(srcFile)); err != nil {
+		return nil, err
+	}
+	err = g.generateGoFile(
+		dstPathPkgRoot,
+		action.Metadata,
+		ros2ActionToGolangTypeTemplate,
+		templateData{"Action": action},
+	)
+	if err != nil {
+		return nil, err
+	}
+	err = g.generateMessageGoFile(&parser, dstPathPkgRoot, action.Goal)
+	if err != nil {
+		return nil, err
+	}
+	err = g.generateMessageGoFile(&parser, dstPathPkgRoot, action.Result)
+	if err != nil {
+		return nil, err
+	}
+	err = g.generateMessageGoFile(&parser, dstPathPkgRoot, action.Feedback)
+	if err != nil {
+		return nil, err
+	}
+	err = g.generateServiceGoFiles(&parser, dstPathPkgRoot, action.SendGoal)
+	if err != nil {
+		return nil, err
+	}
+	err = g.generateServiceGoFiles(&parser, dstPathPkgRoot, action.GetResult)
+	if err != nil {
+		return nil, err
+	}
+	err = g.generateMessageGoFile(&parser, dstPathPkgRoot, action.FeedbackMessage)
+	if err != nil {
+		return nil, err
+	}
+	return action, nil
 }
 
 type templateData = map[string]interface{}

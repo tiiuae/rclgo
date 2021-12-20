@@ -204,7 +204,6 @@ func (s *Arrays_RequestSubscription) TakeMessage(out *Arrays_Request) (*rclgo.Rm
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneArrays_RequestSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneArrays_RequestSlice(dst, src []Arrays_Request) {

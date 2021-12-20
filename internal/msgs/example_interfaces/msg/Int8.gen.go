@@ -106,7 +106,6 @@ func (s *Int8Subscription) TakeMessage(out *Int8) (*rclgo.RmwMessageInfo, error)
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneInt8Slice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneInt8Slice(dst, src []Int8) {

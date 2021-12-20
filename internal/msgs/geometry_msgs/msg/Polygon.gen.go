@@ -109,7 +109,6 @@ func (s *PolygonSubscription) TakeMessage(out *Polygon) (*rclgo.RmwMessageInfo, 
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // ClonePolygonSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func ClonePolygonSlice(dst, src []Polygon) {

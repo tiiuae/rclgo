@@ -106,7 +106,6 @@ func (s *CharSubscription) TakeMessage(out *Char) (*rclgo.RmwMessageInfo, error)
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneCharSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneCharSlice(dst, src []Char) {

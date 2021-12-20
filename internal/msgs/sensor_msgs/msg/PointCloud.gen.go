@@ -120,7 +120,6 @@ func (s *PointCloudSubscription) TakeMessage(out *PointCloud) (*rclgo.RmwMessage
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // ClonePointCloudSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func ClonePointCloudSlice(dst, src []PointCloud) {

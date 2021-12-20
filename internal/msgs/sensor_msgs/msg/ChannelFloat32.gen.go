@@ -113,7 +113,6 @@ func (s *ChannelFloat32Subscription) TakeMessage(out *ChannelFloat32) (*rclgo.Rm
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneChannelFloat32Slice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneChannelFloat32Slice(dst, src []ChannelFloat32) {

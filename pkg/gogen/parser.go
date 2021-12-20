@@ -35,20 +35,129 @@ func cName(rosName string) string {
 
 type parser struct {
 	config *Config
+	// Collect pre-field comments here to be included in the comments. Flushed
+	// on empty lines.
+	ros2messagesCommentsBuffer strings.Builder
 }
 
-func (p *parser) parseService(service *ROS2Service, source string) error {
-	currentMsg := service.Request
+// ParseROS2Message parses a message definition.
+func (p *parser) ParseROS2Message(res *ROS2Message, content string) error {
+	return p.parseSections(content, res)
+}
+
+func (p *parser) ParseService(service *ROS2Service, source string) error {
+	return p.parseSections(source, service.Request, service.Response)
+}
+
+func (p *parser) ParseAction(action *ROS2Action, source string) error {
+	err := p.parseSections(source, action.Goal, action.Result, action.Feedback)
+	if err != nil {
+		return err
+	}
+	p.addImport(action.SendGoal.Request, "unique_identifier_msgs")
+	action.SendGoal.Request.Fields = []*ROS2Field{
+		p.goalIDField(),
+		p.actionLocalField("goal", "Goal", action, action.Goal),
+	}
+	p.addImport(action.SendGoal.Response, "builtin_interfaces")
+	action.SendGoal.Response.Fields = []*ROS2Field{
+		p.primitiveField("accepted", "Accepted", "bool", "bool"),
+		{
+			RosName: "stamp",
+			CName:   "stamp",
+			GoName:  "Stamp",
+
+			PkgName:   "builtin_interfaces",
+			GoPkgName: "builtin_interfaces_msg",
+
+			RosType: "Time",
+			CType:   "Time",
+			GoType:  "Time",
+		},
+	}
+	p.addImport(action.GetResult.Request, "unique_identifier_msgs")
+	action.GetResult.Request.Fields = []*ROS2Field{p.goalIDField()}
+	action.GetResult.Response.Fields = []*ROS2Field{
+		p.primitiveField("status", "Status", "int8_t", "int8"),
+		p.actionLocalField("result", "Result", action, action.Result),
+	}
+	p.addImport(action.FeedbackMessage, "unique_identifier_msgs")
+	action.FeedbackMessage.Fields = []*ROS2Field{
+		p.goalIDField(),
+		p.actionLocalField("feedback", "Feedback", action, action.Feedback),
+	}
+	return nil
+}
+
+func (p *parser) goalIDField() *ROS2Field {
+	return &ROS2Field{
+		RosName: "goal_id",
+		CName:   "goal_id",
+		GoName:  "GoalID",
+
+		PkgName:   "unique_identifier_msgs",
+		GoPkgName: "unique_identifier_msgs_msg",
+
+		RosType: "UUID",
+		CType:   "UUID",
+		GoType:  "UUID",
+	}
+}
+
+func (p *parser) primitiveField(cname, goname, ctype, gotype string) *ROS2Field {
+	return &ROS2Field{
+		RosName: cname,
+		CName:   cname,
+		GoName:  goname,
+
+		RosType: gotype,
+		CType:   ctype,
+		GoType:  gotype,
+	}
+}
+
+func (p *parser) actionLocalField(cname, goname string, action *ROS2Action, msg *ROS2Message) *ROS2Field {
+	return &ROS2Field{
+		RosName: cname,
+		CName:   cname,
+		GoName:  goname,
+
+		PkgName:    action.Package,
+		GoPkgName:  action.GoPackage(),
+		PkgIsLocal: true,
+
+		RosType: msg.Name,
+		CType:   msg.Name,
+		GoType:  msg.Name,
+	}
+}
+
+func (p *parser) addImportSpecial(msg *ROS2Message, cPkg, goPkg, goImport string) {
+	if goImport == "" {
+		goImport = goPkg
+	}
+	if msg.GoImports[goImport] == "" {
+		msg.GoImports[goImport] = goPkg
+		msg.CImports.Add(cPkg)
+	}
+}
+
+func (p *parser) addImport(msg *ROS2Message, pkg string) {
+	goImport := p.config.MessageModulePrefix + "/" + pkg + "/msg"
+	p.addImportSpecial(msg, pkg, pkg+"_msg", goImport)
+}
+
+func (p *parser) parseSections(source string, sections ...*ROS2Message) error {
+	current := 0
 	for i, line := range strings.Split(source, "\n") {
+		line = strings.TrimSpace(line)
 		if line == "---" {
-			if currentMsg == service.Response {
-				return errors.New("too many '---' delimeters")
+			if current >= len(sections) {
+				return errors.New("too many sections")
 			}
-			currentMsg = service.Response
-			continue
-		}
-		if err := p.parseLine(currentMsg, line); err != nil {
-			return lineErr(i+1, err)
+			current++
+		} else if err := p.parseLine(sections[current], line); err != nil {
+			return fmt.Errorf("error on line %d: %w", i+1, err)
 		}
 	}
 	return nil
@@ -83,41 +192,23 @@ func (p *parser) parseLine(msg *ROS2Message, line string) error {
 	return nil
 }
 
-func lineErr(line int, err error) error {
-	return fmt.Errorf("error on line %d: %w", line, err)
-}
-
-// ParseROS2Message parses a message definition.
-func (p *parser) ParseROS2Message(res *ROS2Message, content string) error {
-	for i, line := range strings.Split(content, "\n") {
-		if err := p.parseLine(res, line); err != nil {
-			return lineErr(i+1, err)
-		}
-	}
-	return nil
-}
-
-var ros2messagesCommentsBuffer = strings.Builder{} // Collect pre-field comments here to be included in the comments. Flushed on empty lines.
-
 func (p *parser) parseMessageLine(testRow string, ros2msg *ROS2Message) (interface{}, error) {
-	testRow = strings.TrimSpace(testRow)
-
 	re.R(&testRow, `m!^#\s*(.*)$!`) // Extract comments from comment-only lines to be included in the pre-field comments
 	if re.R0.Matches > 0 {
 		if re.R0.S[1] != "" {
-			ros2messagesCommentsBuffer.WriteString(re.R0.S[1])
+			p.ros2messagesCommentsBuffer.WriteString(re.R0.S[1])
 		}
 		return nil, nil
 	}
 	if testRow == "" { // do not process empty lines or comment lines
-		ros2messagesCommentsBuffer.Reset()
+		p.ros2messagesCommentsBuffer.Reset()
 		return nil, nil
 	}
 
 	typeChar, capture := isRowConstantOrField(testRow, ros2msg)
 	switch typeChar {
 	case 'c':
-		con, err := ParseROS2MessageConstant(capture, ros2msg)
+		con, err := p.ParseROS2MessageConstant(capture, ros2msg)
 		if err == nil {
 			return con, err
 		}
@@ -168,12 +259,12 @@ func isRowConstantOrField(textRow string, ros2msg *ROS2Message) (byte, map[strin
 	return 'e', nil
 }
 
-func ParseROS2MessageConstant(capture map[string]string, ros2msg *ROS2Message) (*ROS2Constant, error) {
+func (p *parser) ParseROS2MessageConstant(capture map[string]string, ros2msg *ROS2Message) (*ROS2Constant, error) {
 	d := &ROS2Constant{
 		RosType: capture["type"],
 		RosName: capture["field"],
 		Value:   strings.TrimSpace(capture["default"]),
-		Comment: commentSerializer(capture["comment"], &ros2messagesCommentsBuffer),
+		Comment: commentSerializer(capture["comment"], &p.ros2messagesCommentsBuffer),
 	}
 
 	t, ok := primitiveTypeMappings[d.RosType]
@@ -197,7 +288,7 @@ func (p *parser) ParseROS2MessageField(capture map[string]string, ros2msg *ROS2M
 		size = 0
 	}
 	f := &ROS2Field{
-		Comment:      commentSerializer(capture["comment"], &ros2messagesCommentsBuffer),
+		Comment:      commentSerializer(capture["comment"], &p.ros2messagesCommentsBuffer),
 		GoName:       snakeToCamel(capture["field"]),
 		RosName:      capture["field"],
 		CName:        cName(capture["field"]),

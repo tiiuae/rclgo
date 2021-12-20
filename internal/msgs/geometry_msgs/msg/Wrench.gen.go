@@ -109,7 +109,6 @@ func (s *WrenchSubscription) TakeMessage(out *Wrench) (*rclgo.RmwMessageInfo, er
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneWrenchSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneWrenchSlice(dst, src []Wrench) {

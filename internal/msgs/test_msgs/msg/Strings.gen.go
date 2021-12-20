@@ -143,7 +143,6 @@ func (s *StringsSubscription) TakeMessage(out *Strings) (*rclgo.RmwMessageInfo, 
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneStringsSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneStringsSlice(dst, src []Strings) {

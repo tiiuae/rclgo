@@ -126,7 +126,6 @@ func (s *RangeSubscription) TakeMessage(out *Range) (*rclgo.RmwMessageInfo, erro
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneRangeSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneRangeSlice(dst, src []Range) {

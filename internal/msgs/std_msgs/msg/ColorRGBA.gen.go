@@ -115,7 +115,6 @@ func (s *ColorRGBASubscription) TakeMessage(out *ColorRGBA) (*rclgo.RmwMessageIn
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneColorRGBASlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneColorRGBASlice(dst, src []ColorRGBA) {

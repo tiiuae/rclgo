@@ -110,7 +110,6 @@ func (s *BuiltinsSubscription) TakeMessage(out *Builtins) (*rclgo.RmwMessageInfo
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneBuiltinsSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneBuiltinsSlice(dst, src []Builtins) {

@@ -1,7 +1,6 @@
 package gogen
 
 import (
-	"container/list"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -28,7 +27,7 @@ func prepareErrorTypesCFileMatchingRegexp() {
 
 func GenerateROS2ErrorTypes(rootPaths []string, destFilePath string) error {
 	destFilePath = filepath.Join(destFilePath, "pkg/rclgo/errortypes.gen.go")
-	ros2ErrorsList := list.New()
+	var errorTypes []*ROS2ErrorType
 
 	for _, includeLookupDir := range rootPaths {
 		for tries := 0; tries < 10; tries++ {
@@ -37,16 +36,15 @@ func GenerateROS2ErrorTypes(rootPaths []string, destFilePath string) error {
 			filepath.Walk(includeLookupDir, func(path string, info os.FileInfo, err error) error {
 				if re.M(path, errorTypesCFileMatchingRegexp) {
 					fmt.Printf("Analyzing: %s\n", path)
-					md, err := generateGolangErrorTypesFromROS2ErrorDefinitionsPath(path)
+					errorTypes, err = generateGolangErrorTypesFromROS2ErrorDefinitionsPath(errorTypes, path)
 					if err != nil {
 						fmt.Printf("Error converting ROS2 Errors from '%s' to '%s', error: %v\n", path, destFilePath, err)
 					}
-					ros2ErrorsList.PushBackList(md)
 				}
 				return nil
 			})
 
-			if ros2ErrorsList.Len() == 0 {
+			if len(errorTypes) == 0 {
 				includeLookupDir = filepath.Join(includeLookupDir, "..")
 				if includeLookupDir == "/" {
 					break
@@ -56,16 +54,9 @@ func GenerateROS2ErrorTypes(rootPaths []string, destFilePath string) error {
 			}
 		}
 	}
-	if ros2ErrorsList.Len() == 0 {
+	if len(errorTypes) == 0 {
 		fmt.Printf("Unable to find any rcl C error header files?\n")
 		return nil
-	}
-
-	ros2ErrorsAry := make([]*ROS2ErrorType, ros2ErrorsList.Len())
-	i := 0
-	for e := ros2ErrorsList.Front(); e != nil; e = e.Next() {
-		ros2ErrorsAry[i] = e.Value.(*ROS2ErrorType)
-		i++
 	}
 
 	destFile, err := mkdir_p(destFilePath)
@@ -76,15 +67,13 @@ func GenerateROS2ErrorTypes(rootPaths []string, destFilePath string) error {
 
 	fmt.Printf("Generating ROS2 Error definitions: %s\n", destFilePath)
 	return ros2ErrorCodes.Execute(destFile, map[string]interface{}{
-		"ERRORS":                   ros2ErrorsAry,
-		"ROS2_ERROR_TYPES_C_FILES": cErrorTypeFiles,
-		"DEDUP_FILTER":             ros2errorTypesDeduplicationFilter,
+		"errorTypes":  errorTypes,
+		"includes":    cErrorTypeFiles,
+		"dedupFilter": ros2errorTypesDeduplicationFilter,
 	})
 }
 
-func generateGolangErrorTypesFromROS2ErrorDefinitionsPath(path string) (*list.List, error) {
-	var errorTypes = list.List{}
-
+func generateGolangErrorTypesFromROS2ErrorDefinitionsPath(errorTypes []*ROS2ErrorType, path string) ([]*ROS2ErrorType, error) {
 	content, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err
@@ -96,11 +85,11 @@ func generateGolangErrorTypesFromROS2ErrorDefinitionsPath(path string) (*list.Li
 			return nil, err
 		}
 		if errType != nil {
-			errorTypes.PushBack(errType)
+			errorTypes = append(errorTypes, errType)
 		}
 	}
 
-	return &errorTypes, nil
+	return errorTypes, nil
 }
 
 var ros2errorTypesCommentsBuffer = strings.Builder{}                  // Collect pre-field comments here to be included in the comments. Flushed on empty lines.
@@ -111,7 +100,7 @@ func parseROS2ErrorType(row string) (*ROS2ErrorType, error) {
 	if re.M(row, `m!
 		^
 		\#define\s+
-		(?P<name>\w+)\s+
+		(?P<name>(?:RCL|RMW)_RET_\w+)\s+
 		(?:(?P<int>\d+)|(?P<reference>\w+))\s*
 		(?://\s*(?P<comment>.+))?
 		\s*$

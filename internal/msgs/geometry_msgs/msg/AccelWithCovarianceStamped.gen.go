@@ -110,7 +110,6 @@ func (s *AccelWithCovarianceStampedSubscription) TakeMessage(out *AccelWithCovar
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneAccelWithCovarianceStampedSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneAccelWithCovarianceStampedSlice(dst, src []AccelWithCovarianceStamped) {

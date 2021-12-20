@@ -103,7 +103,6 @@ func (s *EmptySubscription) TakeMessage(out *Empty) (*rclgo.RmwMessageInfo, erro
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneEmptySlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneEmptySlice(dst, src []Empty) {

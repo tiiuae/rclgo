@@ -118,7 +118,6 @@ func (s *ConstantsSubscription) TakeMessage(out *Constants) (*rclgo.RmwMessageIn
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneConstantsSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneConstantsSlice(dst, src []Constants) {

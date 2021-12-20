@@ -106,7 +106,6 @@ func (s *ByteSubscription) TakeMessage(out *Byte) (*rclgo.RmwMessageInfo, error)
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneByteSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneByteSlice(dst, src []Byte) {

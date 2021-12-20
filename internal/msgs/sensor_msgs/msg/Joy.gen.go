@@ -120,7 +120,6 @@ func (s *JoySubscription) TakeMessage(out *Joy) (*rclgo.RmwMessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneJoySlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneJoySlice(dst, src []Joy) {

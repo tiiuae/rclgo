@@ -293,7 +293,6 @@ func (s *BoundedSequencesSubscription) TakeMessage(out *BoundedSequences) (*rclg
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneBoundedSequencesSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneBoundedSequencesSlice(dst, src []BoundedSequences) {

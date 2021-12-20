@@ -14,6 +14,7 @@ package rclgo
 /*
 #include <rcl/types.h>
 #include <rmw/ret_types.h>
+#include <rcl_action/types.h>
 */
 import "C"
 import (
@@ -91,6 +92,22 @@ func errorsCastC(rcl_ret_t C.rcl_ret_t, context string) error {
 		return &LifecycleStateRegistered{rclRetStruct: rclRetStruct{rclRetCode: 3000, trace: string(stackTraceBuffer), context: errorsBuildContext(&LifecycleStateRegistered{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_LIFECYCLE_STATE_NOT_REGISTERED:
 		return &LifecycleStateNotRegistered{rclRetStruct: rclRetStruct{rclRetCode: 3001, trace: string(stackTraceBuffer), context: errorsBuildContext(&LifecycleStateNotRegistered{}, context, string(stackTraceBuffer))}}
+	case C.RCL_RET_ACTION_GOAL_ACCEPTED:
+		return &ActionGoalAccepted{rclRetStruct: rclRetStruct{rclRetCode: 2100, trace: string(stackTraceBuffer), context: errorsBuildContext(&ActionGoalAccepted{}, context, string(stackTraceBuffer))}}
+	case C.RCL_RET_ACTION_GOAL_REJECTED:
+		return &ActionGoalRejected{rclRetStruct: rclRetStruct{rclRetCode: 2101, trace: string(stackTraceBuffer), context: errorsBuildContext(&ActionGoalRejected{}, context, string(stackTraceBuffer))}}
+	case C.RCL_RET_ACTION_CLIENT_INVALID:
+		return &ActionClientInvalid{rclRetStruct: rclRetStruct{rclRetCode: 2102, trace: string(stackTraceBuffer), context: errorsBuildContext(&ActionClientInvalid{}, context, string(stackTraceBuffer))}}
+	case C.RCL_RET_ACTION_CLIENT_TAKE_FAILED:
+		return &ActionClientTakeFailed{rclRetStruct: rclRetStruct{rclRetCode: 2103, trace: string(stackTraceBuffer), context: errorsBuildContext(&ActionClientTakeFailed{}, context, string(stackTraceBuffer))}}
+	case C.RCL_RET_ACTION_SERVER_INVALID:
+		return &ActionServerInvalid{rclRetStruct: rclRetStruct{rclRetCode: 2200, trace: string(stackTraceBuffer), context: errorsBuildContext(&ActionServerInvalid{}, context, string(stackTraceBuffer))}}
+	case C.RCL_RET_ACTION_SERVER_TAKE_FAILED:
+		return &ActionServerTakeFailed{rclRetStruct: rclRetStruct{rclRetCode: 2201, trace: string(stackTraceBuffer), context: errorsBuildContext(&ActionServerTakeFailed{}, context, string(stackTraceBuffer))}}
+	case C.RCL_RET_ACTION_GOAL_HANDLE_INVALID:
+		return &ActionGoalHandleInvalid{rclRetStruct: rclRetStruct{rclRetCode: 2300, trace: string(stackTraceBuffer), context: errorsBuildContext(&ActionGoalHandleInvalid{}, context, string(stackTraceBuffer))}}
+	case C.RCL_RET_ACTION_GOAL_EVENT_INVALID:
+		return &ActionGoalEventInvalid{rclRetStruct: rclRetStruct{rclRetCode: 2301, trace: string(stackTraceBuffer), context: errorsBuildContext(&ActionGoalEventInvalid{}, context, string(stackTraceBuffer))}}
 	case C.RMW_RET_OK:
 		return &RmwOk{rclRetStruct: rclRetStruct{rclRetCode: 0, trace: string(stackTraceBuffer), context: errorsBuildContext(&RmwOk{}, context, string(stackTraceBuffer))}}
 	case C.RMW_RET_ERROR:
@@ -273,6 +290,51 @@ type LifecycleStateRegistered struct {
 
 // LifecycleStateNotRegistered rcl_lifecycle state not registered
 type LifecycleStateNotRegistered struct {
+	rclRetStruct
+}
+
+// ActionNameInvalid rcl action specific ret codes in 2XXXAction name does not pass validation return code.
+type ActionNameInvalid struct {
+	rclRetStruct
+}
+
+// ActionGoalAccepted Action goal accepted return code.
+type ActionGoalAccepted struct {
+	rclRetStruct
+}
+
+// ActionGoalRejected Action goal rejected return code.
+type ActionGoalRejected struct {
+	rclRetStruct
+}
+
+// ActionClientInvalid Action client is invalid return code.
+type ActionClientInvalid struct {
+	rclRetStruct
+}
+
+// ActionClientTakeFailed Action client failed to take response return code.
+type ActionClientTakeFailed struct {
+	rclRetStruct
+}
+
+// ActionServerInvalid Action server is invalid return code.
+type ActionServerInvalid struct {
+	rclRetStruct
+}
+
+// ActionServerTakeFailed Action server failed to take request return code.
+type ActionServerTakeFailed struct {
+	rclRetStruct
+}
+
+// ActionGoalHandleInvalid Action goal handle invalid return code.
+type ActionGoalHandleInvalid struct {
+	rclRetStruct
+}
+
+// ActionGoalEventInvalid Action invalid event return code.
+type ActionGoalEventInvalid struct {
 	rclRetStruct
 }
 

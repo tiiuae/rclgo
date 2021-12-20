@@ -112,7 +112,6 @@ func (s *Pose2DSubscription) TakeMessage(out *Pose2D) (*rclgo.RmwMessageInfo, er
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // ClonePose2DSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func ClonePose2DSlice(dst, src []Pose2D) {

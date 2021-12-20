@@ -113,7 +113,6 @@ func (s *IlluminanceSubscription) TakeMessage(out *Illuminance) (*rclgo.RmwMessa
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneIlluminanceSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneIlluminanceSlice(dst, src []Illuminance) {

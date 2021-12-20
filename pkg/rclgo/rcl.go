@@ -837,7 +837,7 @@ func (self *WaitSet) Run(ctx context.Context) (err error) {
 		clients := (*[1 << 30]*C.struct_rcl_client_t)(unsafe.Pointer(self.rcl_wait_set_t.clients))
 		for i, c := range self.Clients {
 			if clients[i] != nil {
-				c.handleResponse()
+				c.sender.HandleResponse()
 			}
 		}
 		guardConditions := (*[1 << 30]*C.struct_rcl_guard_condition_t)(unsafe.Pointer(self.rcl_wait_set_t.guard_conditions))
@@ -938,6 +938,13 @@ func (self *WaitSet) Close() error {
 type RmwRequestID struct {
 	WriterGUID     [16]int8
 	SequenceNumber int64
+}
+
+func newRmwRequestID(reqID *C.rmw_request_id_t) RmwRequestID {
+	return RmwRequestID{
+		WriterGUID:     *(*[16]int8)(unsafe.Pointer(&reqID.writer_guid)),
+		SequenceNumber: int64(reqID.sequence_number),
+	}
 }
 
 type RmwServiceInfo struct {
@@ -1083,12 +1090,9 @@ func NewDefaultClientOptions() *ClientOptions {
 // Calling Send and Close is thread-safe. Creating clients is not thread-safe.
 type Client struct {
 	rosID
-	node                *Node
-	rclClient           *C.struct_rcl_client_t
-	pendingRequests     map[C.long]chan *clientSendResult
-	mutex               sync.Mutex
-	requestTypeSupport  types.MessageTypeSupport
-	responseTypeSupport types.MessageTypeSupport
+	node      *Node
+	rclClient *C.struct_rcl_client_t
+	sender    requestSender
 }
 
 // NewClient creates a new client.
@@ -1104,12 +1108,15 @@ func (n *Node) NewClient(
 		options = NewDefaultClientOptions()
 	}
 	c = &Client{
-		requestTypeSupport:  typeSupport.Request(),
-		responseTypeSupport: typeSupport.Response(),
-		pendingRequests:     make(map[C.long]chan *clientSendResult),
-		node:                n,
-		rclClient:           (*C.struct_rcl_client_t)(C.malloc(C.sizeof_struct_rcl_client_t)),
+		node:      n,
+		rclClient: (*C.struct_rcl_client_t)(C.malloc(C.sizeof_struct_rcl_client_t)),
 	}
+	c.sender = newRequestSender(requestSenderTransport{
+		SendRequest:  c.sendRequest,
+		TakeResponse: c.takeResponse,
+		TypeSupport:  typeSupport,
+		Logger:       n.Logger(),
+	})
 	*c.rclClient = C.rcl_get_zero_initialized_client()
 	defer onErr(&err, c.Close)
 	opts := C.struct_rcl_client_options_t{allocator: *n.context.rcl_allocator_t}
@@ -1131,17 +1138,12 @@ func (n *Node) NewClient(
 }
 
 func (c *Client) Close() error {
-	c.mutex.Lock()
-	defer c.mutex.Unlock()
 	if c.rclClient == nil {
 		return closeErr("client")
 	}
 	var err *multierror.Error
 	c.node.removeResource(c)
-	for seqNum, ch := range c.pendingRequests {
-		close(ch)
-		delete(c.pendingRequests, seqNum)
-	}
+	err = multierror.Append(err, c.sender.Close())
 	rc := C.rcl_client_fini(c.rclClient, c.node.rcl_node_t)
 	if rc != C.RCL_RET_OK {
 		err = multierror.Append(err, errorsCastC(rc, "failed to finalize client"))
@@ -1158,83 +1160,128 @@ func (c *Client) Node() *Node {
 }
 
 func (c *Client) Send(ctx context.Context, req types.Message) (types.Message, *RmwServiceInfo, error) {
-	resultChan, remove, err := c.addPendingRequest(req)
+	resp, info, err := c.sender.Send(ctx, req)
+	return resp, info.(*RmwServiceInfo), err
+}
+
+func (c *Client) sendRequest(req unsafe.Pointer) (C.long, error) {
+	var seqNum C.long
+	rc := C.rcl_send_request(c.rclClient, req, &seqNum)
+	if rc != C.RCL_RET_OK {
+		return 0, errorsCastC(rc, "failed to send request")
+	}
+	return seqNum, nil
+}
+
+func (c *Client) takeResponse(resp unsafe.Pointer) (C.long, interface{}, error) {
+	var header C.struct_rmw_service_info_t
+	rc := C.rcl_take_response_with_info(c.rclClient, &header, resp)
+	if rc != C.RCL_RET_OK {
+		return 0, nil, errorsCastC(rc, "failed to take response")
+	}
+	return header.request_id.sequence_number, &RmwServiceInfo{
+		SourceTimestamp:   time.Unix(0, int64(header.source_timestamp)),
+		ReceivedTimestamp: time.Unix(0, int64(header.received_timestamp)),
+		RequestID:         newRmwRequestID(&header.request_id),
+	}, nil
+}
+
+type sendResult struct {
+	resp      types.Message
+	otherData interface{}
+}
+
+type requestSenderTransport struct {
+	SendRequest  func(unsafe.Pointer) (C.long, error)
+	TakeResponse func(unsafe.Pointer) (C.long, interface{}, error)
+	TypeSupport  types.ServiceTypeSupport
+	Logger       *Logger
+}
+
+type requestSender struct {
+	transport       requestSenderTransport
+	pendingRequests map[C.long]chan *sendResult
+	mutex           sync.Mutex
+}
+
+func newRequestSender(transport requestSenderTransport) requestSender {
+	return requestSender{
+		transport:       transport,
+		pendingRequests: make(map[C.long]chan *sendResult),
+	}
+}
+
+func (s *requestSender) Close() error {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	for seqNum, ch := range s.pendingRequests {
+		delete(s.pendingRequests, seqNum)
+		close(ch)
+	}
+	return nil
+}
+
+func (s *requestSender) Send(ctx context.Context, req types.Message) (types.Message, interface{}, error) {
+	resultChan, seqNum, err := s.addPendingRequest(req)
 	if err != nil {
 		return nil, nil, err
 	}
-	defer remove()
+	defer func() {
+		s.mutex.Lock()
+		defer s.mutex.Unlock()
+		delete(s.pendingRequests, seqNum)
+	}()
 	select {
 	case <-ctx.Done():
 		return nil, nil, ctx.Err()
 	case result := <-resultChan:
 		if result == nil {
-			return nil, nil, errors.New("client was closed before a response was received")
+			return nil, nil, errors.New("sender was closed before a response was received")
 		}
-		return result.resp, result.info, nil
+		return result.resp, result.otherData, nil
 	}
 }
 
-func (c *Client) addPendingRequest(req types.Message) (chan *clientSendResult, func(), error) {
-	reqBuf := c.requestTypeSupport.PrepareMemory()
-	defer c.requestTypeSupport.ReleaseMemory(reqBuf)
-	c.requestTypeSupport.AsCStruct(reqBuf, req)
-
-	c.mutex.Lock()
-	defer c.mutex.Unlock()
-
-	var seqNum C.long
-	rc := C.rcl_send_request(c.rclClient, reqBuf, &seqNum)
-	if rc != C.RCL_RET_OK {
-		return nil, nil, errorsCastC(rc, "failed to send request")
+func (s *requestSender) addPendingRequest(req types.Message) (<-chan *sendResult, C.long, error) {
+	ts := s.transport.TypeSupport.Request()
+	buf := ts.PrepareMemory()
+	defer ts.ReleaseMemory(buf)
+	ts.AsCStruct(buf, req)
+	seqNum, err := s.transport.SendRequest(buf)
+	if err != nil {
+		return nil, 0, err
 	}
-	resultChan := make(chan *clientSendResult, 1)
-	c.pendingRequests[seqNum] = resultChan
-
-	return resultChan, func() {
-		c.mutex.Lock()
-		defer c.mutex.Unlock()
-		delete(c.pendingRequests, seqNum)
-	}, nil
+	resultChan := make(chan *sendResult, 1)
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	s.pendingRequests[seqNum] = resultChan
+	return resultChan, seqNum, nil
 }
 
-func (c *Client) handleResponse() {
-	var respHeader C.struct_rmw_service_info_t
-	respBuf := c.responseTypeSupport.PrepareMemory()
-	defer c.responseTypeSupport.ReleaseMemory(respBuf)
-
-	respChan := func() chan *clientSendResult {
-		c.mutex.Lock()
-		defer c.mutex.Unlock()
-		rc := C.rcl_take_response_with_info(c.rclClient, &respHeader, respBuf)
-		if rc != C.RCL_RET_OK {
-			c.node.Logger().Debug(errorsCastC(rc, "failed to take response"))
-			return nil
+func (s *requestSender) HandleResponse() {
+	ts := s.transport.TypeSupport.Response()
+	buf := ts.PrepareMemory()
+	defer ts.ReleaseMemory(buf)
+	respChan, otherData := func() (chan *sendResult, interface{}) {
+		s.mutex.Lock()
+		defer s.mutex.Unlock()
+		seqNum, otherData, err := s.transport.TakeResponse(buf)
+		if err != nil {
+			s.transport.Logger.Error(err)
+			return nil, nil
 		}
-		ch := c.pendingRequests[respHeader.request_id.sequence_number]
-		delete(c.pendingRequests, respHeader.request_id.sequence_number)
-		return ch
+		ch := s.pendingRequests[seqNum]
+		delete(s.pendingRequests, seqNum)
+		return ch, otherData
 	}()
 	if respChan == nil {
 		return
 	}
 	defer close(respChan)
-
-	result := &clientSendResult{
-		resp: c.responseTypeSupport.New(),
-		info: &RmwServiceInfo{
-			SourceTimestamp:   time.Unix(0, int64(respHeader.source_timestamp)),
-			ReceivedTimestamp: time.Unix(0, int64(respHeader.received_timestamp)),
-			RequestID: RmwRequestID{
-				WriterGUID:     *(*[16]int8)(unsafe.Pointer(&respHeader.request_id.writer_guid)),
-				SequenceNumber: int64(respHeader.request_id.sequence_number),
-			},
-		},
+	result := &sendResult{
+		resp:      ts.New(),
+		otherData: otherData,
 	}
-	c.responseTypeSupport.AsGoStruct(result.resp, respBuf)
+	ts.AsGoStruct(result.resp, buf)
 	respChan <- result
-}
-
-type clientSendResult struct {
-	resp types.Message
-	info *RmwServiceInfo
 }

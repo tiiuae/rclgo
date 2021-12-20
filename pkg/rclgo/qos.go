@@ -21,6 +21,11 @@ import (
 	"time"
 )
 
+const (
+	RmwQosDurationInfinite    = 9223372036*time.Second + 854775807*time.Nanosecond
+	RmwQosDurationUnspecified = time.Duration(0)
+)
+
 type RmwQosHistoryPolicy int
 
 const (
@@ -47,6 +52,9 @@ const (
 	RmwQosDurabilityPolicyVolatile
 	RmwQosDurabilityPolicyUnknown
 )
+const RmwQosDeadlineDefault = RmwQosDurationUnspecified
+
+const RmwQosLifespanDefault = RmwQosDurationUnspecified
 
 type RmwQosLivelinessPolicy int
 
@@ -57,6 +65,8 @@ const (
 	RmwQosLivelinessPolicyManualByTopic
 	RmwQosLivelinessPolicyUnknown
 )
+
+const RmwQosLivelinessLeaseDurationDefault = RmwQosDurationUnspecified
 
 type RmwQosProfile struct {
 	History                      RmwQosHistoryPolicy
@@ -76,10 +86,10 @@ func NewRmwQosProfileDefault() RmwQosProfile {
 		Depth:                        10,
 		Reliability:                  RmwQosReliabilityPolicyReliable,
 		Durability:                   RmwQosDurabilityPolicyVolatile,
-		Deadline:                     0,
-		Lifespan:                     0,
+		Deadline:                     RmwQosDeadlineDefault,
+		Lifespan:                     RmwQosLifespanDefault,
 		Liveliness:                   RmwQosLivelinessPolicySystemDefault,
-		LivelinessLeaseDuration:      0,
+		LivelinessLeaseDuration:      RmwQosLivelinessLeaseDurationDefault,
 		AvoidRosNamespaceConventions: false,
 	}
 }

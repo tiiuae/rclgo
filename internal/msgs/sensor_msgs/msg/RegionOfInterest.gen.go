@@ -102,10 +102,19 @@ type RegionOfInterestSubscription struct {
 	*rclgo.Subscription
 }
 
+// RegionOfInterestSubscriptionCallback type is used to provide a subscription
+// handler function for a RegionOfInterestSubscription.
+type RegionOfInterestSubscriptionCallback func(msg *RegionOfInterest, info *rclgo.RmwMessageInfo, err error)
+
 // NewRegionOfInterestSubscription creates and returns a new subscription for the
 // RegionOfInterest
-func NewRegionOfInterestSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*RegionOfInterestSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, RegionOfInterestTypeSupport, subscriptionCallback)
+func NewRegionOfInterestSubscription(node *rclgo.Node, topic_name string, subscriptionCallback RegionOfInterestSubscriptionCallback) (*RegionOfInterestSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg RegionOfInterest
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, RegionOfInterestTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

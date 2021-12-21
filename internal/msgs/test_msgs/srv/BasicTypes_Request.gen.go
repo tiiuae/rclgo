@@ -130,10 +130,19 @@ type BasicTypes_RequestSubscription struct {
 	*rclgo.Subscription
 }
 
+// BasicTypes_RequestSubscriptionCallback type is used to provide a subscription
+// handler function for a BasicTypes_RequestSubscription.
+type BasicTypes_RequestSubscriptionCallback func(msg *BasicTypes_Request, info *rclgo.RmwMessageInfo, err error)
+
 // NewBasicTypes_RequestSubscription creates and returns a new subscription for the
 // BasicTypes_Request
-func NewBasicTypes_RequestSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*BasicTypes_RequestSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, BasicTypes_RequestTypeSupport, subscriptionCallback)
+func NewBasicTypes_RequestSubscription(node *rclgo.Node, topic_name string, subscriptionCallback BasicTypes_RequestSubscriptionCallback) (*BasicTypes_RequestSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg BasicTypes_Request
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, BasicTypes_RequestTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

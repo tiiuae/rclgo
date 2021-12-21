@@ -138,10 +138,19 @@ type MultiNestedSubscription struct {
 	*rclgo.Subscription
 }
 
+// MultiNestedSubscriptionCallback type is used to provide a subscription
+// handler function for a MultiNestedSubscription.
+type MultiNestedSubscriptionCallback func(msg *MultiNested, info *rclgo.RmwMessageInfo, err error)
+
 // NewMultiNestedSubscription creates and returns a new subscription for the
 // MultiNested
-func NewMultiNestedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*MultiNestedSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, MultiNestedTypeSupport, subscriptionCallback)
+func NewMultiNestedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback MultiNestedSubscriptionCallback) (*MultiNestedSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg MultiNested
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, MultiNestedTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

@@ -87,10 +87,19 @@ type Empty_ResponseSubscription struct {
 	*rclgo.Subscription
 }
 
+// Empty_ResponseSubscriptionCallback type is used to provide a subscription
+// handler function for a Empty_ResponseSubscription.
+type Empty_ResponseSubscriptionCallback func(msg *Empty_Response, info *rclgo.RmwMessageInfo, err error)
+
 // NewEmpty_ResponseSubscription creates and returns a new subscription for the
 // Empty_Response
-func NewEmpty_ResponseSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*Empty_ResponseSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, Empty_ResponseTypeSupport, subscriptionCallback)
+func NewEmpty_ResponseSubscription(node *rclgo.Node, topic_name string, subscriptionCallback Empty_ResponseSubscriptionCallback) (*Empty_ResponseSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Empty_Response
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, Empty_ResponseTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

@@ -123,10 +123,19 @@ type PointCloud2Subscription struct {
 	*rclgo.Subscription
 }
 
+// PointCloud2SubscriptionCallback type is used to provide a subscription
+// handler function for a PointCloud2Subscription.
+type PointCloud2SubscriptionCallback func(msg *PointCloud2, info *rclgo.RmwMessageInfo, err error)
+
 // NewPointCloud2Subscription creates and returns a new subscription for the
 // PointCloud2
-func NewPointCloud2Subscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*PointCloud2Subscription, error) {
-	sub, err := node.NewSubscription(topic_name, PointCloud2TypeSupport, subscriptionCallback)
+func NewPointCloud2Subscription(node *rclgo.Node, topic_name string, subscriptionCallback PointCloud2SubscriptionCallback) (*PointCloud2Subscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg PointCloud2
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, PointCloud2TypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

@@ -277,10 +277,19 @@ type BoundedSequencesSubscription struct {
 	*rclgo.Subscription
 }
 
+// BoundedSequencesSubscriptionCallback type is used to provide a subscription
+// handler function for a BoundedSequencesSubscription.
+type BoundedSequencesSubscriptionCallback func(msg *BoundedSequences, info *rclgo.RmwMessageInfo, err error)
+
 // NewBoundedSequencesSubscription creates and returns a new subscription for the
 // BoundedSequences
-func NewBoundedSequencesSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*BoundedSequencesSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, BoundedSequencesTypeSupport, subscriptionCallback)
+func NewBoundedSequencesSubscription(node *rclgo.Node, topic_name string, subscriptionCallback BoundedSequencesSubscriptionCallback) (*BoundedSequencesSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg BoundedSequences
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, BoundedSequencesTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

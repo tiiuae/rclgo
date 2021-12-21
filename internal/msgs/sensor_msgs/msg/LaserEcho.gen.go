@@ -94,10 +94,19 @@ type LaserEchoSubscription struct {
 	*rclgo.Subscription
 }
 
+// LaserEchoSubscriptionCallback type is used to provide a subscription
+// handler function for a LaserEchoSubscription.
+type LaserEchoSubscriptionCallback func(msg *LaserEcho, info *rclgo.RmwMessageInfo, err error)
+
 // NewLaserEchoSubscription creates and returns a new subscription for the
 // LaserEcho
-func NewLaserEchoSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*LaserEchoSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, LaserEchoTypeSupport, subscriptionCallback)
+func NewLaserEchoSubscription(node *rclgo.Node, topic_name string, subscriptionCallback LaserEchoSubscriptionCallback) (*LaserEchoSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg LaserEcho
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, LaserEchoTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

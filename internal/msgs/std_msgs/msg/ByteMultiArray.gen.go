@@ -97,10 +97,19 @@ type ByteMultiArraySubscription struct {
 	*rclgo.Subscription
 }
 
+// ByteMultiArraySubscriptionCallback type is used to provide a subscription
+// handler function for a ByteMultiArraySubscription.
+type ByteMultiArraySubscriptionCallback func(msg *ByteMultiArray, info *rclgo.RmwMessageInfo, err error)
+
 // NewByteMultiArraySubscription creates and returns a new subscription for the
 // ByteMultiArray
-func NewByteMultiArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*ByteMultiArraySubscription, error) {
-	sub, err := node.NewSubscription(topic_name, ByteMultiArrayTypeSupport, subscriptionCallback)
+func NewByteMultiArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback ByteMultiArraySubscriptionCallback) (*ByteMultiArraySubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg ByteMultiArray
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, ByteMultiArrayTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

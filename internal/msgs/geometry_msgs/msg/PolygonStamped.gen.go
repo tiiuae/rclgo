@@ -95,10 +95,19 @@ type PolygonStampedSubscription struct {
 	*rclgo.Subscription
 }
 
+// PolygonStampedSubscriptionCallback type is used to provide a subscription
+// handler function for a PolygonStampedSubscription.
+type PolygonStampedSubscriptionCallback func(msg *PolygonStamped, info *rclgo.RmwMessageInfo, err error)
+
 // NewPolygonStampedSubscription creates and returns a new subscription for the
 // PolygonStamped
-func NewPolygonStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*PolygonStampedSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, PolygonStampedTypeSupport, subscriptionCallback)
+func NewPolygonStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback PolygonStampedSubscriptionCallback) (*PolygonStampedSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg PolygonStamped
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, PolygonStampedTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

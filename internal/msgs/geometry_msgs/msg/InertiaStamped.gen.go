@@ -95,10 +95,19 @@ type InertiaStampedSubscription struct {
 	*rclgo.Subscription
 }
 
+// InertiaStampedSubscriptionCallback type is used to provide a subscription
+// handler function for a InertiaStampedSubscription.
+type InertiaStampedSubscriptionCallback func(msg *InertiaStamped, info *rclgo.RmwMessageInfo, err error)
+
 // NewInertiaStampedSubscription creates and returns a new subscription for the
 // InertiaStamped
-func NewInertiaStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*InertiaStampedSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, InertiaStampedTypeSupport, subscriptionCallback)
+func NewInertiaStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback InertiaStampedSubscriptionCallback) (*InertiaStampedSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg InertiaStamped
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, InertiaStampedTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

@@ -96,10 +96,19 @@ type Pose2DSubscription struct {
 	*rclgo.Subscription
 }
 
+// Pose2DSubscriptionCallback type is used to provide a subscription
+// handler function for a Pose2DSubscription.
+type Pose2DSubscriptionCallback func(msg *Pose2D, info *rclgo.RmwMessageInfo, err error)
+
 // NewPose2DSubscription creates and returns a new subscription for the
 // Pose2D
-func NewPose2DSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*Pose2DSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, Pose2DTypeSupport, subscriptionCallback)
+func NewPose2DSubscription(node *rclgo.Node, topic_name string, subscriptionCallback Pose2DSubscriptionCallback) (*Pose2DSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Pose2D
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, Pose2DTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

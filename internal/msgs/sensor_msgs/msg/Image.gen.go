@@ -114,10 +114,19 @@ type ImageSubscription struct {
 	*rclgo.Subscription
 }
 
+// ImageSubscriptionCallback type is used to provide a subscription
+// handler function for a ImageSubscription.
+type ImageSubscriptionCallback func(msg *Image, info *rclgo.RmwMessageInfo, err error)
+
 // NewImageSubscription creates and returns a new subscription for the
 // Image
-func NewImageSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*ImageSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, ImageTypeSupport, subscriptionCallback)
+func NewImageSubscription(node *rclgo.Node, topic_name string, subscriptionCallback ImageSubscriptionCallback) (*ImageSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Image
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, ImageTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

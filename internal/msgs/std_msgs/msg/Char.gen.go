@@ -90,10 +90,19 @@ type CharSubscription struct {
 	*rclgo.Subscription
 }
 
+// CharSubscriptionCallback type is used to provide a subscription
+// handler function for a CharSubscription.
+type CharSubscriptionCallback func(msg *Char, info *rclgo.RmwMessageInfo, err error)
+
 // NewCharSubscription creates and returns a new subscription for the
 // Char
-func NewCharSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*CharSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, CharTypeSupport, subscriptionCallback)
+func NewCharSubscription(node *rclgo.Node, topic_name string, subscriptionCallback CharSubscriptionCallback) (*CharSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Char
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, CharTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

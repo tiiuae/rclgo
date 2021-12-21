@@ -97,10 +97,19 @@ type Int32MultiArraySubscription struct {
 	*rclgo.Subscription
 }
 
+// Int32MultiArraySubscriptionCallback type is used to provide a subscription
+// handler function for a Int32MultiArraySubscription.
+type Int32MultiArraySubscriptionCallback func(msg *Int32MultiArray, info *rclgo.RmwMessageInfo, err error)
+
 // NewInt32MultiArraySubscription creates and returns a new subscription for the
 // Int32MultiArray
-func NewInt32MultiArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*Int32MultiArraySubscription, error) {
-	sub, err := node.NewSubscription(topic_name, Int32MultiArrayTypeSupport, subscriptionCallback)
+func NewInt32MultiArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback Int32MultiArraySubscriptionCallback) (*Int32MultiArraySubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Int32MultiArray
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, Int32MultiArrayTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

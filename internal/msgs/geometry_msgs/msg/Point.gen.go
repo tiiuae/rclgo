@@ -96,10 +96,19 @@ type PointSubscription struct {
 	*rclgo.Subscription
 }
 
+// PointSubscriptionCallback type is used to provide a subscription
+// handler function for a PointSubscription.
+type PointSubscriptionCallback func(msg *Point, info *rclgo.RmwMessageInfo, err error)
+
 // NewPointSubscription creates and returns a new subscription for the
 // Point
-func NewPointSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*PointSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, PointTypeSupport, subscriptionCallback)
+func NewPointSubscription(node *rclgo.Node, topic_name string, subscriptionCallback PointSubscriptionCallback) (*PointSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Point
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, PointTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

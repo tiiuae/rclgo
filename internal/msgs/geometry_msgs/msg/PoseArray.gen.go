@@ -98,10 +98,19 @@ type PoseArraySubscription struct {
 	*rclgo.Subscription
 }
 
+// PoseArraySubscriptionCallback type is used to provide a subscription
+// handler function for a PoseArraySubscription.
+type PoseArraySubscriptionCallback func(msg *PoseArray, info *rclgo.RmwMessageInfo, err error)
+
 // NewPoseArraySubscription creates and returns a new subscription for the
 // PoseArray
-func NewPoseArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*PoseArraySubscription, error) {
-	sub, err := node.NewSubscription(topic_name, PoseArrayTypeSupport, subscriptionCallback)
+func NewPoseArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback PoseArraySubscriptionCallback) (*PoseArraySubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg PoseArray
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, PoseArrayTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

@@ -90,10 +90,19 @@ type Int8Subscription struct {
 	*rclgo.Subscription
 }
 
+// Int8SubscriptionCallback type is used to provide a subscription
+// handler function for a Int8Subscription.
+type Int8SubscriptionCallback func(msg *Int8, info *rclgo.RmwMessageInfo, err error)
+
 // NewInt8Subscription creates and returns a new subscription for the
 // Int8
-func NewInt8Subscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*Int8Subscription, error) {
-	sub, err := node.NewSubscription(topic_name, Int8TypeSupport, subscriptionCallback)
+func NewInt8Subscription(node *rclgo.Node, topic_name string, subscriptionCallback Int8SubscriptionCallback) (*Int8Subscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Int8
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, Int8TypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

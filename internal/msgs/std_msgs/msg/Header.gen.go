@@ -96,10 +96,19 @@ type HeaderSubscription struct {
 	*rclgo.Subscription
 }
 
+// HeaderSubscriptionCallback type is used to provide a subscription
+// handler function for a HeaderSubscription.
+type HeaderSubscriptionCallback func(msg *Header, info *rclgo.RmwMessageInfo, err error)
+
 // NewHeaderSubscription creates and returns a new subscription for the
 // Header
-func NewHeaderSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*HeaderSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, HeaderTypeSupport, subscriptionCallback)
+func NewHeaderSubscription(node *rclgo.Node, topic_name string, subscriptionCallback HeaderSubscriptionCallback) (*HeaderSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Header
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, HeaderTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

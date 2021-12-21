@@ -90,10 +90,19 @@ type UInt8Subscription struct {
 	*rclgo.Subscription
 }
 
+// UInt8SubscriptionCallback type is used to provide a subscription
+// handler function for a UInt8Subscription.
+type UInt8SubscriptionCallback func(msg *UInt8, info *rclgo.RmwMessageInfo, err error)
+
 // NewUInt8Subscription creates and returns a new subscription for the
 // UInt8
-func NewUInt8Subscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*UInt8Subscription, error) {
-	sub, err := node.NewSubscription(topic_name, UInt8TypeSupport, subscriptionCallback)
+func NewUInt8Subscription(node *rclgo.Node, topic_name string, subscriptionCallback UInt8SubscriptionCallback) (*UInt8Subscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg UInt8
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, UInt8TypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

@@ -167,10 +167,19 @@ type BatteryStateSubscription struct {
 	*rclgo.Subscription
 }
 
+// BatteryStateSubscriptionCallback type is used to provide a subscription
+// handler function for a BatteryStateSubscription.
+type BatteryStateSubscriptionCallback func(msg *BatteryState, info *rclgo.RmwMessageInfo, err error)
+
 // NewBatteryStateSubscription creates and returns a new subscription for the
 // BatteryState
-func NewBatteryStateSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*BatteryStateSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, BatteryStateTypeSupport, subscriptionCallback)
+func NewBatteryStateSubscription(node *rclgo.Node, topic_name string, subscriptionCallback BatteryStateSubscriptionCallback) (*BatteryStateSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg BatteryState
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, BatteryStateTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

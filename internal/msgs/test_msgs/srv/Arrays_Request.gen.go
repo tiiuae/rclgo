@@ -189,10 +189,19 @@ type Arrays_RequestSubscription struct {
 	*rclgo.Subscription
 }
 
+// Arrays_RequestSubscriptionCallback type is used to provide a subscription
+// handler function for a Arrays_RequestSubscription.
+type Arrays_RequestSubscriptionCallback func(msg *Arrays_Request, info *rclgo.RmwMessageInfo, err error)
+
 // NewArrays_RequestSubscription creates and returns a new subscription for the
 // Arrays_Request
-func NewArrays_RequestSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*Arrays_RequestSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, Arrays_RequestTypeSupport, subscriptionCallback)
+func NewArrays_RequestSubscription(node *rclgo.Node, topic_name string, subscriptionCallback Arrays_RequestSubscriptionCallback) (*Arrays_RequestSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Arrays_Request
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, Arrays_RequestTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

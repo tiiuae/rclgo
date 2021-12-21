@@ -94,10 +94,19 @@ type TwistWithCovarianceSubscription struct {
 	*rclgo.Subscription
 }
 
+// TwistWithCovarianceSubscriptionCallback type is used to provide a subscription
+// handler function for a TwistWithCovarianceSubscription.
+type TwistWithCovarianceSubscriptionCallback func(msg *TwistWithCovariance, info *rclgo.RmwMessageInfo, err error)
+
 // NewTwistWithCovarianceSubscription creates and returns a new subscription for the
 // TwistWithCovariance
-func NewTwistWithCovarianceSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*TwistWithCovarianceSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, TwistWithCovarianceTypeSupport, subscriptionCallback)
+func NewTwistWithCovarianceSubscription(node *rclgo.Node, topic_name string, subscriptionCallback TwistWithCovarianceSubscriptionCallback) (*TwistWithCovarianceSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg TwistWithCovariance
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, TwistWithCovarianceTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

@@ -93,10 +93,19 @@ type TimeSubscription struct {
 	*rclgo.Subscription
 }
 
+// TimeSubscriptionCallback type is used to provide a subscription
+// handler function for a TimeSubscription.
+type TimeSubscriptionCallback func(msg *Time, info *rclgo.RmwMessageInfo, err error)
+
 // NewTimeSubscription creates and returns a new subscription for the
 // Time
-func NewTimeSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*TimeSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, TimeTypeSupport, subscriptionCallback)
+func NewTimeSubscription(node *rclgo.Node, topic_name string, subscriptionCallback TimeSubscriptionCallback) (*TimeSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Time
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, TimeTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

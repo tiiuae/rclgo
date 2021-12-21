@@ -117,10 +117,19 @@ type JointStateSubscription struct {
 	*rclgo.Subscription
 }
 
+// JointStateSubscriptionCallback type is used to provide a subscription
+// handler function for a JointStateSubscription.
+type JointStateSubscriptionCallback func(msg *JointState, info *rclgo.RmwMessageInfo, err error)
+
 // NewJointStateSubscription creates and returns a new subscription for the
 // JointState
-func NewJointStateSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*JointStateSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, JointStateTypeSupport, subscriptionCallback)
+func NewJointStateSubscription(node *rclgo.Node, topic_name string, subscriptionCallback JointStateSubscriptionCallback) (*JointStateSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg JointState
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, JointStateTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

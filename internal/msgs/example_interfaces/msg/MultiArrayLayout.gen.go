@@ -98,10 +98,19 @@ type MultiArrayLayoutSubscription struct {
 	*rclgo.Subscription
 }
 
+// MultiArrayLayoutSubscriptionCallback type is used to provide a subscription
+// handler function for a MultiArrayLayoutSubscription.
+type MultiArrayLayoutSubscriptionCallback func(msg *MultiArrayLayout, info *rclgo.RmwMessageInfo, err error)
+
 // NewMultiArrayLayoutSubscription creates and returns a new subscription for the
 // MultiArrayLayout
-func NewMultiArrayLayoutSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*MultiArrayLayoutSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, MultiArrayLayoutTypeSupport, subscriptionCallback)
+func NewMultiArrayLayoutSubscription(node *rclgo.Node, topic_name string, subscriptionCallback MultiArrayLayoutSubscriptionCallback) (*MultiArrayLayoutSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg MultiArrayLayout
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, MultiArrayLayoutTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

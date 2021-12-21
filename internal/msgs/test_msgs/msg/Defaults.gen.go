@@ -126,10 +126,19 @@ type DefaultsSubscription struct {
 	*rclgo.Subscription
 }
 
+// DefaultsSubscriptionCallback type is used to provide a subscription
+// handler function for a DefaultsSubscription.
+type DefaultsSubscriptionCallback func(msg *Defaults, info *rclgo.RmwMessageInfo, err error)
+
 // NewDefaultsSubscription creates and returns a new subscription for the
 // Defaults
-func NewDefaultsSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*DefaultsSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, DefaultsTypeSupport, subscriptionCallback)
+func NewDefaultsSubscription(node *rclgo.Node, topic_name string, subscriptionCallback DefaultsSubscriptionCallback) (*DefaultsSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Defaults
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, DefaultsTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

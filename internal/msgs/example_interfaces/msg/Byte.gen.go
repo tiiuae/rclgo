@@ -90,10 +90,19 @@ type ByteSubscription struct {
 	*rclgo.Subscription
 }
 
+// ByteSubscriptionCallback type is used to provide a subscription
+// handler function for a ByteSubscription.
+type ByteSubscriptionCallback func(msg *Byte, info *rclgo.RmwMessageInfo, err error)
+
 // NewByteSubscription creates and returns a new subscription for the
 // Byte
-func NewByteSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*ByteSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, ByteTypeSupport, subscriptionCallback)
+func NewByteSubscription(node *rclgo.Node, topic_name string, subscriptionCallback ByteSubscriptionCallback) (*ByteSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Byte
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, ByteTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

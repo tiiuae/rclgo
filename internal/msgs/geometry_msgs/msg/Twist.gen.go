@@ -93,10 +93,19 @@ type TwistSubscription struct {
 	*rclgo.Subscription
 }
 
+// TwistSubscriptionCallback type is used to provide a subscription
+// handler function for a TwistSubscription.
+type TwistSubscriptionCallback func(msg *Twist, info *rclgo.RmwMessageInfo, err error)
+
 // NewTwistSubscription creates and returns a new subscription for the
 // Twist
-func NewTwistSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*TwistSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, TwistTypeSupport, subscriptionCallback)
+func NewTwistSubscription(node *rclgo.Node, topic_name string, subscriptionCallback TwistSubscriptionCallback) (*TwistSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Twist
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, TwistTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

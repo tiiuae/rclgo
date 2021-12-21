@@ -90,10 +90,19 @@ type NestedSubscription struct {
 	*rclgo.Subscription
 }
 
+// NestedSubscriptionCallback type is used to provide a subscription
+// handler function for a NestedSubscription.
+type NestedSubscriptionCallback func(msg *Nested, info *rclgo.RmwMessageInfo, err error)
+
 // NewNestedSubscription creates and returns a new subscription for the
 // Nested
-func NewNestedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*NestedSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, NestedTypeSupport, subscriptionCallback)
+func NewNestedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback NestedSubscriptionCallback) (*NestedSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Nested
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, NestedTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

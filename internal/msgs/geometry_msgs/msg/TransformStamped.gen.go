@@ -99,10 +99,19 @@ type TransformStampedSubscription struct {
 	*rclgo.Subscription
 }
 
+// TransformStampedSubscriptionCallback type is used to provide a subscription
+// handler function for a TransformStampedSubscription.
+type TransformStampedSubscriptionCallback func(msg *TransformStamped, info *rclgo.RmwMessageInfo, err error)
+
 // NewTransformStampedSubscription creates and returns a new subscription for the
 // TransformStamped
-func NewTransformStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*TransformStampedSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, TransformStampedTypeSupport, subscriptionCallback)
+func NewTransformStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback TransformStampedSubscriptionCallback) (*TransformStampedSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg TransformStamped
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, TransformStampedTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

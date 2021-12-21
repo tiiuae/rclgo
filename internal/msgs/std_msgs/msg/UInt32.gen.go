@@ -90,10 +90,19 @@ type UInt32Subscription struct {
 	*rclgo.Subscription
 }
 
+// UInt32SubscriptionCallback type is used to provide a subscription
+// handler function for a UInt32Subscription.
+type UInt32SubscriptionCallback func(msg *UInt32, info *rclgo.RmwMessageInfo, err error)
+
 // NewUInt32Subscription creates and returns a new subscription for the
 // UInt32
-func NewUInt32Subscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*UInt32Subscription, error) {
-	sub, err := node.NewSubscription(topic_name, UInt32TypeSupport, subscriptionCallback)
+func NewUInt32Subscription(node *rclgo.Node, topic_name string, subscriptionCallback UInt32SubscriptionCallback) (*UInt32Subscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg UInt32
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, UInt32TypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

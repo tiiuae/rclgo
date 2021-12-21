@@ -90,10 +90,19 @@ type Int32Subscription struct {
 	*rclgo.Subscription
 }
 
+// Int32SubscriptionCallback type is used to provide a subscription
+// handler function for a Int32Subscription.
+type Int32SubscriptionCallback func(msg *Int32, info *rclgo.RmwMessageInfo, err error)
+
 // NewInt32Subscription creates and returns a new subscription for the
 // Int32
-func NewInt32Subscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*Int32Subscription, error) {
-	sub, err := node.NewSubscription(topic_name, Int32TypeSupport, subscriptionCallback)
+func NewInt32Subscription(node *rclgo.Node, topic_name string, subscriptionCallback Int32SubscriptionCallback) (*Int32Subscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Int32
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, Int32TypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

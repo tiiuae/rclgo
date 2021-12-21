@@ -93,10 +93,19 @@ type AddTwoInts_RequestSubscription struct {
 	*rclgo.Subscription
 }
 
+// AddTwoInts_RequestSubscriptionCallback type is used to provide a subscription
+// handler function for a AddTwoInts_RequestSubscription.
+type AddTwoInts_RequestSubscriptionCallback func(msg *AddTwoInts_Request, info *rclgo.RmwMessageInfo, err error)
+
 // NewAddTwoInts_RequestSubscription creates and returns a new subscription for the
 // AddTwoInts_Request
-func NewAddTwoInts_RequestSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*AddTwoInts_RequestSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, AddTwoInts_RequestTypeSupport, subscriptionCallback)
+func NewAddTwoInts_RequestSubscription(node *rclgo.Node, topic_name string, subscriptionCallback AddTwoInts_RequestSubscriptionCallback) (*AddTwoInts_RequestSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg AddTwoInts_Request
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, AddTwoInts_RequestTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

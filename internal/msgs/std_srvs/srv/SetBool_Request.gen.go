@@ -90,10 +90,19 @@ type SetBool_RequestSubscription struct {
 	*rclgo.Subscription
 }
 
+// SetBool_RequestSubscriptionCallback type is used to provide a subscription
+// handler function for a SetBool_RequestSubscription.
+type SetBool_RequestSubscriptionCallback func(msg *SetBool_Request, info *rclgo.RmwMessageInfo, err error)
+
 // NewSetBool_RequestSubscription creates and returns a new subscription for the
 // SetBool_Request
-func NewSetBool_RequestSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*SetBool_RequestSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, SetBool_RequestTypeSupport, subscriptionCallback)
+func NewSetBool_RequestSubscription(node *rclgo.Node, topic_name string, subscriptionCallback SetBool_RequestSubscriptionCallback) (*SetBool_RequestSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg SetBool_Request
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, SetBool_RequestTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

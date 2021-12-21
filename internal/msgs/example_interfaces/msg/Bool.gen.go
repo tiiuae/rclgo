@@ -90,10 +90,19 @@ type BoolSubscription struct {
 	*rclgo.Subscription
 }
 
+// BoolSubscriptionCallback type is used to provide a subscription
+// handler function for a BoolSubscription.
+type BoolSubscriptionCallback func(msg *Bool, info *rclgo.RmwMessageInfo, err error)
+
 // NewBoolSubscription creates and returns a new subscription for the
 // Bool
-func NewBoolSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*BoolSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, BoolTypeSupport, subscriptionCallback)
+func NewBoolSubscription(node *rclgo.Node, topic_name string, subscriptionCallback BoolSubscriptionCallback) (*BoolSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Bool
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, BoolTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

@@ -99,10 +99,19 @@ type QuaternionSubscription struct {
 	*rclgo.Subscription
 }
 
+// QuaternionSubscriptionCallback type is used to provide a subscription
+// handler function for a QuaternionSubscription.
+type QuaternionSubscriptionCallback func(msg *Quaternion, info *rclgo.RmwMessageInfo, err error)
+
 // NewQuaternionSubscription creates and returns a new subscription for the
 // Quaternion
-func NewQuaternionSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*QuaternionSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, QuaternionTypeSupport, subscriptionCallback)
+func NewQuaternionSubscription(node *rclgo.Node, topic_name string, subscriptionCallback QuaternionSubscriptionCallback) (*QuaternionSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Quaternion
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, QuaternionTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

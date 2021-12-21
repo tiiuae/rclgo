@@ -102,10 +102,19 @@ type CompressedImageSubscription struct {
 	*rclgo.Subscription
 }
 
+// CompressedImageSubscriptionCallback type is used to provide a subscription
+// handler function for a CompressedImageSubscription.
+type CompressedImageSubscriptionCallback func(msg *CompressedImage, info *rclgo.RmwMessageInfo, err error)
+
 // NewCompressedImageSubscription creates and returns a new subscription for the
 // CompressedImage
-func NewCompressedImageSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*CompressedImageSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, CompressedImageTypeSupport, subscriptionCallback)
+func NewCompressedImageSubscription(node *rclgo.Node, topic_name string, subscriptionCallback CompressedImageSubscriptionCallback) (*CompressedImageSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg CompressedImage
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, CompressedImageTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

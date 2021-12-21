@@ -91,10 +91,19 @@ type WStringSubscription struct {
 	*rclgo.Subscription
 }
 
+// WStringSubscriptionCallback type is used to provide a subscription
+// handler function for a WStringSubscription.
+type WStringSubscriptionCallback func(msg *WString, info *rclgo.RmwMessageInfo, err error)
+
 // NewWStringSubscription creates and returns a new subscription for the
 // WString
-func NewWStringSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*WStringSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, WStringTypeSupport, subscriptionCallback)
+func NewWStringSubscription(node *rclgo.Node, topic_name string, subscriptionCallback WStringSubscriptionCallback) (*WStringSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg WString
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, WStringTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

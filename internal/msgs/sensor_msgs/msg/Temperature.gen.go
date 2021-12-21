@@ -98,10 +98,19 @@ type TemperatureSubscription struct {
 	*rclgo.Subscription
 }
 
+// TemperatureSubscriptionCallback type is used to provide a subscription
+// handler function for a TemperatureSubscription.
+type TemperatureSubscriptionCallback func(msg *Temperature, info *rclgo.RmwMessageInfo, err error)
+
 // NewTemperatureSubscription creates and returns a new subscription for the
 // Temperature
-func NewTemperatureSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*TemperatureSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, TemperatureTypeSupport, subscriptionCallback)
+func NewTemperatureSubscription(node *rclgo.Node, topic_name string, subscriptionCallback TemperatureSubscriptionCallback) (*TemperatureSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Temperature
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, TemperatureTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

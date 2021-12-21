@@ -93,10 +93,19 @@ type WrenchSubscription struct {
 	*rclgo.Subscription
 }
 
+// WrenchSubscriptionCallback type is used to provide a subscription
+// handler function for a WrenchSubscription.
+type WrenchSubscriptionCallback func(msg *Wrench, info *rclgo.RmwMessageInfo, err error)
+
 // NewWrenchSubscription creates and returns a new subscription for the
 // Wrench
-func NewWrenchSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*WrenchSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, WrenchTypeSupport, subscriptionCallback)
+func NewWrenchSubscription(node *rclgo.Node, topic_name string, subscriptionCallback WrenchSubscriptionCallback) (*WrenchSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Wrench
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, WrenchTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

@@ -98,10 +98,19 @@ type IlluminanceSubscription struct {
 	*rclgo.Subscription
 }
 
+// IlluminanceSubscriptionCallback type is used to provide a subscription
+// handler function for a IlluminanceSubscription.
+type IlluminanceSubscriptionCallback func(msg *Illuminance, info *rclgo.RmwMessageInfo, err error)
+
 // NewIlluminanceSubscription creates and returns a new subscription for the
 // Illuminance
-func NewIlluminanceSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*IlluminanceSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, IlluminanceTypeSupport, subscriptionCallback)
+func NewIlluminanceSubscription(node *rclgo.Node, topic_name string, subscriptionCallback IlluminanceSubscriptionCallback) (*IlluminanceSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Illuminance
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, IlluminanceTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

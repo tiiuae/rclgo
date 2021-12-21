@@ -111,10 +111,19 @@ type RangeSubscription struct {
 	*rclgo.Subscription
 }
 
+// RangeSubscriptionCallback type is used to provide a subscription
+// handler function for a RangeSubscription.
+type RangeSubscriptionCallback func(msg *Range, info *rclgo.RmwMessageInfo, err error)
+
 // NewRangeSubscription creates and returns a new subscription for the
 // Range
-func NewRangeSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*RangeSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, RangeTypeSupport, subscriptionCallback)
+func NewRangeSubscription(node *rclgo.Node, topic_name string, subscriptionCallback RangeSubscriptionCallback) (*RangeSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Range
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, RangeTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

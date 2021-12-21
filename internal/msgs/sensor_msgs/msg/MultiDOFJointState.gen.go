@@ -119,10 +119,19 @@ type MultiDOFJointStateSubscription struct {
 	*rclgo.Subscription
 }
 
+// MultiDOFJointStateSubscriptionCallback type is used to provide a subscription
+// handler function for a MultiDOFJointStateSubscription.
+type MultiDOFJointStateSubscriptionCallback func(msg *MultiDOFJointState, info *rclgo.RmwMessageInfo, err error)
+
 // NewMultiDOFJointStateSubscription creates and returns a new subscription for the
 // MultiDOFJointState
-func NewMultiDOFJointStateSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*MultiDOFJointStateSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, MultiDOFJointStateTypeSupport, subscriptionCallback)
+func NewMultiDOFJointStateSubscription(node *rclgo.Node, topic_name string, subscriptionCallback MultiDOFJointStateSubscriptionCallback) (*MultiDOFJointStateSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg MultiDOFJointState
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, MultiDOFJointStateTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

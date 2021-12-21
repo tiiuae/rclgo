@@ -97,10 +97,19 @@ type Float64MultiArraySubscription struct {
 	*rclgo.Subscription
 }
 
+// Float64MultiArraySubscriptionCallback type is used to provide a subscription
+// handler function for a Float64MultiArraySubscription.
+type Float64MultiArraySubscriptionCallback func(msg *Float64MultiArray, info *rclgo.RmwMessageInfo, err error)
+
 // NewFloat64MultiArraySubscription creates and returns a new subscription for the
 // Float64MultiArray
-func NewFloat64MultiArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*Float64MultiArraySubscription, error) {
-	sub, err := node.NewSubscription(topic_name, Float64MultiArrayTypeSupport, subscriptionCallback)
+func NewFloat64MultiArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback Float64MultiArraySubscriptionCallback) (*Float64MultiArraySubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Float64MultiArray
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, Float64MultiArrayTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

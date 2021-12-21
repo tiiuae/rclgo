@@ -91,10 +91,19 @@ type StringSubscription struct {
 	*rclgo.Subscription
 }
 
+// StringSubscriptionCallback type is used to provide a subscription
+// handler function for a StringSubscription.
+type StringSubscriptionCallback func(msg *String, info *rclgo.RmwMessageInfo, err error)
+
 // NewStringSubscription creates and returns a new subscription for the
 // String
-func NewStringSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*StringSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, StringTypeSupport, subscriptionCallback)
+func NewStringSubscription(node *rclgo.Node, topic_name string, subscriptionCallback StringSubscriptionCallback) (*StringSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg String
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, StringTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

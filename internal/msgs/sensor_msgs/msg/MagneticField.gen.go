@@ -101,10 +101,19 @@ type MagneticFieldSubscription struct {
 	*rclgo.Subscription
 }
 
+// MagneticFieldSubscriptionCallback type is used to provide a subscription
+// handler function for a MagneticFieldSubscription.
+type MagneticFieldSubscriptionCallback func(msg *MagneticField, info *rclgo.RmwMessageInfo, err error)
+
 // NewMagneticFieldSubscription creates and returns a new subscription for the
 // MagneticField
-func NewMagneticFieldSubscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*MagneticFieldSubscription, error) {
-	sub, err := node.NewSubscription(topic_name, MagneticFieldTypeSupport, subscriptionCallback)
+func NewMagneticFieldSubscription(node *rclgo.Node, topic_name string, subscriptionCallback MagneticFieldSubscriptionCallback) (*MagneticFieldSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg MagneticField
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, MagneticFieldTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

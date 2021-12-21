@@ -90,10 +90,19 @@ type Float32Subscription struct {
 	*rclgo.Subscription
 }
 
+// Float32SubscriptionCallback type is used to provide a subscription
+// handler function for a Float32Subscription.
+type Float32SubscriptionCallback func(msg *Float32, info *rclgo.RmwMessageInfo, err error)
+
 // NewFloat32Subscription creates and returns a new subscription for the
 // Float32
-func NewFloat32Subscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*Float32Subscription, error) {
-	sub, err := node.NewSubscription(topic_name, Float32TypeSupport, subscriptionCallback)
+func NewFloat32Subscription(node *rclgo.Node, topic_name string, subscriptionCallback Float32SubscriptionCallback) (*Float32Subscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Float32
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, Float32TypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

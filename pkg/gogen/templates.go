@@ -140,10 +140,19 @@ type {{$Md.Name}}Subscription struct {
 	*rclgo.Subscription
 }
 
+// {{$Md.Name}}SubscriptionCallback type is used to provide a subscription
+// handler function for a {{$Md.Name}}Subscription.
+type {{$Md.Name}}SubscriptionCallback func(msg *{{$Md.Name}}, info *rclgo.RmwMessageInfo, err error)
+
 // New{{$Md.Name}}Subscription creates and returns a new subscription for the
 // {{$Md.Name}}
-func New{{$Md.Name}}Subscription(node *rclgo.Node, topic_name string, subscriptionCallback rclgo.SubscriptionCallback) (*{{$Md.Name}}Subscription, error) {
-	sub, err := node.NewSubscription(topic_name, {{$Md.Name}}TypeSupport, subscriptionCallback)
+func New{{$Md.Name}}Subscription(node *rclgo.Node, topic_name string, subscriptionCallback {{$Md.Name}}SubscriptionCallback) (*{{$Md.Name}}Subscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg {{$Md.Name}}
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, {{$Md.Name}}TypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}

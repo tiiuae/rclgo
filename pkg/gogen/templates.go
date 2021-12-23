@@ -480,9 +480,11 @@ package {{ .Action.GoPackage }}
 import "C"
 
 import (
+	"context"
 	"time"
 	"unsafe"
 
+	"{{.Config.RclgoImportPath}}/pkg/rclgo"
 	"{{.Config.RclgoImportPath}}/pkg/rclgo/typemap"
 	"{{.Config.RclgoImportPath}}/pkg/rclgo/types"
 
@@ -561,6 +563,128 @@ func (s _{{.Action.Name}}TypeSupport) TypeSupport() unsafe.Pointer {
 
 // Modifying this variable is undefined behavior.
 var {{.Action.Name}}TypeSupport types.ActionTypeSupport = _{{.Action.Name}}TypeSupport{}
+
+type {{.Action.Name}}FeedbackSender struct {
+	sender rclgo.FeedbackSender
+}
+
+func (s *{{.Action.Name}}FeedbackSender) Send(msg *{{.Action.Name}}_Feedback) error {
+	return s.sender.Send(msg)
+}
+
+type {{.Action.Name}}GoalHandle struct{
+	*rclgo.GoalHandle
+
+	Description *{{.Action.Name}}_Goal
+}
+
+func (g *{{.Action.Name}}GoalHandle) Accept() (*{{.Action.Name}}FeedbackSender, error) {
+	s, err := g.GoalHandle.Accept()
+	if err != nil {
+		return nil, err
+	}
+	return &{{.Action.Name}}FeedbackSender{*s}, nil
+}
+
+type {{.Action.Name}}Action interface {
+	ExecuteGoal(context.Context, *{{.Action.Name}}GoalHandle) (*{{.Action.Name}}_Result, error)
+}
+
+func New{{.Action.Name}}Action(
+	executeGoal func(context.Context, *{{.Action.Name}}GoalHandle) (*{{.Action.Name}}_Result, error),
+) {{.Action.Name}}Action {
+	return _{{.Action.Name}}FuncAction(executeGoal)
+}
+
+type _{{.Action.Name}}FuncAction func(context.Context, *{{.Action.Name}}GoalHandle) (*{{.Action.Name}}_Result, error)
+
+func (a _{{.Action.Name}}FuncAction) ExecuteGoal(
+	ctx context.Context, goal *{{.Action.Name}}GoalHandle,
+) (*{{.Action.Name}}_Result, error) {
+	return a(ctx, goal)
+}
+
+type _{{.Action.Name}}Action struct {
+	action {{.Action.Name}}Action
+}
+
+func (a _{{.Action.Name}}Action) ExecuteGoal(ctx context.Context, handle *rclgo.GoalHandle) (types.Message, error) {
+	return a.action.ExecuteGoal(ctx, &{{.Action.Name}}GoalHandle{
+		GoalHandle:  handle,
+		Description: handle.Description.(*{{.Action.Name}}_Goal),
+	})
+}
+
+func (a _{{.Action.Name}}Action) TypeSupport() types.ActionTypeSupport {
+	return {{.Action.Name}}TypeSupport
+}
+
+type {{.Action.Name}}Server struct{
+	*rclgo.ActionServer
+}
+
+func New{{.Action.Name}}Server(node *rclgo.Node, name string, action {{.Action.Name}}Action, opts *rclgo.ActionServerOptions) (*{{.Action.Name}}Server, error) {
+	server, err := node.NewActionServer(name, _{{.Action.Name}}Action{action}, opts)
+	if err != nil {
+		return nil, err
+	}
+	return &{{.Action.Name}}Server{server}, nil
+}
+
+type {{.Action.Name}}FeedbackHandler func(context.Context, *{{.Action.Name}}_FeedbackMessage)
+
+type {{.Action.Name}}StatusHandler func(context.Context, *action_msgs_msg.GoalStatus)
+
+type {{.Action.Name}}Client struct{
+	*rclgo.ActionClient
+}
+
+func New{{.Action.Name}}Client(node *rclgo.Node, name string, opts *rclgo.ActionClientOptions) (*{{.Action.Name}}Client, error) {
+	client, err := node.NewActionClient(name, {{.Action.Name}}TypeSupport, opts)
+	if err != nil {
+		return nil, err
+	}
+	return &{{.Action.Name}}Client{client}, nil
+}
+
+func (c *{{.Action.Name}}Client) WatchGoal(ctx context.Context, goal *{{.Action.Name}}_Goal, onFeedback {{.Action.Name}}FeedbackHandler) (*{{.Action.Name}}_GetResult_Response, error) {
+	resp, err := c.ActionClient.WatchGoal(ctx, goal, func(ctx context.Context, msg types.Message) {
+		onFeedback(ctx, msg.(*{{.Action.Name}}_FeedbackMessage))
+	})
+	return resp.(*{{.Action.Name}}_GetResult_Response), err
+}
+
+func (c *{{.Action.Name}}Client) SendGoal(ctx context.Context, goal *{{.Action.Name}}_Goal) (*{{.Action.Name}}_SendGoal_Response, *types.GoalID, error) {
+	resp, id, err := c.ActionClient.SendGoal(ctx, goal)
+	return resp.(*{{.Action.Name}}_SendGoal_Response), id, err
+}
+
+func (c *{{.Action.Name}}Client) SendGoalRequest(ctx context.Context, request *{{.Action.Name}}_SendGoal_Request) (*{{.Action.Name}}_SendGoal_Response, error) {
+	resp, err := c.ActionClient.SendGoalRequest(ctx, request)
+	return resp.(*{{.Action.Name}}_SendGoal_Response), err
+}
+
+func (c *{{.Action.Name}}Client) GetResult(ctx context.Context, goalID *types.GoalID) (*{{.Action.Name}}_GetResult_Response, error) {
+	resp, err := c.ActionClient.GetResult(ctx, goalID)
+	return resp.(*{{.Action.Name}}_GetResult_Response), err
+}
+
+func (c *{{.Action.Name}}Client) CancelGoal(ctx context.Context, request *action_msgs_srv.CancelGoal_Request) (*action_msgs_srv.CancelGoal_Response, error) {
+	resp, err := c.ActionClient.CancelGoal(ctx, request)
+	return resp.(*action_msgs_srv.CancelGoal_Response), err
+}
+
+func (c *{{.Action.Name}}Client) WatchFeedback(ctx context.Context, goalID *types.GoalID, handler {{.Action.Name}}FeedbackHandler) <-chan error {
+	return c.ActionClient.WatchFeedback(ctx, goalID, func(ctx context.Context, msg types.Message) {
+		handler(ctx, msg.(*{{.Action.Name}}_FeedbackMessage))
+	})
+}
+
+func (c *{{.Action.Name}}Client) WatchStatus(ctx context.Context, goalID *types.GoalID, handler {{.Action.Name}}StatusHandler) <-chan error {
+	return c.ActionClient.WatchStatus(ctx, goalID, func(ctx context.Context, msg types.Message) {
+		handler(ctx, msg.(*action_msgs_msg.GoalStatus))
+	})
+}
 `))
 
 var primitiveTypes = template.Must(

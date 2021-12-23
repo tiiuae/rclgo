@@ -22,9 +22,11 @@ package test_msgs_action
 import "C"
 
 import (
+	"context"
 	"time"
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 
@@ -103,3 +105,125 @@ func (s _NestedMessageTypeSupport) TypeSupport() unsafe.Pointer {
 
 // Modifying this variable is undefined behavior.
 var NestedMessageTypeSupport types.ActionTypeSupport = _NestedMessageTypeSupport{}
+
+type NestedMessageFeedbackSender struct {
+	sender rclgo.FeedbackSender
+}
+
+func (s *NestedMessageFeedbackSender) Send(msg *NestedMessage_Feedback) error {
+	return s.sender.Send(msg)
+}
+
+type NestedMessageGoalHandle struct{
+	*rclgo.GoalHandle
+
+	Description *NestedMessage_Goal
+}
+
+func (g *NestedMessageGoalHandle) Accept() (*NestedMessageFeedbackSender, error) {
+	s, err := g.GoalHandle.Accept()
+	if err != nil {
+		return nil, err
+	}
+	return &NestedMessageFeedbackSender{*s}, nil
+}
+
+type NestedMessageAction interface {
+	ExecuteGoal(context.Context, *NestedMessageGoalHandle) (*NestedMessage_Result, error)
+}
+
+func NewNestedMessageAction(
+	executeGoal func(context.Context, *NestedMessageGoalHandle) (*NestedMessage_Result, error),
+) NestedMessageAction {
+	return _NestedMessageFuncAction(executeGoal)
+}
+
+type _NestedMessageFuncAction func(context.Context, *NestedMessageGoalHandle) (*NestedMessage_Result, error)
+
+func (a _NestedMessageFuncAction) ExecuteGoal(
+	ctx context.Context, goal *NestedMessageGoalHandle,
+) (*NestedMessage_Result, error) {
+	return a(ctx, goal)
+}
+
+type _NestedMessageAction struct {
+	action NestedMessageAction
+}
+
+func (a _NestedMessageAction) ExecuteGoal(ctx context.Context, handle *rclgo.GoalHandle) (types.Message, error) {
+	return a.action.ExecuteGoal(ctx, &NestedMessageGoalHandle{
+		GoalHandle:  handle,
+		Description: handle.Description.(*NestedMessage_Goal),
+	})
+}
+
+func (a _NestedMessageAction) TypeSupport() types.ActionTypeSupport {
+	return NestedMessageTypeSupport
+}
+
+type NestedMessageServer struct{
+	*rclgo.ActionServer
+}
+
+func NewNestedMessageServer(node *rclgo.Node, name string, action NestedMessageAction, opts *rclgo.ActionServerOptions) (*NestedMessageServer, error) {
+	server, err := node.NewActionServer(name, _NestedMessageAction{action}, opts)
+	if err != nil {
+		return nil, err
+	}
+	return &NestedMessageServer{server}, nil
+}
+
+type NestedMessageFeedbackHandler func(context.Context, *NestedMessage_FeedbackMessage)
+
+type NestedMessageStatusHandler func(context.Context, *action_msgs_msg.GoalStatus)
+
+type NestedMessageClient struct{
+	*rclgo.ActionClient
+}
+
+func NewNestedMessageClient(node *rclgo.Node, name string, opts *rclgo.ActionClientOptions) (*NestedMessageClient, error) {
+	client, err := node.NewActionClient(name, NestedMessageTypeSupport, opts)
+	if err != nil {
+		return nil, err
+	}
+	return &NestedMessageClient{client}, nil
+}
+
+func (c *NestedMessageClient) WatchGoal(ctx context.Context, goal *NestedMessage_Goal, onFeedback NestedMessageFeedbackHandler) (*NestedMessage_GetResult_Response, error) {
+	resp, err := c.ActionClient.WatchGoal(ctx, goal, func(ctx context.Context, msg types.Message) {
+		onFeedback(ctx, msg.(*NestedMessage_FeedbackMessage))
+	})
+	return resp.(*NestedMessage_GetResult_Response), err
+}
+
+func (c *NestedMessageClient) SendGoal(ctx context.Context, goal *NestedMessage_Goal) (*NestedMessage_SendGoal_Response, *types.GoalID, error) {
+	resp, id, err := c.ActionClient.SendGoal(ctx, goal)
+	return resp.(*NestedMessage_SendGoal_Response), id, err
+}
+
+func (c *NestedMessageClient) SendGoalRequest(ctx context.Context, request *NestedMessage_SendGoal_Request) (*NestedMessage_SendGoal_Response, error) {
+	resp, err := c.ActionClient.SendGoalRequest(ctx, request)
+	return resp.(*NestedMessage_SendGoal_Response), err
+}
+
+func (c *NestedMessageClient) GetResult(ctx context.Context, goalID *types.GoalID) (*NestedMessage_GetResult_Response, error) {
+	resp, err := c.ActionClient.GetResult(ctx, goalID)
+	return resp.(*NestedMessage_GetResult_Response), err
+}
+
+func (c *NestedMessageClient) CancelGoal(ctx context.Context, request *action_msgs_srv.CancelGoal_Request) (*action_msgs_srv.CancelGoal_Response, error) {
+	resp, err := c.ActionClient.CancelGoal(ctx, request)
+	return resp.(*action_msgs_srv.CancelGoal_Response), err
+}
+
+func (c *NestedMessageClient) WatchFeedback(ctx context.Context, goalID *types.GoalID, handler NestedMessageFeedbackHandler) <-chan error {
+	return c.ActionClient.WatchFeedback(ctx, goalID, func(ctx context.Context, msg types.Message) {
+		handler(ctx, msg.(*NestedMessage_FeedbackMessage))
+	})
+}
+
+func (c *NestedMessageClient) WatchStatus(ctx context.Context, goalID *types.GoalID, handler NestedMessageStatusHandler) <-chan error {
+	return c.ActionClient.WatchStatus(ctx, goalID, func(ctx context.Context, msg types.Message) {
+		handler(ctx, msg.(*action_msgs_msg.GoalStatus))
+	})
+}

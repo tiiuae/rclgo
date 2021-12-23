@@ -22,9 +22,11 @@ package example_interfaces_action
 import "C"
 
 import (
+	"context"
 	"time"
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 
@@ -103,3 +105,125 @@ func (s _FibonacciTypeSupport) TypeSupport() unsafe.Pointer {
 
 // Modifying this variable is undefined behavior.
 var FibonacciTypeSupport types.ActionTypeSupport = _FibonacciTypeSupport{}
+
+type FibonacciFeedbackSender struct {
+	sender rclgo.FeedbackSender
+}
+
+func (s *FibonacciFeedbackSender) Send(msg *Fibonacci_Feedback) error {
+	return s.sender.Send(msg)
+}
+
+type FibonacciGoalHandle struct{
+	*rclgo.GoalHandle
+
+	Description *Fibonacci_Goal
+}
+
+func (g *FibonacciGoalHandle) Accept() (*FibonacciFeedbackSender, error) {
+	s, err := g.GoalHandle.Accept()
+	if err != nil {
+		return nil, err
+	}
+	return &FibonacciFeedbackSender{*s}, nil
+}
+
+type FibonacciAction interface {
+	ExecuteGoal(context.Context, *FibonacciGoalHandle) (*Fibonacci_Result, error)
+}
+
+func NewFibonacciAction(
+	executeGoal func(context.Context, *FibonacciGoalHandle) (*Fibonacci_Result, error),
+) FibonacciAction {
+	return _FibonacciFuncAction(executeGoal)
+}
+
+type _FibonacciFuncAction func(context.Context, *FibonacciGoalHandle) (*Fibonacci_Result, error)
+
+func (a _FibonacciFuncAction) ExecuteGoal(
+	ctx context.Context, goal *FibonacciGoalHandle,
+) (*Fibonacci_Result, error) {
+	return a(ctx, goal)
+}
+
+type _FibonacciAction struct {
+	action FibonacciAction
+}
+
+func (a _FibonacciAction) ExecuteGoal(ctx context.Context, handle *rclgo.GoalHandle) (types.Message, error) {
+	return a.action.ExecuteGoal(ctx, &FibonacciGoalHandle{
+		GoalHandle:  handle,
+		Description: handle.Description.(*Fibonacci_Goal),
+	})
+}
+
+func (a _FibonacciAction) TypeSupport() types.ActionTypeSupport {
+	return FibonacciTypeSupport
+}
+
+type FibonacciServer struct{
+	*rclgo.ActionServer
+}
+
+func NewFibonacciServer(node *rclgo.Node, name string, action FibonacciAction, opts *rclgo.ActionServerOptions) (*FibonacciServer, error) {
+	server, err := node.NewActionServer(name, _FibonacciAction{action}, opts)
+	if err != nil {
+		return nil, err
+	}
+	return &FibonacciServer{server}, nil
+}
+
+type FibonacciFeedbackHandler func(context.Context, *Fibonacci_FeedbackMessage)
+
+type FibonacciStatusHandler func(context.Context, *action_msgs_msg.GoalStatus)
+
+type FibonacciClient struct{
+	*rclgo.ActionClient
+}
+
+func NewFibonacciClient(node *rclgo.Node, name string, opts *rclgo.ActionClientOptions) (*FibonacciClient, error) {
+	client, err := node.NewActionClient(name, FibonacciTypeSupport, opts)
+	if err != nil {
+		return nil, err
+	}
+	return &FibonacciClient{client}, nil
+}
+
+func (c *FibonacciClient) WatchGoal(ctx context.Context, goal *Fibonacci_Goal, onFeedback FibonacciFeedbackHandler) (*Fibonacci_GetResult_Response, error) {
+	resp, err := c.ActionClient.WatchGoal(ctx, goal, func(ctx context.Context, msg types.Message) {
+		onFeedback(ctx, msg.(*Fibonacci_FeedbackMessage))
+	})
+	return resp.(*Fibonacci_GetResult_Response), err
+}
+
+func (c *FibonacciClient) SendGoal(ctx context.Context, goal *Fibonacci_Goal) (*Fibonacci_SendGoal_Response, *types.GoalID, error) {
+	resp, id, err := c.ActionClient.SendGoal(ctx, goal)
+	return resp.(*Fibonacci_SendGoal_Response), id, err
+}
+
+func (c *FibonacciClient) SendGoalRequest(ctx context.Context, request *Fibonacci_SendGoal_Request) (*Fibonacci_SendGoal_Response, error) {
+	resp, err := c.ActionClient.SendGoalRequest(ctx, request)
+	return resp.(*Fibonacci_SendGoal_Response), err
+}
+
+func (c *FibonacciClient) GetResult(ctx context.Context, goalID *types.GoalID) (*Fibonacci_GetResult_Response, error) {
+	resp, err := c.ActionClient.GetResult(ctx, goalID)
+	return resp.(*Fibonacci_GetResult_Response), err
+}
+
+func (c *FibonacciClient) CancelGoal(ctx context.Context, request *action_msgs_srv.CancelGoal_Request) (*action_msgs_srv.CancelGoal_Response, error) {
+	resp, err := c.ActionClient.CancelGoal(ctx, request)
+	return resp.(*action_msgs_srv.CancelGoal_Response), err
+}
+
+func (c *FibonacciClient) WatchFeedback(ctx context.Context, goalID *types.GoalID, handler FibonacciFeedbackHandler) <-chan error {
+	return c.ActionClient.WatchFeedback(ctx, goalID, func(ctx context.Context, msg types.Message) {
+		handler(ctx, msg.(*Fibonacci_FeedbackMessage))
+	})
+}
+
+func (c *FibonacciClient) WatchStatus(ctx context.Context, goalID *types.GoalID, handler FibonacciStatusHandler) <-chan error {
+	return c.ActionClient.WatchStatus(ctx, goalID, func(ctx context.Context, msg types.Message) {
+		handler(ctx, msg.(*action_msgs_msg.GoalStatus))
+	})
+}

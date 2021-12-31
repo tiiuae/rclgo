@@ -15,6 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	primitives "github.com/tiiuae/rclgo/pkg/rclgo/primitives"
@@ -69,6 +70,56 @@ func (t *Int32MultiArray) SetDefaults() {
 	t.Layout.SetDefaults()
 	t.Data = nil
 }
+
+// Int32MultiArrayPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type Int32MultiArrayPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewInt32MultiArrayPublisher creates and returns a new publisher for the
+// Int32MultiArray
+func NewInt32MultiArrayPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*Int32MultiArrayPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, Int32MultiArrayTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &Int32MultiArrayPublisher{pub}, nil
+}
+
+func (p *Int32MultiArrayPublisher) Publish(msg *Int32MultiArray) error {
+	return p.Publisher.Publish(msg)
+}
+
+// Int32MultiArraySubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type Int32MultiArraySubscription struct {
+	*rclgo.Subscription
+}
+
+// Int32MultiArraySubscriptionCallback type is used to provide a subscription
+// handler function for a Int32MultiArraySubscription.
+type Int32MultiArraySubscriptionCallback func(msg *Int32MultiArray, info *rclgo.RmwMessageInfo, err error)
+
+// NewInt32MultiArraySubscription creates and returns a new subscription for the
+// Int32MultiArray
+func NewInt32MultiArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback Int32MultiArraySubscriptionCallback) (*Int32MultiArraySubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Int32MultiArray
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, Int32MultiArrayTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &Int32MultiArraySubscription{sub}, nil
+}
+
+func (s *Int32MultiArraySubscription) TakeMessage(out *Int32MultiArray) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneInt32MultiArraySlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

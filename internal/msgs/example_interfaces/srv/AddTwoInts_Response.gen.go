@@ -15,6 +15,7 @@ package example_interfaces_srv
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -62,6 +63,56 @@ func (t *AddTwoInts_Response) CloneMsg() types.Message {
 func (t *AddTwoInts_Response) SetDefaults() {
 	t.Sum = 0
 }
+
+// AddTwoInts_ResponsePublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type AddTwoInts_ResponsePublisher struct {
+	*rclgo.Publisher
+}
+
+// NewAddTwoInts_ResponsePublisher creates and returns a new publisher for the
+// AddTwoInts_Response
+func NewAddTwoInts_ResponsePublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*AddTwoInts_ResponsePublisher, error) {
+	pub, err := node.NewPublisher(topic_name, AddTwoInts_ResponseTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &AddTwoInts_ResponsePublisher{pub}, nil
+}
+
+func (p *AddTwoInts_ResponsePublisher) Publish(msg *AddTwoInts_Response) error {
+	return p.Publisher.Publish(msg)
+}
+
+// AddTwoInts_ResponseSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type AddTwoInts_ResponseSubscription struct {
+	*rclgo.Subscription
+}
+
+// AddTwoInts_ResponseSubscriptionCallback type is used to provide a subscription
+// handler function for a AddTwoInts_ResponseSubscription.
+type AddTwoInts_ResponseSubscriptionCallback func(msg *AddTwoInts_Response, info *rclgo.RmwMessageInfo, err error)
+
+// NewAddTwoInts_ResponseSubscription creates and returns a new subscription for the
+// AddTwoInts_Response
+func NewAddTwoInts_ResponseSubscription(node *rclgo.Node, topic_name string, subscriptionCallback AddTwoInts_ResponseSubscriptionCallback) (*AddTwoInts_ResponseSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg AddTwoInts_Response
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, AddTwoInts_ResponseTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &AddTwoInts_ResponseSubscription{sub}, nil
+}
+
+func (s *AddTwoInts_ResponseSubscription) TakeMessage(out *AddTwoInts_Response) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneAddTwoInts_ResponseSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

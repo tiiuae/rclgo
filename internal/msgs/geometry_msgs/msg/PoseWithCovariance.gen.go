@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	primitives "github.com/tiiuae/rclgo/pkg/rclgo/primitives"
@@ -66,6 +67,56 @@ func (t *PoseWithCovariance) SetDefaults() {
 	t.Pose.SetDefaults()
 	t.Covariance = [36]float64{}
 }
+
+// PoseWithCovariancePublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type PoseWithCovariancePublisher struct {
+	*rclgo.Publisher
+}
+
+// NewPoseWithCovariancePublisher creates and returns a new publisher for the
+// PoseWithCovariance
+func NewPoseWithCovariancePublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*PoseWithCovariancePublisher, error) {
+	pub, err := node.NewPublisher(topic_name, PoseWithCovarianceTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &PoseWithCovariancePublisher{pub}, nil
+}
+
+func (p *PoseWithCovariancePublisher) Publish(msg *PoseWithCovariance) error {
+	return p.Publisher.Publish(msg)
+}
+
+// PoseWithCovarianceSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type PoseWithCovarianceSubscription struct {
+	*rclgo.Subscription
+}
+
+// PoseWithCovarianceSubscriptionCallback type is used to provide a subscription
+// handler function for a PoseWithCovarianceSubscription.
+type PoseWithCovarianceSubscriptionCallback func(msg *PoseWithCovariance, info *rclgo.RmwMessageInfo, err error)
+
+// NewPoseWithCovarianceSubscription creates and returns a new subscription for the
+// PoseWithCovariance
+func NewPoseWithCovarianceSubscription(node *rclgo.Node, topic_name string, subscriptionCallback PoseWithCovarianceSubscriptionCallback) (*PoseWithCovarianceSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg PoseWithCovariance
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, PoseWithCovarianceTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &PoseWithCovarianceSubscription{sub}, nil
+}
+
+func (s *PoseWithCovarianceSubscription) TakeMessage(out *PoseWithCovariance) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // ClonePoseWithCovarianceSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

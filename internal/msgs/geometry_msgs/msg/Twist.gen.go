@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -65,6 +66,56 @@ func (t *Twist) SetDefaults() {
 	t.Linear.SetDefaults()
 	t.Angular.SetDefaults()
 }
+
+// TwistPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type TwistPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewTwistPublisher creates and returns a new publisher for the
+// Twist
+func NewTwistPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*TwistPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, TwistTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &TwistPublisher{pub}, nil
+}
+
+func (p *TwistPublisher) Publish(msg *Twist) error {
+	return p.Publisher.Publish(msg)
+}
+
+// TwistSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type TwistSubscription struct {
+	*rclgo.Subscription
+}
+
+// TwistSubscriptionCallback type is used to provide a subscription
+// handler function for a TwistSubscription.
+type TwistSubscriptionCallback func(msg *Twist, info *rclgo.RmwMessageInfo, err error)
+
+// NewTwistSubscription creates and returns a new subscription for the
+// Twist
+func NewTwistSubscription(node *rclgo.Node, topic_name string, subscriptionCallback TwistSubscriptionCallback) (*TwistSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Twist
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, TwistTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &TwistSubscription{sub}, nil
+}
+
+func (s *TwistSubscription) TakeMessage(out *Twist) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneTwistSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

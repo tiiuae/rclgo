@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -95,6 +96,56 @@ func (t *PointCloud2) SetDefaults() {
 	t.Data = nil
 	t.IsDense = false
 }
+
+// PointCloud2Publisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type PointCloud2Publisher struct {
+	*rclgo.Publisher
+}
+
+// NewPointCloud2Publisher creates and returns a new publisher for the
+// PointCloud2
+func NewPointCloud2Publisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*PointCloud2Publisher, error) {
+	pub, err := node.NewPublisher(topic_name, PointCloud2TypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &PointCloud2Publisher{pub}, nil
+}
+
+func (p *PointCloud2Publisher) Publish(msg *PointCloud2) error {
+	return p.Publisher.Publish(msg)
+}
+
+// PointCloud2Subscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type PointCloud2Subscription struct {
+	*rclgo.Subscription
+}
+
+// PointCloud2SubscriptionCallback type is used to provide a subscription
+// handler function for a PointCloud2Subscription.
+type PointCloud2SubscriptionCallback func(msg *PointCloud2, info *rclgo.RmwMessageInfo, err error)
+
+// NewPointCloud2Subscription creates and returns a new subscription for the
+// PointCloud2
+func NewPointCloud2Subscription(node *rclgo.Node, topic_name string, subscriptionCallback PointCloud2SubscriptionCallback) (*PointCloud2Subscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg PointCloud2
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, PointCloud2TypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &PointCloud2Subscription{sub}, nil
+}
+
+func (s *PointCloud2Subscription) TakeMessage(out *PointCloud2) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // ClonePointCloud2Slice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -65,6 +66,56 @@ func (t *Accel) SetDefaults() {
 	t.Linear.SetDefaults()
 	t.Angular.SetDefaults()
 }
+
+// AccelPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type AccelPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewAccelPublisher creates and returns a new publisher for the
+// Accel
+func NewAccelPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*AccelPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, AccelTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &AccelPublisher{pub}, nil
+}
+
+func (p *AccelPublisher) Publish(msg *Accel) error {
+	return p.Publisher.Publish(msg)
+}
+
+// AccelSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type AccelSubscription struct {
+	*rclgo.Subscription
+}
+
+// AccelSubscriptionCallback type is used to provide a subscription
+// handler function for a AccelSubscription.
+type AccelSubscriptionCallback func(msg *Accel, info *rclgo.RmwMessageInfo, err error)
+
+// NewAccelSubscription creates and returns a new subscription for the
+// Accel
+func NewAccelSubscription(node *rclgo.Node, topic_name string, subscriptionCallback AccelSubscriptionCallback) (*AccelSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Accel
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, AccelTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &AccelSubscription{sub}, nil
+}
+
+func (s *AccelSubscription) TakeMessage(out *Accel) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneAccelSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

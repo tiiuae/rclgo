@@ -15,6 +15,7 @@ package example_interfaces_srv
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -59,6 +60,56 @@ func (t *Trigger_Request) CloneMsg() types.Message {
 
 func (t *Trigger_Request) SetDefaults() {
 }
+
+// Trigger_RequestPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type Trigger_RequestPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewTrigger_RequestPublisher creates and returns a new publisher for the
+// Trigger_Request
+func NewTrigger_RequestPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*Trigger_RequestPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, Trigger_RequestTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &Trigger_RequestPublisher{pub}, nil
+}
+
+func (p *Trigger_RequestPublisher) Publish(msg *Trigger_Request) error {
+	return p.Publisher.Publish(msg)
+}
+
+// Trigger_RequestSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type Trigger_RequestSubscription struct {
+	*rclgo.Subscription
+}
+
+// Trigger_RequestSubscriptionCallback type is used to provide a subscription
+// handler function for a Trigger_RequestSubscription.
+type Trigger_RequestSubscriptionCallback func(msg *Trigger_Request, info *rclgo.RmwMessageInfo, err error)
+
+// NewTrigger_RequestSubscription creates and returns a new subscription for the
+// Trigger_Request
+func NewTrigger_RequestSubscription(node *rclgo.Node, topic_name string, subscriptionCallback Trigger_RequestSubscriptionCallback) (*Trigger_RequestSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Trigger_Request
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, Trigger_RequestTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &Trigger_RequestSubscription{sub}, nil
+}
+
+func (s *Trigger_RequestSubscription) TakeMessage(out *Trigger_Request) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneTrigger_RequestSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

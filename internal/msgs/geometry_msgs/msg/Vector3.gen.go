@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -68,6 +69,56 @@ func (t *Vector3) SetDefaults() {
 	t.Y = 0
 	t.Z = 0
 }
+
+// Vector3Publisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type Vector3Publisher struct {
+	*rclgo.Publisher
+}
+
+// NewVector3Publisher creates and returns a new publisher for the
+// Vector3
+func NewVector3Publisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*Vector3Publisher, error) {
+	pub, err := node.NewPublisher(topic_name, Vector3TypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &Vector3Publisher{pub}, nil
+}
+
+func (p *Vector3Publisher) Publish(msg *Vector3) error {
+	return p.Publisher.Publish(msg)
+}
+
+// Vector3Subscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type Vector3Subscription struct {
+	*rclgo.Subscription
+}
+
+// Vector3SubscriptionCallback type is used to provide a subscription
+// handler function for a Vector3Subscription.
+type Vector3SubscriptionCallback func(msg *Vector3, info *rclgo.RmwMessageInfo, err error)
+
+// NewVector3Subscription creates and returns a new subscription for the
+// Vector3
+func NewVector3Subscription(node *rclgo.Node, topic_name string, subscriptionCallback Vector3SubscriptionCallback) (*Vector3Subscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Vector3
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, Vector3TypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &Vector3Subscription{sub}, nil
+}
+
+func (s *Vector3Subscription) TakeMessage(out *Vector3) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneVector3Slice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

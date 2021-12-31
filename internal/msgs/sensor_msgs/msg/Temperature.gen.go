@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -70,6 +71,56 @@ func (t *Temperature) SetDefaults() {
 	t.Temperature = 0
 	t.Variance = 0
 }
+
+// TemperaturePublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type TemperaturePublisher struct {
+	*rclgo.Publisher
+}
+
+// NewTemperaturePublisher creates and returns a new publisher for the
+// Temperature
+func NewTemperaturePublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*TemperaturePublisher, error) {
+	pub, err := node.NewPublisher(topic_name, TemperatureTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &TemperaturePublisher{pub}, nil
+}
+
+func (p *TemperaturePublisher) Publish(msg *Temperature) error {
+	return p.Publisher.Publish(msg)
+}
+
+// TemperatureSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type TemperatureSubscription struct {
+	*rclgo.Subscription
+}
+
+// TemperatureSubscriptionCallback type is used to provide a subscription
+// handler function for a TemperatureSubscription.
+type TemperatureSubscriptionCallback func(msg *Temperature, info *rclgo.RmwMessageInfo, err error)
+
+// NewTemperatureSubscription creates and returns a new subscription for the
+// Temperature
+func NewTemperatureSubscription(node *rclgo.Node, topic_name string, subscriptionCallback TemperatureSubscriptionCallback) (*TemperatureSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Temperature
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, TemperatureTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &TemperatureSubscription{sub}, nil
+}
+
+func (s *TemperatureSubscription) TakeMessage(out *Temperature) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneTemperatureSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

@@ -15,6 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	primitives "github.com/tiiuae/rclgo/pkg/rclgo/primitives"
@@ -69,6 +70,56 @@ func (t *UInt32MultiArray) SetDefaults() {
 	t.Layout.SetDefaults()
 	t.Data = nil
 }
+
+// UInt32MultiArrayPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type UInt32MultiArrayPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewUInt32MultiArrayPublisher creates and returns a new publisher for the
+// UInt32MultiArray
+func NewUInt32MultiArrayPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*UInt32MultiArrayPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, UInt32MultiArrayTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &UInt32MultiArrayPublisher{pub}, nil
+}
+
+func (p *UInt32MultiArrayPublisher) Publish(msg *UInt32MultiArray) error {
+	return p.Publisher.Publish(msg)
+}
+
+// UInt32MultiArraySubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type UInt32MultiArraySubscription struct {
+	*rclgo.Subscription
+}
+
+// UInt32MultiArraySubscriptionCallback type is used to provide a subscription
+// handler function for a UInt32MultiArraySubscription.
+type UInt32MultiArraySubscriptionCallback func(msg *UInt32MultiArray, info *rclgo.RmwMessageInfo, err error)
+
+// NewUInt32MultiArraySubscription creates and returns a new subscription for the
+// UInt32MultiArray
+func NewUInt32MultiArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback UInt32MultiArraySubscriptionCallback) (*UInt32MultiArraySubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg UInt32MultiArray
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, UInt32MultiArrayTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &UInt32MultiArraySubscription{sub}, nil
+}
+
+func (s *UInt32MultiArraySubscription) TakeMessage(out *UInt32MultiArray) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneUInt32MultiArraySlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

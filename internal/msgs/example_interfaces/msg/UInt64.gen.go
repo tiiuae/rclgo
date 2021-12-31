@@ -15,6 +15,7 @@ package example_interfaces_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -62,6 +63,56 @@ func (t *UInt64) CloneMsg() types.Message {
 func (t *UInt64) SetDefaults() {
 	t.Data = 0
 }
+
+// UInt64Publisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type UInt64Publisher struct {
+	*rclgo.Publisher
+}
+
+// NewUInt64Publisher creates and returns a new publisher for the
+// UInt64
+func NewUInt64Publisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*UInt64Publisher, error) {
+	pub, err := node.NewPublisher(topic_name, UInt64TypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &UInt64Publisher{pub}, nil
+}
+
+func (p *UInt64Publisher) Publish(msg *UInt64) error {
+	return p.Publisher.Publish(msg)
+}
+
+// UInt64Subscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type UInt64Subscription struct {
+	*rclgo.Subscription
+}
+
+// UInt64SubscriptionCallback type is used to provide a subscription
+// handler function for a UInt64Subscription.
+type UInt64SubscriptionCallback func(msg *UInt64, info *rclgo.RmwMessageInfo, err error)
+
+// NewUInt64Subscription creates and returns a new subscription for the
+// UInt64
+func NewUInt64Subscription(node *rclgo.Node, topic_name string, subscriptionCallback UInt64SubscriptionCallback) (*UInt64Subscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg UInt64
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, UInt64TypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &UInt64Subscription{sub}, nil
+}
+
+func (s *UInt64Subscription) TakeMessage(out *UInt64) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneUInt64Slice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

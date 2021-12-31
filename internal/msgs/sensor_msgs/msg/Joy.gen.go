@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -77,6 +78,56 @@ func (t *Joy) SetDefaults() {
 	t.Axes = nil
 	t.Buttons = nil
 }
+
+// JoyPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type JoyPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewJoyPublisher creates and returns a new publisher for the
+// Joy
+func NewJoyPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*JoyPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, JoyTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &JoyPublisher{pub}, nil
+}
+
+func (p *JoyPublisher) Publish(msg *Joy) error {
+	return p.Publisher.Publish(msg)
+}
+
+// JoySubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type JoySubscription struct {
+	*rclgo.Subscription
+}
+
+// JoySubscriptionCallback type is used to provide a subscription
+// handler function for a JoySubscription.
+type JoySubscriptionCallback func(msg *Joy, info *rclgo.RmwMessageInfo, err error)
+
+// NewJoySubscription creates and returns a new subscription for the
+// Joy
+func NewJoySubscription(node *rclgo.Node, topic_name string, subscriptionCallback JoySubscriptionCallback) (*JoySubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Joy
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, JoyTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &JoySubscription{sub}, nil
+}
+
+func (s *JoySubscription) TakeMessage(out *Joy) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneJoySlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

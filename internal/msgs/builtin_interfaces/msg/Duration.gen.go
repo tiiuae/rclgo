@@ -15,6 +15,7 @@ package builtin_interfaces_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -65,6 +66,56 @@ func (t *Duration) SetDefaults() {
 	t.Sec = 0
 	t.Nanosec = 0
 }
+
+// DurationPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type DurationPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewDurationPublisher creates and returns a new publisher for the
+// Duration
+func NewDurationPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*DurationPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, DurationTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &DurationPublisher{pub}, nil
+}
+
+func (p *DurationPublisher) Publish(msg *Duration) error {
+	return p.Publisher.Publish(msg)
+}
+
+// DurationSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type DurationSubscription struct {
+	*rclgo.Subscription
+}
+
+// DurationSubscriptionCallback type is used to provide a subscription
+// handler function for a DurationSubscription.
+type DurationSubscriptionCallback func(msg *Duration, info *rclgo.RmwMessageInfo, err error)
+
+// NewDurationSubscription creates and returns a new subscription for the
+// Duration
+func NewDurationSubscription(node *rclgo.Node, topic_name string, subscriptionCallback DurationSubscriptionCallback) (*DurationSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Duration
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, DurationTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &DurationSubscription{sub}, nil
+}
+
+func (s *DurationSubscription) TakeMessage(out *Duration) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneDurationSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

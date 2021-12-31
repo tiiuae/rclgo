@@ -11,55 +11,64 @@ func TestInitLogging(t *testing.T) {
 		defaultLogger, testLogger *Logger
 		parentLogger, childLogger *Logger
 	)
-	Convey("Scenario: Logging cannot be used before calling InitLogging", t, func() {
-		Convey("Loggers can be created before initialization", func() {
-			defaultLogger = GetLogger("")
-			So(defaultLogger, ShouldNotBeNil)
-			testLogger = GetLogger("test.logger")
-			So(testLogger, ShouldNotBeNil)
-			parentLogger = testLogger.Parent()
-			So(parentLogger, ShouldNotBeNil)
-			So(parentLogger.Name(), ShouldEqual, "test")
-			childLogger = testLogger.Child("child")
-			So(childLogger, ShouldNotBeNil)
-			So(childLogger.Name(), ShouldEqual, "test.logger.child")
-			defaultLogger2 := parentLogger.Parent()
-			So(defaultLogger, ShouldEqual, defaultLogger2)
-			defaultLogger2 = parentLogger.Parent()
-			So(defaultLogger, ShouldEqual, defaultLogger2)
-		})
-		Convey("Loggers don't return an error after initialization", func() {
-			args, _, err := ParseArgs([]string{"--ros-args", "--log-level", "DEBUG"})
-			So(args, ShouldNotBeNil)
-			So(err, ShouldBeNil)
+	Convey(
+		"Scenario: Logging cannot be used before calling InitLogging",
+		t,
+		func() {
+			Convey("Loggers can be created before initialization", func() {
+				defaultLogger = GetLogger("")
+				So(defaultLogger, ShouldNotBeNil)
+				testLogger = GetLogger("test.logger")
+				So(testLogger, ShouldNotBeNil)
+				parentLogger = testLogger.Parent()
+				So(parentLogger, ShouldNotBeNil)
+				So(parentLogger.Name(), ShouldEqual, "test")
+				childLogger = testLogger.Child("child")
+				So(childLogger, ShouldNotBeNil)
+				So(childLogger.Name(), ShouldEqual, "test.logger.child")
+				defaultLogger2 := parentLogger.Parent()
+				So(defaultLogger, ShouldEqual, defaultLogger2)
+				defaultLogger2 = parentLogger.Parent()
+				So(defaultLogger, ShouldEqual, defaultLogger2)
+			})
+			Convey(
+				"Loggers don't return an error after initialization",
+				func() {
+					args, _, err := ParseArgs(
+						[]string{"--ros-args", "--log-level", "DEBUG"},
+					)
+					So(args, ShouldNotBeNil)
+					So(err, ShouldBeNil)
 
-			level, err := childLogger.EffectiveLevel()
-			So(level, ShouldEqual, LogSeverityInfo)
-			So(err, ShouldBeNil)
-			level, err = childLogger.Level()
-			So(level, ShouldEqual, LogSeverityUnset)
-			So(err, ShouldBeNil)
+					level, err := childLogger.EffectiveLevel()
+					So(level, ShouldEqual, LogSeverityInfo)
+					So(err, ShouldBeNil)
+					level, err = childLogger.Level()
+					So(level, ShouldEqual, LogSeverityUnset)
+					So(err, ShouldBeNil)
 
-			So(InitLogging(args), ShouldBeNil)
+					So(InitLogging(args), ShouldBeNil)
 
-			level, err = childLogger.EffectiveLevel()
-			So(level, ShouldEqual, LogSeverityDebug)
-			So(err, ShouldBeNil)
-			level, err = childLogger.Level()
-			So(level, ShouldEqual, LogSeverityUnset)
-			So(err, ShouldBeNil)
+					level, err = childLogger.EffectiveLevel()
+					So(level, ShouldEqual, LogSeverityDebug)
+					So(err, ShouldBeNil)
+					level, err = childLogger.Level()
+					So(level, ShouldEqual, LogSeverityUnset)
+					So(err, ShouldBeNil)
 
-			So(childLogger.SetLevel(LogSeverityError), ShouldBeNil)
-			level, err = childLogger.Level()
-			So(level, ShouldEqual, LogSeverityError)
-			So(err, ShouldBeNil)
+					So(childLogger.SetLevel(LogSeverityError), ShouldBeNil)
+					level, err = childLogger.Level()
+					So(level, ShouldEqual, LogSeverityError)
+					So(err, ShouldBeNil)
 
-			So(defaultLogger.Info("defaultLogger"), ShouldBeNil)
-			So(testLogger.Info("testLogger"), ShouldBeNil)
-			So(parentLogger.Info("parentLogger"), ShouldBeNil)
-			So(childLogger.Info("childLogger"), ShouldBeNil)
-		})
-	})
+					So(defaultLogger.Info("defaultLogger"), ShouldBeNil)
+					So(testLogger.Info("testLogger"), ShouldBeNil)
+					So(parentLogger.Info("parentLogger"), ShouldBeNil)
+					So(childLogger.Info("childLogger"), ShouldBeNil)
+				},
+			)
+		},
+	)
 }
 
 func TestGetLogger(t *testing.T) {

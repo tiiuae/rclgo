@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	primitives "github.com/tiiuae/rclgo/pkg/rclgo/primitives"
@@ -82,6 +83,56 @@ func (t *PointField) SetDefaults() {
 	t.Datatype = 0
 	t.Count = 0
 }
+
+// PointFieldPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type PointFieldPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewPointFieldPublisher creates and returns a new publisher for the
+// PointField
+func NewPointFieldPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*PointFieldPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, PointFieldTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &PointFieldPublisher{pub}, nil
+}
+
+func (p *PointFieldPublisher) Publish(msg *PointField) error {
+	return p.Publisher.Publish(msg)
+}
+
+// PointFieldSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type PointFieldSubscription struct {
+	*rclgo.Subscription
+}
+
+// PointFieldSubscriptionCallback type is used to provide a subscription
+// handler function for a PointFieldSubscription.
+type PointFieldSubscriptionCallback func(msg *PointField, info *rclgo.RmwMessageInfo, err error)
+
+// NewPointFieldSubscription creates and returns a new subscription for the
+// PointField
+func NewPointFieldSubscription(node *rclgo.Node, topic_name string, subscriptionCallback PointFieldSubscriptionCallback) (*PointFieldSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg PointField
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, PointFieldTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &PointFieldSubscription{sub}, nil
+}
+
+func (s *PointFieldSubscription) TakeMessage(out *PointField) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // ClonePointFieldSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

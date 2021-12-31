@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -67,6 +68,56 @@ func (t *TwistStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Twist.SetDefaults()
 }
+
+// TwistStampedPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type TwistStampedPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewTwistStampedPublisher creates and returns a new publisher for the
+// TwistStamped
+func NewTwistStampedPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*TwistStampedPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, TwistStampedTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &TwistStampedPublisher{pub}, nil
+}
+
+func (p *TwistStampedPublisher) Publish(msg *TwistStamped) error {
+	return p.Publisher.Publish(msg)
+}
+
+// TwistStampedSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type TwistStampedSubscription struct {
+	*rclgo.Subscription
+}
+
+// TwistStampedSubscriptionCallback type is used to provide a subscription
+// handler function for a TwistStampedSubscription.
+type TwistStampedSubscriptionCallback func(msg *TwistStamped, info *rclgo.RmwMessageInfo, err error)
+
+// NewTwistStampedSubscription creates and returns a new subscription for the
+// TwistStamped
+func NewTwistStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback TwistStampedSubscriptionCallback) (*TwistStampedSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg TwistStamped
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, TwistStampedTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &TwistStampedSubscription{sub}, nil
+}
+
+func (s *TwistStampedSubscription) TakeMessage(out *TwistStamped) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneTwistStampedSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

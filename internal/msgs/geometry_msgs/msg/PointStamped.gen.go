@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -67,6 +68,56 @@ func (t *PointStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Point.SetDefaults()
 }
+
+// PointStampedPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type PointStampedPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewPointStampedPublisher creates and returns a new publisher for the
+// PointStamped
+func NewPointStampedPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*PointStampedPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, PointStampedTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &PointStampedPublisher{pub}, nil
+}
+
+func (p *PointStampedPublisher) Publish(msg *PointStamped) error {
+	return p.Publisher.Publish(msg)
+}
+
+// PointStampedSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type PointStampedSubscription struct {
+	*rclgo.Subscription
+}
+
+// PointStampedSubscriptionCallback type is used to provide a subscription
+// handler function for a PointStampedSubscription.
+type PointStampedSubscriptionCallback func(msg *PointStamped, info *rclgo.RmwMessageInfo, err error)
+
+// NewPointStampedSubscription creates and returns a new subscription for the
+// PointStamped
+func NewPointStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback PointStampedSubscriptionCallback) (*PointStampedSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg PointStamped
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, PointStampedTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &PointStampedSubscription{sub}, nil
+}
+
+func (s *PointStampedSubscription) TakeMessage(out *PointStamped) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // ClonePointStampedSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -70,6 +71,56 @@ func (t *PoseArray) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Poses = nil
 }
+
+// PoseArrayPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type PoseArrayPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewPoseArrayPublisher creates and returns a new publisher for the
+// PoseArray
+func NewPoseArrayPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*PoseArrayPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, PoseArrayTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &PoseArrayPublisher{pub}, nil
+}
+
+func (p *PoseArrayPublisher) Publish(msg *PoseArray) error {
+	return p.Publisher.Publish(msg)
+}
+
+// PoseArraySubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type PoseArraySubscription struct {
+	*rclgo.Subscription
+}
+
+// PoseArraySubscriptionCallback type is used to provide a subscription
+// handler function for a PoseArraySubscription.
+type PoseArraySubscriptionCallback func(msg *PoseArray, info *rclgo.RmwMessageInfo, err error)
+
+// NewPoseArraySubscription creates and returns a new subscription for the
+// PoseArray
+func NewPoseArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback PoseArraySubscriptionCallback) (*PoseArraySubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg PoseArray
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, PoseArrayTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &PoseArraySubscription{sub}, nil
+}
+
+func (s *PoseArraySubscription) TakeMessage(out *PoseArray) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // ClonePoseArraySlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

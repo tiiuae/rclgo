@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -98,6 +99,56 @@ func (t *LaserScan) SetDefaults() {
 	t.Ranges = nil
 	t.Intensities = nil
 }
+
+// LaserScanPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type LaserScanPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewLaserScanPublisher creates and returns a new publisher for the
+// LaserScan
+func NewLaserScanPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*LaserScanPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, LaserScanTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &LaserScanPublisher{pub}, nil
+}
+
+func (p *LaserScanPublisher) Publish(msg *LaserScan) error {
+	return p.Publisher.Publish(msg)
+}
+
+// LaserScanSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type LaserScanSubscription struct {
+	*rclgo.Subscription
+}
+
+// LaserScanSubscriptionCallback type is used to provide a subscription
+// handler function for a LaserScanSubscription.
+type LaserScanSubscriptionCallback func(msg *LaserScan, info *rclgo.RmwMessageInfo, err error)
+
+// NewLaserScanSubscription creates and returns a new subscription for the
+// LaserScan
+func NewLaserScanSubscription(node *rclgo.Node, topic_name string, subscriptionCallback LaserScanSubscriptionCallback) (*LaserScanSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg LaserScan
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, LaserScanTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &LaserScanSubscription{sub}, nil
+}
+
+func (s *LaserScanSubscription) TakeMessage(out *LaserScan) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneLaserScanSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

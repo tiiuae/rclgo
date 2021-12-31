@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -89,6 +90,56 @@ func (t *JointState) SetDefaults() {
 	t.Velocity = nil
 	t.Effort = nil
 }
+
+// JointStatePublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type JointStatePublisher struct {
+	*rclgo.Publisher
+}
+
+// NewJointStatePublisher creates and returns a new publisher for the
+// JointState
+func NewJointStatePublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*JointStatePublisher, error) {
+	pub, err := node.NewPublisher(topic_name, JointStateTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &JointStatePublisher{pub}, nil
+}
+
+func (p *JointStatePublisher) Publish(msg *JointState) error {
+	return p.Publisher.Publish(msg)
+}
+
+// JointStateSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type JointStateSubscription struct {
+	*rclgo.Subscription
+}
+
+// JointStateSubscriptionCallback type is used to provide a subscription
+// handler function for a JointStateSubscription.
+type JointStateSubscriptionCallback func(msg *JointState, info *rclgo.RmwMessageInfo, err error)
+
+// NewJointStateSubscription creates and returns a new subscription for the
+// JointState
+func NewJointStateSubscription(node *rclgo.Node, topic_name string, subscriptionCallback JointStateSubscriptionCallback) (*JointStateSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg JointState
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, JointStateTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &JointStateSubscription{sub}, nil
+}
+
+func (s *JointStateSubscription) TakeMessage(out *JointState) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneJointStateSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

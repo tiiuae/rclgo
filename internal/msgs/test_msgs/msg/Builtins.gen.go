@@ -15,6 +15,7 @@ package test_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	builtin_interfaces_msg "github.com/tiiuae/rclgo/internal/msgs/builtin_interfaces/msg"
@@ -67,6 +68,56 @@ func (t *Builtins) SetDefaults() {
 	t.DurationValue.SetDefaults()
 	t.TimeValue.SetDefaults()
 }
+
+// BuiltinsPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type BuiltinsPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewBuiltinsPublisher creates and returns a new publisher for the
+// Builtins
+func NewBuiltinsPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*BuiltinsPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, BuiltinsTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &BuiltinsPublisher{pub}, nil
+}
+
+func (p *BuiltinsPublisher) Publish(msg *Builtins) error {
+	return p.Publisher.Publish(msg)
+}
+
+// BuiltinsSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type BuiltinsSubscription struct {
+	*rclgo.Subscription
+}
+
+// BuiltinsSubscriptionCallback type is used to provide a subscription
+// handler function for a BuiltinsSubscription.
+type BuiltinsSubscriptionCallback func(msg *Builtins, info *rclgo.RmwMessageInfo, err error)
+
+// NewBuiltinsSubscription creates and returns a new subscription for the
+// Builtins
+func NewBuiltinsSubscription(node *rclgo.Node, topic_name string, subscriptionCallback BuiltinsSubscriptionCallback) (*BuiltinsSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Builtins
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, BuiltinsTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &BuiltinsSubscription{sub}, nil
+}
+
+func (s *BuiltinsSubscription) TakeMessage(out *Builtins) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneBuiltinsSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

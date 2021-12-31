@@ -15,6 +15,7 @@ package test_msgs_srv
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -59,6 +60,56 @@ func (t *Empty_Request) CloneMsg() types.Message {
 
 func (t *Empty_Request) SetDefaults() {
 }
+
+// Empty_RequestPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type Empty_RequestPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewEmpty_RequestPublisher creates and returns a new publisher for the
+// Empty_Request
+func NewEmpty_RequestPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*Empty_RequestPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, Empty_RequestTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &Empty_RequestPublisher{pub}, nil
+}
+
+func (p *Empty_RequestPublisher) Publish(msg *Empty_Request) error {
+	return p.Publisher.Publish(msg)
+}
+
+// Empty_RequestSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type Empty_RequestSubscription struct {
+	*rclgo.Subscription
+}
+
+// Empty_RequestSubscriptionCallback type is used to provide a subscription
+// handler function for a Empty_RequestSubscription.
+type Empty_RequestSubscriptionCallback func(msg *Empty_Request, info *rclgo.RmwMessageInfo, err error)
+
+// NewEmpty_RequestSubscription creates and returns a new subscription for the
+// Empty_Request
+func NewEmpty_RequestSubscription(node *rclgo.Node, topic_name string, subscriptionCallback Empty_RequestSubscriptionCallback) (*Empty_RequestSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Empty_Request
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, Empty_RequestTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &Empty_RequestSubscription{sub}, nil
+}
+
+func (s *Empty_RequestSubscription) TakeMessage(out *Empty_Request) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneEmpty_RequestSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

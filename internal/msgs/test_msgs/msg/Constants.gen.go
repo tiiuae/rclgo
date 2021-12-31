@@ -15,6 +15,7 @@ package test_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -74,6 +75,56 @@ func (t *Constants) CloneMsg() types.Message {
 
 func (t *Constants) SetDefaults() {
 }
+
+// ConstantsPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type ConstantsPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewConstantsPublisher creates and returns a new publisher for the
+// Constants
+func NewConstantsPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*ConstantsPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, ConstantsTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &ConstantsPublisher{pub}, nil
+}
+
+func (p *ConstantsPublisher) Publish(msg *Constants) error {
+	return p.Publisher.Publish(msg)
+}
+
+// ConstantsSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type ConstantsSubscription struct {
+	*rclgo.Subscription
+}
+
+// ConstantsSubscriptionCallback type is used to provide a subscription
+// handler function for a ConstantsSubscription.
+type ConstantsSubscriptionCallback func(msg *Constants, info *rclgo.RmwMessageInfo, err error)
+
+// NewConstantsSubscription creates and returns a new subscription for the
+// Constants
+func NewConstantsSubscription(node *rclgo.Node, topic_name string, subscriptionCallback ConstantsSubscriptionCallback) (*ConstantsSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Constants
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, ConstantsTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &ConstantsSubscription{sub}, nil
+}
+
+func (s *ConstantsSubscription) TakeMessage(out *Constants) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneConstantsSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

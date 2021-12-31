@@ -15,6 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -62,6 +63,56 @@ func (t *Int32) CloneMsg() types.Message {
 func (t *Int32) SetDefaults() {
 	t.Data = 0
 }
+
+// Int32Publisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type Int32Publisher struct {
+	*rclgo.Publisher
+}
+
+// NewInt32Publisher creates and returns a new publisher for the
+// Int32
+func NewInt32Publisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*Int32Publisher, error) {
+	pub, err := node.NewPublisher(topic_name, Int32TypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &Int32Publisher{pub}, nil
+}
+
+func (p *Int32Publisher) Publish(msg *Int32) error {
+	return p.Publisher.Publish(msg)
+}
+
+// Int32Subscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type Int32Subscription struct {
+	*rclgo.Subscription
+}
+
+// Int32SubscriptionCallback type is used to provide a subscription
+// handler function for a Int32Subscription.
+type Int32SubscriptionCallback func(msg *Int32, info *rclgo.RmwMessageInfo, err error)
+
+// NewInt32Subscription creates and returns a new subscription for the
+// Int32
+func NewInt32Subscription(node *rclgo.Node, topic_name string, subscriptionCallback Int32SubscriptionCallback) (*Int32Subscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Int32
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, Int32TypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &Int32Subscription{sub}, nil
+}
+
+func (s *Int32Subscription) TakeMessage(out *Int32) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneInt32Slice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

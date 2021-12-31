@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	geometry_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/geometry_msgs/msg"
@@ -78,6 +79,56 @@ func (t *PointCloud) SetDefaults() {
 	t.Points = nil
 	t.Channels = nil
 }
+
+// PointCloudPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type PointCloudPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewPointCloudPublisher creates and returns a new publisher for the
+// PointCloud
+func NewPointCloudPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*PointCloudPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, PointCloudTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &PointCloudPublisher{pub}, nil
+}
+
+func (p *PointCloudPublisher) Publish(msg *PointCloud) error {
+	return p.Publisher.Publish(msg)
+}
+
+// PointCloudSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type PointCloudSubscription struct {
+	*rclgo.Subscription
+}
+
+// PointCloudSubscriptionCallback type is used to provide a subscription
+// handler function for a PointCloudSubscription.
+type PointCloudSubscriptionCallback func(msg *PointCloud, info *rclgo.RmwMessageInfo, err error)
+
+// NewPointCloudSubscription creates and returns a new subscription for the
+// PointCloud
+func NewPointCloudSubscription(node *rclgo.Node, topic_name string, subscriptionCallback PointCloudSubscriptionCallback) (*PointCloudSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg PointCloud
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, PointCloudTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &PointCloudSubscription{sub}, nil
+}
+
+func (s *PointCloudSubscription) TakeMessage(out *PointCloud) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // ClonePointCloudSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

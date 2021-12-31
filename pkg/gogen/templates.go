@@ -24,8 +24,9 @@ var templateFuncMap template.FuncMap = template.FuncMap{
 	"cloneCode":             cloneCode,
 }
 
-var ros2MsgToGolangTypeTemplate = template.Must(template.New("ros2MsgToGolangTypeTemplate").Funcs(templateFuncMap).Parse(
-	`/*{{ $Md := .Message }}
+var ros2MsgToGolangTypeTemplate = template.Must(
+	template.New("ros2MsgToGolangTypeTemplate").Funcs(templateFuncMap).Parse(
+		`/*{{ $Md := .Message }}
 This file is part of rclgo
 
 Copyright © 2021 Technology Innovation Institute, United Arab Emirates
@@ -42,6 +43,7 @@ package {{ $Md.GoPackage }}
 import (
 	"unsafe"
 
+	"{{.Config.RclgoImportPath}}/pkg/rclgo"
 	"{{.Config.RclgoImportPath}}/pkg/rclgo/types"
 	"{{.Config.RclgoImportPath}}/pkg/rclgo/typemap"
 	{{range $path, $name := $Md.GoImports -}}
@@ -83,7 +85,7 @@ const (
 type {{$Md.Name}} struct {
 	{{- range $k, $v := $Md.Fields }}
 	{{$v.GoName }} {{$v.TypeArray}}{{$v.GoPkgReference}}{{$v.GoType}}` +
-		"{{\"\"}} `yaml:\"{{$v.RosName}}\"`" + `{{if .Comment -}} // {{.Comment}}{{- end}}
+			"{{\"\"}} `yaml:\"{{$v.RosName}}\"`" + `{{if .Comment -}} // {{.Comment}}{{- end}}
 	{{- end }}
 }
 
@@ -111,6 +113,56 @@ func (t *{{$Md.Name}}) SetDefaults() {
 	{{defaultCode $v}}
 	{{- end }}
 }
+
+// {{$Md.Name}}Publisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type {{$Md.Name}}Publisher struct {
+	*rclgo.Publisher
+}
+
+// New{{$Md.Name}}Publisher creates and returns a new publisher for the
+// {{$Md.Name}}
+func New{{$Md.Name}}Publisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*{{$Md.Name}}Publisher, error) {
+	pub, err := node.NewPublisher(topic_name, {{$Md.Name}}TypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &{{$Md.Name}}Publisher{pub}, nil
+}
+
+func (p *{{$Md.Name}}Publisher) Publish(msg *{{$Md.Name}}) error {
+	return p.Publisher.Publish(msg)
+}
+
+// {{$Md.Name}}Subscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type {{$Md.Name}}Subscription struct {
+	*rclgo.Subscription
+}
+
+// {{$Md.Name}}SubscriptionCallback type is used to provide a subscription
+// handler function for a {{$Md.Name}}Subscription.
+type {{$Md.Name}}SubscriptionCallback func(msg *{{$Md.Name}}, info *rclgo.RmwMessageInfo, err error)
+
+// New{{$Md.Name}}Subscription creates and returns a new subscription for the
+// {{$Md.Name}}
+func New{{$Md.Name}}Subscription(node *rclgo.Node, topic_name string, subscriptionCallback {{$Md.Name}}SubscriptionCallback) (*{{$Md.Name}}Subscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg {{$Md.Name}}
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, {{$Md.Name}}TypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &{{$Md.Name}}Subscription{sub}, nil
+}
+
+func (s *{{$Md.Name}}Subscription) TakeMessage(out *{{$Md.Name}}) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // Clone{{$Md.Name}}Slice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
@@ -201,10 +253,14 @@ func {{$Md.Name}}__Array_to_C(cSlice []C{{$Md.Name}}, goSlice []{{$Md.Name}}) {
 		{{$Md.Name}}TypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }
-`))
+`),
+)
 
-var ros2ServiceToGolangTypeTemplate = template.Must(template.New("ros2ServiceToGolangTypeTemplate").Funcs(templateFuncMap).Parse(
-	`/*
+var ros2ServiceToGolangTypeTemplate = template.Must(
+	template.New("ros2ServiceToGolangTypeTemplate").
+		Funcs(templateFuncMap).
+		Parse(
+			`/*
 This file is part of rclgo
 
 Copyright © 2021 Technology Innovation Institute, United Arab Emirates
@@ -230,10 +286,13 @@ package {{ .Service.GoPackage }}
 import "C"
 
 import (
+	"context"
+	"errors"
+	"unsafe"
+
+	"{{.Config.RclgoImportPath}}/pkg/rclgo"
 	"{{.Config.RclgoImportPath}}/pkg/rclgo/typemap"
 	"{{.Config.RclgoImportPath}}/pkg/rclgo/types"
-
-	"unsafe"
 )
 
 func init() {
@@ -256,10 +315,72 @@ func (s _{{.Service.Name}}TypeSupport) TypeSupport() unsafe.Pointer {
 
 // Modifying this variable is undefined behavior.
 var {{ .Service.Name }}TypeSupport types.ServiceTypeSupport = _{{.Service.Name}}TypeSupport{}
-`))
 
-var primitiveTypes = template.Must(template.New("primitiveTypes").Funcs(templateFuncMap).Parse(
-	`/*
+// {{.Service.Name}}Client wraps rclgo.Client to provide type safe helper
+// functions
+type {{.Service.Name}}Client struct {
+	*rclgo.Client
+}
+
+// New{{.Service.Name}}Client creates and returns a new client for the
+// {{.Service.Name}}
+func New{{.Service.Name}}Client(node *rclgo.Node, serviceName string, options *rclgo.ClientOptions) (*{{.Service.Name}}Client, error) {
+	client, err := node.NewClient(serviceName, {{.Service.Name}}TypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &{{.Service.Name}}Client{client}, nil
+}
+
+func (s *{{.Service.Name}}Client) Send(ctx context.Context, req *{{.Service.Request.Name}}) (*{{.Service.Response.Name}}, *rclgo.RmwServiceInfo, error) {
+	msg, rmw, err := s.Client.Send(ctx, req)
+	if err != nil {
+		return nil, rmw, err
+	}
+	typedMessage, ok := msg.(*{{.Service.Response.Name}})
+	if !ok {
+		return nil, rmw, errors.New("invalid message type returned")
+	}
+	return typedMessage, rmw, err
+}
+
+type {{.Service.Name}}ServiceResponseSender struct {
+	sender rclgo.ServiceResponseSender
+}
+
+func (s {{.Service.Name}}ServiceResponseSender) SendResponse(resp *{{.Service.Response.Name}}) error {
+	return s.sender.SendResponse(resp)
+}
+
+type {{.Service.Name}}ServiceRequestHandler func(*rclgo.RmwServiceInfo, *{{.Service.Request.Name}}, {{.Service.Name}}ServiceResponseSender)
+
+// {{.Service.Name}}Service wraps rclgo.Service to provide type safe helper
+// functions
+type {{.Service.Name}}Service struct {
+	*rclgo.Service
+}
+
+// New{{.Service.Name}}Service creates and returns a new service for the
+// {{.Service.Name}}
+func New{{.Service.Name}}Service(node *rclgo.Node, name string, options *rclgo.ServiceOptions, handler {{.Service.Name}}ServiceRequestHandler) (*{{.Service.Name}}Service, error) {
+	h := func(rmw *rclgo.RmwServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
+		m := msg.(*{{.Service.Request.Name}})
+		responseSender := {{.Service.Name}}ServiceResponseSender{sender: rs} 
+		handler(rmw, m, responseSender)
+	}
+	service, err := node.NewService(name, {{.Service.Name}}TypeSupport, options, h)
+	if err != nil {
+		return nil, err
+	}
+	return &{{.Service.Name}}Service{service}, nil
+}
+
+`),
+)
+
+var primitiveTypes = template.Must(
+	template.New("primitiveTypes").Funcs(templateFuncMap).Parse(
+		`/*
 This file is part of rclgo
 
 Copyright © 2021 Technology Innovation Institute, United Arab Emirates
@@ -330,10 +451,12 @@ func {{.RosType | ucFirst}}__Array_to_C(cSlice []C{{.RosType | ucFirst}}, goSlic
 	}
 }
 {{- end}}{{- end}}
-`))
+`),
+)
 
-var ros2MsgImportAllPackage = template.Must(template.New("ros2MsgToGolangTypeTemplate").Funcs(templateFuncMap).Parse(
-	`/*
+var ros2MsgImportAllPackage = template.Must(
+	template.New("ros2MsgToGolangTypeTemplate").Funcs(templateFuncMap).Parse(
+		`/*
 This file is part of rclgo
 
 Copyright © 2021 Technology Innovation Institute, United Arab Emirates
@@ -353,10 +476,12 @@ import (
 	_ "{{$.Config.MessageModulePrefix}}/{{$import}}" //
 	{{- end }}
 )
-`))
+`),
+)
 
-var ros2ErrorCodes = template.Must(template.New("ros2ErrorCodes").Funcs(templateFuncMap).Parse(
-	`/*{{ $P := . }}
+var ros2ErrorCodes = template.Must(
+	template.New("ros2ErrorCodes").Funcs(templateFuncMap).Parse(
+		`/*{{ $P := . }}
 This file is part of rclgo
 
 Copyright © 2021 Technology Innovation Institute, United Arab Emirates
@@ -418,4 +543,5 @@ type {{$e.Name|cReturnCodeNameToGo}} = {{$e.Reference|cReturnCodeNameToGo}}
 {{""}}
 {{- end}}{{- end}}
 
-`))
+`),
+)

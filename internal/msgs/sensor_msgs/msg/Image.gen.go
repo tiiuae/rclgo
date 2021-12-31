@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -86,6 +87,56 @@ func (t *Image) SetDefaults() {
 	t.Step = 0
 	t.Data = nil
 }
+
+// ImagePublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type ImagePublisher struct {
+	*rclgo.Publisher
+}
+
+// NewImagePublisher creates and returns a new publisher for the
+// Image
+func NewImagePublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*ImagePublisher, error) {
+	pub, err := node.NewPublisher(topic_name, ImageTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &ImagePublisher{pub}, nil
+}
+
+func (p *ImagePublisher) Publish(msg *Image) error {
+	return p.Publisher.Publish(msg)
+}
+
+// ImageSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type ImageSubscription struct {
+	*rclgo.Subscription
+}
+
+// ImageSubscriptionCallback type is used to provide a subscription
+// handler function for a ImageSubscription.
+type ImageSubscriptionCallback func(msg *Image, info *rclgo.RmwMessageInfo, err error)
+
+// NewImageSubscription creates and returns a new subscription for the
+// Image
+func NewImageSubscription(node *rclgo.Node, topic_name string, subscriptionCallback ImageSubscriptionCallback) (*ImageSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Image
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, ImageTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &ImageSubscription{sub}, nil
+}
+
+func (s *ImageSubscription) TakeMessage(out *Image) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneImageSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

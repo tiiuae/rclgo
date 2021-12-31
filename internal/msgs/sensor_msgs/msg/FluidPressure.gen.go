@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -70,6 +71,56 @@ func (t *FluidPressure) SetDefaults() {
 	t.FluidPressure = 0
 	t.Variance = 0
 }
+
+// FluidPressurePublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type FluidPressurePublisher struct {
+	*rclgo.Publisher
+}
+
+// NewFluidPressurePublisher creates and returns a new publisher for the
+// FluidPressure
+func NewFluidPressurePublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*FluidPressurePublisher, error) {
+	pub, err := node.NewPublisher(topic_name, FluidPressureTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &FluidPressurePublisher{pub}, nil
+}
+
+func (p *FluidPressurePublisher) Publish(msg *FluidPressure) error {
+	return p.Publisher.Publish(msg)
+}
+
+// FluidPressureSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type FluidPressureSubscription struct {
+	*rclgo.Subscription
+}
+
+// FluidPressureSubscriptionCallback type is used to provide a subscription
+// handler function for a FluidPressureSubscription.
+type FluidPressureSubscriptionCallback func(msg *FluidPressure, info *rclgo.RmwMessageInfo, err error)
+
+// NewFluidPressureSubscription creates and returns a new subscription for the
+// FluidPressure
+func NewFluidPressureSubscription(node *rclgo.Node, topic_name string, subscriptionCallback FluidPressureSubscriptionCallback) (*FluidPressureSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg FluidPressure
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, FluidPressureTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &FluidPressureSubscription{sub}, nil
+}
+
+func (s *FluidPressureSubscription) TakeMessage(out *FluidPressure) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneFluidPressureSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

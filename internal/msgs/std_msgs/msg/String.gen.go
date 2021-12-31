@@ -15,6 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	primitives "github.com/tiiuae/rclgo/pkg/rclgo/primitives"
@@ -63,6 +64,56 @@ func (t *String) CloneMsg() types.Message {
 func (t *String) SetDefaults() {
 	t.Data = ""
 }
+
+// StringPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type StringPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewStringPublisher creates and returns a new publisher for the
+// String
+func NewStringPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*StringPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, StringTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &StringPublisher{pub}, nil
+}
+
+func (p *StringPublisher) Publish(msg *String) error {
+	return p.Publisher.Publish(msg)
+}
+
+// StringSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type StringSubscription struct {
+	*rclgo.Subscription
+}
+
+// StringSubscriptionCallback type is used to provide a subscription
+// handler function for a StringSubscription.
+type StringSubscriptionCallback func(msg *String, info *rclgo.RmwMessageInfo, err error)
+
+// NewStringSubscription creates and returns a new subscription for the
+// String
+func NewStringSubscription(node *rclgo.Node, topic_name string, subscriptionCallback StringSubscriptionCallback) (*StringSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg String
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, StringTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &StringSubscription{sub}, nil
+}
+
+func (s *StringSubscription) TakeMessage(out *String) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneStringSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

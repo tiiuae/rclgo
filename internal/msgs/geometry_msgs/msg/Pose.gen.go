@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -65,6 +66,56 @@ func (t *Pose) SetDefaults() {
 	t.Position.SetDefaults()
 	t.Orientation.SetDefaults()
 }
+
+// PosePublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type PosePublisher struct {
+	*rclgo.Publisher
+}
+
+// NewPosePublisher creates and returns a new publisher for the
+// Pose
+func NewPosePublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*PosePublisher, error) {
+	pub, err := node.NewPublisher(topic_name, PoseTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &PosePublisher{pub}, nil
+}
+
+func (p *PosePublisher) Publish(msg *Pose) error {
+	return p.Publisher.Publish(msg)
+}
+
+// PoseSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type PoseSubscription struct {
+	*rclgo.Subscription
+}
+
+// PoseSubscriptionCallback type is used to provide a subscription
+// handler function for a PoseSubscription.
+type PoseSubscriptionCallback func(msg *Pose, info *rclgo.RmwMessageInfo, err error)
+
+// NewPoseSubscription creates and returns a new subscription for the
+// Pose
+func NewPoseSubscription(node *rclgo.Node, topic_name string, subscriptionCallback PoseSubscriptionCallback) (*PoseSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Pose
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, PoseTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &PoseSubscription{sub}, nil
+}
+
+func (s *PoseSubscription) TakeMessage(out *Pose) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // ClonePoseSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

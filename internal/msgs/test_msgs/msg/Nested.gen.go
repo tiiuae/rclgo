@@ -15,6 +15,7 @@ package test_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -62,6 +63,56 @@ func (t *Nested) CloneMsg() types.Message {
 func (t *Nested) SetDefaults() {
 	t.BasicTypesValue.SetDefaults()
 }
+
+// NestedPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type NestedPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewNestedPublisher creates and returns a new publisher for the
+// Nested
+func NewNestedPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*NestedPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, NestedTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &NestedPublisher{pub}, nil
+}
+
+func (p *NestedPublisher) Publish(msg *Nested) error {
+	return p.Publisher.Publish(msg)
+}
+
+// NestedSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type NestedSubscription struct {
+	*rclgo.Subscription
+}
+
+// NestedSubscriptionCallback type is used to provide a subscription
+// handler function for a NestedSubscription.
+type NestedSubscriptionCallback func(msg *Nested, info *rclgo.RmwMessageInfo, err error)
+
+// NewNestedSubscription creates and returns a new subscription for the
+// Nested
+func NewNestedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback NestedSubscriptionCallback) (*NestedSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Nested
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, NestedTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &NestedSubscription{sub}, nil
+}
+
+func (s *NestedSubscription) TakeMessage(out *Nested) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneNestedSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

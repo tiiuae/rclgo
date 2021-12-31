@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -89,6 +90,56 @@ func (t *NavSatFix) SetDefaults() {
 	t.PositionCovariance = [9]float64{}
 	t.PositionCovarianceType = 0
 }
+
+// NavSatFixPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type NavSatFixPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewNavSatFixPublisher creates and returns a new publisher for the
+// NavSatFix
+func NewNavSatFixPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*NavSatFixPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, NavSatFixTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &NavSatFixPublisher{pub}, nil
+}
+
+func (p *NavSatFixPublisher) Publish(msg *NavSatFix) error {
+	return p.Publisher.Publish(msg)
+}
+
+// NavSatFixSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type NavSatFixSubscription struct {
+	*rclgo.Subscription
+}
+
+// NavSatFixSubscriptionCallback type is used to provide a subscription
+// handler function for a NavSatFixSubscription.
+type NavSatFixSubscriptionCallback func(msg *NavSatFix, info *rclgo.RmwMessageInfo, err error)
+
+// NewNavSatFixSubscription creates and returns a new subscription for the
+// NavSatFix
+func NewNavSatFixSubscription(node *rclgo.Node, topic_name string, subscriptionCallback NavSatFixSubscriptionCallback) (*NavSatFixSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg NavSatFix
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, NavSatFixTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &NavSatFixSubscription{sub}, nil
+}
+
+func (s *NavSatFixSubscription) TakeMessage(out *NavSatFix) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneNavSatFixSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

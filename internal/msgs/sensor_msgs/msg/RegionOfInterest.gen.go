@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -74,6 +75,56 @@ func (t *RegionOfInterest) SetDefaults() {
 	t.Width = 0
 	t.DoRectify = false
 }
+
+// RegionOfInterestPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type RegionOfInterestPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewRegionOfInterestPublisher creates and returns a new publisher for the
+// RegionOfInterest
+func NewRegionOfInterestPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*RegionOfInterestPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, RegionOfInterestTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &RegionOfInterestPublisher{pub}, nil
+}
+
+func (p *RegionOfInterestPublisher) Publish(msg *RegionOfInterest) error {
+	return p.Publisher.Publish(msg)
+}
+
+// RegionOfInterestSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type RegionOfInterestSubscription struct {
+	*rclgo.Subscription
+}
+
+// RegionOfInterestSubscriptionCallback type is used to provide a subscription
+// handler function for a RegionOfInterestSubscription.
+type RegionOfInterestSubscriptionCallback func(msg *RegionOfInterest, info *rclgo.RmwMessageInfo, err error)
+
+// NewRegionOfInterestSubscription creates and returns a new subscription for the
+// RegionOfInterest
+func NewRegionOfInterestSubscription(node *rclgo.Node, topic_name string, subscriptionCallback RegionOfInterestSubscriptionCallback) (*RegionOfInterestSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg RegionOfInterest
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, RegionOfInterestTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &RegionOfInterestSubscription{sub}, nil
+}
+
+func (s *RegionOfInterestSubscription) TakeMessage(out *RegionOfInterest) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneRegionOfInterestSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

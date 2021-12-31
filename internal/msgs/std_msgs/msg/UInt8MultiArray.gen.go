@@ -15,6 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	primitives "github.com/tiiuae/rclgo/pkg/rclgo/primitives"
@@ -69,6 +70,56 @@ func (t *UInt8MultiArray) SetDefaults() {
 	t.Layout.SetDefaults()
 	t.Data = nil
 }
+
+// UInt8MultiArrayPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type UInt8MultiArrayPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewUInt8MultiArrayPublisher creates and returns a new publisher for the
+// UInt8MultiArray
+func NewUInt8MultiArrayPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*UInt8MultiArrayPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, UInt8MultiArrayTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &UInt8MultiArrayPublisher{pub}, nil
+}
+
+func (p *UInt8MultiArrayPublisher) Publish(msg *UInt8MultiArray) error {
+	return p.Publisher.Publish(msg)
+}
+
+// UInt8MultiArraySubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type UInt8MultiArraySubscription struct {
+	*rclgo.Subscription
+}
+
+// UInt8MultiArraySubscriptionCallback type is used to provide a subscription
+// handler function for a UInt8MultiArraySubscription.
+type UInt8MultiArraySubscriptionCallback func(msg *UInt8MultiArray, info *rclgo.RmwMessageInfo, err error)
+
+// NewUInt8MultiArraySubscription creates and returns a new subscription for the
+// UInt8MultiArray
+func NewUInt8MultiArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback UInt8MultiArraySubscriptionCallback) (*UInt8MultiArraySubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg UInt8MultiArray
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, UInt8MultiArrayTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &UInt8MultiArraySubscription{sub}, nil
+}
+
+func (s *UInt8MultiArraySubscription) TakeMessage(out *UInt8MultiArray) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneUInt8MultiArraySlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

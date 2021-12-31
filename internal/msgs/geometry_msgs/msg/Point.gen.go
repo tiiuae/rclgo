@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -68,6 +69,56 @@ func (t *Point) SetDefaults() {
 	t.Y = 0
 	t.Z = 0
 }
+
+// PointPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type PointPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewPointPublisher creates and returns a new publisher for the
+// Point
+func NewPointPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*PointPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, PointTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &PointPublisher{pub}, nil
+}
+
+func (p *PointPublisher) Publish(msg *Point) error {
+	return p.Publisher.Publish(msg)
+}
+
+// PointSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type PointSubscription struct {
+	*rclgo.Subscription
+}
+
+// PointSubscriptionCallback type is used to provide a subscription
+// handler function for a PointSubscription.
+type PointSubscriptionCallback func(msg *Point, info *rclgo.RmwMessageInfo, err error)
+
+// NewPointSubscription creates and returns a new subscription for the
+// Point
+func NewPointSubscription(node *rclgo.Node, topic_name string, subscriptionCallback PointSubscriptionCallback) (*PointSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Point
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, PointTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &PointSubscription{sub}, nil
+}
+
+func (s *PointSubscription) TakeMessage(out *Point) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // ClonePointSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

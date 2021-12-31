@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	primitives "github.com/tiiuae/rclgo/pkg/rclgo/primitives"
@@ -66,6 +67,56 @@ func (t *TwistWithCovariance) SetDefaults() {
 	t.Twist.SetDefaults()
 	t.Covariance = [36]float64{}
 }
+
+// TwistWithCovariancePublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type TwistWithCovariancePublisher struct {
+	*rclgo.Publisher
+}
+
+// NewTwistWithCovariancePublisher creates and returns a new publisher for the
+// TwistWithCovariance
+func NewTwistWithCovariancePublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*TwistWithCovariancePublisher, error) {
+	pub, err := node.NewPublisher(topic_name, TwistWithCovarianceTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &TwistWithCovariancePublisher{pub}, nil
+}
+
+func (p *TwistWithCovariancePublisher) Publish(msg *TwistWithCovariance) error {
+	return p.Publisher.Publish(msg)
+}
+
+// TwistWithCovarianceSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type TwistWithCovarianceSubscription struct {
+	*rclgo.Subscription
+}
+
+// TwistWithCovarianceSubscriptionCallback type is used to provide a subscription
+// handler function for a TwistWithCovarianceSubscription.
+type TwistWithCovarianceSubscriptionCallback func(msg *TwistWithCovariance, info *rclgo.RmwMessageInfo, err error)
+
+// NewTwistWithCovarianceSubscription creates and returns a new subscription for the
+// TwistWithCovariance
+func NewTwistWithCovarianceSubscription(node *rclgo.Node, topic_name string, subscriptionCallback TwistWithCovarianceSubscriptionCallback) (*TwistWithCovarianceSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg TwistWithCovariance
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, TwistWithCovarianceTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &TwistWithCovarianceSubscription{sub}, nil
+}
+
+func (s *TwistWithCovarianceSubscription) TakeMessage(out *TwistWithCovariance) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneTwistWithCovarianceSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

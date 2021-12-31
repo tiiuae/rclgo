@@ -15,6 +15,7 @@ package example_interfaces_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -62,6 +63,56 @@ func (t *Float64) CloneMsg() types.Message {
 func (t *Float64) SetDefaults() {
 	t.Data = 0
 }
+
+// Float64Publisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type Float64Publisher struct {
+	*rclgo.Publisher
+}
+
+// NewFloat64Publisher creates and returns a new publisher for the
+// Float64
+func NewFloat64Publisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*Float64Publisher, error) {
+	pub, err := node.NewPublisher(topic_name, Float64TypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &Float64Publisher{pub}, nil
+}
+
+func (p *Float64Publisher) Publish(msg *Float64) error {
+	return p.Publisher.Publish(msg)
+}
+
+// Float64Subscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type Float64Subscription struct {
+	*rclgo.Subscription
+}
+
+// Float64SubscriptionCallback type is used to provide a subscription
+// handler function for a Float64Subscription.
+type Float64SubscriptionCallback func(msg *Float64, info *rclgo.RmwMessageInfo, err error)
+
+// NewFloat64Subscription creates and returns a new subscription for the
+// Float64
+func NewFloat64Subscription(node *rclgo.Node, topic_name string, subscriptionCallback Float64SubscriptionCallback) (*Float64Subscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Float64
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, Float64TypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &Float64Subscription{sub}, nil
+}
+
+func (s *Float64Subscription) TakeMessage(out *Float64) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneFloat64Slice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -65,6 +66,56 @@ func (t *Wrench) SetDefaults() {
 	t.Force.SetDefaults()
 	t.Torque.SetDefaults()
 }
+
+// WrenchPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type WrenchPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewWrenchPublisher creates and returns a new publisher for the
+// Wrench
+func NewWrenchPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*WrenchPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, WrenchTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &WrenchPublisher{pub}, nil
+}
+
+func (p *WrenchPublisher) Publish(msg *Wrench) error {
+	return p.Publisher.Publish(msg)
+}
+
+// WrenchSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type WrenchSubscription struct {
+	*rclgo.Subscription
+}
+
+// WrenchSubscriptionCallback type is used to provide a subscription
+// handler function for a WrenchSubscription.
+type WrenchSubscriptionCallback func(msg *Wrench, info *rclgo.RmwMessageInfo, err error)
+
+// NewWrenchSubscription creates and returns a new subscription for the
+// Wrench
+func NewWrenchSubscription(node *rclgo.Node, topic_name string, subscriptionCallback WrenchSubscriptionCallback) (*WrenchSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Wrench
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, WrenchTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &WrenchSubscription{sub}, nil
+}
+
+func (s *WrenchSubscription) TakeMessage(out *Wrench) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneWrenchSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

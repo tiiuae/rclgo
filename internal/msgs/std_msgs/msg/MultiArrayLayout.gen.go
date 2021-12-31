@@ -15,6 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -68,6 +69,56 @@ func (t *MultiArrayLayout) SetDefaults() {
 	t.Dim = nil
 	t.DataOffset = 0
 }
+
+// MultiArrayLayoutPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type MultiArrayLayoutPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewMultiArrayLayoutPublisher creates and returns a new publisher for the
+// MultiArrayLayout
+func NewMultiArrayLayoutPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*MultiArrayLayoutPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, MultiArrayLayoutTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &MultiArrayLayoutPublisher{pub}, nil
+}
+
+func (p *MultiArrayLayoutPublisher) Publish(msg *MultiArrayLayout) error {
+	return p.Publisher.Publish(msg)
+}
+
+// MultiArrayLayoutSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type MultiArrayLayoutSubscription struct {
+	*rclgo.Subscription
+}
+
+// MultiArrayLayoutSubscriptionCallback type is used to provide a subscription
+// handler function for a MultiArrayLayoutSubscription.
+type MultiArrayLayoutSubscriptionCallback func(msg *MultiArrayLayout, info *rclgo.RmwMessageInfo, err error)
+
+// NewMultiArrayLayoutSubscription creates and returns a new subscription for the
+// MultiArrayLayout
+func NewMultiArrayLayoutSubscription(node *rclgo.Node, topic_name string, subscriptionCallback MultiArrayLayoutSubscriptionCallback) (*MultiArrayLayoutSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg MultiArrayLayout
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, MultiArrayLayoutTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &MultiArrayLayoutSubscription{sub}, nil
+}
+
+func (s *MultiArrayLayoutSubscription) TakeMessage(out *MultiArrayLayout) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneMultiArrayLayoutSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

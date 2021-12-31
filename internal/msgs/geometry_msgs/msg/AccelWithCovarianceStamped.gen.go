@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -67,6 +68,56 @@ func (t *AccelWithCovarianceStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Accel.SetDefaults()
 }
+
+// AccelWithCovarianceStampedPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type AccelWithCovarianceStampedPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewAccelWithCovarianceStampedPublisher creates and returns a new publisher for the
+// AccelWithCovarianceStamped
+func NewAccelWithCovarianceStampedPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*AccelWithCovarianceStampedPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, AccelWithCovarianceStampedTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &AccelWithCovarianceStampedPublisher{pub}, nil
+}
+
+func (p *AccelWithCovarianceStampedPublisher) Publish(msg *AccelWithCovarianceStamped) error {
+	return p.Publisher.Publish(msg)
+}
+
+// AccelWithCovarianceStampedSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type AccelWithCovarianceStampedSubscription struct {
+	*rclgo.Subscription
+}
+
+// AccelWithCovarianceStampedSubscriptionCallback type is used to provide a subscription
+// handler function for a AccelWithCovarianceStampedSubscription.
+type AccelWithCovarianceStampedSubscriptionCallback func(msg *AccelWithCovarianceStamped, info *rclgo.RmwMessageInfo, err error)
+
+// NewAccelWithCovarianceStampedSubscription creates and returns a new subscription for the
+// AccelWithCovarianceStamped
+func NewAccelWithCovarianceStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback AccelWithCovarianceStampedSubscriptionCallback) (*AccelWithCovarianceStampedSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg AccelWithCovarianceStamped
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, AccelWithCovarianceStampedTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &AccelWithCovarianceStampedSubscription{sub}, nil
+}
+
+func (s *AccelWithCovarianceStampedSubscription) TakeMessage(out *AccelWithCovarianceStamped) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneAccelWithCovarianceStampedSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

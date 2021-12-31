@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -67,6 +68,56 @@ func (t *QuaternionStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Quaternion.SetDefaults()
 }
+
+// QuaternionStampedPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type QuaternionStampedPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewQuaternionStampedPublisher creates and returns a new publisher for the
+// QuaternionStamped
+func NewQuaternionStampedPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*QuaternionStampedPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, QuaternionStampedTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &QuaternionStampedPublisher{pub}, nil
+}
+
+func (p *QuaternionStampedPublisher) Publish(msg *QuaternionStamped) error {
+	return p.Publisher.Publish(msg)
+}
+
+// QuaternionStampedSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type QuaternionStampedSubscription struct {
+	*rclgo.Subscription
+}
+
+// QuaternionStampedSubscriptionCallback type is used to provide a subscription
+// handler function for a QuaternionStampedSubscription.
+type QuaternionStampedSubscriptionCallback func(msg *QuaternionStamped, info *rclgo.RmwMessageInfo, err error)
+
+// NewQuaternionStampedSubscription creates and returns a new subscription for the
+// QuaternionStamped
+func NewQuaternionStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback QuaternionStampedSubscriptionCallback) (*QuaternionStampedSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg QuaternionStamped
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, QuaternionStampedTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &QuaternionStampedSubscription{sub}, nil
+}
+
+func (s *QuaternionStampedSubscription) TakeMessage(out *QuaternionStamped) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneQuaternionStampedSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

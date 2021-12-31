@@ -1,4 +1,4 @@
-package rclgo
+package rclgo_test
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 
 	. "github.com/smartystreets/goconvey/convey"
 	example_interfaces_srv "github.com/tiiuae/rclgo/internal/msgs/example_interfaces/srv"
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 )
 
@@ -15,26 +16,29 @@ func TestServiceAndClient(t *testing.T) {
 	type testSendResult struct {
 		req  types.Message
 		resp types.Message
-		info *RmwServiceInfo
+		info *rclgo.RmwServiceInfo
 		err  error
 		sum  int64
 	}
 	var (
-		serviceCtx, clientCtx *Context
-		client                *Client
+		serviceCtx, clientCtx *rclgo.Context
+		client                *rclgo.Client
 		err                   error
 
 		spinCtx, cancelSpin = context.WithCancel(context.Background())
 		spinErrs            = make(chan error, 2)
 
-		requestReceivedChan = make(chan *example_interfaces_srv.AddTwoInts_Request, 1)
+		requestReceivedChan = make(
+			chan *example_interfaces_srv.AddTwoInts_Request,
+			1,
+		)
 		responseSentErrChan = make(chan error, 1)
 
 		randGen = rand.NewSource(42)
 
-		qosProfile = NewRmwQosProfileServicesDefault()
+		qosProfile = rclgo.NewRmwQosProfileServicesDefault()
 	)
-	qosProfile.History = RmwQosHistoryPolicyKeepAll
+	qosProfile.History = rclgo.RmwQosHistoryPolicyKeepAll
 	sendReq := func(a, b int64) *testSendResult {
 		req := example_interfaces_srv.NewAddTwoInts_Request()
 		req.A = a
@@ -61,8 +65,8 @@ func TestServiceAndClient(t *testing.T) {
 			_, err = node.NewService(
 				"add",
 				example_interfaces_srv.AddTwoIntsTypeSupport,
-				&ServiceOptions{Qos: qosProfile},
-				func(rsi *RmwServiceInfo, rm types.Message, srs ServiceResponseSender) {
+				&rclgo.ServiceOptions{Qos: qosProfile},
+				func(rsi *rclgo.RmwServiceInfo, rm types.Message, srs rclgo.ServiceResponseSender) {
 					req := rm.(*example_interfaces_srv.AddTwoInts_Request)
 					requestReceivedChan <- req
 					resp := example_interfaces_srv.NewAddTwoInts_Response()
@@ -81,7 +85,7 @@ func TestServiceAndClient(t *testing.T) {
 			client, err = node.NewClient(
 				"add",
 				example_interfaces_srv.AddTwoIntsTypeSupport,
-				&ClientOptions{Qos: qosProfile},
+				&rclgo.ClientOptions{Qos: qosProfile},
 			)
 			So(err, ShouldBeNil)
 			go func() { spinErrs <- clientCtx.Spin(spinCtx) }()
@@ -93,7 +97,11 @@ func TestServiceAndClient(t *testing.T) {
 
 			So(result.err, ShouldBeNil)
 			So(result.info, ShouldNotBeNil)
-			So(result.resp.(*example_interfaces_srv.AddTwoInts_Response).Sum, ShouldEqual, -4)
+			So(
+				result.resp.(*example_interfaces_srv.AddTwoInts_Response).Sum,
+				ShouldEqual,
+				-4,
+			)
 
 			So(<-requestReceivedChan, ShouldResemble, result.req)
 			So(<-responseSentErrChan, ShouldBeNil)
@@ -101,7 +109,10 @@ func TestServiceAndClient(t *testing.T) {
 		Convey("The client sends many requests in quick succession", func() {
 			const reqCount = 100
 			testResults := make(chan *testSendResult, reqCount)
-			requestReceivedChan = make(chan *example_interfaces_srv.AddTwoInts_Request, reqCount)
+			requestReceivedChan = make(
+				chan *example_interfaces_srv.AddTwoInts_Request,
+				reqCount,
+			)
 			responseSentErrChan = make(chan error, reqCount)
 			for i := 0; i < reqCount; i++ {
 				a, b := randGen.Int63(), randGen.Int63()
@@ -112,7 +123,11 @@ func TestServiceAndClient(t *testing.T) {
 				So(res, ShouldNotBeNil)
 				So(res.err, ShouldBeNil)
 				So(res.info, ShouldNotBeNil)
-				So(res.resp.(*example_interfaces_srv.AddTwoInts_Response).Sum, ShouldEqual, res.sum)
+				So(
+					res.resp.(*example_interfaces_srv.AddTwoInts_Response).Sum,
+					ShouldEqual,
+					res.sum,
+				)
 			}
 		})
 		Convey("The service and client are stopped", func() {

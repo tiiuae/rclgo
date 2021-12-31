@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -67,6 +68,56 @@ func (t *PoseStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Pose.SetDefaults()
 }
+
+// PoseStampedPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type PoseStampedPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewPoseStampedPublisher creates and returns a new publisher for the
+// PoseStamped
+func NewPoseStampedPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*PoseStampedPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, PoseStampedTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &PoseStampedPublisher{pub}, nil
+}
+
+func (p *PoseStampedPublisher) Publish(msg *PoseStamped) error {
+	return p.Publisher.Publish(msg)
+}
+
+// PoseStampedSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type PoseStampedSubscription struct {
+	*rclgo.Subscription
+}
+
+// PoseStampedSubscriptionCallback type is used to provide a subscription
+// handler function for a PoseStampedSubscription.
+type PoseStampedSubscriptionCallback func(msg *PoseStamped, info *rclgo.RmwMessageInfo, err error)
+
+// NewPoseStampedSubscription creates and returns a new subscription for the
+// PoseStamped
+func NewPoseStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback PoseStampedSubscriptionCallback) (*PoseStampedSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg PoseStamped
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, PoseStampedTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &PoseStampedSubscription{sub}, nil
+}
+
+func (s *PoseStampedSubscription) TakeMessage(out *PoseStamped) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // ClonePoseStampedSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

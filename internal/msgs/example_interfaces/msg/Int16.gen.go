@@ -15,6 +15,7 @@ package example_interfaces_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -62,6 +63,56 @@ func (t *Int16) CloneMsg() types.Message {
 func (t *Int16) SetDefaults() {
 	t.Data = 0
 }
+
+// Int16Publisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type Int16Publisher struct {
+	*rclgo.Publisher
+}
+
+// NewInt16Publisher creates and returns a new publisher for the
+// Int16
+func NewInt16Publisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*Int16Publisher, error) {
+	pub, err := node.NewPublisher(topic_name, Int16TypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &Int16Publisher{pub}, nil
+}
+
+func (p *Int16Publisher) Publish(msg *Int16) error {
+	return p.Publisher.Publish(msg)
+}
+
+// Int16Subscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type Int16Subscription struct {
+	*rclgo.Subscription
+}
+
+// Int16SubscriptionCallback type is used to provide a subscription
+// handler function for a Int16Subscription.
+type Int16SubscriptionCallback func(msg *Int16, info *rclgo.RmwMessageInfo, err error)
+
+// NewInt16Subscription creates and returns a new subscription for the
+// Int16
+func NewInt16Subscription(node *rclgo.Node, topic_name string, subscriptionCallback Int16SubscriptionCallback) (*Int16Subscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Int16
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, Int16TypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &Int16Subscription{sub}, nil
+}
+
+func (s *Int16Subscription) TakeMessage(out *Int16) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneInt16Slice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

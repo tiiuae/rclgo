@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -70,6 +71,56 @@ func (t *Illuminance) SetDefaults() {
 	t.Illuminance = 0
 	t.Variance = 0
 }
+
+// IlluminancePublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type IlluminancePublisher struct {
+	*rclgo.Publisher
+}
+
+// NewIlluminancePublisher creates and returns a new publisher for the
+// Illuminance
+func NewIlluminancePublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*IlluminancePublisher, error) {
+	pub, err := node.NewPublisher(topic_name, IlluminanceTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &IlluminancePublisher{pub}, nil
+}
+
+func (p *IlluminancePublisher) Publish(msg *Illuminance) error {
+	return p.Publisher.Publish(msg)
+}
+
+// IlluminanceSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type IlluminanceSubscription struct {
+	*rclgo.Subscription
+}
+
+// IlluminanceSubscriptionCallback type is used to provide a subscription
+// handler function for a IlluminanceSubscription.
+type IlluminanceSubscriptionCallback func(msg *Illuminance, info *rclgo.RmwMessageInfo, err error)
+
+// NewIlluminanceSubscription creates and returns a new subscription for the
+// Illuminance
+func NewIlluminanceSubscription(node *rclgo.Node, topic_name string, subscriptionCallback IlluminanceSubscriptionCallback) (*IlluminanceSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Illuminance
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, IlluminanceTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &IlluminanceSubscription{sub}, nil
+}
+
+func (s *IlluminanceSubscription) TakeMessage(out *Illuminance) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneIlluminanceSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

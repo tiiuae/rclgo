@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -70,6 +71,56 @@ func (t *RelativeHumidity) SetDefaults() {
 	t.RelativeHumidity = 0
 	t.Variance = 0
 }
+
+// RelativeHumidityPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type RelativeHumidityPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewRelativeHumidityPublisher creates and returns a new publisher for the
+// RelativeHumidity
+func NewRelativeHumidityPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*RelativeHumidityPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, RelativeHumidityTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &RelativeHumidityPublisher{pub}, nil
+}
+
+func (p *RelativeHumidityPublisher) Publish(msg *RelativeHumidity) error {
+	return p.Publisher.Publish(msg)
+}
+
+// RelativeHumiditySubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type RelativeHumiditySubscription struct {
+	*rclgo.Subscription
+}
+
+// RelativeHumiditySubscriptionCallback type is used to provide a subscription
+// handler function for a RelativeHumiditySubscription.
+type RelativeHumiditySubscriptionCallback func(msg *RelativeHumidity, info *rclgo.RmwMessageInfo, err error)
+
+// NewRelativeHumiditySubscription creates and returns a new subscription for the
+// RelativeHumidity
+func NewRelativeHumiditySubscription(node *rclgo.Node, topic_name string, subscriptionCallback RelativeHumiditySubscriptionCallback) (*RelativeHumiditySubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg RelativeHumidity
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, RelativeHumidityTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &RelativeHumiditySubscription{sub}, nil
+}
+
+func (s *RelativeHumiditySubscription) TakeMessage(out *RelativeHumidity) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneRelativeHumiditySlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

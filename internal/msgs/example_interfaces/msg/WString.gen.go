@@ -15,6 +15,7 @@ package example_interfaces_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	primitives "github.com/tiiuae/rclgo/pkg/rclgo/primitives"
@@ -63,6 +64,56 @@ func (t *WString) CloneMsg() types.Message {
 func (t *WString) SetDefaults() {
 	t.Data = ""
 }
+
+// WStringPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type WStringPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewWStringPublisher creates and returns a new publisher for the
+// WString
+func NewWStringPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*WStringPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, WStringTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &WStringPublisher{pub}, nil
+}
+
+func (p *WStringPublisher) Publish(msg *WString) error {
+	return p.Publisher.Publish(msg)
+}
+
+// WStringSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type WStringSubscription struct {
+	*rclgo.Subscription
+}
+
+// WStringSubscriptionCallback type is used to provide a subscription
+// handler function for a WStringSubscription.
+type WStringSubscriptionCallback func(msg *WString, info *rclgo.RmwMessageInfo, err error)
+
+// NewWStringSubscription creates and returns a new subscription for the
+// WString
+func NewWStringSubscription(node *rclgo.Node, topic_name string, subscriptionCallback WStringSubscriptionCallback) (*WStringSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg WString
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, WStringTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &WStringSubscription{sub}, nil
+}
+
+func (s *WStringSubscription) TakeMessage(out *WString) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneWStringSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

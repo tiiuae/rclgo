@@ -15,6 +15,7 @@ package geometry_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -67,6 +68,56 @@ func (t *WrenchStamped) SetDefaults() {
 	t.Header.SetDefaults()
 	t.Wrench.SetDefaults()
 }
+
+// WrenchStampedPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type WrenchStampedPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewWrenchStampedPublisher creates and returns a new publisher for the
+// WrenchStamped
+func NewWrenchStampedPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*WrenchStampedPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, WrenchStampedTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &WrenchStampedPublisher{pub}, nil
+}
+
+func (p *WrenchStampedPublisher) Publish(msg *WrenchStamped) error {
+	return p.Publisher.Publish(msg)
+}
+
+// WrenchStampedSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type WrenchStampedSubscription struct {
+	*rclgo.Subscription
+}
+
+// WrenchStampedSubscriptionCallback type is used to provide a subscription
+// handler function for a WrenchStampedSubscription.
+type WrenchStampedSubscriptionCallback func(msg *WrenchStamped, info *rclgo.RmwMessageInfo, err error)
+
+// NewWrenchStampedSubscription creates and returns a new subscription for the
+// WrenchStamped
+func NewWrenchStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback WrenchStampedSubscriptionCallback) (*WrenchStampedSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg WrenchStamped
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, WrenchStampedTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &WrenchStampedSubscription{sub}, nil
+}
+
+func (s *WrenchStampedSubscription) TakeMessage(out *WrenchStamped) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneWrenchStampedSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

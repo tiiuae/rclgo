@@ -92,6 +92,10 @@ func errorsCastC(rcl_ret_t C.rcl_ret_t, context string) error {
 		return &EventInvalid{rclRetStruct: rclRetStruct{rclRetCode: 2000, trace: string(stackTraceBuffer), context: errorsBuildContext(&EventInvalid{}, context, string(stackTraceBuffer))}}
 	case C.RCL_RET_EVENT_TAKE_FAILED:
 		return &EventTakeFailed{rclRetStruct: rclRetStruct{rclRetCode: 2001, trace: string(stackTraceBuffer), context: errorsBuildContext(&EventTakeFailed{}, context, string(stackTraceBuffer))}}
+	case C.RCL_RET_LIFECYCLE_STATE_REGISTERED:
+		return &LifecycleStateRegistered{rclRetStruct: rclRetStruct{rclRetCode: 3000, trace: string(stackTraceBuffer), context: errorsBuildContext(&LifecycleStateRegistered{}, context, string(stackTraceBuffer))}}
+	case C.RCL_RET_LIFECYCLE_STATE_NOT_REGISTERED:
+		return &LifecycleStateNotRegistered{rclRetStruct: rclRetStruct{rclRetCode: 3001, trace: string(stackTraceBuffer), context: errorsBuildContext(&LifecycleStateNotRegistered{}, context, string(stackTraceBuffer))}}
 	case C.RMW_RET_OK:
 		return &RmwOk{rclRetStruct: rclRetStruct{rclRetCode: 0, trace: string(stackTraceBuffer), context: errorsBuildContext(&RmwOk{}, context, string(stackTraceBuffer))}}
 	case C.RMW_RET_ERROR:
@@ -157,12 +161,12 @@ type NodeInvalid struct {
 	rclRetStruct
 }
 
-// NodeInvalidName 
+// NodeInvalidName Invalid node name return code.
 type NodeInvalidName struct {
 	rclRetStruct
 }
 
-// NodeInvalidNamespace 
+// NodeInvalidNamespace Invalid node namespace return code.
 type NodeInvalidNamespace struct {
 	rclRetStruct
 }
@@ -264,6 +268,16 @@ type EventInvalid struct {
 
 // EventTakeFailed Failed to take an event from the event handle
 type EventTakeFailed struct {
+	rclRetStruct
+}
+
+// LifecycleStateRegistered rcl_lifecycle state register ret codes in 30XXrcl_lifecycle state registered
+type LifecycleStateRegistered struct {
+	rclRetStruct
+}
+
+// LifecycleStateNotRegistered rcl_lifecycle state not registered
+type LifecycleStateNotRegistered struct {
 	rclRetStruct
 }
 

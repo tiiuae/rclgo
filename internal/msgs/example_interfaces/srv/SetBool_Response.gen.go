@@ -15,6 +15,7 @@ package example_interfaces_srv
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	primitives "github.com/tiiuae/rclgo/pkg/rclgo/primitives"
@@ -66,6 +67,56 @@ func (t *SetBool_Response) SetDefaults() {
 	t.Success = false
 	t.Message = ""
 }
+
+// SetBool_ResponsePublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type SetBool_ResponsePublisher struct {
+	*rclgo.Publisher
+}
+
+// NewSetBool_ResponsePublisher creates and returns a new publisher for the
+// SetBool_Response
+func NewSetBool_ResponsePublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*SetBool_ResponsePublisher, error) {
+	pub, err := node.NewPublisher(topic_name, SetBool_ResponseTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &SetBool_ResponsePublisher{pub}, nil
+}
+
+func (p *SetBool_ResponsePublisher) Publish(msg *SetBool_Response) error {
+	return p.Publisher.Publish(msg)
+}
+
+// SetBool_ResponseSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type SetBool_ResponseSubscription struct {
+	*rclgo.Subscription
+}
+
+// SetBool_ResponseSubscriptionCallback type is used to provide a subscription
+// handler function for a SetBool_ResponseSubscription.
+type SetBool_ResponseSubscriptionCallback func(msg *SetBool_Response, info *rclgo.RmwMessageInfo, err error)
+
+// NewSetBool_ResponseSubscription creates and returns a new subscription for the
+// SetBool_Response
+func NewSetBool_ResponseSubscription(node *rclgo.Node, topic_name string, subscriptionCallback SetBool_ResponseSubscriptionCallback) (*SetBool_ResponseSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg SetBool_Response
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, SetBool_ResponseTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &SetBool_ResponseSubscription{sub}, nil
+}
+
+func (s *SetBool_ResponseSubscription) TakeMessage(out *SetBool_Response) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneSetBool_ResponseSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

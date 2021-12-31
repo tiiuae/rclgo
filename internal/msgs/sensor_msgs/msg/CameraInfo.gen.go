@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -98,6 +99,56 @@ func (t *CameraInfo) SetDefaults() {
 	t.BinningY = 0
 	t.Roi.SetDefaults()
 }
+
+// CameraInfoPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type CameraInfoPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewCameraInfoPublisher creates and returns a new publisher for the
+// CameraInfo
+func NewCameraInfoPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*CameraInfoPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, CameraInfoTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &CameraInfoPublisher{pub}, nil
+}
+
+func (p *CameraInfoPublisher) Publish(msg *CameraInfo) error {
+	return p.Publisher.Publish(msg)
+}
+
+// CameraInfoSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type CameraInfoSubscription struct {
+	*rclgo.Subscription
+}
+
+// CameraInfoSubscriptionCallback type is used to provide a subscription
+// handler function for a CameraInfoSubscription.
+type CameraInfoSubscriptionCallback func(msg *CameraInfo, info *rclgo.RmwMessageInfo, err error)
+
+// NewCameraInfoSubscription creates and returns a new subscription for the
+// CameraInfo
+func NewCameraInfoSubscription(node *rclgo.Node, topic_name string, subscriptionCallback CameraInfoSubscriptionCallback) (*CameraInfoSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg CameraInfo
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, CameraInfoTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &CameraInfoSubscription{sub}, nil
+}
+
+func (s *CameraInfoSubscription) TakeMessage(out *CameraInfo) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneCameraInfoSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

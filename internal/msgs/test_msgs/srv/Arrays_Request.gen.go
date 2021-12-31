@@ -15,6 +15,7 @@ package test_msgs_srv
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	test_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/test_msgs/msg"
@@ -161,6 +162,56 @@ func (t *Arrays_Request) SetDefaults() {
 	t.Uint64ValuesDefault = [3]uint64{0,1,18446744073709551615}
 	t.StringValuesDefault = [3]string{"","max value","min value"}
 }
+
+// Arrays_RequestPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type Arrays_RequestPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewArrays_RequestPublisher creates and returns a new publisher for the
+// Arrays_Request
+func NewArrays_RequestPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*Arrays_RequestPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, Arrays_RequestTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &Arrays_RequestPublisher{pub}, nil
+}
+
+func (p *Arrays_RequestPublisher) Publish(msg *Arrays_Request) error {
+	return p.Publisher.Publish(msg)
+}
+
+// Arrays_RequestSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type Arrays_RequestSubscription struct {
+	*rclgo.Subscription
+}
+
+// Arrays_RequestSubscriptionCallback type is used to provide a subscription
+// handler function for a Arrays_RequestSubscription.
+type Arrays_RequestSubscriptionCallback func(msg *Arrays_Request, info *rclgo.RmwMessageInfo, err error)
+
+// NewArrays_RequestSubscription creates and returns a new subscription for the
+// Arrays_Request
+func NewArrays_RequestSubscription(node *rclgo.Node, topic_name string, subscriptionCallback Arrays_RequestSubscriptionCallback) (*Arrays_RequestSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg Arrays_Request
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, Arrays_RequestTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &Arrays_RequestSubscription{sub}, nil
+}
+
+func (s *Arrays_RequestSubscription) TakeMessage(out *Arrays_Request) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneArrays_RequestSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

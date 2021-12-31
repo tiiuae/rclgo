@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	std_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
@@ -97,6 +98,56 @@ func (t *MultiEchoLaserScan) SetDefaults() {
 	t.Ranges = nil
 	t.Intensities = nil
 }
+
+// MultiEchoLaserScanPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type MultiEchoLaserScanPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewMultiEchoLaserScanPublisher creates and returns a new publisher for the
+// MultiEchoLaserScan
+func NewMultiEchoLaserScanPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*MultiEchoLaserScanPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, MultiEchoLaserScanTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &MultiEchoLaserScanPublisher{pub}, nil
+}
+
+func (p *MultiEchoLaserScanPublisher) Publish(msg *MultiEchoLaserScan) error {
+	return p.Publisher.Publish(msg)
+}
+
+// MultiEchoLaserScanSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type MultiEchoLaserScanSubscription struct {
+	*rclgo.Subscription
+}
+
+// MultiEchoLaserScanSubscriptionCallback type is used to provide a subscription
+// handler function for a MultiEchoLaserScanSubscription.
+type MultiEchoLaserScanSubscriptionCallback func(msg *MultiEchoLaserScan, info *rclgo.RmwMessageInfo, err error)
+
+// NewMultiEchoLaserScanSubscription creates and returns a new subscription for the
+// MultiEchoLaserScan
+func NewMultiEchoLaserScanSubscription(node *rclgo.Node, topic_name string, subscriptionCallback MultiEchoLaserScanSubscriptionCallback) (*MultiEchoLaserScanSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg MultiEchoLaserScan
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, MultiEchoLaserScanTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &MultiEchoLaserScanSubscription{sub}, nil
+}
+
+func (s *MultiEchoLaserScanSubscription) TakeMessage(out *MultiEchoLaserScan) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneMultiEchoLaserScanSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

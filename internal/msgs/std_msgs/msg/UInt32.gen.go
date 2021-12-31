@@ -15,6 +15,7 @@ package std_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -62,6 +63,56 @@ func (t *UInt32) CloneMsg() types.Message {
 func (t *UInt32) SetDefaults() {
 	t.Data = 0
 }
+
+// UInt32Publisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type UInt32Publisher struct {
+	*rclgo.Publisher
+}
+
+// NewUInt32Publisher creates and returns a new publisher for the
+// UInt32
+func NewUInt32Publisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*UInt32Publisher, error) {
+	pub, err := node.NewPublisher(topic_name, UInt32TypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &UInt32Publisher{pub}, nil
+}
+
+func (p *UInt32Publisher) Publish(msg *UInt32) error {
+	return p.Publisher.Publish(msg)
+}
+
+// UInt32Subscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type UInt32Subscription struct {
+	*rclgo.Subscription
+}
+
+// UInt32SubscriptionCallback type is used to provide a subscription
+// handler function for a UInt32Subscription.
+type UInt32SubscriptionCallback func(msg *UInt32, info *rclgo.RmwMessageInfo, err error)
+
+// NewUInt32Subscription creates and returns a new subscription for the
+// UInt32
+func NewUInt32Subscription(node *rclgo.Node, topic_name string, subscriptionCallback UInt32SubscriptionCallback) (*UInt32Subscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg UInt32
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, UInt32TypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &UInt32Subscription{sub}, nil
+}
+
+func (s *UInt32Subscription) TakeMessage(out *UInt32) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneUInt32Slice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

@@ -15,6 +15,7 @@ package sensor_msgs_srv
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	primitives "github.com/tiiuae/rclgo/pkg/rclgo/primitives"
@@ -66,6 +67,56 @@ func (t *SetCameraInfo_Response) SetDefaults() {
 	t.Success = false
 	t.StatusMessage = ""
 }
+
+// SetCameraInfo_ResponsePublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type SetCameraInfo_ResponsePublisher struct {
+	*rclgo.Publisher
+}
+
+// NewSetCameraInfo_ResponsePublisher creates and returns a new publisher for the
+// SetCameraInfo_Response
+func NewSetCameraInfo_ResponsePublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*SetCameraInfo_ResponsePublisher, error) {
+	pub, err := node.NewPublisher(topic_name, SetCameraInfo_ResponseTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &SetCameraInfo_ResponsePublisher{pub}, nil
+}
+
+func (p *SetCameraInfo_ResponsePublisher) Publish(msg *SetCameraInfo_Response) error {
+	return p.Publisher.Publish(msg)
+}
+
+// SetCameraInfo_ResponseSubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type SetCameraInfo_ResponseSubscription struct {
+	*rclgo.Subscription
+}
+
+// SetCameraInfo_ResponseSubscriptionCallback type is used to provide a subscription
+// handler function for a SetCameraInfo_ResponseSubscription.
+type SetCameraInfo_ResponseSubscriptionCallback func(msg *SetCameraInfo_Response, info *rclgo.RmwMessageInfo, err error)
+
+// NewSetCameraInfo_ResponseSubscription creates and returns a new subscription for the
+// SetCameraInfo_Response
+func NewSetCameraInfo_ResponseSubscription(node *rclgo.Node, topic_name string, subscriptionCallback SetCameraInfo_ResponseSubscriptionCallback) (*SetCameraInfo_ResponseSubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg SetCameraInfo_Response
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, SetCameraInfo_ResponseTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &SetCameraInfo_ResponseSubscription{sub}, nil
+}
+
+func (s *SetCameraInfo_ResponseSubscription) TakeMessage(out *SetCameraInfo_Response) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneSetCameraInfo_ResponseSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

@@ -15,6 +15,7 @@ package sensor_msgs_msg
 import (
 	"unsafe"
 
+	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 	"github.com/tiiuae/rclgo/pkg/rclgo/typemap"
 	
@@ -65,6 +66,56 @@ func (t *JoyFeedbackArray) CloneMsg() types.Message {
 func (t *JoyFeedbackArray) SetDefaults() {
 	t.Array = nil
 }
+
+// JoyFeedbackArrayPublisher wraps rclgo.Publisher to provide type safe helper
+// functions
+type JoyFeedbackArrayPublisher struct {
+	*rclgo.Publisher
+}
+
+// NewJoyFeedbackArrayPublisher creates and returns a new publisher for the
+// JoyFeedbackArray
+func NewJoyFeedbackArrayPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*JoyFeedbackArrayPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, JoyFeedbackArrayTypeSupport, options)
+	if err != nil {
+		return nil, err
+	}
+	return &JoyFeedbackArrayPublisher{pub}, nil
+}
+
+func (p *JoyFeedbackArrayPublisher) Publish(msg *JoyFeedbackArray) error {
+	return p.Publisher.Publish(msg)
+}
+
+// JoyFeedbackArraySubscription wraps rclgo.Subscription to provide type safe helper
+// functions
+type JoyFeedbackArraySubscription struct {
+	*rclgo.Subscription
+}
+
+// JoyFeedbackArraySubscriptionCallback type is used to provide a subscription
+// handler function for a JoyFeedbackArraySubscription.
+type JoyFeedbackArraySubscriptionCallback func(msg *JoyFeedbackArray, info *rclgo.RmwMessageInfo, err error)
+
+// NewJoyFeedbackArraySubscription creates and returns a new subscription for the
+// JoyFeedbackArray
+func NewJoyFeedbackArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback JoyFeedbackArraySubscriptionCallback) (*JoyFeedbackArraySubscription, error) {
+	callback := func(s *rclgo.Subscription) {
+		var msg JoyFeedbackArray
+		info, err := s.TakeMessage(&msg)
+		subscriptionCallback(&msg, info, err)
+	}
+	sub, err := node.NewSubscription(topic_name, JoyFeedbackArrayTypeSupport, callback)
+	if err != nil {
+		return nil, err
+	}
+	return &JoyFeedbackArraySubscription{sub}, nil
+}
+
+func (s *JoyFeedbackArraySubscription) TakeMessage(out *JoyFeedbackArray) (*rclgo.RmwMessageInfo, error) {
+	return s.Subscription.TakeMessage(out)
+}
+
 
 // CloneJoyFeedbackArraySlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).

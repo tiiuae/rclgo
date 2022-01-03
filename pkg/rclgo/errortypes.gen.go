@@ -12,11 +12,8 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package rclgo
 
 /*
-#cgo LDFLAGS: -L/opt/ros/galactic/lib -Wl,-rpath=/opt/ros/galactic/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
-
 #include <rcl/types.h>
 #include <rmw/ret_types.h>
-
 */
 import "C"
 import (

@@ -20,11 +20,6 @@ import (
 	
 )
 /*
-#cgo LDFLAGS: -L/opt/ros/galactic/lib -Wl,-rpath=/opt/ros/galactic/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
-#cgo LDFLAGS: -lstd_msgs__rosidl_typesupport_c -lstd_msgs__rosidl_generator_c
-
-#cgo CFLAGS: -I/opt/ros/galactic/include
-
 #include <rosidl_runtime_c/message_type_support_struct.h>
 
 #include <std_msgs/msg/byte_multi_array.h>

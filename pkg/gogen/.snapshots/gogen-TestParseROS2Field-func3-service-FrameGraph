@@ -14,7 +14,7 @@
     Constants: ([]*gogen.ROS2Constant) <nil>,
     GoImports: (map[string]string) {
     },
-    CImports: (map[string]bool) {
+    CImports: (gogen.stringSet) {
     }
   }),
   Response: (*gogen.ROS2Message)({
@@ -45,7 +45,7 @@
     GoImports: (map[string]string) (len=1) {
       (string) (len=44) "github.com/tiiuae/rclgo/pkg/rclgo/primitives": (string) (len=10) "primitives"
     },
-    CImports: (map[string]bool) {
+    CImports: (gogen.stringSet) {
     }
   })
 })

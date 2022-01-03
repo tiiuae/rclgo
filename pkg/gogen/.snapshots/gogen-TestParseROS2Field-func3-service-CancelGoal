@@ -32,8 +32,9 @@
     GoImports: (map[string]string) (len=1) {
       (string) (len=44) "github.com/tiiuae/rclgo-msgs/action_msgs/msg": (string) (len=15) "action_msgs_msg"
     },
-    CImports: (map[string]bool) (len=1) {
-      (string) (len=11) "action_msgs": (bool) true
+    CImports: (gogen.stringSet) (len=1) {
+      (string) (len=11) "action_msgs": (struct {}) {
+      }
     }
   }),
   Response: (*gogen.ROS2Message)({
@@ -117,8 +118,9 @@
     GoImports: (map[string]string) (len=1) {
       (string) (len=44) "github.com/tiiuae/rclgo-msgs/action_msgs/msg": (string) (len=15) "action_msgs_msg"
     },
-    CImports: (map[string]bool) (len=1) {
-      (string) (len=11) "action_msgs": (bool) true
+    CImports: (gogen.stringSet) (len=1) {
+      (string) (len=11) "action_msgs": (struct {}) {
+      }
     }
   })
 })

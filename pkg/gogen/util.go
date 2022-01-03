@@ -165,6 +165,18 @@ func cReturnCodeNameToGo(n string) string {
 	return snakeToCamel(strings.ToLower(n))
 }
 
+type stringSet map[string]struct{}
+
+func (s stringSet) Add(str string) {
+	s[str] = struct{}{}
+}
+
+func (s stringSet) AddFrom(s2 stringSet) {
+	for key := range s2 {
+		s[key] = struct{}{}
+	}
+}
+
 /* So many ways to skin a ROS2 defaults field
 var splitMsgDefaultArrayValues_re = regexp.MustCompile(`((:?^|,)(:?\s*".*?"\s*|.*?)(:?,|$))`)
 var splitMsgDefaultArrayValues_re = regexp.MustCompile(`((?<=^|,)?.*?(?=,|$))`) // Where are lookahead/lookbehind?

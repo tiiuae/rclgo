@@ -34,7 +34,7 @@ type ROS2Message struct {
 	Fields    []*ROS2Field
 	Constants []*ROS2Constant
 	GoImports map[string]string
-	CImports  map[string]bool
+	CImports  stringSet
 }
 
 func ROS2MessageNew(pkg, name string) *ROS2Message {
@@ -49,7 +49,7 @@ func newMessageWithType(pkg, name, typ string) *ROS2Message {
 			Type:    typ,
 		},
 		GoImports: map[string]string{},
-		CImports:  map[string]bool{},
+		CImports:  stringSet{},
 	}
 }
 

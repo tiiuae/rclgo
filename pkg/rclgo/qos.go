@@ -9,12 +9,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 
 package rclgo
 
-/*
-#cgo LDFLAGS: -lrmw_implementation
-#cgo CFLAGS: -I/opt/ros/galactic/include
-
-#include "rmw/rmw.h"
-*/
+// #include "rmw/rmw.h"
 import "C"
 
 import (

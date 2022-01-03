@@ -12,10 +12,6 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package std_srvs_srv
 
 /*
-#cgo LDFLAGS: -L/opt/ros/galactic/lib -Wl,-rpath=/opt/ros/galactic/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
-#cgo LDFLAGS: -lstd_srvs__rosidl_typesupport_c -lstd_srvs__rosidl_generator_c
-#cgo CFLAGS: -I/opt/ros/galactic/include
-
 #include <rosidl_runtime_c/message_type_support_struct.h>
 #include <std_srvs/srv/set_bool.h>
 */

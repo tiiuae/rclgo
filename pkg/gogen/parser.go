@@ -74,7 +74,7 @@ func (p *parser) parseLine(msg *ROS2Message, line string) error {
 			msg.GoImports[p.config.RclgoImportPath+"/pkg/rclgo/"+obj.PkgName] = obj.GoPkgName
 		default:
 			msg.GoImports[p.config.MessageModulePrefix+"/"+obj.PkgName+"/msg"] = obj.GoPkgName
-			msg.CImports[obj.PkgName] = true
+			msg.CImports.Add(obj.PkgName)
 		}
 	case nil:
 	default:

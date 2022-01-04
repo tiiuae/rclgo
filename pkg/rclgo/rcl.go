@@ -1051,13 +1051,11 @@ func (s *Service) handleRequest() {
 		s.node.Logger().Debug(errorsCastC(rc, "failed to take request"))
 		return
 	}
+	fmt.Println("guid:", reqHeader.request_id.writer_guid, "seq:", reqHeader.request_id.sequence_number)
 	info := RmwServiceInfo{
 		SourceTimestamp:   time.Unix(0, int64(reqHeader.source_timestamp)),
 		ReceivedTimestamp: time.Unix(0, int64(reqHeader.received_timestamp)),
-		RequestID: RmwRequestID{
-			WriterGUID:     *(*[16]int8)(unsafe.Pointer(&reqHeader.request_id.writer_guid)),
-			SequenceNumber: int64(reqHeader.request_id.sequence_number),
-		},
+		RequestID:         newRmwRequestID(&reqHeader.request_id),
 	}
 	req := s.requestTypeSupport.New()
 	s.requestTypeSupport.AsGoStruct(req, reqBuffer)
@@ -1247,13 +1245,13 @@ func (s *requestSender) addPendingRequest(req types.Message) (<-chan *sendResult
 	buf := ts.PrepareMemory()
 	defer ts.ReleaseMemory(buf)
 	ts.AsCStruct(buf, req)
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
 	seqNum, err := s.transport.SendRequest(buf)
 	if err != nil {
 		return nil, 0, err
 	}
 	resultChan := make(chan *sendResult, 1)
-	s.mutex.Lock()
-	defer s.mutex.Unlock()
 	s.pendingRequests[seqNum] = resultChan
 	return resultChan, seqNum, nil
 }

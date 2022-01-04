@@ -1051,7 +1051,6 @@ func (s *Service) handleRequest() {
 		s.node.Logger().Debug(errorsCastC(rc, "failed to take request"))
 		return
 	}
-	fmt.Println("guid:", reqHeader.request_id.writer_guid, "seq:", reqHeader.request_id.sequence_number)
 	info := RmwServiceInfo{
 		SourceTimestamp:   time.Unix(0, int64(reqHeader.source_timestamp)),
 		ReceivedTimestamp: time.Unix(0, int64(reqHeader.received_timestamp)),

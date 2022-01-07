@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -24,16 +25,12 @@ import (
 )
 
 func validateGenerateArgs(cmd *cobra.Command, args []string) error {
-	rootPath := getString(cmd, "root-path")
-	if rootPath == "" {
+	rootPaths := getRootPaths(cmd)
+	if len(rootPaths) == 0 {
 		if os.Getenv("AMENT_PREFIX_PATH") == "" {
 			return fmt.Errorf("You haven't sourced your ROS2 environment! Cannot autodetect --root-path. Source your ROS2 or pass --root-path")
 		}
 		return fmt.Errorf("root-path is required")
-	}
-	_, err := os.Stat(rootPath)
-	if err != nil {
-		return fmt.Errorf("root-path error: %v", err)
 	}
 
 	destPath := getString(cmd, "dest-path")
@@ -41,7 +38,7 @@ func validateGenerateArgs(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("dest-path is required")
 	}
 
-	_, err = os.Stat(destPath)
+	_, err := os.Stat(destPath)
 	if errors.Is(err, os.ErrNotExist) {
 		err = os.MkdirAll(destPath, 0755)
 	}
@@ -56,10 +53,10 @@ var generateCmd = &cobra.Command{
 	Use:   "generate",
 	Short: "Generate Go bindings for ROS2 interface definitions under <root-path>",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		rootPath := getString(cmd, "root-path")
+		rootPaths := getRootPaths(cmd)
 		destPath := getString(cmd, "dest-path")
 		config := getGogenConfig(cmd)
-		if err := gogen.GenerateGolangMessageTypes(config, rootPath, destPath); err != nil {
+		if err := gogen.GenerateGolangMessageTypes(config, rootPaths, destPath); err != nil {
 			return fmt.Errorf("failed to generate interface bindings: %w", err)
 		}
 		if err := gogen.GenerateROS2AllMessagesImporter(config, destPath); err != nil {
@@ -74,13 +71,13 @@ var generateRclgoCmd = &cobra.Command{
 	Use:   "generate-rclgo",
 	Short: "Generate Go code that forms a part of rclgo",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		rootPath := getString(cmd, "root-path")
+		rootPaths := getRootPaths(cmd)
 		destPath := getString(cmd, "dest-path")
 		config := getGogenConfig(cmd)
 		if err := gogen.GeneratePrimitives(config, destPath); err != nil {
 			return fmt.Errorf("failed to generate primitive types: %w", err)
 		}
-		if err := gogen.GenerateROS2ErrorTypes(rootPath, destPath); err != nil {
+		if err := gogen.GenerateROS2ErrorTypes(rootPaths, destPath); err != nil {
 			return fmt.Errorf("failed to generate error types: %w", err)
 		}
 		return nil
@@ -97,7 +94,7 @@ func init() {
 }
 
 func configureFlags(cmd *cobra.Command, destPathDefault string) {
-	cmd.PersistentFlags().StringP("root-path", "r", os.Getenv("AMENT_PREFIX_PATH"), "Root lookup path for ROS2 .msg files. If ROS2 environment is sourced, is autodetected.")
+	cmd.PersistentFlags().StringArrayP("root-path", "r", []string{os.Getenv("AMENT_PREFIX_PATH")}, "Root lookup path for ROS2 .msg files. If ROS2 environment is sourced, is autodetected.")
 	cmd.PersistentFlags().StringP("dest-path", "d", destPathDefault, "Destination directory for the Golang typed converted ROS2 messages. ROS2 Message structure is preserved as <ros2-package>/msg/<msg-name>")
 	cmd.PersistentFlags().String("rclgo-import-path", gogen.DefaultConfig.RclgoImportPath, "Import path of rclgo library")
 	cmd.PersistentFlags().String("message-module-prefix", gogen.DefaultConfig.MessageModulePrefix, "Import path prefix for generated message binding modules")
@@ -148,4 +145,13 @@ func getGogenConfig(cmd *cobra.Command) *gogen.Config {
 		RclgoImportPath:     getString(cmd, "rclgo-import-path"),
 		MessageModulePrefix: modulePrefix,
 	}
+}
+
+func getRootPaths(cmd *cobra.Command) []string {
+	pathLists := viper.GetStringSlice(getPrefix(cmd) + "root-path")
+	var paths []string
+	for _, pl := range pathLists {
+		paths = append(paths, filepath.SplitList(pl)...)
+	}
+	return paths
 }

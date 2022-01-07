@@ -12,6 +12,7 @@ package gogen
 import (
 	"errors"
 	"fmt"
+	"io/fs"
 	"io/ioutil"
 	"os"
 	"path"
@@ -94,7 +95,7 @@ func GenerateROS2AllMessagesImporter(c *Config, destPathPkgRoot string) error {
 	})
 }
 
-func GenerateGolangMessageTypes(c *Config, rootPath string, destPath string) error {
+func GenerateGolangMessageTypes(c *Config, rootPaths []string, destPath string) error {
 	cImports := make(map[string]stringSet)
 	getOrDefault := func(s string) stringSet {
 		set := cImports[s]
@@ -105,33 +106,30 @@ func GenerateGolangMessageTypes(c *Config, rootPath string, destPath string) err
 		return set
 	}
 	g := generator{config: c}
-	filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
-		skip, blacklistEntry := blacklisted(path)
-		if skip {
-			fmt.Printf("Blacklisted: %s, matched regex '%s'\n", path, blacklistEntry)
-			return nil
-		}
-		slashPath := filepath.ToSlash(path)
-		if re.M(slashPath, `m!/msg/.+\.msg$!`) {
-			fmt.Printf("Generating: %s\n", path)
-			result, err := g.generateMessage(path, destPath)
+	for meta, path := range findInterfaceFiles(rootPaths) {
+		fmt.Printf("Generating: %s\n", path)
+		switch meta.Type {
+		case "msg":
+			result, err := g.generateMessage(&meta, path, destPath)
 			if err != nil {
 				fmt.Printf("Error converting ROS2 Message '%s' to '%s', error: %v\n", path, destPath, err)
+				break
 			}
 			set := getOrDefault(result.GoPackage())
 			set.AddFrom(result.CImports)
-		} else if re.M(slashPath, `m!/srv/.+\.srv$!`) {
-			fmt.Printf("Generating: %s\n", path)
-			result, err := g.generateService(path, destPath)
+		case "srv":
+			result, err := g.generateService(&meta, path, destPath)
 			if err != nil {
 				fmt.Printf("Error converting ROS2 Service '%s' to '%s', error: %v\n", path, destPath, err)
+				break
 			}
 			set := getOrDefault(result.GoPackage())
 			set.AddFrom(result.Request.CImports)
 			set.AddFrom(result.Response.CImports)
+		default:
+			fmt.Printf("Interface file %s has an invalid type: %s\n", path, meta.Type)
 		}
-		return nil
-	})
+	}
 	for pkg, imports := range cImports {
 		err := g.generateCommonPackageGoFile(pkg, imports, destPath)
 		if err != nil {
@@ -141,14 +139,34 @@ func GenerateGolangMessageTypes(c *Config, rootPath string, destPath string) err
 	return nil
 }
 
-func (g *generator) generateMessage(sourcePath string, destPathPkgRoot string) (*ROS2Message, error) {
+func findInterfaceFiles(rootPaths []string) map[Metadata]string {
+	files := make(map[Metadata]string)
+	for i := len(rootPaths) - 1; i >= 0; i-- {
+		filepath.Walk(rootPaths[i], func(path string, info fs.FileInfo, err error) error {
+			skip, blacklistEntry := blacklisted(path)
+			if skip {
+				fmt.Printf("Blacklisted: %s, matched regex '%s'\n", path, blacklistEntry)
+				return nil
+			}
+			if re.M(filepath.ToSlash(path), `m!/(msg/.+\.msg)|(srv/.+\.srv)$!`) {
+				md, err := parseMetadataFromPath(path)
+				if err == nil {
+					files[*md] = path
+				} else {
+					fmt.Printf("Failed to parse metadata from path %s: %v\n", path, err)
+				}
+			}
+			return nil
+		})
+	}
+	return files
+}
+
+func (g *generator) generateMessage(md *Metadata, sourcePath string, destPathPkgRoot string) (*ROS2Message, error) {
 	msg := ROS2MessageNew("", "")
 	var err error
 
-	msg.Metadata, err = parseMetadataFromPath(sourcePath)
-	if err != nil {
-		return nil, err
-	}
+	msg.Metadata = md
 
 	content, err := ioutil.ReadFile(sourcePath)
 	if err != nil {
@@ -174,7 +192,7 @@ func parseMetadataFromPath(p string) (*Metadata, error) {
 		Name: strings.TrimSuffix(base, ext),
 		Type: ext[1:],
 	}
-	dirs := strings.Split(p, "/")
+	dirs := strings.Split(p, string(filepath.Separator))
 
 	if len(dirs) >= 2 {
 		m.Package = dirs[len(dirs)-3]
@@ -194,11 +212,7 @@ func createTargetGolangTypeFile(destPathPkgRoot string, m *Metadata) (*os.File, 
 	return destFile, err
 }
 
-func (g *generator) generateService(srcPath, dstPathPkgRoot string) (*ROS2Service, error) {
-	m, err := parseMetadataFromPath(srcPath)
-	if err != nil {
-		return nil, err
-	}
+func (g *generator) generateService(m *Metadata, srcPath, dstPathPkgRoot string) (*ROS2Service, error) {
 	service := NewROS2Service(m.Package, m.Name)
 	srcFile, err := os.ReadFile(srcPath)
 	if err != nil {

@@ -26,33 +26,34 @@ func prepareErrorTypesCFileMatchingRegexp() {
 	errorTypesCFileMatchingRegexp = "m!" + errorTypesCFileMatchingRegexp + "!"
 }
 
-func GenerateROS2ErrorTypes(rootPath, destFilePath string) error {
+func GenerateROS2ErrorTypes(rootPaths []string, destFilePath string) error {
 	destFilePath = filepath.Join(destFilePath, "pkg/rclgo/errortypes.gen.go")
 	ros2ErrorsList := list.New()
 
-	includeLookupDir := rootPath
-	for tries := 0; tries < 10; tries++ {
-		fmt.Printf("Looking for rcl C include files to parse error definitions from '%s'\n", includeLookupDir)
+	for _, includeLookupDir := range rootPaths {
+		for tries := 0; tries < 10; tries++ {
+			fmt.Printf("Looking for rcl C include files to parse error definitions from '%s'\n", includeLookupDir)
 
-		filepath.Walk(includeLookupDir, func(path string, info os.FileInfo, err error) error {
-			if re.M(path, errorTypesCFileMatchingRegexp) {
-				fmt.Printf("Analyzing: %s\n", path)
-				md, err := generateGolangErrorTypesFromROS2ErrorDefinitionsPath(path)
-				if err != nil {
-					fmt.Printf("Error converting ROS2 Errors from '%s' to '%s', error: %v\n", path, destFilePath, err)
+			filepath.Walk(includeLookupDir, func(path string, info os.FileInfo, err error) error {
+				if re.M(path, errorTypesCFileMatchingRegexp) {
+					fmt.Printf("Analyzing: %s\n", path)
+					md, err := generateGolangErrorTypesFromROS2ErrorDefinitionsPath(path)
+					if err != nil {
+						fmt.Printf("Error converting ROS2 Errors from '%s' to '%s', error: %v\n", path, destFilePath, err)
+					}
+					ros2ErrorsList.PushBackList(md)
 				}
-				ros2ErrorsList.PushBackList(md)
-			}
-			return nil
-		})
+				return nil
+			})
 
-		if ros2ErrorsList.Len() == 0 {
-			includeLookupDir = filepath.Join(includeLookupDir, "..")
-			if includeLookupDir == "/" {
+			if ros2ErrorsList.Len() == 0 {
+				includeLookupDir = filepath.Join(includeLookupDir, "..")
+				if includeLookupDir == "/" {
+					break
+				}
+			} else {
 				break
 			}
-		} else {
-			break
 		}
 	}
 	if ros2ErrorsList.Len() == 0 {

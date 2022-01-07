@@ -19,7 +19,7 @@ import (
 	test_msgs "github.com/tiiuae/rclgo/internal/msgs/test_msgs/msg"
 	"github.com/tiiuae/rclgo/pkg/rclgo"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 func TestPubSub(t *testing.T) {

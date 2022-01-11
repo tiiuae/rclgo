@@ -403,27 +403,22 @@ func UnboundedSequences__Sequence_to_Go(goSlice *[]UnboundedSequences, cSlice CU
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]UnboundedSequences, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.test_msgs__msg__UnboundedSequences__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__msg__UnboundedSequences * uintptr(i)),
-		))
-		UnboundedSequencesTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]UnboundedSequences, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		UnboundedSequencesTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func UnboundedSequences__Sequence_to_C(cSlice *CUnboundedSequences__Sequence, goSlice []UnboundedSequences) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.test_msgs__msg__UnboundedSequences)(C.malloc((C.size_t)(C.sizeof_struct_test_msgs__msg__UnboundedSequences * uintptr(len(goSlice)))))
+	cSlice.data = (*C.test_msgs__msg__UnboundedSequences)(C.malloc(C.sizeof_struct_test_msgs__msg__UnboundedSequences * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.test_msgs__msg__UnboundedSequences)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__msg__UnboundedSequences * uintptr(i)),
-		))
-		UnboundedSequencesTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		UnboundedSequencesTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func UnboundedSequences__Array_to_Go(goSlice []UnboundedSequences, cSlice []CUnboundedSequences) {

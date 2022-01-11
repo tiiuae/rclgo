@@ -163,27 +163,22 @@ func UInt32MultiArray__Sequence_to_Go(goSlice *[]UInt32MultiArray, cSlice CUInt3
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]UInt32MultiArray, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.example_interfaces__msg__UInt32MultiArray__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__UInt32MultiArray * uintptr(i)),
-		))
-		UInt32MultiArrayTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]UInt32MultiArray, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		UInt32MultiArrayTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func UInt32MultiArray__Sequence_to_C(cSlice *CUInt32MultiArray__Sequence, goSlice []UInt32MultiArray) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.example_interfaces__msg__UInt32MultiArray)(C.malloc((C.size_t)(C.sizeof_struct_example_interfaces__msg__UInt32MultiArray * uintptr(len(goSlice)))))
+	cSlice.data = (*C.example_interfaces__msg__UInt32MultiArray)(C.malloc(C.sizeof_struct_example_interfaces__msg__UInt32MultiArray * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.example_interfaces__msg__UInt32MultiArray)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__UInt32MultiArray * uintptr(i)),
-		))
-		UInt32MultiArrayTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		UInt32MultiArrayTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func UInt32MultiArray__Array_to_Go(goSlice []UInt32MultiArray, cSlice []CUInt32MultiArray) {

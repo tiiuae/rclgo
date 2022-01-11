@@ -154,27 +154,22 @@ func Int8__Sequence_to_Go(goSlice *[]Int8, cSlice CInt8__Sequence) {
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]Int8, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.example_interfaces__msg__Int8__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__Int8 * uintptr(i)),
-		))
-		Int8TypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]Int8, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		Int8TypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func Int8__Sequence_to_C(cSlice *CInt8__Sequence, goSlice []Int8) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.example_interfaces__msg__Int8)(C.malloc((C.size_t)(C.sizeof_struct_example_interfaces__msg__Int8 * uintptr(len(goSlice)))))
+	cSlice.data = (*C.example_interfaces__msg__Int8)(C.malloc(C.sizeof_struct_example_interfaces__msg__Int8 * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.example_interfaces__msg__Int8)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__Int8 * uintptr(i)),
-		))
-		Int8TypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		Int8TypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func Int8__Array_to_Go(goSlice []Int8, cSlice []CInt8) {

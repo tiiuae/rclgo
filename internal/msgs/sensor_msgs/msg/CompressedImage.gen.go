@@ -169,27 +169,22 @@ func CompressedImage__Sequence_to_Go(goSlice *[]CompressedImage, cSlice CCompres
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]CompressedImage, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.sensor_msgs__msg__CompressedImage__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__CompressedImage * uintptr(i)),
-		))
-		CompressedImageTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]CompressedImage, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		CompressedImageTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func CompressedImage__Sequence_to_C(cSlice *CCompressedImage__Sequence, goSlice []CompressedImage) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.sensor_msgs__msg__CompressedImage)(C.malloc((C.size_t)(C.sizeof_struct_sensor_msgs__msg__CompressedImage * uintptr(len(goSlice)))))
+	cSlice.data = (*C.sensor_msgs__msg__CompressedImage)(C.malloc(C.sizeof_struct_sensor_msgs__msg__CompressedImage * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.sensor_msgs__msg__CompressedImage)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__CompressedImage * uintptr(i)),
-		))
-		CompressedImageTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		CompressedImageTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func CompressedImage__Array_to_Go(goSlice []CompressedImage, cSlice []CCompressedImage) {

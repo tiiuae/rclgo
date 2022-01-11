@@ -155,27 +155,22 @@ func CancelGoal_Request__Sequence_to_Go(goSlice *[]CancelGoal_Request, cSlice CC
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]CancelGoal_Request, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.action_msgs__srv__CancelGoal_Request__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_action_msgs__srv__CancelGoal_Request * uintptr(i)),
-		))
-		CancelGoal_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]CancelGoal_Request, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		CancelGoal_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func CancelGoal_Request__Sequence_to_C(cSlice *CCancelGoal_Request__Sequence, goSlice []CancelGoal_Request) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.action_msgs__srv__CancelGoal_Request)(C.malloc((C.size_t)(C.sizeof_struct_action_msgs__srv__CancelGoal_Request * uintptr(len(goSlice)))))
+	cSlice.data = (*C.action_msgs__srv__CancelGoal_Request)(C.malloc(C.sizeof_struct_action_msgs__srv__CancelGoal_Request * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.action_msgs__srv__CancelGoal_Request)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_action_msgs__srv__CancelGoal_Request * uintptr(i)),
-		))
-		CancelGoal_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		CancelGoal_RequestTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func CancelGoal_Request__Array_to_Go(goSlice []CancelGoal_Request, cSlice []CCancelGoal_Request) {

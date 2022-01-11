@@ -193,27 +193,22 @@ func WStrings__Sequence_to_Go(goSlice *[]WStrings, cSlice CWStrings__Sequence) {
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]WStrings, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.test_msgs__msg__WStrings__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__msg__WStrings * uintptr(i)),
-		))
-		WStringsTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]WStrings, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		WStringsTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func WStrings__Sequence_to_C(cSlice *CWStrings__Sequence, goSlice []WStrings) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.test_msgs__msg__WStrings)(C.malloc((C.size_t)(C.sizeof_struct_test_msgs__msg__WStrings * uintptr(len(goSlice)))))
+	cSlice.data = (*C.test_msgs__msg__WStrings)(C.malloc(C.sizeof_struct_test_msgs__msg__WStrings * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.test_msgs__msg__WStrings)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__msg__WStrings * uintptr(i)),
-		))
-		WStringsTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		WStringsTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func WStrings__Array_to_Go(goSlice []WStrings, cSlice []CWStrings) {

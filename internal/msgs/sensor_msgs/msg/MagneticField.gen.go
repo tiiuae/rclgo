@@ -169,27 +169,22 @@ func MagneticField__Sequence_to_Go(goSlice *[]MagneticField, cSlice CMagneticFie
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]MagneticField, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.sensor_msgs__msg__MagneticField__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__MagneticField * uintptr(i)),
-		))
-		MagneticFieldTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]MagneticField, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		MagneticFieldTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func MagneticField__Sequence_to_C(cSlice *CMagneticField__Sequence, goSlice []MagneticField) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.sensor_msgs__msg__MagneticField)(C.malloc((C.size_t)(C.sizeof_struct_sensor_msgs__msg__MagneticField * uintptr(len(goSlice)))))
+	cSlice.data = (*C.sensor_msgs__msg__MagneticField)(C.malloc(C.sizeof_struct_sensor_msgs__msg__MagneticField * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.sensor_msgs__msg__MagneticField)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__MagneticField * uintptr(i)),
-		))
-		MagneticFieldTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		MagneticFieldTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func MagneticField__Array_to_Go(goSlice []MagneticField, cSlice []CMagneticField) {

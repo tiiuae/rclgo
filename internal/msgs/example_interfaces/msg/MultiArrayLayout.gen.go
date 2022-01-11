@@ -163,27 +163,22 @@ func MultiArrayLayout__Sequence_to_Go(goSlice *[]MultiArrayLayout, cSlice CMulti
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]MultiArrayLayout, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.example_interfaces__msg__MultiArrayLayout__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__MultiArrayLayout * uintptr(i)),
-		))
-		MultiArrayLayoutTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]MultiArrayLayout, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		MultiArrayLayoutTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func MultiArrayLayout__Sequence_to_C(cSlice *CMultiArrayLayout__Sequence, goSlice []MultiArrayLayout) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.example_interfaces__msg__MultiArrayLayout)(C.malloc((C.size_t)(C.sizeof_struct_example_interfaces__msg__MultiArrayLayout * uintptr(len(goSlice)))))
+	cSlice.data = (*C.example_interfaces__msg__MultiArrayLayout)(C.malloc(C.sizeof_struct_example_interfaces__msg__MultiArrayLayout * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.example_interfaces__msg__MultiArrayLayout)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__MultiArrayLayout * uintptr(i)),
-		))
-		MultiArrayLayoutTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		MultiArrayLayoutTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func MultiArrayLayout__Array_to_Go(goSlice []MultiArrayLayout, cSlice []CMultiArrayLayout) {

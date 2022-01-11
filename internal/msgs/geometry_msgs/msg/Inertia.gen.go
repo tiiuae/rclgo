@@ -189,27 +189,22 @@ func Inertia__Sequence_to_Go(goSlice *[]Inertia, cSlice CInertia__Sequence) {
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]Inertia, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.geometry_msgs__msg__Inertia__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Inertia * uintptr(i)),
-		))
-		InertiaTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]Inertia, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		InertiaTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func Inertia__Sequence_to_C(cSlice *CInertia__Sequence, goSlice []Inertia) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.geometry_msgs__msg__Inertia)(C.malloc((C.size_t)(C.sizeof_struct_geometry_msgs__msg__Inertia * uintptr(len(goSlice)))))
+	cSlice.data = (*C.geometry_msgs__msg__Inertia)(C.malloc(C.sizeof_struct_geometry_msgs__msg__Inertia * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.geometry_msgs__msg__Inertia)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Inertia * uintptr(i)),
-		))
-		InertiaTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		InertiaTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func Inertia__Array_to_Go(goSlice []Inertia, cSlice []CInertia) {

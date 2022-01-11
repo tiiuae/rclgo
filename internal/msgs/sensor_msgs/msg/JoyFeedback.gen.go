@@ -169,27 +169,22 @@ func JoyFeedback__Sequence_to_Go(goSlice *[]JoyFeedback, cSlice CJoyFeedback__Se
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]JoyFeedback, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.sensor_msgs__msg__JoyFeedback__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__JoyFeedback * uintptr(i)),
-		))
-		JoyFeedbackTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]JoyFeedback, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		JoyFeedbackTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func JoyFeedback__Sequence_to_C(cSlice *CJoyFeedback__Sequence, goSlice []JoyFeedback) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.sensor_msgs__msg__JoyFeedback)(C.malloc((C.size_t)(C.sizeof_struct_sensor_msgs__msg__JoyFeedback * uintptr(len(goSlice)))))
+	cSlice.data = (*C.sensor_msgs__msg__JoyFeedback)(C.malloc(C.sizeof_struct_sensor_msgs__msg__JoyFeedback * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.sensor_msgs__msg__JoyFeedback)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__JoyFeedback * uintptr(i)),
-		))
-		JoyFeedbackTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		JoyFeedbackTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func JoyFeedback__Array_to_Go(goSlice []JoyFeedback, cSlice []CJoyFeedback) {

@@ -163,27 +163,22 @@ func ByteMultiArray__Sequence_to_Go(goSlice *[]ByteMultiArray, cSlice CByteMulti
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]ByteMultiArray, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.std_msgs__msg__ByteMultiArray__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__ByteMultiArray * uintptr(i)),
-		))
-		ByteMultiArrayTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]ByteMultiArray, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		ByteMultiArrayTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func ByteMultiArray__Sequence_to_C(cSlice *CByteMultiArray__Sequence, goSlice []ByteMultiArray) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.std_msgs__msg__ByteMultiArray)(C.malloc((C.size_t)(C.sizeof_struct_std_msgs__msg__ByteMultiArray * uintptr(len(goSlice)))))
+	cSlice.data = (*C.std_msgs__msg__ByteMultiArray)(C.malloc(C.sizeof_struct_std_msgs__msg__ByteMultiArray * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.std_msgs__msg__ByteMultiArray)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__ByteMultiArray * uintptr(i)),
-		))
-		ByteMultiArrayTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		ByteMultiArrayTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func ByteMultiArray__Array_to_Go(goSlice []ByteMultiArray, cSlice []CByteMultiArray) {

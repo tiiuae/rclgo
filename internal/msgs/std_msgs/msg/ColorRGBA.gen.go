@@ -169,27 +169,22 @@ func ColorRGBA__Sequence_to_Go(goSlice *[]ColorRGBA, cSlice CColorRGBA__Sequence
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]ColorRGBA, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.std_msgs__msg__ColorRGBA__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__ColorRGBA * uintptr(i)),
-		))
-		ColorRGBATypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]ColorRGBA, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		ColorRGBATypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func ColorRGBA__Sequence_to_C(cSlice *CColorRGBA__Sequence, goSlice []ColorRGBA) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.std_msgs__msg__ColorRGBA)(C.malloc((C.size_t)(C.sizeof_struct_std_msgs__msg__ColorRGBA * uintptr(len(goSlice)))))
+	cSlice.data = (*C.std_msgs__msg__ColorRGBA)(C.malloc(C.sizeof_struct_std_msgs__msg__ColorRGBA * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.std_msgs__msg__ColorRGBA)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__ColorRGBA * uintptr(i)),
-		))
-		ColorRGBATypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		ColorRGBATypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func ColorRGBA__Array_to_Go(goSlice []ColorRGBA, cSlice []CColorRGBA) {

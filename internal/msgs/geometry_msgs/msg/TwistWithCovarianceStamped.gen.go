@@ -160,27 +160,22 @@ func TwistWithCovarianceStamped__Sequence_to_Go(goSlice *[]TwistWithCovarianceSt
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]TwistWithCovarianceStamped, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.geometry_msgs__msg__TwistWithCovarianceStamped__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__TwistWithCovarianceStamped * uintptr(i)),
-		))
-		TwistWithCovarianceStampedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]TwistWithCovarianceStamped, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		TwistWithCovarianceStampedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func TwistWithCovarianceStamped__Sequence_to_C(cSlice *CTwistWithCovarianceStamped__Sequence, goSlice []TwistWithCovarianceStamped) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.geometry_msgs__msg__TwistWithCovarianceStamped)(C.malloc((C.size_t)(C.sizeof_struct_geometry_msgs__msg__TwistWithCovarianceStamped * uintptr(len(goSlice)))))
+	cSlice.data = (*C.geometry_msgs__msg__TwistWithCovarianceStamped)(C.malloc(C.sizeof_struct_geometry_msgs__msg__TwistWithCovarianceStamped * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.geometry_msgs__msg__TwistWithCovarianceStamped)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__TwistWithCovarianceStamped * uintptr(i)),
-		))
-		TwistWithCovarianceStampedTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		TwistWithCovarianceStampedTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func TwistWithCovarianceStamped__Array_to_Go(goSlice []TwistWithCovarianceStamped, cSlice []CTwistWithCovarianceStamped) {

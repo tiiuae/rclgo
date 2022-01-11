@@ -157,27 +157,22 @@ func UUID__Sequence_to_Go(goSlice *[]UUID, cSlice CUUID__Sequence) {
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]UUID, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.unique_identifier_msgs__msg__UUID__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_unique_identifier_msgs__msg__UUID * uintptr(i)),
-		))
-		UUIDTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]UUID, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		UUIDTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func UUID__Sequence_to_C(cSlice *CUUID__Sequence, goSlice []UUID) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.unique_identifier_msgs__msg__UUID)(C.malloc((C.size_t)(C.sizeof_struct_unique_identifier_msgs__msg__UUID * uintptr(len(goSlice)))))
+	cSlice.data = (*C.unique_identifier_msgs__msg__UUID)(C.malloc(C.sizeof_struct_unique_identifier_msgs__msg__UUID * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.unique_identifier_msgs__msg__UUID)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_unique_identifier_msgs__msg__UUID * uintptr(i)),
-		))
-		UUIDTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		UUIDTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func UUID__Array_to_Go(goSlice []UUID, cSlice []CUUID) {

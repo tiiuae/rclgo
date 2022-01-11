@@ -160,27 +160,22 @@ func WrenchStamped__Sequence_to_Go(goSlice *[]WrenchStamped, cSlice CWrenchStamp
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]WrenchStamped, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.geometry_msgs__msg__WrenchStamped__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__WrenchStamped * uintptr(i)),
-		))
-		WrenchStampedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]WrenchStamped, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		WrenchStampedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func WrenchStamped__Sequence_to_C(cSlice *CWrenchStamped__Sequence, goSlice []WrenchStamped) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.geometry_msgs__msg__WrenchStamped)(C.malloc((C.size_t)(C.sizeof_struct_geometry_msgs__msg__WrenchStamped * uintptr(len(goSlice)))))
+	cSlice.data = (*C.geometry_msgs__msg__WrenchStamped)(C.malloc(C.sizeof_struct_geometry_msgs__msg__WrenchStamped * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.geometry_msgs__msg__WrenchStamped)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__WrenchStamped * uintptr(i)),
-		))
-		WrenchStampedTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		WrenchStampedTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func WrenchStamped__Array_to_Go(goSlice []WrenchStamped, cSlice []CWrenchStamped) {

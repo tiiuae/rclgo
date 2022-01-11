@@ -162,27 +162,22 @@ func AccelWithCovariance__Sequence_to_Go(goSlice *[]AccelWithCovariance, cSlice 
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]AccelWithCovariance, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.geometry_msgs__msg__AccelWithCovariance__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__AccelWithCovariance * uintptr(i)),
-		))
-		AccelWithCovarianceTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]AccelWithCovariance, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		AccelWithCovarianceTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func AccelWithCovariance__Sequence_to_C(cSlice *CAccelWithCovariance__Sequence, goSlice []AccelWithCovariance) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.geometry_msgs__msg__AccelWithCovariance)(C.malloc((C.size_t)(C.sizeof_struct_geometry_msgs__msg__AccelWithCovariance * uintptr(len(goSlice)))))
+	cSlice.data = (*C.geometry_msgs__msg__AccelWithCovariance)(C.malloc(C.sizeof_struct_geometry_msgs__msg__AccelWithCovariance * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.geometry_msgs__msg__AccelWithCovariance)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__AccelWithCovariance * uintptr(i)),
-		))
-		AccelWithCovarianceTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		AccelWithCovarianceTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func AccelWithCovariance__Array_to_Go(goSlice []AccelWithCovariance, cSlice []CAccelWithCovariance) {

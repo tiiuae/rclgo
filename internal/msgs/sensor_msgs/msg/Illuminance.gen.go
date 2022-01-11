@@ -165,27 +165,22 @@ func Illuminance__Sequence_to_Go(goSlice *[]Illuminance, cSlice CIlluminance__Se
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]Illuminance, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.sensor_msgs__msg__Illuminance__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__Illuminance * uintptr(i)),
-		))
-		IlluminanceTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]Illuminance, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		IlluminanceTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func Illuminance__Sequence_to_C(cSlice *CIlluminance__Sequence, goSlice []Illuminance) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.sensor_msgs__msg__Illuminance)(C.malloc((C.size_t)(C.sizeof_struct_sensor_msgs__msg__Illuminance * uintptr(len(goSlice)))))
+	cSlice.data = (*C.sensor_msgs__msg__Illuminance)(C.malloc(C.sizeof_struct_sensor_msgs__msg__Illuminance * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.sensor_msgs__msg__Illuminance)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__Illuminance * uintptr(i)),
-		))
-		IlluminanceTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		IlluminanceTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func Illuminance__Array_to_Go(goSlice []Illuminance, cSlice []CIlluminance) {

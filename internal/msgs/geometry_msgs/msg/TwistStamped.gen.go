@@ -160,27 +160,22 @@ func TwistStamped__Sequence_to_Go(goSlice *[]TwistStamped, cSlice CTwistStamped_
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]TwistStamped, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.geometry_msgs__msg__TwistStamped__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__TwistStamped * uintptr(i)),
-		))
-		TwistStampedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]TwistStamped, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		TwistStampedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func TwistStamped__Sequence_to_C(cSlice *CTwistStamped__Sequence, goSlice []TwistStamped) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.geometry_msgs__msg__TwistStamped)(C.malloc((C.size_t)(C.sizeof_struct_geometry_msgs__msg__TwistStamped * uintptr(len(goSlice)))))
+	cSlice.data = (*C.geometry_msgs__msg__TwistStamped)(C.malloc(C.sizeof_struct_geometry_msgs__msg__TwistStamped * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.geometry_msgs__msg__TwistStamped)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__TwistStamped * uintptr(i)),
-		))
-		TwistStampedTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		TwistStampedTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func TwistStamped__Array_to_Go(goSlice []TwistStamped, cSlice []CTwistStamped) {

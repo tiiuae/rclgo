@@ -154,27 +154,22 @@ func Float32__Sequence_to_Go(goSlice *[]Float32, cSlice CFloat32__Sequence) {
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]Float32, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.std_msgs__msg__Float32__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__Float32 * uintptr(i)),
-		))
-		Float32TypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]Float32, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		Float32TypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func Float32__Sequence_to_C(cSlice *CFloat32__Sequence, goSlice []Float32) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.std_msgs__msg__Float32)(C.malloc((C.size_t)(C.sizeof_struct_std_msgs__msg__Float32 * uintptr(len(goSlice)))))
+	cSlice.data = (*C.std_msgs__msg__Float32)(C.malloc(C.sizeof_struct_std_msgs__msg__Float32 * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.std_msgs__msg__Float32)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__Float32 * uintptr(i)),
-		))
-		Float32TypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		Float32TypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func Float32__Array_to_Go(goSlice []Float32, cSlice []CFloat32) {

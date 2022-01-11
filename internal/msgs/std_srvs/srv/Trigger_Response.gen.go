@@ -160,27 +160,22 @@ func Trigger_Response__Sequence_to_Go(goSlice *[]Trigger_Response, cSlice CTrigg
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]Trigger_Response, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.std_srvs__srv__Trigger_Response__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_srvs__srv__Trigger_Response * uintptr(i)),
-		))
-		Trigger_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]Trigger_Response, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		Trigger_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func Trigger_Response__Sequence_to_C(cSlice *CTrigger_Response__Sequence, goSlice []Trigger_Response) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.std_srvs__srv__Trigger_Response)(C.malloc((C.size_t)(C.sizeof_struct_std_srvs__srv__Trigger_Response * uintptr(len(goSlice)))))
+	cSlice.data = (*C.std_srvs__srv__Trigger_Response)(C.malloc(C.sizeof_struct_std_srvs__srv__Trigger_Response * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.std_srvs__srv__Trigger_Response)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_srvs__srv__Trigger_Response * uintptr(i)),
-		))
-		Trigger_ResponseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		Trigger_ResponseTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func Trigger_Response__Array_to_Go(goSlice []Trigger_Response, cSlice []CTrigger_Response) {

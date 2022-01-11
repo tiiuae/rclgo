@@ -175,27 +175,22 @@ func GoalStatus__Sequence_to_Go(goSlice *[]GoalStatus, cSlice CGoalStatus__Seque
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]GoalStatus, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.action_msgs__msg__GoalStatus__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_action_msgs__msg__GoalStatus * uintptr(i)),
-		))
-		GoalStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]GoalStatus, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		GoalStatusTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func GoalStatus__Sequence_to_C(cSlice *CGoalStatus__Sequence, goSlice []GoalStatus) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.action_msgs__msg__GoalStatus)(C.malloc((C.size_t)(C.sizeof_struct_action_msgs__msg__GoalStatus * uintptr(len(goSlice)))))
+	cSlice.data = (*C.action_msgs__msg__GoalStatus)(C.malloc(C.sizeof_struct_action_msgs__msg__GoalStatus * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.action_msgs__msg__GoalStatus)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_action_msgs__msg__GoalStatus * uintptr(i)),
-		))
-		GoalStatusTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		GoalStatusTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func GoalStatus__Array_to_Go(goSlice []GoalStatus, cSlice []CGoalStatus) {

@@ -155,27 +155,22 @@ func SetCameraInfo_Request__Sequence_to_Go(goSlice *[]SetCameraInfo_Request, cSl
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]SetCameraInfo_Request, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.sensor_msgs__srv__SetCameraInfo_Request__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__srv__SetCameraInfo_Request * uintptr(i)),
-		))
-		SetCameraInfo_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]SetCameraInfo_Request, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		SetCameraInfo_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func SetCameraInfo_Request__Sequence_to_C(cSlice *CSetCameraInfo_Request__Sequence, goSlice []SetCameraInfo_Request) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.sensor_msgs__srv__SetCameraInfo_Request)(C.malloc((C.size_t)(C.sizeof_struct_sensor_msgs__srv__SetCameraInfo_Request * uintptr(len(goSlice)))))
+	cSlice.data = (*C.sensor_msgs__srv__SetCameraInfo_Request)(C.malloc(C.sizeof_struct_sensor_msgs__srv__SetCameraInfo_Request * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.sensor_msgs__srv__SetCameraInfo_Request)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__srv__SetCameraInfo_Request * uintptr(i)),
-		))
-		SetCameraInfo_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		SetCameraInfo_RequestTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func SetCameraInfo_Request__Array_to_Go(goSlice []SetCameraInfo_Request, cSlice []CSetCameraInfo_Request) {

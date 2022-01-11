@@ -218,27 +218,22 @@ func MultiNested__Sequence_to_Go(goSlice *[]MultiNested, cSlice CMultiNested__Se
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]MultiNested, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.test_msgs__msg__MultiNested__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__msg__MultiNested * uintptr(i)),
-		))
-		MultiNestedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]MultiNested, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		MultiNestedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func MultiNested__Sequence_to_C(cSlice *CMultiNested__Sequence, goSlice []MultiNested) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.test_msgs__msg__MultiNested)(C.malloc((C.size_t)(C.sizeof_struct_test_msgs__msg__MultiNested * uintptr(len(goSlice)))))
+	cSlice.data = (*C.test_msgs__msg__MultiNested)(C.malloc(C.sizeof_struct_test_msgs__msg__MultiNested * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.test_msgs__msg__MultiNested)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__msg__MultiNested * uintptr(i)),
-		))
-		MultiNestedTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		MultiNestedTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func MultiNested__Array_to_Go(goSlice []MultiNested, cSlice []CMultiNested) {

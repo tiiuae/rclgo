@@ -180,7 +180,7 @@ func (a *Args) String() string {
 		}
 		for *p != 0 {
 			s = append(s, byte(*p))
-			p = (*C.char)(unsafe.Pointer(uintptr(unsafe.Pointer(p)) + 1))
+			p = (*C.char)(unsafe.Add(unsafe.Pointer(p), 1))
 		}
 	}
 	runtime.KeepAlive(a)
@@ -830,26 +830,26 @@ func (self *WaitSet) Run(ctx context.Context) (err error) {
 		if rc := C.rcl_wait(&self.rcl_wait_set_t, -1); rc != C.RCL_RET_OK {
 			return errorsCast(rc)
 		}
-		timers := (*[1 << 30]*C.struct_rcl_timer_t)(unsafe.Pointer(self.rcl_wait_set_t.timers))
+		timers := unsafe.Slice(self.rcl_wait_set_t.timers, len(self.Timers))
 		for i, t := range self.Timers {
 			if timers[i] != nil {
 				t.Reset()
 				t.Callback(t)
 			}
 		}
-		subs := (*[1 << 30]*C.struct_rcl_subscription_t)(unsafe.Pointer(self.rcl_wait_set_t.subscriptions))
+		subs := unsafe.Slice(self.rcl_wait_set_t.subscriptions, len(self.Subscriptions))
 		for i, s := range self.Subscriptions {
 			if subs[i] != nil {
 				s.Callback(s)
 			}
 		}
-		svcs := (*[1 << 30]*C.struct_rcl_service_t)(unsafe.Pointer(self.rcl_wait_set_t.services))
+		svcs := unsafe.Slice(self.rcl_wait_set_t.services, len(self.Services))
 		for i, s := range self.Services {
 			if svcs[i] != nil {
 				s.handleRequest()
 			}
 		}
-		clients := (*[1 << 30]*C.struct_rcl_client_t)(unsafe.Pointer(self.rcl_wait_set_t.clients))
+		clients := unsafe.Slice(self.rcl_wait_set_t.clients, len(self.Clients))
 		for i, c := range self.Clients {
 			if clients[i] != nil {
 				c.sender.HandleResponse()
@@ -861,7 +861,7 @@ func (self *WaitSet) Run(ctx context.Context) (err error) {
 		for _, c := range self.ActionClients {
 			c.handleReadyEntities(self)
 		}
-		guardConditions := (*[1 << 30]*C.struct_rcl_guard_condition_t)(unsafe.Pointer(self.rcl_wait_set_t.guard_conditions))
+		guardConditions := unsafe.Slice(self.rcl_wait_set_t.guard_conditions, len(self.guardConditions))
 		for i := range self.guardConditions {
 			if guardConditions[i] == self.cancelWait.rclGuardCondition {
 				return ctx.Err()

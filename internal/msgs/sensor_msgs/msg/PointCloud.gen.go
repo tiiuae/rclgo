@@ -172,27 +172,22 @@ func PointCloud__Sequence_to_Go(goSlice *[]PointCloud, cSlice CPointCloud__Seque
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]PointCloud, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.sensor_msgs__msg__PointCloud__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__PointCloud * uintptr(i)),
-		))
-		PointCloudTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]PointCloud, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		PointCloudTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func PointCloud__Sequence_to_C(cSlice *CPointCloud__Sequence, goSlice []PointCloud) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.sensor_msgs__msg__PointCloud)(C.malloc((C.size_t)(C.sizeof_struct_sensor_msgs__msg__PointCloud * uintptr(len(goSlice)))))
+	cSlice.data = (*C.sensor_msgs__msg__PointCloud)(C.malloc(C.sizeof_struct_sensor_msgs__msg__PointCloud * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.sensor_msgs__msg__PointCloud)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__PointCloud * uintptr(i)),
-		))
-		PointCloudTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		PointCloudTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func PointCloud__Array_to_Go(goSlice []PointCloud, cSlice []CPointCloud) {

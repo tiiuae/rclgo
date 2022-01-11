@@ -167,27 +167,22 @@ func Fibonacci_FeedbackMessage__Sequence_to_Go(goSlice *[]Fibonacci_FeedbackMess
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]Fibonacci_FeedbackMessage, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.test_msgs__action__Fibonacci_FeedbackMessage__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__action__Fibonacci_FeedbackMessage * uintptr(i)),
-		))
-		Fibonacci_FeedbackMessageTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]Fibonacci_FeedbackMessage, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		Fibonacci_FeedbackMessageTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func Fibonacci_FeedbackMessage__Sequence_to_C(cSlice *CFibonacci_FeedbackMessage__Sequence, goSlice []Fibonacci_FeedbackMessage) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.test_msgs__action__Fibonacci_FeedbackMessage)(C.malloc((C.size_t)(C.sizeof_struct_test_msgs__action__Fibonacci_FeedbackMessage * uintptr(len(goSlice)))))
+	cSlice.data = (*C.test_msgs__action__Fibonacci_FeedbackMessage)(C.malloc(C.sizeof_struct_test_msgs__action__Fibonacci_FeedbackMessage * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.test_msgs__action__Fibonacci_FeedbackMessage)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__action__Fibonacci_FeedbackMessage * uintptr(i)),
-		))
-		Fibonacci_FeedbackMessageTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		Fibonacci_FeedbackMessageTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func Fibonacci_FeedbackMessage__Array_to_Go(goSlice []Fibonacci_FeedbackMessage, cSlice []CFibonacci_FeedbackMessage) {

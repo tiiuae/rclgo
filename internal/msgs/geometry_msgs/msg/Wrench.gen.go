@@ -159,27 +159,22 @@ func Wrench__Sequence_to_Go(goSlice *[]Wrench, cSlice CWrench__Sequence) {
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]Wrench, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.geometry_msgs__msg__Wrench__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Wrench * uintptr(i)),
-		))
-		WrenchTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]Wrench, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		WrenchTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func Wrench__Sequence_to_C(cSlice *CWrench__Sequence, goSlice []Wrench) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.geometry_msgs__msg__Wrench)(C.malloc((C.size_t)(C.sizeof_struct_geometry_msgs__msg__Wrench * uintptr(len(goSlice)))))
+	cSlice.data = (*C.geometry_msgs__msg__Wrench)(C.malloc(C.sizeof_struct_geometry_msgs__msg__Wrench * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.geometry_msgs__msg__Wrench)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Wrench * uintptr(i)),
-		))
-		WrenchTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		WrenchTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func Wrench__Array_to_Go(goSlice []Wrench, cSlice []CWrench) {

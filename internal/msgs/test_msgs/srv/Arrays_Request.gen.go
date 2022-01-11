@@ -374,27 +374,22 @@ func Arrays_Request__Sequence_to_Go(goSlice *[]Arrays_Request, cSlice CArrays_Re
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]Arrays_Request, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.test_msgs__srv__Arrays_Request__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__srv__Arrays_Request * uintptr(i)),
-		))
-		Arrays_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]Arrays_Request, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		Arrays_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func Arrays_Request__Sequence_to_C(cSlice *CArrays_Request__Sequence, goSlice []Arrays_Request) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.test_msgs__srv__Arrays_Request)(C.malloc((C.size_t)(C.sizeof_struct_test_msgs__srv__Arrays_Request * uintptr(len(goSlice)))))
+	cSlice.data = (*C.test_msgs__srv__Arrays_Request)(C.malloc(C.sizeof_struct_test_msgs__srv__Arrays_Request * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.test_msgs__srv__Arrays_Request)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__srv__Arrays_Request * uintptr(i)),
-		))
-		Arrays_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		Arrays_RequestTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func Arrays_Request__Array_to_Go(goSlice []Arrays_Request, cSlice []CArrays_Request) {

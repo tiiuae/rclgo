@@ -160,27 +160,22 @@ func PoseStamped__Sequence_to_Go(goSlice *[]PoseStamped, cSlice CPoseStamped__Se
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]PoseStamped, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.geometry_msgs__msg__PoseStamped__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__PoseStamped * uintptr(i)),
-		))
-		PoseStampedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]PoseStamped, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		PoseStampedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func PoseStamped__Sequence_to_C(cSlice *CPoseStamped__Sequence, goSlice []PoseStamped) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.geometry_msgs__msg__PoseStamped)(C.malloc((C.size_t)(C.sizeof_struct_geometry_msgs__msg__PoseStamped * uintptr(len(goSlice)))))
+	cSlice.data = (*C.geometry_msgs__msg__PoseStamped)(C.malloc(C.sizeof_struct_geometry_msgs__msg__PoseStamped * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.geometry_msgs__msg__PoseStamped)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__PoseStamped * uintptr(i)),
-		))
-		PoseStampedTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		PoseStampedTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func PoseStamped__Array_to_Go(goSlice []PoseStamped, cSlice []CPoseStamped) {

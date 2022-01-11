@@ -160,27 +160,22 @@ func SetBool_Response__Sequence_to_Go(goSlice *[]SetBool_Response, cSlice CSetBo
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]SetBool_Response, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.example_interfaces__srv__SetBool_Response__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__srv__SetBool_Response * uintptr(i)),
-		))
-		SetBool_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]SetBool_Response, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		SetBool_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func SetBool_Response__Sequence_to_C(cSlice *CSetBool_Response__Sequence, goSlice []SetBool_Response) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.example_interfaces__srv__SetBool_Response)(C.malloc((C.size_t)(C.sizeof_struct_example_interfaces__srv__SetBool_Response * uintptr(len(goSlice)))))
+	cSlice.data = (*C.example_interfaces__srv__SetBool_Response)(C.malloc(C.sizeof_struct_example_interfaces__srv__SetBool_Response * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.example_interfaces__srv__SetBool_Response)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__srv__SetBool_Response * uintptr(i)),
-		))
-		SetBool_ResponseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		SetBool_ResponseTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func SetBool_Response__Array_to_Go(goSlice []SetBool_Response, cSlice []CSetBool_Response) {

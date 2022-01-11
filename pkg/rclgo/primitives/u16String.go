@@ -20,27 +20,18 @@ func U16StringAsCStruct(dst unsafe.Pointer, m string) { // rosidl_runtime_c__U16
 	mem := (*C.rosidl_runtime_c__U16String)(dst)
 	runescape := utf16.Encode([]rune(m))
 
-	mem.data = (*C.uint_least16_t)(C.malloc((C.size_t)(C.sizeof_uint_least16_t * uintptr(len(runescape)+1))))
-
-	for i := 0; i < len(runescape); i++ {
-		u16StringSetDataCArrayIndex(mem, i, runescape[i])
-	}
-	u16StringSetDataCArrayIndex(mem, len(runescape), '\x00')
+	mem.data = (*C.ushort)(C.malloc(C.sizeof_ushort * C.size_t(len(runescape)+1)))
 	mem.size = C.size_t(len(runescape))
 	mem.capacity = C.size_t(len(runescape) + 1)
+	memData := unsafe.Slice((*uint16)(mem.data), mem.capacity)
+	copy(memData, runescape)
+	memData[len(memData)-1] = 0
 }
 
 func U16StringAsGoStruct(msg *string, ros2_message_buffer unsafe.Pointer) {
 	mem := (*C.rosidl_runtime_c__U16String)(ros2_message_buffer)
 
-	*msg = string(utf16.Decode((*[1 << 30]uint16)(unsafe.Pointer(mem.data))[:mem.size]))
-}
-
-func u16StringSetDataCArrayIndex(mem *C.rosidl_runtime_c__U16String, i int, v uint16) {
-	cIdx := (*C.uint_least16_t)(unsafe.Pointer(
-		uintptr(unsafe.Pointer(mem.data)) + (C.sizeof_uint_least16_t * uintptr(i)),
-	))
-	*cIdx = (C.uint_least16_t)(v)
+	*msg = string(utf16.Decode(unsafe.Slice((*uint16)(mem.data), mem.size)))
 }
 
 type CU16String = C.rosidl_runtime_c__U16String
@@ -51,11 +42,9 @@ func U16String__Sequence_to_Go(goSlice *[]string, cSlice CU16String__Sequence) {
 		return
 	}
 	*goSlice = make([]string, int64(cSlice.size))
+	src := unsafe.Slice(cSlice.data, cSlice.size)
 	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.rosidl_runtime_c__U16String)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rosidl_runtime_c__U16String * uintptr(i)),
-		))
-		U16StringAsGoStruct((&(*goSlice)[i]), unsafe.Pointer(cIdx))
+		U16StringAsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 
@@ -66,12 +55,9 @@ func U16String__Sequence_to_C(cSlice *CU16String__Sequence, goSlice []string) {
 	cSlice.data = (*C.rosidl_runtime_c__U16String)(C.malloc((C.size_t)(C.sizeof_struct_rosidl_runtime_c__U16String * uintptr(len(goSlice)))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.rosidl_runtime_c__U16String)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rosidl_runtime_c__U16String * uintptr(i)),
-		))
-		U16StringAsCStruct(unsafe.Pointer(cIdx), v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		U16StringAsCStruct(unsafe.Pointer(&dst[i]), goSlice[i])
 	}
 }
 

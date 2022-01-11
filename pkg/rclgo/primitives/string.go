@@ -18,30 +18,20 @@ import (
 
 func StringAsCStruct(dst unsafe.Pointer, m string) {
 	mem := (*C.rosidl_runtime_c__String)(dst) //TODO add this to template generator
-
-	mem.data = (*C.char)(C.malloc((C.size_t)(C.sizeof_char * uintptr(len(m)+1))))
-
-	for i := 0; i < len(m); i++ {
-		stringSetDataCArrayIndex(mem, i, m[i])
-	}
-	stringSetDataCArrayIndex(mem, len(m), '\x00')
+	mem.data = (*C.char)(C.malloc(C.sizeof_char * C.size_t(len(m)+1)))
 	mem.size = C.size_t(len(m))
 	mem.capacity = C.size_t(len(m) + 1)
+	memData := unsafe.Slice((*byte)(unsafe.Pointer(mem.data)), mem.capacity)
+	copy(memData, m)
+	memData[len(memData)-1] = 0
 }
 
 func StringAsGoStruct(m *string, ros2_message_buffer unsafe.Pointer) {
 	mem := (*C.rosidl_runtime_c__String)(ros2_message_buffer)
 	sb := strings.Builder{}
 	sb.Grow(int(mem.size))
-	sb.Write((*[1 << 30]byte)(unsafe.Pointer(mem.data))[:mem.size])
+	sb.Write(unsafe.Slice((*byte)(unsafe.Pointer(mem.data)), mem.size))
 	*m = sb.String()
-}
-
-func stringSetDataCArrayIndex(mem *C.rosidl_runtime_c__String, i int, v byte) {
-	cIdx := (*C.uint8_t)(unsafe.Pointer(
-		uintptr(unsafe.Pointer(mem.data)) + (C.sizeof_uint8_t * uintptr(i)),
-	))
-	*cIdx = (C.uint8_t)(v)
 }
 
 type CString = C.rosidl_runtime_c__String
@@ -52,11 +42,9 @@ func String__Sequence_to_Go(goSlice *[]string, cSlice CString__Sequence) {
 		return
 	}
 	*goSlice = make([]string, int64(cSlice.size))
+	src := unsafe.Slice(cSlice.data, cSlice.size)
 	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.rosidl_runtime_c__String)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rosidl_runtime_c__String * uintptr(i)),
-		))
-		StringAsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+		StringAsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 
@@ -67,12 +55,9 @@ func String__Sequence_to_C(cSlice *CString__Sequence, goSlice []string) {
 	cSlice.data = (*C.rosidl_runtime_c__String)(C.malloc((C.size_t)(C.sizeof_struct_rosidl_runtime_c__String * uintptr(len(goSlice)))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.rosidl_runtime_c__String)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_rosidl_runtime_c__String * uintptr(i)),
-		))
-		StringAsCStruct(unsafe.Pointer(cIdx), v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		StringAsCStruct(unsafe.Pointer(&dst[i]), goSlice[i])
 	}
 }
 

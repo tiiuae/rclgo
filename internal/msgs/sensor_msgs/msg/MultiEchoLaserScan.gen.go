@@ -206,27 +206,22 @@ func MultiEchoLaserScan__Sequence_to_Go(goSlice *[]MultiEchoLaserScan, cSlice CM
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]MultiEchoLaserScan, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.sensor_msgs__msg__MultiEchoLaserScan__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__MultiEchoLaserScan * uintptr(i)),
-		))
-		MultiEchoLaserScanTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]MultiEchoLaserScan, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		MultiEchoLaserScanTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func MultiEchoLaserScan__Sequence_to_C(cSlice *CMultiEchoLaserScan__Sequence, goSlice []MultiEchoLaserScan) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.sensor_msgs__msg__MultiEchoLaserScan)(C.malloc((C.size_t)(C.sizeof_struct_sensor_msgs__msg__MultiEchoLaserScan * uintptr(len(goSlice)))))
+	cSlice.data = (*C.sensor_msgs__msg__MultiEchoLaserScan)(C.malloc(C.sizeof_struct_sensor_msgs__msg__MultiEchoLaserScan * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.sensor_msgs__msg__MultiEchoLaserScan)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__MultiEchoLaserScan * uintptr(i)),
-		))
-		MultiEchoLaserScanTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		MultiEchoLaserScanTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func MultiEchoLaserScan__Array_to_Go(goSlice []MultiEchoLaserScan, cSlice []CMultiEchoLaserScan) {

@@ -157,27 +157,22 @@ func Polygon__Sequence_to_Go(goSlice *[]Polygon, cSlice CPolygon__Sequence) {
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]Polygon, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.geometry_msgs__msg__Polygon__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Polygon * uintptr(i)),
-		))
-		PolygonTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]Polygon, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		PolygonTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func Polygon__Sequence_to_C(cSlice *CPolygon__Sequence, goSlice []Polygon) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.geometry_msgs__msg__Polygon)(C.malloc((C.size_t)(C.sizeof_struct_geometry_msgs__msg__Polygon * uintptr(len(goSlice)))))
+	cSlice.data = (*C.geometry_msgs__msg__Polygon)(C.malloc(C.sizeof_struct_geometry_msgs__msg__Polygon * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.geometry_msgs__msg__Polygon)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Polygon * uintptr(i)),
-		))
-		PolygonTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		PolygonTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func Polygon__Array_to_Go(goSlice []Polygon, cSlice []CPolygon) {

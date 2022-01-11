@@ -32,27 +32,22 @@ func Bool__Sequence_to_Go(goSlice *[]bool, cSlice CBool__Sequence) {
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]bool, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.bool)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_bool * uintptr(i)),
-		))
-		(*goSlice)[i] = bool(*cIdx)
+	*goSlice = make([]bool, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		(*goSlice)[i] = bool(src[i])
 	}
 }
 func Bool__Sequence_to_C(cSlice *CBool__Sequence, goSlice []bool) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.bool)(C.malloc((C.size_t)(C.sizeof_bool * uintptr(len(goSlice)))))
+	cSlice.data = (*C.bool)(C.malloc(C.sizeof_bool * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.bool)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_bool * uintptr(i)),
-		))
-		*cIdx = (C.bool)(v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		dst[i] = C.bool(goSlice[i])
 	}
 }
 func Bool__Array_to_Go(goSlice []bool, cSlice []CBool) {
@@ -74,27 +69,22 @@ func Byte__Sequence_to_Go(goSlice *[]byte, cSlice CByte__Sequence) {
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]byte, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.uint8_t)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_uint8_t * uintptr(i)),
-		))
-		(*goSlice)[i] = byte(*cIdx)
+	*goSlice = make([]byte, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		(*goSlice)[i] = byte(src[i])
 	}
 }
 func Byte__Sequence_to_C(cSlice *CByte__Sequence, goSlice []byte) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.uint8_t)(C.malloc((C.size_t)(C.sizeof_uint8_t * uintptr(len(goSlice)))))
+	cSlice.data = (*C.uint8_t)(C.malloc(C.sizeof_uint8_t * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.uint8_t)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_uint8_t * uintptr(i)),
-		))
-		*cIdx = (C.uint8_t)(v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		dst[i] = C.uint8_t(goSlice[i])
 	}
 }
 func Byte__Array_to_Go(goSlice []byte, cSlice []CByte) {
@@ -116,27 +106,22 @@ func Float32__Sequence_to_Go(goSlice *[]float32, cSlice CFloat32__Sequence) {
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]float32, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.float)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_float * uintptr(i)),
-		))
-		(*goSlice)[i] = float32(*cIdx)
+	*goSlice = make([]float32, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		(*goSlice)[i] = float32(src[i])
 	}
 }
 func Float32__Sequence_to_C(cSlice *CFloat32__Sequence, goSlice []float32) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.float)(C.malloc((C.size_t)(C.sizeof_float * uintptr(len(goSlice)))))
+	cSlice.data = (*C.float)(C.malloc(C.sizeof_float * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.float)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_float * uintptr(i)),
-		))
-		*cIdx = (C.float)(v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		dst[i] = C.float(goSlice[i])
 	}
 }
 func Float32__Array_to_Go(goSlice []float32, cSlice []CFloat32) {
@@ -158,27 +143,22 @@ func Float64__Sequence_to_Go(goSlice *[]float64, cSlice CFloat64__Sequence) {
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]float64, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.double)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_double * uintptr(i)),
-		))
-		(*goSlice)[i] = float64(*cIdx)
+	*goSlice = make([]float64, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		(*goSlice)[i] = float64(src[i])
 	}
 }
 func Float64__Sequence_to_C(cSlice *CFloat64__Sequence, goSlice []float64) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.double)(C.malloc((C.size_t)(C.sizeof_double * uintptr(len(goSlice)))))
+	cSlice.data = (*C.double)(C.malloc(C.sizeof_double * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.double)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_double * uintptr(i)),
-		))
-		*cIdx = (C.double)(v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		dst[i] = C.double(goSlice[i])
 	}
 }
 func Float64__Array_to_Go(goSlice []float64, cSlice []CFloat64) {
@@ -200,27 +180,22 @@ func Int16__Sequence_to_Go(goSlice *[]int16, cSlice CInt16__Sequence) {
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]int16, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.int16_t)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_int16_t * uintptr(i)),
-		))
-		(*goSlice)[i] = int16(*cIdx)
+	*goSlice = make([]int16, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		(*goSlice)[i] = int16(src[i])
 	}
 }
 func Int16__Sequence_to_C(cSlice *CInt16__Sequence, goSlice []int16) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.int16_t)(C.malloc((C.size_t)(C.sizeof_int16_t * uintptr(len(goSlice)))))
+	cSlice.data = (*C.int16_t)(C.malloc(C.sizeof_int16_t * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.int16_t)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_int16_t * uintptr(i)),
-		))
-		*cIdx = (C.int16_t)(v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		dst[i] = C.int16_t(goSlice[i])
 	}
 }
 func Int16__Array_to_Go(goSlice []int16, cSlice []CInt16) {
@@ -242,27 +217,22 @@ func Int32__Sequence_to_Go(goSlice *[]int32, cSlice CInt32__Sequence) {
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]int32, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.int32_t)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_int32_t * uintptr(i)),
-		))
-		(*goSlice)[i] = int32(*cIdx)
+	*goSlice = make([]int32, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		(*goSlice)[i] = int32(src[i])
 	}
 }
 func Int32__Sequence_to_C(cSlice *CInt32__Sequence, goSlice []int32) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.int32_t)(C.malloc((C.size_t)(C.sizeof_int32_t * uintptr(len(goSlice)))))
+	cSlice.data = (*C.int32_t)(C.malloc(C.sizeof_int32_t * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.int32_t)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_int32_t * uintptr(i)),
-		))
-		*cIdx = (C.int32_t)(v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		dst[i] = C.int32_t(goSlice[i])
 	}
 }
 func Int32__Array_to_Go(goSlice []int32, cSlice []CInt32) {
@@ -284,27 +254,22 @@ func Int64__Sequence_to_Go(goSlice *[]int64, cSlice CInt64__Sequence) {
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]int64, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.int64_t)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_int64_t * uintptr(i)),
-		))
-		(*goSlice)[i] = int64(*cIdx)
+	*goSlice = make([]int64, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		(*goSlice)[i] = int64(src[i])
 	}
 }
 func Int64__Sequence_to_C(cSlice *CInt64__Sequence, goSlice []int64) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.int64_t)(C.malloc((C.size_t)(C.sizeof_int64_t * uintptr(len(goSlice)))))
+	cSlice.data = (*C.int64_t)(C.malloc(C.sizeof_int64_t * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.int64_t)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_int64_t * uintptr(i)),
-		))
-		*cIdx = (C.int64_t)(v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		dst[i] = C.int64_t(goSlice[i])
 	}
 }
 func Int64__Array_to_Go(goSlice []int64, cSlice []CInt64) {
@@ -326,27 +291,22 @@ func Int8__Sequence_to_Go(goSlice *[]int8, cSlice CInt8__Sequence) {
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]int8, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.int8_t)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_int8_t * uintptr(i)),
-		))
-		(*goSlice)[i] = int8(*cIdx)
+	*goSlice = make([]int8, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		(*goSlice)[i] = int8(src[i])
 	}
 }
 func Int8__Sequence_to_C(cSlice *CInt8__Sequence, goSlice []int8) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.int8_t)(C.malloc((C.size_t)(C.sizeof_int8_t * uintptr(len(goSlice)))))
+	cSlice.data = (*C.int8_t)(C.malloc(C.sizeof_int8_t * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.int8_t)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_int8_t * uintptr(i)),
-		))
-		*cIdx = (C.int8_t)(v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		dst[i] = C.int8_t(goSlice[i])
 	}
 }
 func Int8__Array_to_Go(goSlice []int8, cSlice []CInt8) {
@@ -368,27 +328,22 @@ func Uint16__Sequence_to_Go(goSlice *[]uint16, cSlice CUint16__Sequence) {
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]uint16, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.uint16_t)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_uint16_t * uintptr(i)),
-		))
-		(*goSlice)[i] = uint16(*cIdx)
+	*goSlice = make([]uint16, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		(*goSlice)[i] = uint16(src[i])
 	}
 }
 func Uint16__Sequence_to_C(cSlice *CUint16__Sequence, goSlice []uint16) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.uint16_t)(C.malloc((C.size_t)(C.sizeof_uint16_t * uintptr(len(goSlice)))))
+	cSlice.data = (*C.uint16_t)(C.malloc(C.sizeof_uint16_t * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.uint16_t)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_uint16_t * uintptr(i)),
-		))
-		*cIdx = (C.uint16_t)(v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		dst[i] = C.uint16_t(goSlice[i])
 	}
 }
 func Uint16__Array_to_Go(goSlice []uint16, cSlice []CUint16) {
@@ -410,27 +365,22 @@ func Uint32__Sequence_to_Go(goSlice *[]uint32, cSlice CUint32__Sequence) {
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]uint32, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.uint32_t)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_uint32_t * uintptr(i)),
-		))
-		(*goSlice)[i] = uint32(*cIdx)
+	*goSlice = make([]uint32, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		(*goSlice)[i] = uint32(src[i])
 	}
 }
 func Uint32__Sequence_to_C(cSlice *CUint32__Sequence, goSlice []uint32) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.uint32_t)(C.malloc((C.size_t)(C.sizeof_uint32_t * uintptr(len(goSlice)))))
+	cSlice.data = (*C.uint32_t)(C.malloc(C.sizeof_uint32_t * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.uint32_t)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_uint32_t * uintptr(i)),
-		))
-		*cIdx = (C.uint32_t)(v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		dst[i] = C.uint32_t(goSlice[i])
 	}
 }
 func Uint32__Array_to_Go(goSlice []uint32, cSlice []CUint32) {
@@ -452,27 +402,22 @@ func Uint64__Sequence_to_Go(goSlice *[]uint64, cSlice CUint64__Sequence) {
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]uint64, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.uint64_t)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_uint64_t * uintptr(i)),
-		))
-		(*goSlice)[i] = uint64(*cIdx)
+	*goSlice = make([]uint64, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		(*goSlice)[i] = uint64(src[i])
 	}
 }
 func Uint64__Sequence_to_C(cSlice *CUint64__Sequence, goSlice []uint64) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.uint64_t)(C.malloc((C.size_t)(C.sizeof_uint64_t * uintptr(len(goSlice)))))
+	cSlice.data = (*C.uint64_t)(C.malloc(C.sizeof_uint64_t * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.uint64_t)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_uint64_t * uintptr(i)),
-		))
-		*cIdx = (C.uint64_t)(v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		dst[i] = C.uint64_t(goSlice[i])
 	}
 }
 func Uint64__Array_to_Go(goSlice []uint64, cSlice []CUint64) {
@@ -494,27 +439,22 @@ func Uint8__Sequence_to_Go(goSlice *[]uint8, cSlice CUint8__Sequence) {
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]uint8, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.uint8_t)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_uint8_t * uintptr(i)),
-		))
-		(*goSlice)[i] = uint8(*cIdx)
+	*goSlice = make([]uint8, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		(*goSlice)[i] = uint8(src[i])
 	}
 }
 func Uint8__Sequence_to_C(cSlice *CUint8__Sequence, goSlice []uint8) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.uint8_t)(C.malloc((C.size_t)(C.sizeof_uint8_t * uintptr(len(goSlice)))))
+	cSlice.data = (*C.uint8_t)(C.malloc(C.sizeof_uint8_t * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.uint8_t)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_uint8_t * uintptr(i)),
-		))
-		*cIdx = (C.uint8_t)(v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		dst[i] = C.uint8_t(goSlice[i])
 	}
 }
 func Uint8__Array_to_Go(goSlice []uint8, cSlice []CUint8) {

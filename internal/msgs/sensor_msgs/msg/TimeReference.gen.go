@@ -167,27 +167,22 @@ func TimeReference__Sequence_to_Go(goSlice *[]TimeReference, cSlice CTimeReferen
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]TimeReference, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.sensor_msgs__msg__TimeReference__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__TimeReference * uintptr(i)),
-		))
-		TimeReferenceTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]TimeReference, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		TimeReferenceTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func TimeReference__Sequence_to_C(cSlice *CTimeReference__Sequence, goSlice []TimeReference) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.sensor_msgs__msg__TimeReference)(C.malloc((C.size_t)(C.sizeof_struct_sensor_msgs__msg__TimeReference * uintptr(len(goSlice)))))
+	cSlice.data = (*C.sensor_msgs__msg__TimeReference)(C.malloc(C.sizeof_struct_sensor_msgs__msg__TimeReference * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.sensor_msgs__msg__TimeReference)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__TimeReference * uintptr(i)),
-		))
-		TimeReferenceTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		TimeReferenceTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func TimeReference__Array_to_Go(goSlice []TimeReference, cSlice []CTimeReference) {

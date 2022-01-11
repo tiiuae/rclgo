@@ -147,27 +147,22 @@ func Empty_Request__Sequence_to_Go(goSlice *[]Empty_Request, cSlice CEmpty_Reque
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]Empty_Request, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.std_srvs__srv__Empty_Request__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_srvs__srv__Empty_Request * uintptr(i)),
-		))
-		Empty_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]Empty_Request, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		Empty_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func Empty_Request__Sequence_to_C(cSlice *CEmpty_Request__Sequence, goSlice []Empty_Request) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.std_srvs__srv__Empty_Request)(C.malloc((C.size_t)(C.sizeof_struct_std_srvs__srv__Empty_Request * uintptr(len(goSlice)))))
+	cSlice.data = (*C.std_srvs__srv__Empty_Request)(C.malloc(C.sizeof_struct_std_srvs__srv__Empty_Request * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.std_srvs__srv__Empty_Request)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_srvs__srv__Empty_Request * uintptr(i)),
-		))
-		Empty_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		Empty_RequestTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func Empty_Request__Array_to_Go(goSlice []Empty_Request, cSlice []CEmpty_Request) {

@@ -162,27 +162,22 @@ func Fibonacci_GetResult_Request__Sequence_to_Go(goSlice *[]Fibonacci_GetResult_
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]Fibonacci_GetResult_Request, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.example_interfaces__action__Fibonacci_GetResult_Request__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__action__Fibonacci_GetResult_Request * uintptr(i)),
-		))
-		Fibonacci_GetResult_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]Fibonacci_GetResult_Request, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		Fibonacci_GetResult_RequestTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func Fibonacci_GetResult_Request__Sequence_to_C(cSlice *CFibonacci_GetResult_Request__Sequence, goSlice []Fibonacci_GetResult_Request) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.example_interfaces__action__Fibonacci_GetResult_Request)(C.malloc((C.size_t)(C.sizeof_struct_example_interfaces__action__Fibonacci_GetResult_Request * uintptr(len(goSlice)))))
+	cSlice.data = (*C.example_interfaces__action__Fibonacci_GetResult_Request)(C.malloc(C.sizeof_struct_example_interfaces__action__Fibonacci_GetResult_Request * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.example_interfaces__action__Fibonacci_GetResult_Request)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__action__Fibonacci_GetResult_Request * uintptr(i)),
-		))
-		Fibonacci_GetResult_RequestTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		Fibonacci_GetResult_RequestTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func Fibonacci_GetResult_Request__Array_to_Go(goSlice []Fibonacci_GetResult_Request, cSlice []CFibonacci_GetResult_Request) {

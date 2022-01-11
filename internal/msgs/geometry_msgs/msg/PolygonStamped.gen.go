@@ -160,27 +160,22 @@ func PolygonStamped__Sequence_to_Go(goSlice *[]PolygonStamped, cSlice CPolygonSt
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]PolygonStamped, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.geometry_msgs__msg__PolygonStamped__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__PolygonStamped * uintptr(i)),
-		))
-		PolygonStampedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]PolygonStamped, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		PolygonStampedTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func PolygonStamped__Sequence_to_C(cSlice *CPolygonStamped__Sequence, goSlice []PolygonStamped) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.geometry_msgs__msg__PolygonStamped)(C.malloc((C.size_t)(C.sizeof_struct_geometry_msgs__msg__PolygonStamped * uintptr(len(goSlice)))))
+	cSlice.data = (*C.geometry_msgs__msg__PolygonStamped)(C.malloc(C.sizeof_struct_geometry_msgs__msg__PolygonStamped * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.geometry_msgs__msg__PolygonStamped)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__PolygonStamped * uintptr(i)),
-		))
-		PolygonStampedTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		PolygonStampedTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func PolygonStamped__Array_to_Go(goSlice []PolygonStamped, cSlice []CPolygonStamped) {

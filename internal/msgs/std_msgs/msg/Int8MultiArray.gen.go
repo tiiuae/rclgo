@@ -163,27 +163,22 @@ func Int8MultiArray__Sequence_to_Go(goSlice *[]Int8MultiArray, cSlice CInt8Multi
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]Int8MultiArray, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.std_msgs__msg__Int8MultiArray__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__Int8MultiArray * uintptr(i)),
-		))
-		Int8MultiArrayTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]Int8MultiArray, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		Int8MultiArrayTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func Int8MultiArray__Sequence_to_C(cSlice *CInt8MultiArray__Sequence, goSlice []Int8MultiArray) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.std_msgs__msg__Int8MultiArray)(C.malloc((C.size_t)(C.sizeof_struct_std_msgs__msg__Int8MultiArray * uintptr(len(goSlice)))))
+	cSlice.data = (*C.std_msgs__msg__Int8MultiArray)(C.malloc(C.sizeof_struct_std_msgs__msg__Int8MultiArray * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.std_msgs__msg__Int8MultiArray)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_std_msgs__msg__Int8MultiArray * uintptr(i)),
-		))
-		Int8MultiArrayTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		Int8MultiArrayTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func Int8MultiArray__Array_to_Go(goSlice []Int8MultiArray, cSlice []CInt8MultiArray) {

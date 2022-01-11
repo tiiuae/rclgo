@@ -260,27 +260,22 @@ func BatteryState__Sequence_to_Go(goSlice *[]BatteryState, cSlice CBatteryState_
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]BatteryState, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.sensor_msgs__msg__BatteryState__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__BatteryState * uintptr(i)),
-		))
-		BatteryStateTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]BatteryState, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		BatteryStateTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func BatteryState__Sequence_to_C(cSlice *CBatteryState__Sequence, goSlice []BatteryState) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.sensor_msgs__msg__BatteryState)(C.malloc((C.size_t)(C.sizeof_struct_sensor_msgs__msg__BatteryState * uintptr(len(goSlice)))))
+	cSlice.data = (*C.sensor_msgs__msg__BatteryState)(C.malloc(C.sizeof_struct_sensor_msgs__msg__BatteryState * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.sensor_msgs__msg__BatteryState)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__BatteryState * uintptr(i)),
-		))
-		BatteryStateTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		BatteryStateTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func BatteryState__Array_to_Go(goSlice []BatteryState, cSlice []CBatteryState) {

@@ -154,27 +154,22 @@ func AddTwoInts_Response__Sequence_to_Go(goSlice *[]AddTwoInts_Response, cSlice 
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]AddTwoInts_Response, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.example_interfaces__srv__AddTwoInts_Response__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__srv__AddTwoInts_Response * uintptr(i)),
-		))
-		AddTwoInts_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]AddTwoInts_Response, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		AddTwoInts_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func AddTwoInts_Response__Sequence_to_C(cSlice *CAddTwoInts_Response__Sequence, goSlice []AddTwoInts_Response) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.example_interfaces__srv__AddTwoInts_Response)(C.malloc((C.size_t)(C.sizeof_struct_example_interfaces__srv__AddTwoInts_Response * uintptr(len(goSlice)))))
+	cSlice.data = (*C.example_interfaces__srv__AddTwoInts_Response)(C.malloc(C.sizeof_struct_example_interfaces__srv__AddTwoInts_Response * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.example_interfaces__srv__AddTwoInts_Response)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__srv__AddTwoInts_Response * uintptr(i)),
-		))
-		AddTwoInts_ResponseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		AddTwoInts_ResponseTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func AddTwoInts_Response__Array_to_Go(goSlice []AddTwoInts_Response, cSlice []CAddTwoInts_Response) {

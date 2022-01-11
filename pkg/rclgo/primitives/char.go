@@ -28,28 +28,19 @@ func Char__Sequence_to_Go(goSlice *[]byte, cSlice CChar__Sequence) {
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]byte, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.schar)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_schar * uintptr(i)),
-		))
-		(*goSlice)[i] = byte(*cIdx)
-	}
+	*goSlice = make([]byte, cSlice.size)
+	src := unsafe.Slice((*byte)(unsafe.Pointer(cSlice.data)), cSlice.size)
+	copy(*goSlice, src)
 }
 func Char__Sequence_to_C(cSlice *CChar__Sequence, goSlice []byte) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.schar)(C.malloc((C.size_t)(C.sizeof_schar * uintptr(len(goSlice)))))
+	cSlice.data = (*C.schar)(C.malloc(C.sizeof_schar * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.schar)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_schar * uintptr(i)),
-		))
-		*cIdx = (C.schar)(v)
-	}
+	dst := unsafe.Slice((*byte)(unsafe.Pointer(cSlice.data)), cSlice.size)
+	copy(dst, goSlice)
 }
 func Char__Array_to_Go(goSlice []byte, cSlice []CChar) {
 	for i := 0; i < len(cSlice); i++ {

@@ -163,27 +163,22 @@ func Float64MultiArray__Sequence_to_Go(goSlice *[]Float64MultiArray, cSlice CFlo
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]Float64MultiArray, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.example_interfaces__msg__Float64MultiArray__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__Float64MultiArray * uintptr(i)),
-		))
-		Float64MultiArrayTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]Float64MultiArray, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		Float64MultiArrayTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func Float64MultiArray__Sequence_to_C(cSlice *CFloat64MultiArray__Sequence, goSlice []Float64MultiArray) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.example_interfaces__msg__Float64MultiArray)(C.malloc((C.size_t)(C.sizeof_struct_example_interfaces__msg__Float64MultiArray * uintptr(len(goSlice)))))
+	cSlice.data = (*C.example_interfaces__msg__Float64MultiArray)(C.malloc(C.sizeof_struct_example_interfaces__msg__Float64MultiArray * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.example_interfaces__msg__Float64MultiArray)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_example_interfaces__msg__Float64MultiArray * uintptr(i)),
-		))
-		Float64MultiArrayTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		Float64MultiArrayTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func Float64MultiArray__Array_to_Go(goSlice []Float64MultiArray, cSlice []CFloat64MultiArray) {

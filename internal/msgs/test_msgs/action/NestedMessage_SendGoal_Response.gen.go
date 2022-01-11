@@ -163,27 +163,22 @@ func NestedMessage_SendGoal_Response__Sequence_to_Go(goSlice *[]NestedMessage_Se
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]NestedMessage_SendGoal_Response, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.test_msgs__action__NestedMessage_SendGoal_Response__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__action__NestedMessage_SendGoal_Response * uintptr(i)),
-		))
-		NestedMessage_SendGoal_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]NestedMessage_SendGoal_Response, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		NestedMessage_SendGoal_ResponseTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func NestedMessage_SendGoal_Response__Sequence_to_C(cSlice *CNestedMessage_SendGoal_Response__Sequence, goSlice []NestedMessage_SendGoal_Response) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.test_msgs__action__NestedMessage_SendGoal_Response)(C.malloc((C.size_t)(C.sizeof_struct_test_msgs__action__NestedMessage_SendGoal_Response * uintptr(len(goSlice)))))
+	cSlice.data = (*C.test_msgs__action__NestedMessage_SendGoal_Response)(C.malloc(C.sizeof_struct_test_msgs__action__NestedMessage_SendGoal_Response * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.test_msgs__action__NestedMessage_SendGoal_Response)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__action__NestedMessage_SendGoal_Response * uintptr(i)),
-		))
-		NestedMessage_SendGoal_ResponseTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		NestedMessage_SendGoal_ResponseTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func NestedMessage_SendGoal_Response__Array_to_Go(goSlice []NestedMessage_SendGoal_Response, cSlice []CNestedMessage_SendGoal_Response) {

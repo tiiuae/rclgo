@@ -163,27 +163,22 @@ func ChannelFloat32__Sequence_to_Go(goSlice *[]ChannelFloat32, cSlice CChannelFl
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]ChannelFloat32, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.sensor_msgs__msg__ChannelFloat32__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__ChannelFloat32 * uintptr(i)),
-		))
-		ChannelFloat32TypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]ChannelFloat32, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		ChannelFloat32TypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func ChannelFloat32__Sequence_to_C(cSlice *CChannelFloat32__Sequence, goSlice []ChannelFloat32) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.sensor_msgs__msg__ChannelFloat32)(C.malloc((C.size_t)(C.sizeof_struct_sensor_msgs__msg__ChannelFloat32 * uintptr(len(goSlice)))))
+	cSlice.data = (*C.sensor_msgs__msg__ChannelFloat32)(C.malloc(C.sizeof_struct_sensor_msgs__msg__ChannelFloat32 * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.sensor_msgs__msg__ChannelFloat32)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__ChannelFloat32 * uintptr(i)),
-		))
-		ChannelFloat32TypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		ChannelFloat32TypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func ChannelFloat32__Array_to_Go(goSlice []ChannelFloat32, cSlice []CChannelFloat32) {

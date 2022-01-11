@@ -165,27 +165,22 @@ func RelativeHumidity__Sequence_to_Go(goSlice *[]RelativeHumidity, cSlice CRelat
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]RelativeHumidity, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.sensor_msgs__msg__RelativeHumidity__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__RelativeHumidity * uintptr(i)),
-		))
-		RelativeHumidityTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]RelativeHumidity, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		RelativeHumidityTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func RelativeHumidity__Sequence_to_C(cSlice *CRelativeHumidity__Sequence, goSlice []RelativeHumidity) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.sensor_msgs__msg__RelativeHumidity)(C.malloc((C.size_t)(C.sizeof_struct_sensor_msgs__msg__RelativeHumidity * uintptr(len(goSlice)))))
+	cSlice.data = (*C.sensor_msgs__msg__RelativeHumidity)(C.malloc(C.sizeof_struct_sensor_msgs__msg__RelativeHumidity * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.sensor_msgs__msg__RelativeHumidity)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__RelativeHumidity * uintptr(i)),
-		))
-		RelativeHumidityTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		RelativeHumidityTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func RelativeHumidity__Array_to_Go(goSlice []RelativeHumidity, cSlice []CRelativeHumidity) {

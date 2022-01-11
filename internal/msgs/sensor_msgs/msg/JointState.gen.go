@@ -188,27 +188,22 @@ func JointState__Sequence_to_Go(goSlice *[]JointState, cSlice CJointState__Seque
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]JointState, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.sensor_msgs__msg__JointState__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__JointState * uintptr(i)),
-		))
-		JointStateTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]JointState, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		JointStateTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func JointState__Sequence_to_C(cSlice *CJointState__Sequence, goSlice []JointState) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.sensor_msgs__msg__JointState)(C.malloc((C.size_t)(C.sizeof_struct_sensor_msgs__msg__JointState * uintptr(len(goSlice)))))
+	cSlice.data = (*C.sensor_msgs__msg__JointState)(C.malloc(C.sizeof_struct_sensor_msgs__msg__JointState * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.sensor_msgs__msg__JointState)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__JointState * uintptr(i)),
-		))
-		JointStateTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		JointStateTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func JointState__Array_to_Go(goSlice []JointState, cSlice []CJointState) {

@@ -194,27 +194,22 @@ func NavSatFix__Sequence_to_Go(goSlice *[]NavSatFix, cSlice CNavSatFix__Sequence
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]NavSatFix, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.sensor_msgs__msg__NavSatFix__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__NavSatFix * uintptr(i)),
-		))
-		NavSatFixTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]NavSatFix, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		NavSatFixTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func NavSatFix__Sequence_to_C(cSlice *CNavSatFix__Sequence, goSlice []NavSatFix) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.sensor_msgs__msg__NavSatFix)(C.malloc((C.size_t)(C.sizeof_struct_sensor_msgs__msg__NavSatFix * uintptr(len(goSlice)))))
+	cSlice.data = (*C.sensor_msgs__msg__NavSatFix)(C.malloc(C.sizeof_struct_sensor_msgs__msg__NavSatFix * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.sensor_msgs__msg__NavSatFix)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_sensor_msgs__msg__NavSatFix * uintptr(i)),
-		))
-		NavSatFixTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		NavSatFixTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func NavSatFix__Array_to_Go(goSlice []NavSatFix, cSlice []CNavSatFix) {

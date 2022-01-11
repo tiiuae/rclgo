@@ -166,27 +166,22 @@ func NestedMessage_Result__Sequence_to_Go(goSlice *[]NestedMessage_Result, cSlic
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]NestedMessage_Result, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.test_msgs__action__NestedMessage_Result__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__action__NestedMessage_Result * uintptr(i)),
-		))
-		NestedMessage_ResultTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]NestedMessage_Result, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		NestedMessage_ResultTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func NestedMessage_Result__Sequence_to_C(cSlice *CNestedMessage_Result__Sequence, goSlice []NestedMessage_Result) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.test_msgs__action__NestedMessage_Result)(C.malloc((C.size_t)(C.sizeof_struct_test_msgs__action__NestedMessage_Result * uintptr(len(goSlice)))))
+	cSlice.data = (*C.test_msgs__action__NestedMessage_Result)(C.malloc(C.sizeof_struct_test_msgs__action__NestedMessage_Result * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.test_msgs__action__NestedMessage_Result)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__action__NestedMessage_Result * uintptr(i)),
-		))
-		NestedMessage_ResultTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		NestedMessage_ResultTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func NestedMessage_Result__Array_to_Go(goSlice []NestedMessage_Result, cSlice []CNestedMessage_Result) {

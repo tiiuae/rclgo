@@ -158,27 +158,22 @@ func Fibonacci_Result__Sequence_to_Go(goSlice *[]Fibonacci_Result, cSlice CFibon
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]Fibonacci_Result, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.test_msgs__action__Fibonacci_Result__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__action__Fibonacci_Result * uintptr(i)),
-		))
-		Fibonacci_ResultTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]Fibonacci_Result, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		Fibonacci_ResultTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func Fibonacci_Result__Sequence_to_C(cSlice *CFibonacci_Result__Sequence, goSlice []Fibonacci_Result) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.test_msgs__action__Fibonacci_Result)(C.malloc((C.size_t)(C.sizeof_struct_test_msgs__action__Fibonacci_Result * uintptr(len(goSlice)))))
+	cSlice.data = (*C.test_msgs__action__Fibonacci_Result)(C.malloc(C.sizeof_struct_test_msgs__action__Fibonacci_Result * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.test_msgs__action__Fibonacci_Result)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_test_msgs__action__Fibonacci_Result * uintptr(i)),
-		))
-		Fibonacci_ResultTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		Fibonacci_ResultTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func Fibonacci_Result__Array_to_Go(goSlice []Fibonacci_Result, cSlice []CFibonacci_Result) {

@@ -164,27 +164,22 @@ func Point__Sequence_to_Go(goSlice *[]Point, cSlice CPoint__Sequence) {
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]Point, int64(cSlice.size))
-	for i := 0; i < int(cSlice.size); i++ {
-		cIdx := (*C.geometry_msgs__msg__Point__Sequence)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Point * uintptr(i)),
-		))
-		PointTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(cIdx))
+	*goSlice = make([]Point, cSlice.size)
+	src := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range src {
+		PointTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
 func Point__Sequence_to_C(cSlice *CPoint__Sequence, goSlice []Point) {
 	if len(goSlice) == 0 {
 		return
 	}
-	cSlice.data = (*C.geometry_msgs__msg__Point)(C.malloc((C.size_t)(C.sizeof_struct_geometry_msgs__msg__Point * uintptr(len(goSlice)))))
+	cSlice.data = (*C.geometry_msgs__msg__Point)(C.malloc(C.sizeof_struct_geometry_msgs__msg__Point * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
-
-	for i, v := range goSlice {
-		cIdx := (*C.geometry_msgs__msg__Point)(unsafe.Pointer(
-			uintptr(unsafe.Pointer(cSlice.data)) + (C.sizeof_struct_geometry_msgs__msg__Point * uintptr(i)),
-		))
-		PointTypeSupport.AsCStruct(unsafe.Pointer(cIdx), &v)
+	dst := unsafe.Slice(cSlice.data, cSlice.size)
+	for i := range goSlice {
+		PointTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
 func Point__Array_to_Go(goSlice []Point, cSlice []CPoint) {

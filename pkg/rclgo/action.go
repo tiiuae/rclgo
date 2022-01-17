@@ -125,6 +125,11 @@ func (g *GoalHandle) Server() *ActionServer {
 	return g.server
 }
 
+// Logger is a shorthand for g.Server().Node().Logger().
+func (g *GoalHandle) Logger() *Logger {
+	return g.server.node.logger
+}
+
 func (g *GoalHandle) status() GoalStatus {
 	if g.handle == nil {
 		return GoalUnknown

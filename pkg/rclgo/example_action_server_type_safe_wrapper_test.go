@@ -19,7 +19,6 @@ var typeSafeFibonacci = example_interfaces_action.NewFibonacciAction(
 		if err != nil {
 			return nil, err
 		}
-		logger := goal.Server().Node().Logger()
 		result := example_interfaces_action.NewFibonacci_Result()
 		fb := example_interfaces_action.NewFibonacci_Feedback()
 		var x, y, i int32
@@ -27,7 +26,7 @@ var typeSafeFibonacci = example_interfaces_action.NewFibonacciAction(
 			result.Sequence = append(result.Sequence, x)
 			fb.Sequence = result.Sequence
 			if err = sender.Send(fb); err != nil {
-				logger.Error("failed to send feedback: ", err)
+				goal.Logger().Error("failed to send feedback: ", err)
 			}
 		}
 		return result, nil

@@ -68,7 +68,6 @@ func (a *fibonacciAction) TypeSupport() types.ActionTypeSupport {
 }
 
 func (a *fibonacciAction) ExecuteGoal(ctx context.Context, goal *rclgo.GoalHandle) (types.Message, error) {
-	logger := goal.Server().Node().Logger()
 	desc := goal.Description.(*test_msgs_action.Fibonacci_Goal)
 	if desc.Order < 0 {
 		return nil, errors.New("order must be non-negative")
@@ -87,9 +86,9 @@ func (a *fibonacciAction) ExecuteGoal(ctx context.Context, goal *rclgo.GoalHandl
 		result.Sequence = append(result.Sequence, x)
 		fb.Sequence = result.Sequence
 		if err = sender.Send(fb); err != nil {
-			logger.Error("failed to send feedback: ", err)
+			goal.Logger().Error("failed to send feedback: ", err)
 		} else {
-			logger.Debug("sent feedback: ", i+1)
+			goal.Logger().Debug("sent feedback: ", i+1)
 		}
 	}
 	sender, err = goal.Accept()

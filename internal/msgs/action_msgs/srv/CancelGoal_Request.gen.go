@@ -59,6 +59,10 @@ func (t *CancelGoal_Request) SetDefaults() {
 	t.GoalInfo.SetDefaults()
 }
 
+func (t *CancelGoal_Request) GetTypeSupport() types.MessageTypeSupport {
+	return CancelGoal_RequestTypeSupport
+}
+
 // CancelGoal_RequestPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type CancelGoal_RequestPublisher struct {

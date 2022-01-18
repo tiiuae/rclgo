@@ -134,6 +134,10 @@ func (t *BatteryState) SetDefaults() {
 	t.SerialNumber = ""
 }
 
+func (t *BatteryState) GetTypeSupport() types.MessageTypeSupport {
+	return BatteryStateTypeSupport
+}
+
 // BatteryStatePublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type BatteryStatePublisher struct {

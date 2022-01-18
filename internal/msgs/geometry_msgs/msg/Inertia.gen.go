@@ -79,6 +79,10 @@ func (t *Inertia) SetDefaults() {
 	t.Izz = 0
 }
 
+func (t *Inertia) GetTypeSupport() types.MessageTypeSupport {
+	return InertiaTypeSupport
+}
+
 // InertiaPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type InertiaPublisher struct {

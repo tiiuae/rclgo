@@ -61,6 +61,10 @@ func (t *Duration) SetDefaults() {
 	t.Nanosec = 0
 }
 
+func (t *Duration) GetTypeSupport() types.MessageTypeSupport {
+	return DurationTypeSupport
+}
+
 // DurationPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type DurationPublisher struct {

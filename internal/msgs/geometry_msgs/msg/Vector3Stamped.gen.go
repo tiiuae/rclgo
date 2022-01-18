@@ -62,6 +62,10 @@ func (t *Vector3Stamped) SetDefaults() {
 	t.Vector.SetDefaults()
 }
 
+func (t *Vector3Stamped) GetTypeSupport() types.MessageTypeSupport {
+	return Vector3StampedTypeSupport
+}
+
 // Vector3StampedPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type Vector3StampedPublisher struct {

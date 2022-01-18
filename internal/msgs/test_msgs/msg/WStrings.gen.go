@@ -83,6 +83,10 @@ func (t *WStrings) SetDefaults() {
 	t.UnboundedSequenceOfWstrings = nil
 }
 
+func (t *WStrings) GetTypeSupport() types.MessageTypeSupport {
+	return WStringsTypeSupport
+}
+
 // WStringsPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type WStringsPublisher struct {

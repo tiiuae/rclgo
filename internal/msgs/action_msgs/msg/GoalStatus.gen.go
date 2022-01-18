@@ -69,6 +69,10 @@ func (t *GoalStatus) SetDefaults() {
 	t.GoalInfo.SetDefaults()
 	t.Status = 0
 }
+
+func (t *GoalStatus) GetTypeSupport() types.MessageTypeSupport {
+	return GoalStatusTypeSupport
+}
 func (t *GoalStatus) GetGoalID() *types.GoalID {
 	return (*types.GoalID)(&t.GoalInfo.GoalId.Uuid)
 }

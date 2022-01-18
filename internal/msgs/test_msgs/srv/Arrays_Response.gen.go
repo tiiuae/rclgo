@@ -156,6 +156,10 @@ func (t *Arrays_Response) SetDefaults() {
 	t.StringValuesDefault = [3]string{"","max value","min value"}
 }
 
+func (t *Arrays_Response) GetTypeSupport() types.MessageTypeSupport {
+	return Arrays_ResponseTypeSupport
+}
+
 // Arrays_ResponsePublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type Arrays_ResponsePublisher struct {

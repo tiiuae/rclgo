@@ -59,6 +59,10 @@ func (t *String) SetDefaults() {
 	t.Data = ""
 }
 
+func (t *String) GetTypeSupport() types.MessageTypeSupport {
+	return StringTypeSupport
+}
+
 // StringPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type StringPublisher struct {

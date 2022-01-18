@@ -62,6 +62,10 @@ func (t *Trigger_Response) SetDefaults() {
 	t.Message = ""
 }
 
+func (t *Trigger_Response) GetTypeSupport() types.MessageTypeSupport {
+	return Trigger_ResponseTypeSupport
+}
+
 // Trigger_ResponsePublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type Trigger_ResponsePublisher struct {

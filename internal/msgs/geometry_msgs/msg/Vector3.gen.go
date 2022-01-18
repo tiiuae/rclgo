@@ -64,6 +64,10 @@ func (t *Vector3) SetDefaults() {
 	t.Z = 0
 }
 
+func (t *Vector3) GetTypeSupport() types.MessageTypeSupport {
+	return Vector3TypeSupport
+}
+
 // Vector3Publisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type Vector3Publisher struct {

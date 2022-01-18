@@ -106,6 +106,10 @@ func (t *MultiNested) SetDefaults() {
 	t.UnboundedSequenceOfUnboundedSequences = nil
 }
 
+func (t *MultiNested) GetTypeSupport() types.MessageTypeSupport {
+	return MultiNestedTypeSupport
+}
+
 // MultiNestedPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type MultiNestedPublisher struct {

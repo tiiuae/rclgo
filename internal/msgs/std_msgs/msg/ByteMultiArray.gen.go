@@ -65,6 +65,10 @@ func (t *ByteMultiArray) SetDefaults() {
 	t.Data = nil
 }
 
+func (t *ByteMultiArray) GetTypeSupport() types.MessageTypeSupport {
+	return ByteMultiArrayTypeSupport
+}
+
 // ByteMultiArrayPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type ByteMultiArrayPublisher struct {

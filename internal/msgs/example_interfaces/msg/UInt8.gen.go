@@ -58,6 +58,10 @@ func (t *UInt8) SetDefaults() {
 	t.Data = 0
 }
 
+func (t *UInt8) GetTypeSupport() types.MessageTypeSupport {
+	return UInt8TypeSupport
+}
+
 // UInt8Publisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type UInt8Publisher struct {

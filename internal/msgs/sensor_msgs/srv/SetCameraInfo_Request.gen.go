@@ -59,6 +59,10 @@ func (t *SetCameraInfo_Request) SetDefaults() {
 	t.CameraInfo.SetDefaults()
 }
 
+func (t *SetCameraInfo_Request) GetTypeSupport() types.MessageTypeSupport {
+	return SetCameraInfo_RequestTypeSupport
+}
+
 // SetCameraInfo_RequestPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type SetCameraInfo_RequestPublisher struct {

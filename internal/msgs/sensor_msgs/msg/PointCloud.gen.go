@@ -72,6 +72,10 @@ func (t *PointCloud) SetDefaults() {
 	t.Channels = nil
 }
 
+func (t *PointCloud) GetTypeSupport() types.MessageTypeSupport {
+	return PointCloudTypeSupport
+}
+
 // PointCloudPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type PointCloudPublisher struct {

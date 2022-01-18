@@ -61,6 +61,10 @@ func (t *Fibonacci_SendGoal_Response) SetDefaults() {
 	t.Accepted = false
 	t.Stamp.SetDefaults()
 }
+
+func (t *Fibonacci_SendGoal_Response) GetTypeSupport() types.MessageTypeSupport {
+	return Fibonacci_SendGoal_ResponseTypeSupport
+}
 func (t *Fibonacci_SendGoal_Response) GetGoalAccepted() bool {
 	return t.Accepted
 }

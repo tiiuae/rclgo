@@ -58,6 +58,10 @@ func (t *AddTwoInts_Response) SetDefaults() {
 	t.Sum = 0
 }
 
+func (t *AddTwoInts_Response) GetTypeSupport() types.MessageTypeSupport {
+	return AddTwoInts_ResponseTypeSupport
+}
+
 // AddTwoInts_ResponsePublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type AddTwoInts_ResponsePublisher struct {

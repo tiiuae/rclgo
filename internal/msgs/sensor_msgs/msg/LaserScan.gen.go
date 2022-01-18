@@ -93,6 +93,10 @@ func (t *LaserScan) SetDefaults() {
 	t.Intensities = nil
 }
 
+func (t *LaserScan) GetTypeSupport() types.MessageTypeSupport {
+	return LaserScanTypeSupport
+}
+
 // LaserScanPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type LaserScanPublisher struct {

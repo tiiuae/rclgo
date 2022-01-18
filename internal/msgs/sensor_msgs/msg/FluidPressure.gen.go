@@ -65,6 +65,10 @@ func (t *FluidPressure) SetDefaults() {
 	t.Variance = 0
 }
 
+func (t *FluidPressure) GetTypeSupport() types.MessageTypeSupport {
+	return FluidPressureTypeSupport
+}
+
 // FluidPressurePublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type FluidPressurePublisher struct {

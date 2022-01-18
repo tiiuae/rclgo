@@ -67,6 +67,10 @@ func (t *Quaternion) SetDefaults() {
 	t.W = 1
 }
 
+func (t *Quaternion) GetTypeSupport() types.MessageTypeSupport {
+	return QuaternionTypeSupport
+}
+
 // QuaternionPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type QuaternionPublisher struct {

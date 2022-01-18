@@ -62,6 +62,10 @@ func (t *SetCameraInfo_Response) SetDefaults() {
 	t.StatusMessage = ""
 }
 
+func (t *SetCameraInfo_Response) GetTypeSupport() types.MessageTypeSupport {
+	return SetCameraInfo_ResponseTypeSupport
+}
+
 // SetCameraInfo_ResponsePublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type SetCameraInfo_ResponsePublisher struct {

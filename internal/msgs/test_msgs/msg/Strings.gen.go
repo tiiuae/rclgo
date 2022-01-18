@@ -95,6 +95,10 @@ func (t *Strings) SetDefaults() {
 	t.BoundedStringValueDefault5 = "Hello\"world!"
 }
 
+func (t *Strings) GetTypeSupport() types.MessageTypeSupport {
+	return StringsTypeSupport
+}
+
 // StringsPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type StringsPublisher struct {

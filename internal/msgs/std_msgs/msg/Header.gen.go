@@ -63,6 +63,10 @@ func (t *Header) SetDefaults() {
 	t.FrameId = ""
 }
 
+func (t *Header) GetTypeSupport() types.MessageTypeSupport {
+	return HeaderTypeSupport
+}
+
 // HeaderPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type HeaderPublisher struct {

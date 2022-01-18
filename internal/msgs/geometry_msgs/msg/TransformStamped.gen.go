@@ -66,6 +66,10 @@ func (t *TransformStamped) SetDefaults() {
 	t.Transform.SetDefaults()
 }
 
+func (t *TransformStamped) GetTypeSupport() types.MessageTypeSupport {
+	return TransformStampedTypeSupport
+}
+
 // TransformStampedPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type TransformStampedPublisher struct {

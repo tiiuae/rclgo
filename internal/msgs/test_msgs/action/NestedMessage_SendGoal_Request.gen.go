@@ -61,6 +61,10 @@ func (t *NestedMessage_SendGoal_Request) SetDefaults() {
 	t.GoalID.SetDefaults()
 	t.Goal.SetDefaults()
 }
+
+func (t *NestedMessage_SendGoal_Request) GetTypeSupport() types.MessageTypeSupport {
+	return NestedMessage_SendGoal_RequestTypeSupport
+}
 func (t *NestedMessage_SendGoal_Request) GetGoalID() *types.GoalID {
 	return (*types.GoalID)(&t.GoalID.Uuid)
 }

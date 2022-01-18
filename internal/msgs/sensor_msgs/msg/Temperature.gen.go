@@ -65,6 +65,10 @@ func (t *Temperature) SetDefaults() {
 	t.Variance = 0
 }
 
+func (t *Temperature) GetTypeSupport() types.MessageTypeSupport {
+	return TemperatureTypeSupport
+}
+
 // TemperaturePublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type TemperaturePublisher struct {

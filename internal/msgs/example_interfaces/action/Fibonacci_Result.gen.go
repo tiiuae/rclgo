@@ -62,6 +62,10 @@ func (t *Fibonacci_Result) SetDefaults() {
 	t.Sequence = nil
 }
 
+func (t *Fibonacci_Result) GetTypeSupport() types.MessageTypeSupport {
+	return Fibonacci_ResultTypeSupport
+}
+
 // Fibonacci_ResultPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type Fibonacci_ResultPublisher struct {

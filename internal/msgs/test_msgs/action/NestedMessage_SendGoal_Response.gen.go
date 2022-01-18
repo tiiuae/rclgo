@@ -61,6 +61,10 @@ func (t *NestedMessage_SendGoal_Response) SetDefaults() {
 	t.Accepted = false
 	t.Stamp.SetDefaults()
 }
+
+func (t *NestedMessage_SendGoal_Response) GetTypeSupport() types.MessageTypeSupport {
+	return NestedMessage_SendGoal_ResponseTypeSupport
+}
 func (t *NestedMessage_SendGoal_Response) GetGoalAccepted() bool {
 	return t.Accepted
 }

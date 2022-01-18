@@ -65,6 +65,10 @@ func (t *Float32MultiArray) SetDefaults() {
 	t.Data = nil
 }
 
+func (t *Float32MultiArray) GetTypeSupport() types.MessageTypeSupport {
+	return Float32MultiArrayTypeSupport
+}
+
 // Float32MultiArrayPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type Float32MultiArrayPublisher struct {

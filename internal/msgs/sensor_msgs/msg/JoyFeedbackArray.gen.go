@@ -61,6 +61,10 @@ func (t *JoyFeedbackArray) SetDefaults() {
 	t.Array = nil
 }
 
+func (t *JoyFeedbackArray) GetTypeSupport() types.MessageTypeSupport {
+	return JoyFeedbackArrayTypeSupport
+}
+
 // JoyFeedbackArrayPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type JoyFeedbackArrayPublisher struct {

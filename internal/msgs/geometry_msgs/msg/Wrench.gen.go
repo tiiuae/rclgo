@@ -61,6 +61,10 @@ func (t *Wrench) SetDefaults() {
 	t.Torque.SetDefaults()
 }
 
+func (t *Wrench) GetTypeSupport() types.MessageTypeSupport {
+	return WrenchTypeSupport
+}
+
 // WrenchPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type WrenchPublisher struct {

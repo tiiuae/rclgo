@@ -92,6 +92,10 @@ func (t *MultiEchoLaserScan) SetDefaults() {
 	t.Intensities = nil
 }
 
+func (t *MultiEchoLaserScan) GetTypeSupport() types.MessageTypeSupport {
+	return MultiEchoLaserScanTypeSupport
+}
+
 // MultiEchoLaserScanPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type MultiEchoLaserScanPublisher struct {

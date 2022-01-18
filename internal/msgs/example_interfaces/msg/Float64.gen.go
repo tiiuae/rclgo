@@ -58,6 +58,10 @@ func (t *Float64) SetDefaults() {
 	t.Data = 0
 }
 
+func (t *Float64) GetTypeSupport() types.MessageTypeSupport {
+	return Float64TypeSupport
+}
+
 // Float64Publisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type Float64Publisher struct {

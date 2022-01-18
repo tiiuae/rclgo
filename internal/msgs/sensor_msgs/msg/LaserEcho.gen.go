@@ -62,6 +62,10 @@ func (t *LaserEcho) SetDefaults() {
 	t.Echoes = nil
 }
 
+func (t *LaserEcho) GetTypeSupport() types.MessageTypeSupport {
+	return LaserEchoTypeSupport
+}
+
 // LaserEchoPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type LaserEchoPublisher struct {

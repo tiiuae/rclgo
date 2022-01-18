@@ -58,6 +58,10 @@ func (t *Byte) SetDefaults() {
 	t.Data = 0
 }
 
+func (t *Byte) GetTypeSupport() types.MessageTypeSupport {
+	return ByteTypeSupport
+}
+
 // BytePublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type BytePublisher struct {

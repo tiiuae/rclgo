@@ -72,6 +72,10 @@ func (t *Joy) SetDefaults() {
 	t.Buttons = nil
 }
 
+func (t *Joy) GetTypeSupport() types.MessageTypeSupport {
+	return JoyTypeSupport
+}
+
 // JoyPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type JoyPublisher struct {

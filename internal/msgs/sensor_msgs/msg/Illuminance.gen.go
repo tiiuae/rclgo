@@ -65,6 +65,10 @@ func (t *Illuminance) SetDefaults() {
 	t.Variance = 0
 }
 
+func (t *Illuminance) GetTypeSupport() types.MessageTypeSupport {
+	return IlluminanceTypeSupport
+}
+
 // IlluminancePublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type IlluminancePublisher struct {

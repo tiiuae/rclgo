@@ -61,6 +61,10 @@ func (t *Fibonacci_FeedbackMessage) SetDefaults() {
 	t.GoalID.SetDefaults()
 	t.Feedback.SetDefaults()
 }
+
+func (t *Fibonacci_FeedbackMessage) GetTypeSupport() types.MessageTypeSupport {
+	return Fibonacci_FeedbackMessageTypeSupport
+}
 func (t *Fibonacci_FeedbackMessage) GetGoalID() *types.GoalID {
 	return (*types.GoalID)(&t.GoalID.Uuid)
 }

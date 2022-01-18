@@ -61,6 +61,10 @@ func (t *NestedMessage_FeedbackMessage) SetDefaults() {
 	t.GoalID.SetDefaults()
 	t.Feedback.SetDefaults()
 }
+
+func (t *NestedMessage_FeedbackMessage) GetTypeSupport() types.MessageTypeSupport {
+	return NestedMessage_FeedbackMessageTypeSupport
+}
 func (t *NestedMessage_FeedbackMessage) GetGoalID() *types.GoalID {
 	return (*types.GoalID)(&t.GoalID.Uuid)
 }

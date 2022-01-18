@@ -63,6 +63,10 @@ func (t *GoalInfo) SetDefaults() {
 	t.Stamp.SetDefaults()
 }
 
+func (t *GoalInfo) GetTypeSupport() types.MessageTypeSupport {
+	return GoalInfoTypeSupport
+}
+
 // GoalInfoPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type GoalInfoPublisher struct {

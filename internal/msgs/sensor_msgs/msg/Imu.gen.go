@@ -79,6 +79,10 @@ func (t *Imu) SetDefaults() {
 	t.LinearAccelerationCovariance = [9]float64{}
 }
 
+func (t *Imu) GetTypeSupport() types.MessageTypeSupport {
+	return ImuTypeSupport
+}
+
 // ImuPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type ImuPublisher struct {

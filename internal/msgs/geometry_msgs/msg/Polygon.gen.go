@@ -61,6 +61,10 @@ func (t *Polygon) SetDefaults() {
 	t.Points = nil
 }
 
+func (t *Polygon) GetTypeSupport() types.MessageTypeSupport {
+	return PolygonTypeSupport
+}
+
 // PolygonPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type PolygonPublisher struct {

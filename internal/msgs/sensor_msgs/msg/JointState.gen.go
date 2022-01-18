@@ -84,6 +84,10 @@ func (t *JointState) SetDefaults() {
 	t.Effort = nil
 }
 
+func (t *JointState) GetTypeSupport() types.MessageTypeSupport {
+	return JointStateTypeSupport
+}
+
 // JointStatePublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type JointStatePublisher struct {

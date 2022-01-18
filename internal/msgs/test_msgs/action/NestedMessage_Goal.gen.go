@@ -66,6 +66,10 @@ func (t *NestedMessage_Goal) SetDefaults() {
 	t.NestedDifferentPkg.SetDefaults()
 }
 
+func (t *NestedMessage_Goal) GetTypeSupport() types.MessageTypeSupport {
+	return NestedMessage_GoalTypeSupport
+}
+
 // NestedMessage_GoalPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type NestedMessage_GoalPublisher struct {

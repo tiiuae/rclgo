@@ -94,6 +94,10 @@ func (t *Defaults) SetDefaults() {
 	t.Uint64Value = 50000000
 }
 
+func (t *Defaults) GetTypeSupport() types.MessageTypeSupport {
+	return DefaultsTypeSupport
+}
+
 // DefaultsPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type DefaultsPublisher struct {

@@ -64,6 +64,10 @@ func (t *Point32) SetDefaults() {
 	t.Z = 0
 }
 
+func (t *Point32) GetTypeSupport() types.MessageTypeSupport {
+	return Point32TypeSupport
+}
+
 // Point32Publisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type Point32Publisher struct {

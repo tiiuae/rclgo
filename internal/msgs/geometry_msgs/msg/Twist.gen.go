@@ -61,6 +61,10 @@ func (t *Twist) SetDefaults() {
 	t.Angular.SetDefaults()
 }
 
+func (t *Twist) GetTypeSupport() types.MessageTypeSupport {
+	return TwistTypeSupport
+}
+
 // TwistPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type TwistPublisher struct {

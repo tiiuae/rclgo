@@ -61,6 +61,10 @@ func (t *Pose) SetDefaults() {
 	t.Orientation.SetDefaults()
 }
 
+func (t *Pose) GetTypeSupport() types.MessageTypeSupport {
+	return PoseTypeSupport
+}
+
 // PosePublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type PosePublisher struct {

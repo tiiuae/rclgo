@@ -67,6 +67,10 @@ func (t *ColorRGBA) SetDefaults() {
 	t.A = 0
 }
 
+func (t *ColorRGBA) GetTypeSupport() types.MessageTypeSupport {
+	return ColorRGBATypeSupport
+}
+
 // ColorRGBAPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type ColorRGBAPublisher struct {

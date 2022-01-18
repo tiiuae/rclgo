@@ -58,6 +58,10 @@ func (t *Fibonacci_Goal) SetDefaults() {
 	t.Order = 0
 }
 
+func (t *Fibonacci_Goal) GetTypeSupport() types.MessageTypeSupport {
+	return Fibonacci_GoalTypeSupport
+}
+
 // Fibonacci_GoalPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type Fibonacci_GoalPublisher struct {

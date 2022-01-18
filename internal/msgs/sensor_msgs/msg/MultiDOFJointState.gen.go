@@ -85,6 +85,10 @@ func (t *MultiDOFJointState) SetDefaults() {
 	t.Wrench = nil
 }
 
+func (t *MultiDOFJointState) GetTypeSupport() types.MessageTypeSupport {
+	return MultiDOFJointStateTypeSupport
+}
+
 // MultiDOFJointStatePublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type MultiDOFJointStatePublisher struct {

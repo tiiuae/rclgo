@@ -61,6 +61,10 @@ func (t *NestedMessage_GetResult_Response) SetDefaults() {
 	t.Result.SetDefaults()
 }
 
+func (t *NestedMessage_GetResult_Response) GetTypeSupport() types.MessageTypeSupport {
+	return NestedMessage_GetResult_ResponseTypeSupport
+}
+
 // NestedMessage_GetResult_ResponsePublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type NestedMessage_GetResult_ResponsePublisher struct {

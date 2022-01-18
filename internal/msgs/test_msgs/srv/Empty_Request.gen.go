@@ -55,6 +55,10 @@ func (t *Empty_Request) CloneMsg() types.Message {
 func (t *Empty_Request) SetDefaults() {
 }
 
+func (t *Empty_Request) GetTypeSupport() types.MessageTypeSupport {
+	return Empty_RequestTypeSupport
+}
+
 // Empty_RequestPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type Empty_RequestPublisher struct {

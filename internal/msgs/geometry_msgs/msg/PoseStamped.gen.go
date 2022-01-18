@@ -62,6 +62,10 @@ func (t *PoseStamped) SetDefaults() {
 	t.Pose.SetDefaults()
 }
 
+func (t *PoseStamped) GetTypeSupport() types.MessageTypeSupport {
+	return PoseStampedTypeSupport
+}
+
 // PoseStampedPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type PoseStampedPublisher struct {

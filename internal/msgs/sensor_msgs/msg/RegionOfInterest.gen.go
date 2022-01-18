@@ -70,6 +70,10 @@ func (t *RegionOfInterest) SetDefaults() {
 	t.DoRectify = false
 }
 
+func (t *RegionOfInterest) GetTypeSupport() types.MessageTypeSupport {
+	return RegionOfInterestTypeSupport
+}
+
 // RegionOfInterestPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type RegionOfInterestPublisher struct {

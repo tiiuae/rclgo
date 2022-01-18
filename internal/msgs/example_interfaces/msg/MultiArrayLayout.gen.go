@@ -65,6 +65,10 @@ func (t *MultiArrayLayout) SetDefaults() {
 	t.DataOffset = 0
 }
 
+func (t *MultiArrayLayout) GetTypeSupport() types.MessageTypeSupport {
+	return MultiArrayLayoutTypeSupport
+}
+
 // MultiArrayLayoutPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type MultiArrayLayoutPublisher struct {

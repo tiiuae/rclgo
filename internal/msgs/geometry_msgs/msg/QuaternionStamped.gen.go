@@ -62,6 +62,10 @@ func (t *QuaternionStamped) SetDefaults() {
 	t.Quaternion.SetDefaults()
 }
 
+func (t *QuaternionStamped) GetTypeSupport() types.MessageTypeSupport {
+	return QuaternionStampedTypeSupport
+}
+
 // QuaternionStampedPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type QuaternionStampedPublisher struct {

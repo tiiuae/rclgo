@@ -62,6 +62,10 @@ func (t *Builtins) SetDefaults() {
 	t.TimeValue.SetDefaults()
 }
 
+func (t *Builtins) GetTypeSupport() types.MessageTypeSupport {
+	return BuiltinsTypeSupport
+}
+
 // BuiltinsPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type BuiltinsPublisher struct {

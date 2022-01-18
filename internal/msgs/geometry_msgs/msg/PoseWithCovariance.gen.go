@@ -62,6 +62,10 @@ func (t *PoseWithCovariance) SetDefaults() {
 	t.Covariance = [36]float64{}
 }
 
+func (t *PoseWithCovariance) GetTypeSupport() types.MessageTypeSupport {
+	return PoseWithCovarianceTypeSupport
+}
+
 // PoseWithCovariancePublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type PoseWithCovariancePublisher struct {

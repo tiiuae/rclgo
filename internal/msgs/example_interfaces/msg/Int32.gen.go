@@ -58,6 +58,10 @@ func (t *Int32) SetDefaults() {
 	t.Data = 0
 }
 
+func (t *Int32) GetTypeSupport() types.MessageTypeSupport {
+	return Int32TypeSupport
+}
+
 // Int32Publisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type Int32Publisher struct {

@@ -65,6 +65,10 @@ func (t *UInt16MultiArray) SetDefaults() {
 	t.Data = nil
 }
 
+func (t *UInt16MultiArray) GetTypeSupport() types.MessageTypeSupport {
+	return UInt16MultiArrayTypeSupport
+}
+
 // UInt16MultiArrayPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type UInt16MultiArrayPublisher struct {

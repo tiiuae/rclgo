@@ -59,6 +59,10 @@ func (t *WString) SetDefaults() {
 	t.Data = ""
 }
 
+func (t *WString) GetTypeSupport() types.MessageTypeSupport {
+	return WStringTypeSupport
+}
+
 // WStringPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type WStringPublisher struct {

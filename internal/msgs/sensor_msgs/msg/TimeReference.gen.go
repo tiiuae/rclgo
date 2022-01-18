@@ -67,6 +67,10 @@ func (t *TimeReference) SetDefaults() {
 	t.Source = ""
 }
 
+func (t *TimeReference) GetTypeSupport() types.MessageTypeSupport {
+	return TimeReferenceTypeSupport
+}
+
 // TimeReferencePublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type TimeReferencePublisher struct {

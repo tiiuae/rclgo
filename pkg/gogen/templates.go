@@ -140,6 +140,10 @@ func (t *{{$Md.Name}}) SetDefaults() {
 	{{- end }}
 }
 
+func (t *{{$Md.Name}}) GetTypeSupport() types.MessageTypeSupport {
+	return {{$Md.Name}}TypeSupport
+}
+
 {{- /* Some special cased methods to avoid cyclic dependency in actions */ -}}
 
 {{- if actionHasSuffix $Md 

@@ -98,6 +98,10 @@ func (t *BasicTypes_Response) SetDefaults() {
 	t.StringValue = ""
 }
 
+func (t *BasicTypes_Response) GetTypeSupport() types.MessageTypeSupport {
+	return BasicTypes_ResponseTypeSupport
+}
+
 // BasicTypes_ResponsePublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type BasicTypes_ResponsePublisher struct {

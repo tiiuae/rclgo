@@ -81,6 +81,10 @@ func (t *Image) SetDefaults() {
 	t.Data = nil
 }
 
+func (t *Image) GetTypeSupport() types.MessageTypeSupport {
+	return ImageTypeSupport
+}
+
 // ImagePublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type ImagePublisher struct {

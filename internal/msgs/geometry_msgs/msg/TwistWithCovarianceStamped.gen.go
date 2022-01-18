@@ -62,6 +62,10 @@ func (t *TwistWithCovarianceStamped) SetDefaults() {
 	t.Twist.SetDefaults()
 }
 
+func (t *TwistWithCovarianceStamped) GetTypeSupport() types.MessageTypeSupport {
+	return TwistWithCovarianceStampedTypeSupport
+}
+
 // TwistWithCovarianceStampedPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type TwistWithCovarianceStampedPublisher struct {

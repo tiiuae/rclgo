@@ -61,6 +61,10 @@ func (t *AddTwoInts_Request) SetDefaults() {
 	t.B = 0
 }
 
+func (t *AddTwoInts_Request) GetTypeSupport() types.MessageTypeSupport {
+	return AddTwoInts_RequestTypeSupport
+}
+
 // AddTwoInts_RequestPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type AddTwoInts_RequestPublisher struct {

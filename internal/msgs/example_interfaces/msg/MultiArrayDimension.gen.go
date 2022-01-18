@@ -65,6 +65,10 @@ func (t *MultiArrayDimension) SetDefaults() {
 	t.Stride = 0
 }
 
+func (t *MultiArrayDimension) GetTypeSupport() types.MessageTypeSupport {
+	return MultiArrayDimensionTypeSupport
+}
+
 // MultiArrayDimensionPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type MultiArrayDimensionPublisher struct {

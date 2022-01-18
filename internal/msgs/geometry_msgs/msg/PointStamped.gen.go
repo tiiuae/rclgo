@@ -62,6 +62,10 @@ func (t *PointStamped) SetDefaults() {
 	t.Point.SetDefaults()
 }
 
+func (t *PointStamped) GetTypeSupport() types.MessageTypeSupport {
+	return PointStampedTypeSupport
+}
+
 // PointStampedPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type PointStampedPublisher struct {

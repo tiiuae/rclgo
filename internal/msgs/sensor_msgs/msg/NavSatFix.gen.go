@@ -84,6 +84,10 @@ func (t *NavSatFix) SetDefaults() {
 	t.PositionCovarianceType = 0
 }
 
+func (t *NavSatFix) GetTypeSupport() types.MessageTypeSupport {
+	return NavSatFixTypeSupport
+}
+
 // NavSatFixPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type NavSatFixPublisher struct {

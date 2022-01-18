@@ -64,6 +64,10 @@ func (t *Pose2D) SetDefaults() {
 	t.Theta = 0
 }
 
+func (t *Pose2D) GetTypeSupport() types.MessageTypeSupport {
+	return Pose2DTypeSupport
+}
+
 // Pose2DPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type Pose2DPublisher struct {

@@ -61,6 +61,10 @@ func (t *Time) SetDefaults() {
 	t.Nanosec = 0
 }
 
+func (t *Time) GetTypeSupport() types.MessageTypeSupport {
+	return TimeTypeSupport
+}
+
 // TimePublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type TimePublisher struct {

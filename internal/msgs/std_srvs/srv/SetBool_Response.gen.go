@@ -62,6 +62,10 @@ func (t *SetBool_Response) SetDefaults() {
 	t.Message = ""
 }
 
+func (t *SetBool_Response) GetTypeSupport() types.MessageTypeSupport {
+	return SetBool_ResponseTypeSupport
+}
+
 // SetBool_ResponsePublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type SetBool_ResponsePublisher struct {

@@ -58,6 +58,10 @@ func (t *Bool) SetDefaults() {
 	t.Data = false
 }
 
+func (t *Bool) GetTypeSupport() types.MessageTypeSupport {
+	return BoolTypeSupport
+}
+
 // BoolPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type BoolPublisher struct {

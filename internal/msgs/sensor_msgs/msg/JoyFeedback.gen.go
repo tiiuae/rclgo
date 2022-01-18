@@ -69,6 +69,10 @@ func (t *JoyFeedback) SetDefaults() {
 	t.Intensity = 0
 }
 
+func (t *JoyFeedback) GetTypeSupport() types.MessageTypeSupport {
+	return JoyFeedbackTypeSupport
+}
+
 // JoyFeedbackPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type JoyFeedbackPublisher struct {

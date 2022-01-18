@@ -65,6 +65,10 @@ func (t *PoseArray) SetDefaults() {
 	t.Poses = nil
 }
 
+func (t *PoseArray) GetTypeSupport() types.MessageTypeSupport {
+	return PoseArrayTypeSupport
+}
+
 // PoseArrayPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type PoseArrayPublisher struct {

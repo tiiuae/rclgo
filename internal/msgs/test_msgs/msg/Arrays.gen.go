@@ -158,6 +158,10 @@ func (t *Arrays) SetDefaults() {
 	t.AlignmentCheck = 0
 }
 
+func (t *Arrays) GetTypeSupport() types.MessageTypeSupport {
+	return ArraysTypeSupport
+}
+
 // ArraysPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type ArraysPublisher struct {

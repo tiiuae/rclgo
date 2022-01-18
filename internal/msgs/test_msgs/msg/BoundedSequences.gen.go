@@ -245,6 +245,10 @@ func (t *BoundedSequences) SetDefaults() {
 	t.AlignmentCheck = 0
 }
 
+func (t *BoundedSequences) GetTypeSupport() types.MessageTypeSupport {
+	return BoundedSequencesTypeSupport
+}
+
 // BoundedSequencesPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type BoundedSequencesPublisher struct {

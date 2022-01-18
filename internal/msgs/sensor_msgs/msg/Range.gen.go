@@ -78,6 +78,10 @@ func (t *Range) SetDefaults() {
 	t.Range = 0
 }
 
+func (t *Range) GetTypeSupport() types.MessageTypeSupport {
+	return RangeTypeSupport
+}
+
 // RangePublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type RangePublisher struct {

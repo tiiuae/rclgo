@@ -1,6 +1,7 @@
 package rclgo_test
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -42,11 +43,21 @@ func TestPubSub(t *testing.T) {
 					"/topic",
 					std_msgs.ColorRGBATypeSupport,
 					func(s *rclgo.Subscription) {
-						var m std_msgs.ColorRGBA
-						if _, err := s.TakeMessage(&m); err != nil {
-							fmt.Println("failed to take message:", err)
+						buf, _, err := s.TakeSerializedMessage()
+						if err != nil {
+							panic(fmt.Sprint("failed to take message: ", err))
 						}
-						subChan <- &m
+						msg, err := rclgo.Deserialize(buf, std_msgs.ColorRGBATypeSupport)
+						if err != nil {
+							panic(fmt.Sprint("failed to deserialize message: ", err))
+						}
+						newBuf, err := rclgo.Serialize(msg)
+						if err != nil {
+							panic(fmt.Sprint("failed to reserialize message: ", err))
+						} else if !bytes.Equal(buf, newBuf) {
+							panic(fmt.Sprintf("reserialized message (%#v) is different from the original (%#v)", newBuf, buf))
+						}
+						subChan <- msg.(*std_msgs.ColorRGBA)
 					},
 				)
 				So(err, ShouldBeNil)

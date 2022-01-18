@@ -55,6 +55,10 @@ func (t *Trigger_Request) CloneMsg() types.Message {
 func (t *Trigger_Request) SetDefaults() {
 }
 
+func (t *Trigger_Request) GetTypeSupport() types.MessageTypeSupport {
+	return Trigger_RequestTypeSupport
+}
+
 // Trigger_RequestPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type Trigger_RequestPublisher struct {

@@ -62,6 +62,10 @@ func (t *AccelWithCovariance) SetDefaults() {
 	t.Covariance = [36]float64{}
 }
 
+func (t *AccelWithCovariance) GetTypeSupport() types.MessageTypeSupport {
+	return AccelWithCovarianceTypeSupport
+}
+
 // AccelWithCovariancePublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type AccelWithCovariancePublisher struct {

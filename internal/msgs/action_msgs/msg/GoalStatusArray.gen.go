@@ -60,6 +60,10 @@ func (t *GoalStatusArray) CloneMsg() types.Message {
 func (t *GoalStatusArray) SetDefaults() {
 	t.StatusList = nil
 }
+
+func (t *GoalStatusArray) GetTypeSupport() types.MessageTypeSupport {
+	return GoalStatusArrayTypeSupport
+}
 func (t *GoalStatusArray) CallForEach(f func(interface{})) {
 	for i := range t.StatusList {
 		f(&t.StatusList[i])

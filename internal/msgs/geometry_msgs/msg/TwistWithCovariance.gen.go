@@ -62,6 +62,10 @@ func (t *TwistWithCovariance) SetDefaults() {
 	t.Covariance = [36]float64{}
 }
 
+func (t *TwistWithCovariance) GetTypeSupport() types.MessageTypeSupport {
+	return TwistWithCovarianceTypeSupport
+}
+
 // TwistWithCovariancePublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type TwistWithCovariancePublisher struct {

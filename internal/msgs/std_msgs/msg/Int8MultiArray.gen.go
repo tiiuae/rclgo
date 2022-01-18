@@ -65,6 +65,10 @@ func (t *Int8MultiArray) SetDefaults() {
 	t.Data = nil
 }
 
+func (t *Int8MultiArray) GetTypeSupport() types.MessageTypeSupport {
+	return Int8MultiArrayTypeSupport
+}
+
 // Int8MultiArrayPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type Int8MultiArrayPublisher struct {

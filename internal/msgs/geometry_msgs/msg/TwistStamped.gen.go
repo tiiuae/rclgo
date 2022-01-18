@@ -62,6 +62,10 @@ func (t *TwistStamped) SetDefaults() {
 	t.Twist.SetDefaults()
 }
 
+func (t *TwistStamped) GetTypeSupport() types.MessageTypeSupport {
+	return TwistStampedTypeSupport
+}
+
 // TwistStampedPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type TwistStampedPublisher struct {

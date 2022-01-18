@@ -62,6 +62,10 @@ func (t *PoseWithCovarianceStamped) SetDefaults() {
 	t.Pose.SetDefaults()
 }
 
+func (t *PoseWithCovarianceStamped) GetTypeSupport() types.MessageTypeSupport {
+	return PoseWithCovarianceStampedTypeSupport
+}
+
 // PoseWithCovarianceStampedPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type PoseWithCovarianceStampedPublisher struct {

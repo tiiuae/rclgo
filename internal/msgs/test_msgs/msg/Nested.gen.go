@@ -58,6 +58,10 @@ func (t *Nested) SetDefaults() {
 	t.BasicTypesValue.SetDefaults()
 }
 
+func (t *Nested) GetTypeSupport() types.MessageTypeSupport {
+	return NestedTypeSupport
+}
+
 // NestedPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type NestedPublisher struct {

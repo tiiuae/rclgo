@@ -58,6 +58,10 @@ func (t *Char) SetDefaults() {
 	t.Data = 0
 }
 
+func (t *Char) GetTypeSupport() types.MessageTypeSupport {
+	return CharTypeSupport
+}
+
 // CharPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type CharPublisher struct {

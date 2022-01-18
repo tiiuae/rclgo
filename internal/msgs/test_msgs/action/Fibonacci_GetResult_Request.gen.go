@@ -58,6 +58,10 @@ func (t *Fibonacci_GetResult_Request) CloneMsg() types.Message {
 func (t *Fibonacci_GetResult_Request) SetDefaults() {
 	t.GoalID.SetDefaults()
 }
+
+func (t *Fibonacci_GetResult_Request) GetTypeSupport() types.MessageTypeSupport {
+	return Fibonacci_GetResult_RequestTypeSupport
+}
 func (t *Fibonacci_GetResult_Request) GetGoalID() *types.GoalID {
 	return (*types.GoalID)(&t.GoalID.Uuid)
 }

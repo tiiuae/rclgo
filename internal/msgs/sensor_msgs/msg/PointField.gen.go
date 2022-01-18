@@ -78,6 +78,10 @@ func (t *PointField) SetDefaults() {
 	t.Count = 0
 }
 
+func (t *PointField) GetTypeSupport() types.MessageTypeSupport {
+	return PointFieldTypeSupport
+}
+
 // PointFieldPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type PointFieldPublisher struct {

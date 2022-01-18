@@ -62,6 +62,10 @@ func (t *PolygonStamped) SetDefaults() {
 	t.Polygon.SetDefaults()
 }
 
+func (t *PolygonStamped) GetTypeSupport() types.MessageTypeSupport {
+	return PolygonStampedTypeSupport
+}
+
 // PolygonStampedPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type PolygonStampedPublisher struct {

@@ -62,6 +62,10 @@ func (t *InertiaStamped) SetDefaults() {
 	t.Inertia.SetDefaults()
 }
 
+func (t *InertiaStamped) GetTypeSupport() types.MessageTypeSupport {
+	return InertiaStampedTypeSupport
+}
+
 // InertiaStampedPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type InertiaStampedPublisher struct {

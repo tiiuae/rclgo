@@ -58,6 +58,10 @@ func (t *SetBool_Request) SetDefaults() {
 	t.Data = false
 }
 
+func (t *SetBool_Request) GetTypeSupport() types.MessageTypeSupport {
+	return SetBool_RequestTypeSupport
+}
+
 // SetBool_RequestPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type SetBool_RequestPublisher struct {

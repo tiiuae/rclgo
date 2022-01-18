@@ -61,6 +61,10 @@ func (t *Accel) SetDefaults() {
 	t.Angular.SetDefaults()
 }
 
+func (t *Accel) GetTypeSupport() types.MessageTypeSupport {
+	return AccelTypeSupport
+}
+
 // AccelPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type AccelPublisher struct {

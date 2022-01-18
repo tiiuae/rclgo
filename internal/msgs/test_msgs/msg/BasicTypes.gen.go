@@ -94,6 +94,10 @@ func (t *BasicTypes) SetDefaults() {
 	t.Uint64Value = 0
 }
 
+func (t *BasicTypes) GetTypeSupport() types.MessageTypeSupport {
+	return BasicTypesTypeSupport
+}
+
 // BasicTypesPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type BasicTypesPublisher struct {

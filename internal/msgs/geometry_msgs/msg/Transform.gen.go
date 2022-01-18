@@ -61,6 +61,10 @@ func (t *Transform) SetDefaults() {
 	t.Rotation.SetDefaults()
 }
 
+func (t *Transform) GetTypeSupport() types.MessageTypeSupport {
+	return TransformTypeSupport
+}
+
 // TransformPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type TransformPublisher struct {

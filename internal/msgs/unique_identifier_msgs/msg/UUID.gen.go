@@ -59,6 +59,10 @@ func (t *UUID) SetDefaults() {
 	t.Uuid = [16]uint8{}
 }
 
+func (t *UUID) GetTypeSupport() types.MessageTypeSupport {
+	return UUIDTypeSupport
+}
+
 // UUIDPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type UUIDPublisher struct {

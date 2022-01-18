@@ -58,6 +58,10 @@ func (t *UInt32) SetDefaults() {
 	t.Data = 0
 }
 
+func (t *UInt32) GetTypeSupport() types.MessageTypeSupport {
+	return UInt32TypeSupport
+}
+
 // UInt32Publisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type UInt32Publisher struct {

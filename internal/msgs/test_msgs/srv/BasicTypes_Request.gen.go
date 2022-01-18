@@ -98,6 +98,10 @@ func (t *BasicTypes_Request) SetDefaults() {
 	t.StringValue = ""
 }
 
+func (t *BasicTypes_Request) GetTypeSupport() types.MessageTypeSupport {
+	return BasicTypes_RequestTypeSupport
+}
+
 // BasicTypes_RequestPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type BasicTypes_RequestPublisher struct {

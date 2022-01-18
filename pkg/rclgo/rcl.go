@@ -36,11 +36,7 @@ package rclgo
 #include <rcl/service.h>
 #include <rcl/client.h>
 #include <rcl_action/wait.h>
-#include <rmw/get_topic_names_and_types.h>
-#include <rmw/names_and_types.h>
-#include <rmw/types.h>
-#include <rmw/topic_endpoint_info.h>
-#include <rmw/topic_endpoint_info_array.h>
+#include <rmw/rmw.h>
 */
 import "C"
 import (
@@ -185,6 +181,85 @@ func (a *Args) String() string {
 	}
 	runtime.KeepAlive(a)
 	return string(s)
+}
+
+type serializedMessage C.rmw_serialized_message_t
+
+func newSerializedMessage(size int) (serializedMessage, error) {
+	msg := C.rmw_get_zero_initialized_serialized_message()
+	allocator := C.rcl_get_default_allocator()
+	rc := C.rcutils_uint8_array_init(&msg, C.size_t(size), &allocator)
+	if rc != C.RCL_RET_OK {
+		return serializedMessage{}, errorsCastC(rc, "failed to initialize serialized message")
+	}
+	msg.buffer_length = msg.buffer_capacity
+	return serializedMessage(msg), nil
+}
+
+func (m *serializedMessage) c() *C.rmw_serialized_message_t {
+	return (*C.rmw_serialized_message_t)(m)
+}
+
+func (m *serializedMessage) Close() {
+	C.rcutils_uint8_array_fini(m.c())
+}
+
+func (m *serializedMessage) AsSlice() []byte {
+	return unsafe.Slice((*byte)(unsafe.Pointer(m.buffer)), m.buffer_length)
+}
+
+func (m *serializedMessage) ToSlice() []byte {
+	buf := m.AsSlice()
+	slice := make([]byte, len(buf))
+	copy(slice, buf)
+	return slice
+}
+
+// Serialize returns the serialized form of msg as a byte slice.
+func Serialize(msg types.Message) (buf []byte, err error) {
+	defer wrapErr("failed to serialize: %v", &err)
+	ts := msg.GetTypeSupport()
+	cmsg := ts.PrepareMemory()
+	defer ts.ReleaseMemory(cmsg)
+	ts.AsCStruct(cmsg, msg)
+	serialized, err := newSerializedMessage(0)
+	if err != nil {
+		return nil, err
+	}
+	defer serialized.Close()
+	rc := C.rmw_serialize(
+		cmsg,
+		(*C.rosidl_message_type_support_t)(ts.TypeSupport()),
+		serialized.c(),
+	)
+	if rc != C.RCL_RET_OK {
+		return nil, errorsCast(rc)
+	}
+	return serialized.ToSlice(), nil
+}
+
+// Deserialize deserializes buf to a message whose type support is ts. The
+// contents of buf must match ts.
+func Deserialize(buf []byte, ts types.MessageTypeSupport) (msg types.Message, err error) {
+	defer wrapErr("failed to deserialize: %v", &err)
+	serialized, err := newSerializedMessage(len(buf))
+	if err != nil {
+		return nil, err
+	}
+	copy(serialized.AsSlice(), buf)
+	cmsg := ts.PrepareMemory()
+	defer ts.ReleaseMemory(cmsg)
+	rc := C.rmw_deserialize(
+		serialized.c(),
+		(*C.rosidl_message_type_support_t)(ts.TypeSupport()),
+		cmsg,
+	)
+	if rc != C.RCL_RET_OK {
+		return nil, errorsCast(rc)
+	}
+	gomsg := ts.New()
+	ts.AsGoStruct(gomsg, cmsg)
+	return gomsg, nil
 }
 
 type Node struct {
@@ -618,6 +693,26 @@ func (s *Subscription) TakeMessage(out types.Message) (*RmwMessageInfo, error) {
 		SourceTimestamp:   time.Unix(0, int64(rmw_message_info.source_timestamp)),
 		ReceivedTimestamp: time.Unix(0, int64(rmw_message_info.received_timestamp)),
 		FromIntraProcess:  bool(rmw_message_info.from_intra_process),
+	}, nil
+}
+
+// TakeSerializedMessage takes a message without deserializing it and returns it
+// as a byte slice.
+func (s *Subscription) TakeSerializedMessage() ([]byte, *RmwMessageInfo, error) {
+	info := C.rmw_get_zero_initialized_message_info()
+	msg, err := newSerializedMessage(0)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer msg.Close()
+	rc := C.rcl_take_serialized_message(s.rcl_subscription_t, msg.c(), &info, nil)
+	if rc != C.RCL_RET_OK {
+		return nil, nil, errorsCastC(rc, fmt.Sprintf("rcl_take_serialied_message() failed for subscription='%+v'", s))
+	}
+	return msg.ToSlice(), &RmwMessageInfo{
+		SourceTimestamp:   time.Unix(0, int64(info.source_timestamp)),
+		ReceivedTimestamp: time.Unix(0, int64(info.received_timestamp)),
+		FromIntraProcess:  bool(info.from_intra_process),
 	}, nil
 }
 

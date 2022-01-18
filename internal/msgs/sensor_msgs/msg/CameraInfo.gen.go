@@ -93,6 +93,10 @@ func (t *CameraInfo) SetDefaults() {
 	t.Roi.SetDefaults()
 }
 
+func (t *CameraInfo) GetTypeSupport() types.MessageTypeSupport {
+	return CameraInfoTypeSupport
+}
+
 // CameraInfoPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type CameraInfoPublisher struct {

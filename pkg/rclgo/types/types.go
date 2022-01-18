@@ -18,6 +18,7 @@ import (
 type Message interface {
 	CloneMsg() Message
 	SetDefaults()
+	GetTypeSupport() MessageTypeSupport
 }
 
 type MessageTypeSupport interface {

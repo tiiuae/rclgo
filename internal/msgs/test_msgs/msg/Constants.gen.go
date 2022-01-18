@@ -70,6 +70,10 @@ func (t *Constants) CloneMsg() types.Message {
 func (t *Constants) SetDefaults() {
 }
 
+func (t *Constants) GetTypeSupport() types.MessageTypeSupport {
+	return ConstantsTypeSupport
+}
+
 // ConstantsPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type ConstantsPublisher struct {

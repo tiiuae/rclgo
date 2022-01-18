@@ -58,6 +58,10 @@ func (t *UInt16) SetDefaults() {
 	t.Data = 0
 }
 
+func (t *UInt16) GetTypeSupport() types.MessageTypeSupport {
+	return UInt16TypeSupport
+}
+
 // UInt16Publisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type UInt16Publisher struct {

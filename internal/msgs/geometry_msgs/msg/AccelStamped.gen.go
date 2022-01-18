@@ -62,6 +62,10 @@ func (t *AccelStamped) SetDefaults() {
 	t.Accel.SetDefaults()
 }
 
+func (t *AccelStamped) GetTypeSupport() types.MessageTypeSupport {
+	return AccelStampedTypeSupport
+}
+
 // AccelStampedPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type AccelStampedPublisher struct {

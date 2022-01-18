@@ -67,6 +67,10 @@ func (t *MagneticField) SetDefaults() {
 	t.MagneticFieldCovariance = [9]float64{}
 }
 
+func (t *MagneticField) GetTypeSupport() types.MessageTypeSupport {
+	return MagneticFieldTypeSupport
+}
+
 // MagneticFieldPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type MagneticFieldPublisher struct {

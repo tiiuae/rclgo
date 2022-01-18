@@ -69,6 +69,10 @@ func (t *CompressedImage) SetDefaults() {
 	t.Data = nil
 }
 
+func (t *CompressedImage) GetTypeSupport() types.MessageTypeSupport {
+	return CompressedImageTypeSupport
+}
+
 // CompressedImagePublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type CompressedImagePublisher struct {

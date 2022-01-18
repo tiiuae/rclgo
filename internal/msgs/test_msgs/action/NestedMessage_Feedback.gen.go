@@ -66,6 +66,10 @@ func (t *NestedMessage_Feedback) SetDefaults() {
 	t.NestedDifferentPkg.SetDefaults()
 }
 
+func (t *NestedMessage_Feedback) GetTypeSupport() types.MessageTypeSupport {
+	return NestedMessage_FeedbackTypeSupport
+}
+
 // NestedMessage_FeedbackPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type NestedMessage_FeedbackPublisher struct {

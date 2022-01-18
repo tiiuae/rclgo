@@ -62,6 +62,10 @@ func (t *AccelWithCovarianceStamped) SetDefaults() {
 	t.Accel.SetDefaults()
 }
 
+func (t *AccelWithCovarianceStamped) GetTypeSupport() types.MessageTypeSupport {
+	return AccelWithCovarianceStampedTypeSupport
+}
+
 // AccelWithCovarianceStampedPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type AccelWithCovarianceStampedPublisher struct {

@@ -65,6 +65,10 @@ func (t *ChannelFloat32) SetDefaults() {
 	t.Values = nil
 }
 
+func (t *ChannelFloat32) GetTypeSupport() types.MessageTypeSupport {
+	return ChannelFloat32TypeSupport
+}
+
 // ChannelFloat32Publisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type ChannelFloat32Publisher struct {

@@ -71,6 +71,10 @@ func (t *NavSatStatus) SetDefaults() {
 	t.Service = 0
 }
 
+func (t *NavSatStatus) GetTypeSupport() types.MessageTypeSupport {
+	return NavSatStatusTypeSupport
+}
+
 // NavSatStatusPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type NavSatStatusPublisher struct {

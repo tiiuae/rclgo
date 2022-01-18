@@ -90,6 +90,10 @@ func (t *PointCloud2) SetDefaults() {
 	t.IsDense = false
 }
 
+func (t *PointCloud2) GetTypeSupport() types.MessageTypeSupport {
+	return PointCloud2TypeSupport
+}
+
 // PointCloud2Publisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type PointCloud2Publisher struct {

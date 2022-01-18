@@ -245,6 +245,10 @@ func (t *UnboundedSequences) SetDefaults() {
 	t.AlignmentCheck = 0
 }
 
+func (t *UnboundedSequences) GetTypeSupport() types.MessageTypeSupport {
+	return UnboundedSequencesTypeSupport
+}
+
 // UnboundedSequencesPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type UnboundedSequencesPublisher struct {

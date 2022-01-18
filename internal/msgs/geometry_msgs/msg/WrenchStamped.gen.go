@@ -62,6 +62,10 @@ func (t *WrenchStamped) SetDefaults() {
 	t.Wrench.SetDefaults()
 }
 
+func (t *WrenchStamped) GetTypeSupport() types.MessageTypeSupport {
+	return WrenchStampedTypeSupport
+}
+
 // WrenchStampedPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
 type WrenchStampedPublisher struct {

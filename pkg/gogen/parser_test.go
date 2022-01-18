@@ -90,6 +90,10 @@ func TestParseROS2Field(t *testing.T) {
 			`string<=22 bounded_string_value`,
 			ROS2MessageNew("test_msgs", "Strings"),
 		)
+		testFunc(`Bounded string array.`,
+			`string<=22[] bounded_string_array_value`,
+			ROS2MessageNew("test_msgs", "Strings"),
+		)
 	})
 
 	testParseService := func(pkg, name, source string) {
@@ -172,6 +176,10 @@ string input
 		)
 		testFunc("",
 			"byte BYTE_CONST=50",
+			ROS2MessageNew("test_msgs", "Constants"),
+		)
+		testFunc("",
+			`string UNQUOTED_STRING = VALUE`,
 			ROS2MessageNew("test_msgs", "Constants"),
 		)
 	})

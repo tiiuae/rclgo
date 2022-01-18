@@ -1,6 +1,6 @@
 (*gogen.ROS2Field)({
   TypeArray: (string) "",
-  ArrayBounded: (string) (len=4) "<=22",
+  ArrayBounded: (string) "",
   ArraySize: (int) 0,
   DefaultValue: (string) (len=21) "\"this is yet another\"",
   PkgName: (string) "",

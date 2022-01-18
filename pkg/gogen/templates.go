@@ -26,6 +26,7 @@ var templateFuncMap template.FuncMap = template.FuncMap{
 	"cloneCode":                   cloneCode,
 	"actionHasSuffix":             actionHasSuffix,
 	"matchMsg":                    matchMsg,
+	"sanitizeValue":               defaultValueSanitizer,
 }
 
 var ros2PackageCommonTemplate = template.Must(
@@ -99,7 +100,7 @@ func init() {
 {{- if $Md.Constants }}
 const (
 {{- range $Md.Constants }}
-	{{$Md.Name}}_{{.RosName}} {{.GoPkgReference}}{{.GoType}} = {{.Value}}{{if .Comment -}} // {{.Comment}}{{- end}}
+	{{$Md.Name}}_{{.RosName}} {{.GoPkgReference}}{{.GoType}} = {{sanitizeValue .RosType .Value}}{{if .Comment -}} // {{.Comment}}{{- end}}
 {{- end }}
 )
 {{- end }}

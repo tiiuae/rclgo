@@ -242,9 +242,8 @@ func isRowConstantOrField(textRow string, ros2msg *ROS2Message) (byte, map[strin
 	re.R(&textRow, `m!
 	^(?:(?P<package>\w+)/)?
 	(?P<type>\w+)
+	(?P<boundedString><=\d*)?    # Special case for bounded strings
 	(?P<array>\[(?P<bounded><=)?(?P<size>\d*)\])?
-	(?P<bounded><=)?                                    # Special case for bounded strings
-	(?P<size>\d*)?
 	\s+
 	(?P<field>\w+)
 	\s*
@@ -281,6 +280,10 @@ func (p *parser) ParseROS2MessageField(capture map[string]string, ros2msg *ROS2M
 	size, err := strconv.ParseInt(capture["size"], 10, 32)
 	if err != nil && capture["size"] != "" {
 		return nil, err
+	}
+	if capture["boundedString"] != "" &&
+		!(capture["package"] == "" && capture["type"] == "string") {
+		return nil, errors.New("the only base type that supports an upper boundary is string")
 	}
 	if capture["bounded"] != "" {
 		capture["array"] = strings.Replace(capture["array"], capture["bounded"]+capture["size"], "", 1)

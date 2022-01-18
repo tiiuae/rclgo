@@ -1,0 +1,9 @@
+(*gogen.ROS2Constant)({
+  RosType: (string) (len=6) "string",
+  GoType: (string) (len=6) "string",
+  RosName: (string) (len=15) "UNQUOTED_STRING",
+  Value: (string) (len=5) "VALUE",
+  Comment: (string) "",
+  PkgName: (string) "",
+  PkgIsLocal: (bool) false
+})

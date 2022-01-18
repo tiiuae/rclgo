@@ -117,7 +117,6 @@ func (s *CompressedImageSubscription) TakeMessage(out *CompressedImage) (*rclgo.
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneCompressedImageSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneCompressedImageSlice(dst, src []CompressedImage) {

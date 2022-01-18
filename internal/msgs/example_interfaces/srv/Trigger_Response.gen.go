@@ -110,7 +110,6 @@ func (s *Trigger_ResponseSubscription) TakeMessage(out *Trigger_Response) (*rclg
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneTrigger_ResponseSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneTrigger_ResponseSlice(dst, src []Trigger_Response) {

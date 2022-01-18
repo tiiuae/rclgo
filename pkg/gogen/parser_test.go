@@ -94,7 +94,7 @@ func TestParseROS2Field(t *testing.T) {
 
 	testParseService := func(pkg, name, source string) {
 		s := NewROS2Service(pkg, name)
-		So(parser.parseService(s, source), ShouldBeNil)
+		So(parser.ParseService(s, source), ShouldBeNil)
 		So(cupaloy.SnapshotMulti("service-"+name, s), ShouldBeNil)
 	}
 

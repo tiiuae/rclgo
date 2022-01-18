@@ -110,7 +110,6 @@ func (s *TwistWithCovarianceSubscription) TakeMessage(out *TwistWithCovariance) 
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneTwistWithCovarianceSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneTwistWithCovarianceSlice(dst, src []TwistWithCovariance) {

@@ -82,3 +82,26 @@ func GetServiceMust(srvType string) types.ServiceTypeSupport {
 	}
 	return srv
 }
+
+// actionTypeMap is the messageTypeMap equivalent for actions.
+var actionTypeMap = make(map[string]types.ActionTypeSupport)
+
+// RegisterAction is the RegisterMessage equivalent for actions.
+func RegisterAction(alias string, actionType types.ActionTypeSupport) {
+	actionTypeMap[alias] = actionType
+}
+
+// GetAction is the GetMessage equivalent for actions.
+func GetAction(actionType string) (types.ActionTypeSupport, bool) {
+	action, ok := actionTypeMap[actionType]
+	return action, ok
+}
+
+// GetActionMust is the GetMessageMust equivalent for actions.
+func GetActionMust(actionType string) types.ActionTypeSupport {
+	action, ok := actionTypeMap[actionType]
+	if !ok {
+		panic(fmt.Sprintf("No registered implementation for ROS2 message type '%s'!\n", actionType))
+	}
+	return action
+}

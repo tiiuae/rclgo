@@ -142,7 +142,6 @@ func (s *BasicTypesSubscription) TakeMessage(out *BasicTypes) (*rclgo.RmwMessage
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneBasicTypesSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneBasicTypesSlice(dst, src []BasicTypes) {

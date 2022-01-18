@@ -115,7 +115,6 @@ func (s *MagneticFieldSubscription) TakeMessage(out *MagneticField) (*rclgo.RmwM
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneMagneticFieldSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneMagneticFieldSlice(dst, src []MagneticField) {

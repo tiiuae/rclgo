@@ -57,7 +57,7 @@ type rosResourceStore struct {
 func (s *rosResourceStore) addResource(r rosResource) {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
-
+	fmt.Printf("######### addResource: %T\n", r)
 	if s.resources == nil {
 		s.resources = make(map[uint64]rosResource)
 		// The counter starts at one to allow removing zero-initialized

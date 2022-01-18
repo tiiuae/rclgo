@@ -106,7 +106,6 @@ func (s *NestedSubscription) TakeMessage(out *Nested) (*rclgo.RmwMessageInfo, er
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneNestedSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneNestedSlice(dst, src []Nested) {

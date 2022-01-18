@@ -114,7 +114,6 @@ func (s *TransformStampedSubscription) TakeMessage(out *TransformStamped) (*rclg
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneTransformStampedSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneTransformStampedSlice(dst, src []TransformStamped) {

@@ -109,7 +109,6 @@ func (s *JoyFeedbackArraySubscription) TakeMessage(out *JoyFeedbackArray) (*rclg
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneJoyFeedbackArraySlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneJoyFeedbackArraySlice(dst, src []JoyFeedbackArray) {

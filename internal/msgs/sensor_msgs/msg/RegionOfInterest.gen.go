@@ -118,7 +118,6 @@ func (s *RegionOfInterestSubscription) TakeMessage(out *RegionOfInterest) (*rclg
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneRegionOfInterestSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneRegionOfInterestSlice(dst, src []RegionOfInterest) {

@@ -110,7 +110,6 @@ func (s *LaserEchoSubscription) TakeMessage(out *LaserEcho) (*rclgo.RmwMessageIn
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneLaserEchoSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneLaserEchoSlice(dst, src []LaserEcho) {

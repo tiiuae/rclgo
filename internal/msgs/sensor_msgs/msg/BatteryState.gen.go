@@ -182,7 +182,6 @@ func (s *BatteryStateSubscription) TakeMessage(out *BatteryState) (*rclgo.RmwMes
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneBatteryStateSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneBatteryStateSlice(dst, src []BatteryState) {

@@ -113,7 +113,6 @@ func (s *FluidPressureSubscription) TakeMessage(out *FluidPressure) (*rclgo.RmwM
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneFluidPressureSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneFluidPressureSlice(dst, src []FluidPressure) {

@@ -107,7 +107,6 @@ func (s *SetCameraInfo_RequestSubscription) TakeMessage(out *SetCameraInfo_Reque
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneSetCameraInfo_RequestSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneSetCameraInfo_RequestSlice(dst, src []SetCameraInfo_Request) {

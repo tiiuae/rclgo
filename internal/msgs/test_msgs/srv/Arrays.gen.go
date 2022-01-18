@@ -106,4 +106,3 @@ func NewArraysService(node *rclgo.Node, name string, options *rclgo.ServiceOptio
 	}
 	return &ArraysService{service}, nil
 }
-

@@ -106,7 +106,6 @@ func (s *BoolSubscription) TakeMessage(out *Bool) (*rclgo.RmwMessageInfo, error)
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneBoolSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneBoolSlice(dst, src []Bool) {

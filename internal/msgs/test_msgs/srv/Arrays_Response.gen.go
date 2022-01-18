@@ -204,7 +204,6 @@ func (s *Arrays_ResponseSubscription) TakeMessage(out *Arrays_Response) (*rclgo.
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneArrays_ResponseSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneArrays_ResponseSlice(dst, src []Arrays_Response) {

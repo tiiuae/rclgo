@@ -106,4 +106,3 @@ func NewSetCameraInfoService(node *rclgo.Node, name string, options *rclgo.Servi
 	}
 	return &SetCameraInfoService{service}, nil
 }
-

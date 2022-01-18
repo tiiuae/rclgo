@@ -159,6 +159,16 @@ func srvNameFromSrvMsgName(s string) string {
 	return s
 }
 
+func actionNameFromActionMsgName(s string) string {
+	re.S(&s, `s/_(Goal|Result|Feedback|SendGoal_Request|SendGoal_Response|GetResult_Request|GetResult_Response|FeedbackMessage)$//`)
+	return s
+}
+
+func actionNameFromActionSrvName(s string) string {
+	re.S(&s, `s/_(SendGoal|GetResult)$//`)
+	return s
+}
+
 func cReturnCodeNameToGo(n string) string {
 	re.S(&n, `s/^RCL_RET_//`)
 	re.S(&n, `s/^RMW_RET_/RMW_/`)
@@ -175,6 +185,21 @@ func (s stringSet) AddFrom(s2 stringSet) {
 	for key := range s2 {
 		s[key] = struct{}{}
 	}
+}
+
+func actionHasSuffix(msg *ROS2Message, suffixes ...string) bool {
+	if msg.Type == "action" {
+		for _, suffix := range suffixes {
+			if strings.HasSuffix(msg.Name, suffix) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func matchMsg(msg *ROS2Message, pkg, name string) bool {
+	return msg.GoPackage() == pkg && msg.Name == name
 }
 
 /* So many ways to skin a ROS2 defaults field

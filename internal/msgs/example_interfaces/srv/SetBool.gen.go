@@ -106,4 +106,3 @@ func NewSetBoolService(node *rclgo.Node, name string, options *rclgo.ServiceOpti
 	}
 	return &SetBoolService{service}, nil
 }
-

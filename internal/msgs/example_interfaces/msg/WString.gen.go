@@ -107,7 +107,6 @@ func (s *WStringSubscription) TakeMessage(out *WString) (*rclgo.RmwMessageInfo, 
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneWStringSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneWStringSlice(dst, src []WString) {

@@ -113,7 +113,6 @@ func (s *Float32MultiArraySubscription) TakeMessage(out *Float32MultiArray) (*rc
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneFloat32MultiArraySlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneFloat32MultiArraySlice(dst, src []Float32MultiArray) {

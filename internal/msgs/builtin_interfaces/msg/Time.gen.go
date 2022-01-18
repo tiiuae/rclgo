@@ -109,7 +109,6 @@ func (s *TimeSubscription) TakeMessage(out *Time) (*rclgo.RmwMessageInfo, error)
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneTimeSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneTimeSlice(dst, src []Time) {

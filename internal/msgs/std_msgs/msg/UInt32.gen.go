@@ -106,7 +106,6 @@ func (s *UInt32Subscription) TakeMessage(out *UInt32) (*rclgo.RmwMessageInfo, er
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneUInt32Slice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneUInt32Slice(dst, src []UInt32) {

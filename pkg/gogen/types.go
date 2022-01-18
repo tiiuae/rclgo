@@ -106,17 +106,46 @@ type ROS2Service struct {
 	Response *ROS2Message
 }
 
-func NewROS2Service(pkg, name string) *ROS2Service {
-	s := &ROS2Service{
+func newServiceWithType(pkg, name, typ string) *ROS2Service {
+	return &ROS2Service{
 		Metadata: &Metadata{
 			Name:    name,
 			Package: pkg,
-			Type:    "srv",
+			Type:    typ,
 		},
-		Request:  newMessageWithType(pkg, name+"_Request", "srv"),
-		Response: newMessageWithType(pkg, name+"_Response", "srv"),
+		Request:  newMessageWithType(pkg, name+"_Request", typ),
+		Response: newMessageWithType(pkg, name+"_Response", typ),
 	}
-	return s
+}
+
+func NewROS2Service(pkg, name string) *ROS2Service {
+	return newServiceWithType(pkg, name, "srv")
+}
+
+type ROS2Action struct {
+	*Metadata
+	Goal            *ROS2Message
+	Result          *ROS2Message
+	Feedback        *ROS2Message
+	SendGoal        *ROS2Service
+	GetResult       *ROS2Service
+	FeedbackMessage *ROS2Message
+}
+
+func NewROS2Action(pkg, name string) *ROS2Action {
+	return &ROS2Action{
+		Metadata: &Metadata{
+			Name:    name,
+			Package: pkg,
+			Type:    "action",
+		},
+		Goal:            newMessageWithType(pkg, name+"_Goal", "action"),
+		Result:          newMessageWithType(pkg, name+"_Result", "action"),
+		Feedback:        newMessageWithType(pkg, name+"_Feedback", "action"),
+		SendGoal:        newServiceWithType(pkg, name+"_SendGoal", "action"),
+		GetResult:       newServiceWithType(pkg, name+"_GetResult", "action"),
+		FeedbackMessage: newMessageWithType(pkg, name+"_FeedbackMessage", "action"),
+	}
 }
 
 /*
@@ -174,4 +203,5 @@ cErrorTypeFiles are looked for #definitions and parsed as Golang ros2 error type
 var cErrorTypeFiles = []string{
 	"rcl/types.h",
 	"rmw/ret_types.h",
+	"rcl_action/types.h",
 }

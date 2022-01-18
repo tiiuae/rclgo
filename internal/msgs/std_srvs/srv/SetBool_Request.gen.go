@@ -106,7 +106,6 @@ func (s *SetBool_RequestSubscription) TakeMessage(out *SetBool_Request) (*rclgo.
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneSetBool_RequestSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneSetBool_RequestSlice(dst, src []SetBool_Request) {

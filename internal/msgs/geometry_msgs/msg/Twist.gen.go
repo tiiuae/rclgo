@@ -109,7 +109,6 @@ func (s *TwistSubscription) TakeMessage(out *Twist) (*rclgo.RmwMessageInfo, erro
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneTwistSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneTwistSlice(dst, src []Twist) {

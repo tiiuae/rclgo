@@ -113,7 +113,6 @@ func (s *UInt16MultiArraySubscription) TakeMessage(out *UInt16MultiArray) (*rclg
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneUInt16MultiArraySlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneUInt16MultiArraySlice(dst, src []UInt16MultiArray) {

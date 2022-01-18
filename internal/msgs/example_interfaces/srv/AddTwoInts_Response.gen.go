@@ -106,7 +106,6 @@ func (s *AddTwoInts_ResponseSubscription) TakeMessage(out *AddTwoInts_Response) 
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneAddTwoInts_ResponseSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneAddTwoInts_ResponseSlice(dst, src []AddTwoInts_Response) {

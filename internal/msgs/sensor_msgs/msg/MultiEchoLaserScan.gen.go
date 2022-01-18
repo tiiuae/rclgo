@@ -140,7 +140,6 @@ func (s *MultiEchoLaserScanSubscription) TakeMessage(out *MultiEchoLaserScan) (*
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneMultiEchoLaserScanSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneMultiEchoLaserScanSlice(dst, src []MultiEchoLaserScan) {

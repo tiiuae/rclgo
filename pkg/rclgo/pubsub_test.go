@@ -491,7 +491,7 @@ func receiveNothing(subs interface{}) {
 func newDefaultRCLContext() (*rclgo.Context, error) {
 	return rclgo.NewContext(
 		0,
-		parseArgsMust("--ros-arg", "--log-level", "DEBUG"),
+		parseArgsMust("--ros-args", "--log-level", "DEBUG"),
 	)
 }
 
@@ -505,8 +505,7 @@ func parseArgsMust(args ...string) *rclgo.Args {
 
 var reliableQos = func() rclgo.RmwQosProfile {
 	qos := rclgo.NewRmwQosProfileDefault()
-	qos.History = rclgo.RmwQosHistoryPolicyKeepLast
-	qos.Depth = 1
+	qos.History = rclgo.RmwQosHistoryPolicyKeepAll
 	qos.Durability = rclgo.RmwQosDurabilityPolicyTransientLocal
 	qos.Reliability = rclgo.RmwQosReliabilityPolicyReliable
 	return qos

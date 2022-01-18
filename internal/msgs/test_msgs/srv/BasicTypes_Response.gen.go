@@ -146,7 +146,6 @@ func (s *BasicTypes_ResponseSubscription) TakeMessage(out *BasicTypes_Response) 
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneBasicTypes_ResponseSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneBasicTypes_ResponseSlice(dst, src []BasicTypes_Response) {

@@ -106,4 +106,3 @@ func NewTriggerService(node *rclgo.Node, name string, options *rclgo.ServiceOpti
 	}
 	return &TriggerService{service}, nil
 }
-

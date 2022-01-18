@@ -132,7 +132,6 @@ func (s *JointStateSubscription) TakeMessage(out *JointState) (*rclgo.RmwMessage
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneJointStateSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneJointStateSlice(dst, src []JointState) {

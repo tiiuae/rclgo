@@ -115,7 +115,6 @@ func (s *QuaternionSubscription) TakeMessage(out *Quaternion) (*rclgo.RmwMessage
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneQuaternionSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneQuaternionSlice(dst, src []Quaternion) {

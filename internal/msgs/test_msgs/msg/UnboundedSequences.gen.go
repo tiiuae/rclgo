@@ -293,7 +293,6 @@ func (s *UnboundedSequencesSubscription) TakeMessage(out *UnboundedSequences) (*
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneUnboundedSequencesSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneUnboundedSequencesSlice(dst, src []UnboundedSequences) {

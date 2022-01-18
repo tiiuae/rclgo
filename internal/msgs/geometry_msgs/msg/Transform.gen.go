@@ -109,7 +109,6 @@ func (s *TransformSubscription) TakeMessage(out *Transform) (*rclgo.RmwMessageIn
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneTransformSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneTransformSlice(dst, src []Transform) {

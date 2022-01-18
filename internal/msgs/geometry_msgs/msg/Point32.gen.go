@@ -112,7 +112,6 @@ func (s *Point32Subscription) TakeMessage(out *Point32) (*rclgo.RmwMessageInfo, 
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // ClonePoint32Slice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func ClonePoint32Slice(dst, src []Point32) {

@@ -141,7 +141,6 @@ func (s *CameraInfoSubscription) TakeMessage(out *CameraInfo) (*rclgo.RmwMessage
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneCameraInfoSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneCameraInfoSlice(dst, src []CameraInfo) {

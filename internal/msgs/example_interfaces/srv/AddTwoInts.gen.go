@@ -106,4 +106,3 @@ func NewAddTwoIntsService(node *rclgo.Node, name string, options *rclgo.ServiceO
 	}
 	return &AddTwoIntsService{service}, nil
 }
-

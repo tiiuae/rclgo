@@ -113,7 +113,6 @@ func (s *MultiArrayDimensionSubscription) TakeMessage(out *MultiArrayDimension) 
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneMultiArrayDimensionSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneMultiArrayDimensionSlice(dst, src []MultiArrayDimension) {

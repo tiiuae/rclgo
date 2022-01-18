@@ -110,7 +110,6 @@ func (s *SetBool_ResponseSubscription) TakeMessage(out *SetBool_Response) (*rclg
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneSetBool_ResponseSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneSetBool_ResponseSlice(dst, src []SetBool_Response) {

@@ -1,0 +1,114 @@
+(*test_msgs_action.Fibonacci_GetResult_Response)({
+  Status: (int8) 4,
+  Result: (test_msgs_action.Fibonacci_Result) {
+    Sequence: ([]int32) (len=10) {
+      (int32) 0,
+      (int32) 1,
+      (int32) 1,
+      (int32) 2,
+      (int32) 3,
+      (int32) 5,
+      (int32) 8,
+      (int32) 13,
+      (int32) 21,
+      (int32) 34
+    }
+  }
+})
+(rclgo_test.fibonacciFeedbacks) (len=10) {
+  (*test_msgs_action.Fibonacci_Feedback)({
+    Sequence: ([]int32) (len=1) {
+      (int32) 0
+    }
+  }),
+  (*test_msgs_action.Fibonacci_Feedback)({
+    Sequence: ([]int32) (len=2) {
+      (int32) 0,
+      (int32) 1
+    }
+  }),
+  (*test_msgs_action.Fibonacci_Feedback)({
+    Sequence: ([]int32) (len=3) {
+      (int32) 0,
+      (int32) 1,
+      (int32) 1
+    }
+  }),
+  (*test_msgs_action.Fibonacci_Feedback)({
+    Sequence: ([]int32) (len=4) {
+      (int32) 0,
+      (int32) 1,
+      (int32) 1,
+      (int32) 2
+    }
+  }),
+  (*test_msgs_action.Fibonacci_Feedback)({
+    Sequence: ([]int32) (len=5) {
+      (int32) 0,
+      (int32) 1,
+      (int32) 1,
+      (int32) 2,
+      (int32) 3
+    }
+  }),
+  (*test_msgs_action.Fibonacci_Feedback)({
+    Sequence: ([]int32) (len=6) {
+      (int32) 0,
+      (int32) 1,
+      (int32) 1,
+      (int32) 2,
+      (int32) 3,
+      (int32) 5
+    }
+  }),
+  (*test_msgs_action.Fibonacci_Feedback)({
+    Sequence: ([]int32) (len=7) {
+      (int32) 0,
+      (int32) 1,
+      (int32) 1,
+      (int32) 2,
+      (int32) 3,
+      (int32) 5,
+      (int32) 8
+    }
+  }),
+  (*test_msgs_action.Fibonacci_Feedback)({
+    Sequence: ([]int32) (len=8) {
+      (int32) 0,
+      (int32) 1,
+      (int32) 1,
+      (int32) 2,
+      (int32) 3,
+      (int32) 5,
+      (int32) 8,
+      (int32) 13
+    }
+  }),
+  (*test_msgs_action.Fibonacci_Feedback)({
+    Sequence: ([]int32) (len=9) {
+      (int32) 0,
+      (int32) 1,
+      (int32) 1,
+      (int32) 2,
+      (int32) 3,
+      (int32) 5,
+      (int32) 8,
+      (int32) 13,
+      (int32) 21
+    }
+  }),
+  (*test_msgs_action.Fibonacci_Feedback)({
+    Sequence: ([]int32) (len=10) {
+      (int32) 0,
+      (int32) 1,
+      (int32) 1,
+      (int32) 2,
+      (int32) 3,
+      (int32) 5,
+      (int32) 8,
+      (int32) 13,
+      (int32) 21,
+      (int32) 34
+    }
+  })
+}

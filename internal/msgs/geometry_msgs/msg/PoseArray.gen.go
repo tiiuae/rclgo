@@ -113,7 +113,6 @@ func (s *PoseArraySubscription) TakeMessage(out *PoseArray) (*rclgo.RmwMessageIn
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // ClonePoseArraySlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func ClonePoseArraySlice(dst, src []PoseArray) {

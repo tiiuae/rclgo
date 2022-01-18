@@ -110,7 +110,6 @@ func (s *QuaternionStampedSubscription) TakeMessage(out *QuaternionStamped) (*rc
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneQuaternionStampedSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneQuaternionStampedSlice(dst, src []QuaternionStamped) {

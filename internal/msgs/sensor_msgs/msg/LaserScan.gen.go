@@ -141,7 +141,6 @@ func (s *LaserScanSubscription) TakeMessage(out *LaserScan) (*rclgo.RmwMessageIn
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneLaserScanSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneLaserScanSlice(dst, src []LaserScan) {

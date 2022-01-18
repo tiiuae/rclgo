@@ -119,7 +119,6 @@ func (s *NavSatStatusSubscription) TakeMessage(out *NavSatStatus) (*rclgo.RmwMes
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneNavSatStatusSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneNavSatStatusSlice(dst, src []NavSatStatus) {

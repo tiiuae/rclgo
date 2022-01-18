@@ -113,7 +113,6 @@ func (s *MultiArrayLayoutSubscription) TakeMessage(out *MultiArrayLayout) (*rclg
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneMultiArrayLayoutSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneMultiArrayLayoutSlice(dst, src []MultiArrayLayout) {

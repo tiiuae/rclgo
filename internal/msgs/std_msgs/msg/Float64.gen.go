@@ -106,7 +106,6 @@ func (s *Float64Subscription) TakeMessage(out *Float64) (*rclgo.RmwMessageInfo, 
 	return s.Subscription.TakeMessage(out)
 }
 
-
 // CloneFloat64Slice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
 func CloneFloat64Slice(dst, src []Float64) {

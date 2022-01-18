@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("geometry_msgs/TwistWithCovarianceStamped", TwistWithCovarianceStampedTypeSupport)
+	typemap.RegisterMessage("geometry_msgs/msg/TwistWithCovarianceStamped", TwistWithCovarianceStampedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTwistWithCovarianceStamped

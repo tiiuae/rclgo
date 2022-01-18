@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("action_msgs/CancelGoal_Request", CancelGoal_RequestTypeSupport)
+	typemap.RegisterMessage("action_msgs/srv/CancelGoal_Request", CancelGoal_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewCancelGoal_Request

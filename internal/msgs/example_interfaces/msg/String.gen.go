@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("example_interfaces/String", StringTypeSupport)
+	typemap.RegisterMessage("example_interfaces/msg/String", StringTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewString

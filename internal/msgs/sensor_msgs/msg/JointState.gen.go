@@ -30,6 +30,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/JointState", JointStateTypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/JointState", JointStateTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewJointState

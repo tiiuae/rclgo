@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("action_msgs/CancelGoal_Response", CancelGoal_ResponseTypeSupport)
+	typemap.RegisterMessage("action_msgs/srv/CancelGoal_Response", CancelGoal_ResponseTypeSupport)
 }
 const (
 	CancelGoal_Response_ERROR_NONE int8 = 0// Indicates the request was accepted without any errors.One or more goals have transitioned to the CANCELING state. Thegoals_canceling list is not empty.

@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("geometry_msgs/PoseArray", PoseArrayTypeSupport)
+	typemap.RegisterMessage("geometry_msgs/msg/PoseArray", PoseArrayTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPoseArray

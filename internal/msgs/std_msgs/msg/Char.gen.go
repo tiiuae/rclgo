@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("std_msgs/Char", CharTypeSupport)
+	typemap.RegisterMessage("std_msgs/msg/Char", CharTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewChar

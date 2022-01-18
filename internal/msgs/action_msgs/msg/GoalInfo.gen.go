@@ -30,6 +30,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("action_msgs/GoalInfo", GoalInfoTypeSupport)
+	typemap.RegisterMessage("action_msgs/msg/GoalInfo", GoalInfoTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewGoalInfo

@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("geometry_msgs/QuaternionStamped", QuaternionStampedTypeSupport)
+	typemap.RegisterMessage("geometry_msgs/msg/QuaternionStamped", QuaternionStampedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewQuaternionStamped

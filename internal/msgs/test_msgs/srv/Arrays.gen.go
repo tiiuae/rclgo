@@ -29,6 +29,7 @@ import (
 
 func init() {
 	typemap.RegisterService("test_msgs/Arrays", ArraysTypeSupport)
+	typemap.RegisterService("test_msgs/srv/Arrays", ArraysTypeSupport)
 }
 
 type _ArraysTypeSupport struct {}

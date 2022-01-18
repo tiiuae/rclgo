@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("geometry_msgs/Accel", AccelTypeSupport)
+	typemap.RegisterMessage("geometry_msgs/msg/Accel", AccelTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewAccel

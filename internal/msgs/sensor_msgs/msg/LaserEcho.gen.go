@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/LaserEcho", LaserEchoTypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/LaserEcho", LaserEchoTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewLaserEcho

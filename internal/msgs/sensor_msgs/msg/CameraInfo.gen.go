@@ -30,6 +30,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/CameraInfo", CameraInfoTypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/CameraInfo", CameraInfoTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewCameraInfo

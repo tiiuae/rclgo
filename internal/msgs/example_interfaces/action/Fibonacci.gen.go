@@ -36,6 +36,7 @@ import (
 
 func init() {
 	typemap.RegisterAction("example_interfaces/Fibonacci", FibonacciTypeSupport)
+	typemap.RegisterAction("example_interfaces/action/Fibonacci", FibonacciTypeSupport)
 }
 
 type _FibonacciTypeSupport struct {}

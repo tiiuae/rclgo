@@ -30,6 +30,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("test_msgs/Arrays_Request", Arrays_RequestTypeSupport)
+	typemap.RegisterMessage("test_msgs/srv/Arrays_Request", Arrays_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewArrays_Request

@@ -30,6 +30,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("geometry_msgs/TransformStamped", TransformStampedTypeSupport)
+	typemap.RegisterMessage("geometry_msgs/msg/TransformStamped", TransformStampedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTransformStamped

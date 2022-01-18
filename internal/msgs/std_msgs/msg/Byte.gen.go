@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("std_msgs/Byte", ByteTypeSupport)
+	typemap.RegisterMessage("std_msgs/msg/Byte", ByteTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewByte

@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("example_interfaces/Int16", Int16TypeSupport)
+	typemap.RegisterMessage("example_interfaces/msg/Int16", Int16TypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewInt16

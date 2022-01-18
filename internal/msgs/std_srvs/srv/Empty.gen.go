@@ -29,6 +29,7 @@ import (
 
 func init() {
 	typemap.RegisterService("std_srvs/Empty", EmptyTypeSupport)
+	typemap.RegisterService("std_srvs/srv/Empty", EmptyTypeSupport)
 }
 
 type _EmptyTypeSupport struct {}

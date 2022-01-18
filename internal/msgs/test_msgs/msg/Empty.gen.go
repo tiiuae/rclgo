@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("test_msgs/Empty", EmptyTypeSupport)
+	typemap.RegisterMessage("test_msgs/msg/Empty", EmptyTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewEmpty

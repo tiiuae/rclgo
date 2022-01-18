@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/NavSatStatus", NavSatStatusTypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/NavSatStatus", NavSatStatusTypeSupport)
 }
 const (
 	NavSatStatus_STATUS_NO_FIX int8 = -1// unable to fix position

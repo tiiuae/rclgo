@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("geometry_msgs/Twist", TwistTypeSupport)
+	typemap.RegisterMessage("geometry_msgs/msg/Twist", TwistTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTwist

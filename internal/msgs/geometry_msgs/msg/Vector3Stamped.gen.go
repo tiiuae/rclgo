@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("geometry_msgs/Vector3Stamped", Vector3StampedTypeSupport)
+	typemap.RegisterMessage("geometry_msgs/msg/Vector3Stamped", Vector3StampedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewVector3Stamped

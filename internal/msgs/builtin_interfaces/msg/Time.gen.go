@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("builtin_interfaces/Time", TimeTypeSupport)
+	typemap.RegisterMessage("builtin_interfaces/msg/Time", TimeTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTime

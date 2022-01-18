@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("action_msgs/GoalStatusArray", GoalStatusArrayTypeSupport)
+	typemap.RegisterMessage("action_msgs/msg/GoalStatusArray", GoalStatusArrayTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewGoalStatusArray

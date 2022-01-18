@@ -29,6 +29,7 @@ import (
 
 func init() {
 	typemap.RegisterService("test_msgs/NestedMessage_GetResult", NestedMessage_GetResultTypeSupport)
+	typemap.RegisterService("test_msgs/action/NestedMessage_GetResult", NestedMessage_GetResultTypeSupport)
 }
 
 type _NestedMessage_GetResultTypeSupport struct {}

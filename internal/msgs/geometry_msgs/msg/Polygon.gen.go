@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("geometry_msgs/Polygon", PolygonTypeSupport)
+	typemap.RegisterMessage("geometry_msgs/msg/Polygon", PolygonTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPolygon

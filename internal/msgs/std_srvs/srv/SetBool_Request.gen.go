@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("std_srvs/SetBool_Request", SetBool_RequestTypeSupport)
+	typemap.RegisterMessage("std_srvs/srv/SetBool_Request", SetBool_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSetBool_Request

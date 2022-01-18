@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/Range", RangeTypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/Range", RangeTypeSupport)
 }
 const (
 	Range_ULTRASOUND uint8 = 0// Radiation type enumsIf you want a value added to this list, send an email to the ros-users list

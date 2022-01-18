@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("geometry_msgs/TwistStamped", TwistStampedTypeSupport)
+	typemap.RegisterMessage("geometry_msgs/msg/TwistStamped", TwistStampedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTwistStamped

@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("std_msgs/Int64MultiArray", Int64MultiArrayTypeSupport)
+	typemap.RegisterMessage("std_msgs/msg/Int64MultiArray", Int64MultiArrayTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewInt64MultiArray

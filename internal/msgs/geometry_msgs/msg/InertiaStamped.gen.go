@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("geometry_msgs/InertiaStamped", InertiaStampedTypeSupport)
+	typemap.RegisterMessage("geometry_msgs/msg/InertiaStamped", InertiaStampedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewInertiaStamped

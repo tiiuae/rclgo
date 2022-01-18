@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("geometry_msgs/Transform", TransformTypeSupport)
+	typemap.RegisterMessage("geometry_msgs/msg/Transform", TransformTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTransform

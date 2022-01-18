@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("unique_identifier_msgs/UUID", UUIDTypeSupport)
+	typemap.RegisterMessage("unique_identifier_msgs/msg/UUID", UUIDTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewUUID

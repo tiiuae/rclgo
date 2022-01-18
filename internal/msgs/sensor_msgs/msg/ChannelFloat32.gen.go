@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/ChannelFloat32", ChannelFloat32TypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/ChannelFloat32", ChannelFloat32TypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewChannelFloat32

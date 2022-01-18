@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("example_interfaces/Char", CharTypeSupport)
+	typemap.RegisterMessage("example_interfaces/msg/Char", CharTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewChar

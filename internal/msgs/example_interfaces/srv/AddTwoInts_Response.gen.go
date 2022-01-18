@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("example_interfaces/AddTwoInts_Response", AddTwoInts_ResponseTypeSupport)
+	typemap.RegisterMessage("example_interfaces/srv/AddTwoInts_Response", AddTwoInts_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewAddTwoInts_Response

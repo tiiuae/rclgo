@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("std_msgs/Float64", Float64TypeSupport)
+	typemap.RegisterMessage("std_msgs/msg/Float64", Float64TypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewFloat64

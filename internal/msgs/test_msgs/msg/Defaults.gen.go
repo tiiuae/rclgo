@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("test_msgs/Defaults", DefaultsTypeSupport)
+	typemap.RegisterMessage("test_msgs/msg/Defaults", DefaultsTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewDefaults

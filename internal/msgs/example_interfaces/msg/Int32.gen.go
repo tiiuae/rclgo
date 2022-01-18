@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("example_interfaces/Int32", Int32TypeSupport)
+	typemap.RegisterMessage("example_interfaces/msg/Int32", Int32TypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewInt32

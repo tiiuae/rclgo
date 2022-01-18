@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("example_interfaces/Empty", EmptyTypeSupport)
+	typemap.RegisterMessage("example_interfaces/msg/Empty", EmptyTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewEmpty

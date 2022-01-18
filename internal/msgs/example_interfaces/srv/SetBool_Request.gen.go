@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("example_interfaces/SetBool_Request", SetBool_RequestTypeSupport)
+	typemap.RegisterMessage("example_interfaces/srv/SetBool_Request", SetBool_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSetBool_Request

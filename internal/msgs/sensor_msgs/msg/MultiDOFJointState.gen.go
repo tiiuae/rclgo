@@ -31,6 +31,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/MultiDOFJointState", MultiDOFJointStateTypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/MultiDOFJointState", MultiDOFJointStateTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewMultiDOFJointState

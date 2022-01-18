@@ -29,6 +29,7 @@ import (
 
 func init() {
 	typemap.RegisterService("sensor_msgs/SetCameraInfo", SetCameraInfoTypeSupport)
+	typemap.RegisterService("sensor_msgs/srv/SetCameraInfo", SetCameraInfoTypeSupport)
 }
 
 type _SetCameraInfoTypeSupport struct {}

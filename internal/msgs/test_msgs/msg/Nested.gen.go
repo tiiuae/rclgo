@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("test_msgs/Nested", NestedTypeSupport)
+	typemap.RegisterMessage("test_msgs/msg/Nested", NestedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewNested

@@ -29,6 +29,7 @@ import (
 
 func init() {
 	typemap.RegisterService("example_interfaces/SetBool", SetBoolTypeSupport)
+	typemap.RegisterService("example_interfaces/srv/SetBool", SetBoolTypeSupport)
 }
 
 type _SetBoolTypeSupport struct {}

@@ -29,6 +29,7 @@ import (
 
 func init() {
 	typemap.RegisterService("example_interfaces/AddTwoInts", AddTwoIntsTypeSupport)
+	typemap.RegisterService("example_interfaces/srv/AddTwoInts", AddTwoIntsTypeSupport)
 }
 
 type _AddTwoIntsTypeSupport struct {}

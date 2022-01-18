@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("geometry_msgs/Quaternion", QuaternionTypeSupport)
+	typemap.RegisterMessage("geometry_msgs/msg/Quaternion", QuaternionTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewQuaternion

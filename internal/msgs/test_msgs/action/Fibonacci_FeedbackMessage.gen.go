@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("test_msgs/Fibonacci_FeedbackMessage", Fibonacci_FeedbackMessageTypeSupport)
+	typemap.RegisterMessage("test_msgs/action/Fibonacci_FeedbackMessage", Fibonacci_FeedbackMessageTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewFibonacci_FeedbackMessage

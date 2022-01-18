@@ -30,6 +30,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("test_msgs/Arrays_Response", Arrays_ResponseTypeSupport)
+	typemap.RegisterMessage("test_msgs/srv/Arrays_Response", Arrays_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewArrays_Response

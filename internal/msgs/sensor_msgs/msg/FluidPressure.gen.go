@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/FluidPressure", FluidPressureTypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/FluidPressure", FluidPressureTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewFluidPressure

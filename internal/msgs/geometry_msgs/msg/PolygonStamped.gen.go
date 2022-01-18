@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("geometry_msgs/PolygonStamped", PolygonStampedTypeSupport)
+	typemap.RegisterMessage("geometry_msgs/msg/PolygonStamped", PolygonStampedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPolygonStamped

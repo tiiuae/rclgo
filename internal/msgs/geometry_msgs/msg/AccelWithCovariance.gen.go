@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("geometry_msgs/AccelWithCovariance", AccelWithCovarianceTypeSupport)
+	typemap.RegisterMessage("geometry_msgs/msg/AccelWithCovariance", AccelWithCovarianceTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewAccelWithCovariance

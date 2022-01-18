@@ -95,6 +95,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("{{$Md.Package}}/{{$Md.Name}}", {{$Md.Name}}TypeSupport)
+	typemap.RegisterMessage("{{$Md.Package}}/{{$Md.Type}}/{{$Md.Name}}", {{$Md.Name}}TypeSupport)
 }
 
 {{- if $Md.Constants }}
@@ -369,6 +370,7 @@ import (
 
 func init() {
 	typemap.RegisterService("{{.Service.Package}}/{{.Service.Name}}", {{ .Service.Name }}TypeSupport)
+	typemap.RegisterService("{{.Service.Package}}/{{.Service.Type}}/{{.Service.Name}}", {{ .Service.Name }}TypeSupport)
 }
 
 type _{{.Service.Name}}TypeSupport struct {}
@@ -490,6 +492,7 @@ import (
 
 func init() {
 	typemap.RegisterAction("{{.Action.Package}}/{{.Action.Name}}", {{ .Action.Name }}TypeSupport)
+	typemap.RegisterAction("{{.Action.Package}}/{{.Action.Type}}/{{.Action.Name}}", {{ .Action.Name }}TypeSupport)
 }
 
 type _{{.Action.Name}}TypeSupport struct {}

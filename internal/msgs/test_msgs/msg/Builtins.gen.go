@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("test_msgs/Builtins", BuiltinsTypeSupport)
+	typemap.RegisterMessage("test_msgs/msg/Builtins", BuiltinsTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewBuiltins

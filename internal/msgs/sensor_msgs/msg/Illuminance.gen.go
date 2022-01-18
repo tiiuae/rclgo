@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/Illuminance", IlluminanceTypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/Illuminance", IlluminanceTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewIlluminance

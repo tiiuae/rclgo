@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("std_msgs/Bool", BoolTypeSupport)
+	typemap.RegisterMessage("std_msgs/msg/Bool", BoolTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewBool

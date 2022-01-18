@@ -31,6 +31,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/TimeReference", TimeReferenceTypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/TimeReference", TimeReferenceTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTimeReference

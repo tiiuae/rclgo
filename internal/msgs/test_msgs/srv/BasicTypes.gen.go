@@ -29,6 +29,7 @@ import (
 
 func init() {
 	typemap.RegisterService("test_msgs/BasicTypes", BasicTypesTypeSupport)
+	typemap.RegisterService("test_msgs/srv/BasicTypes", BasicTypesTypeSupport)
 }
 
 type _BasicTypesTypeSupport struct {}

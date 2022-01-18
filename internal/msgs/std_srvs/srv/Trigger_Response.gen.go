@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("std_srvs/Trigger_Response", Trigger_ResponseTypeSupport)
+	typemap.RegisterMessage("std_srvs/srv/Trigger_Response", Trigger_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTrigger_Response

@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("std_srvs/Empty_Response", Empty_ResponseTypeSupport)
+	typemap.RegisterMessage("std_srvs/srv/Empty_Response", Empty_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewEmpty_Response

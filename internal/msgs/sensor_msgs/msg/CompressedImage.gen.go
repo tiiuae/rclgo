@@ -30,6 +30,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/CompressedImage", CompressedImageTypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/CompressedImage", CompressedImageTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewCompressedImage

@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("example_interfaces/Float32", Float32TypeSupport)
+	typemap.RegisterMessage("example_interfaces/msg/Float32", Float32TypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewFloat32

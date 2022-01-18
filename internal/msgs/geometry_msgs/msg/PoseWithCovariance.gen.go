@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("geometry_msgs/PoseWithCovariance", PoseWithCovarianceTypeSupport)
+	typemap.RegisterMessage("geometry_msgs/msg/PoseWithCovariance", PoseWithCovarianceTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPoseWithCovariance

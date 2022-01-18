@@ -30,6 +30,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("test_msgs/NestedMessage_Feedback", NestedMessage_FeedbackTypeSupport)
+	typemap.RegisterMessage("test_msgs/action/NestedMessage_Feedback", NestedMessage_FeedbackTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewNestedMessage_Feedback

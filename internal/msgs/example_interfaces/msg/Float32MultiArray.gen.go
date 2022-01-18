@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("example_interfaces/Float32MultiArray", Float32MultiArrayTypeSupport)
+	typemap.RegisterMessage("example_interfaces/msg/Float32MultiArray", Float32MultiArrayTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewFloat32MultiArray

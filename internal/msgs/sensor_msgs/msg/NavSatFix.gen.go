@@ -30,6 +30,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/NavSatFix", NavSatFixTypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/NavSatFix", NavSatFixTypeSupport)
 }
 const (
 	NavSatFix_COVARIANCE_TYPE_UNKNOWN uint8 = 0

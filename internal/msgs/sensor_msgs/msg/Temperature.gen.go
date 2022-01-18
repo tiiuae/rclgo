@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/Temperature", TemperatureTypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/Temperature", TemperatureTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTemperature

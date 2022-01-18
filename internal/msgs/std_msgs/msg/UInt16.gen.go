@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("std_msgs/UInt16", UInt16TypeSupport)
+	typemap.RegisterMessage("std_msgs/msg/UInt16", UInt16TypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewUInt16

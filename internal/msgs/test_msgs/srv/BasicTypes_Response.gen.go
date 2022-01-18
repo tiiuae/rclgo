@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("test_msgs/BasicTypes_Response", BasicTypes_ResponseTypeSupport)
+	typemap.RegisterMessage("test_msgs/srv/BasicTypes_Response", BasicTypes_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewBasicTypes_Response

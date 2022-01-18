@@ -29,6 +29,7 @@ import (
 
 func init() {
 	typemap.RegisterService("test_msgs/Fibonacci_GetResult", Fibonacci_GetResultTypeSupport)
+	typemap.RegisterService("test_msgs/action/Fibonacci_GetResult", Fibonacci_GetResultTypeSupport)
 }
 
 type _Fibonacci_GetResultTypeSupport struct {}

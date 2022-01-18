@@ -30,6 +30,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/Image", ImageTypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/Image", ImageTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewImage

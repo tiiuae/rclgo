@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("geometry_msgs/Point32", Point32TypeSupport)
+	typemap.RegisterMessage("geometry_msgs/msg/Point32", Point32TypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPoint32

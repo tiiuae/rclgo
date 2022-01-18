@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("example_interfaces/Trigger_Request", Trigger_RequestTypeSupport)
+	typemap.RegisterMessage("example_interfaces/srv/Trigger_Request", Trigger_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewTrigger_Request

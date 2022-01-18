@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("test_msgs/UnboundedSequences", UnboundedSequencesTypeSupport)
+	typemap.RegisterMessage("test_msgs/msg/UnboundedSequences", UnboundedSequencesTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewUnboundedSequences

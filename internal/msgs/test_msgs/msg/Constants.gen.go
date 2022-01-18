@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("test_msgs/Constants", ConstantsTypeSupport)
+	typemap.RegisterMessage("test_msgs/msg/Constants", ConstantsTypeSupport)
 }
 const (
 	Constants_BOOL_CONST bool = true

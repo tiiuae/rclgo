@@ -31,6 +31,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/Imu", ImuTypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/Imu", ImuTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewImu

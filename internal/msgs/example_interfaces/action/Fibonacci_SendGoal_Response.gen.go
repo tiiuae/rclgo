@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("example_interfaces/Fibonacci_SendGoal_Response", Fibonacci_SendGoal_ResponseTypeSupport)
+	typemap.RegisterMessage("example_interfaces/action/Fibonacci_SendGoal_Response", Fibonacci_SendGoal_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewFibonacci_SendGoal_Response

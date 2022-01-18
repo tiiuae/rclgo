@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("geometry_msgs/PointStamped", PointStampedTypeSupport)
+	typemap.RegisterMessage("geometry_msgs/msg/PointStamped", PointStampedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPointStamped

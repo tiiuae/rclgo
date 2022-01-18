@@ -29,6 +29,7 @@ import (
 
 func init() {
 	typemap.RegisterService("example_interfaces/Fibonacci_SendGoal", Fibonacci_SendGoalTypeSupport)
+	typemap.RegisterService("example_interfaces/action/Fibonacci_SendGoal", Fibonacci_SendGoalTypeSupport)
 }
 
 type _Fibonacci_SendGoalTypeSupport struct {}

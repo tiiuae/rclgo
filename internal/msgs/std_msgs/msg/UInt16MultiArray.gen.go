@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("std_msgs/UInt16MultiArray", UInt16MultiArrayTypeSupport)
+	typemap.RegisterMessage("std_msgs/msg/UInt16MultiArray", UInt16MultiArrayTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewUInt16MultiArray

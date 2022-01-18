@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("std_msgs/ByteMultiArray", ByteMultiArrayTypeSupport)
+	typemap.RegisterMessage("std_msgs/msg/ByteMultiArray", ByteMultiArrayTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewByteMultiArray

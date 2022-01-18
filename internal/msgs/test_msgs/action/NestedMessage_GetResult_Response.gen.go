@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("test_msgs/NestedMessage_GetResult_Response", NestedMessage_GetResult_ResponseTypeSupport)
+	typemap.RegisterMessage("test_msgs/action/NestedMessage_GetResult_Response", NestedMessage_GetResult_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewNestedMessage_GetResult_Response

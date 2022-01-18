@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("test_msgs/Arrays", ArraysTypeSupport)
+	typemap.RegisterMessage("test_msgs/msg/Arrays", ArraysTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewArrays

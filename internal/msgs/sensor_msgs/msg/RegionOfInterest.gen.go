@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/RegionOfInterest", RegionOfInterestTypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/RegionOfInterest", RegionOfInterestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewRegionOfInterest

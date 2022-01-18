@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("example_interfaces/Fibonacci_Goal", Fibonacci_GoalTypeSupport)
+	typemap.RegisterMessage("example_interfaces/action/Fibonacci_Goal", Fibonacci_GoalTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewFibonacci_Goal

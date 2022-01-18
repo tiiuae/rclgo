@@ -30,6 +30,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("test_msgs/NestedMessage_Goal", NestedMessage_GoalTypeSupport)
+	typemap.RegisterMessage("test_msgs/action/NestedMessage_Goal", NestedMessage_GoalTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewNestedMessage_Goal

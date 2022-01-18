@@ -36,6 +36,7 @@ import (
 
 func init() {
 	typemap.RegisterAction("test_msgs/Fibonacci", FibonacciTypeSupport)
+	typemap.RegisterAction("test_msgs/action/Fibonacci", FibonacciTypeSupport)
 }
 
 type _FibonacciTypeSupport struct {}

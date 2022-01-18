@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("example_interfaces/MultiArrayDimension", MultiArrayDimensionTypeSupport)
+	typemap.RegisterMessage("example_interfaces/msg/MultiArrayDimension", MultiArrayDimensionTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewMultiArrayDimension

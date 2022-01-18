@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("std_srvs/SetBool_Response", SetBool_ResponseTypeSupport)
+	typemap.RegisterMessage("std_srvs/srv/SetBool_Response", SetBool_ResponseTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSetBool_Response

@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("test_msgs/MultiNested", MultiNestedTypeSupport)
+	typemap.RegisterMessage("test_msgs/msg/MultiNested", MultiNestedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewMultiNested

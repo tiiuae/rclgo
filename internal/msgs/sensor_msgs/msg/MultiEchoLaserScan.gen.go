@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/MultiEchoLaserScan", MultiEchoLaserScanTypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/MultiEchoLaserScan", MultiEchoLaserScanTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewMultiEchoLaserScan

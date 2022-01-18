@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/JoyFeedback", JoyFeedbackTypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/JoyFeedback", JoyFeedbackTypeSupport)
 }
 const (
 	JoyFeedback_TYPE_LED uint8 = 0// Declare of the type of feedback

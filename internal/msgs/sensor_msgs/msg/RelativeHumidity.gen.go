@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/RelativeHumidity", RelativeHumidityTypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/RelativeHumidity", RelativeHumidityTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewRelativeHumidity

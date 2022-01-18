@@ -30,6 +30,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/Joy", JoyTypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/Joy", JoyTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewJoy

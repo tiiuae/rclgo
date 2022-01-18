@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("example_interfaces/WString", WStringTypeSupport)
+	typemap.RegisterMessage("example_interfaces/msg/WString", WStringTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewWString

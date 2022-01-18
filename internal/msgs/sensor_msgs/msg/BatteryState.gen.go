@@ -30,6 +30,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/BatteryState", BatteryStateTypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/BatteryState", BatteryStateTypeSupport)
 }
 const (
 	BatteryState_POWER_SUPPLY_STATUS_UNKNOWN uint8 = 0// Power supply status constants

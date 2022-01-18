@@ -31,6 +31,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/MagneticField", MagneticFieldTypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/MagneticField", MagneticFieldTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewMagneticField

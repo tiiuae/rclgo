@@ -30,6 +30,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/LaserScan", LaserScanTypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/LaserScan", LaserScanTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewLaserScan

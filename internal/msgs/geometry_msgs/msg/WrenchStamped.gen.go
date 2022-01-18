@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("geometry_msgs/WrenchStamped", WrenchStampedTypeSupport)
+	typemap.RegisterMessage("geometry_msgs/msg/WrenchStamped", WrenchStampedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewWrenchStamped

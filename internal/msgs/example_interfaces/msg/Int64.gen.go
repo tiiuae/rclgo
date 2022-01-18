@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("example_interfaces/Int64", Int64TypeSupport)
+	typemap.RegisterMessage("example_interfaces/msg/Int64", Int64TypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewInt64

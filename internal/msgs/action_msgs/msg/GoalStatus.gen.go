@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("action_msgs/GoalStatus", GoalStatusTypeSupport)
+	typemap.RegisterMessage("action_msgs/msg/GoalStatus", GoalStatusTypeSupport)
 }
 const (
 	GoalStatus_STATUS_UNKNOWN int8 = 0// Indicates status has not been properly set.

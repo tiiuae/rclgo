@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("example_interfaces/AddTwoInts_Request", AddTwoInts_RequestTypeSupport)
+	typemap.RegisterMessage("example_interfaces/srv/AddTwoInts_Request", AddTwoInts_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewAddTwoInts_Request

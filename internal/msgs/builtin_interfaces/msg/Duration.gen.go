@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("builtin_interfaces/Duration", DurationTypeSupport)
+	typemap.RegisterMessage("builtin_interfaces/msg/Duration", DurationTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewDuration

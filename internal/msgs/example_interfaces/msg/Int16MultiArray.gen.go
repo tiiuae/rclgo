@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("example_interfaces/Int16MultiArray", Int16MultiArrayTypeSupport)
+	typemap.RegisterMessage("example_interfaces/msg/Int16MultiArray", Int16MultiArrayTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewInt16MultiArray

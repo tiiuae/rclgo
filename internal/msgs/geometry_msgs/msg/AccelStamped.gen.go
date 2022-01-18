@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("geometry_msgs/AccelStamped", AccelStampedTypeSupport)
+	typemap.RegisterMessage("geometry_msgs/msg/AccelStamped", AccelStampedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewAccelStamped

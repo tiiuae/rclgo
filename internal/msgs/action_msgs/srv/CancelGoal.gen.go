@@ -29,6 +29,7 @@ import (
 
 func init() {
 	typemap.RegisterService("action_msgs/CancelGoal", CancelGoalTypeSupport)
+	typemap.RegisterService("action_msgs/srv/CancelGoal", CancelGoalTypeSupport)
 }
 
 type _CancelGoalTypeSupport struct {}

@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("geometry_msgs/Pose2D", Pose2DTypeSupport)
+	typemap.RegisterMessage("geometry_msgs/msg/Pose2D", Pose2DTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPose2D

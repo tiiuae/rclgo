@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("example_interfaces/Byte", ByteTypeSupport)
+	typemap.RegisterMessage("example_interfaces/msg/Byte", ByteTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewByte

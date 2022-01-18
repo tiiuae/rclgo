@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("example_interfaces/Float64", Float64TypeSupport)
+	typemap.RegisterMessage("example_interfaces/msg/Float64", Float64TypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewFloat64

@@ -30,6 +30,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/PointCloud2", PointCloud2TypeSupport)
+	typemap.RegisterMessage("sensor_msgs/msg/PointCloud2", PointCloud2TypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPointCloud2

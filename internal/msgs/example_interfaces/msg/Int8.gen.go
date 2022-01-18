@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("example_interfaces/Int8", Int8TypeSupport)
+	typemap.RegisterMessage("example_interfaces/msg/Int8", Int8TypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewInt8

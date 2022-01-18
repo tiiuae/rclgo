@@ -29,6 +29,7 @@ import (
 
 func init() {
 	typemap.RegisterService("example_interfaces/Trigger", TriggerTypeSupport)
+	typemap.RegisterService("example_interfaces/srv/Trigger", TriggerTypeSupport)
 }
 
 type _TriggerTypeSupport struct {}

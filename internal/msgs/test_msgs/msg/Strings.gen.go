@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("test_msgs/Strings", StringsTypeSupport)
+	typemap.RegisterMessage("test_msgs/msg/Strings", StringsTypeSupport)
 }
 const (
 	Strings_STRING_CONST string = "Hello world!"

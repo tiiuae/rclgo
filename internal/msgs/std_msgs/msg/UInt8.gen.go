@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("std_msgs/UInt8", UInt8TypeSupport)
+	typemap.RegisterMessage("std_msgs/msg/UInt8", UInt8TypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewUInt8

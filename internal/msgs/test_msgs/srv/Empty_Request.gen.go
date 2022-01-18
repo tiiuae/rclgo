@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("test_msgs/Empty_Request", Empty_RequestTypeSupport)
+	typemap.RegisterMessage("test_msgs/srv/Empty_Request", Empty_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewEmpty_Request

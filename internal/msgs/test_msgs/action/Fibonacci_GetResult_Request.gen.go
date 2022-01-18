@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("test_msgs/Fibonacci_GetResult_Request", Fibonacci_GetResult_RequestTypeSupport)
+	typemap.RegisterMessage("test_msgs/action/Fibonacci_GetResult_Request", Fibonacci_GetResult_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewFibonacci_GetResult_Request

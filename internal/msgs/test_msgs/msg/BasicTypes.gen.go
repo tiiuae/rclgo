@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("test_msgs/BasicTypes", BasicTypesTypeSupport)
+	typemap.RegisterMessage("test_msgs/msg/BasicTypes", BasicTypesTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewBasicTypes

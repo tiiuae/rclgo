@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("geometry_msgs/Inertia", InertiaTypeSupport)
+	typemap.RegisterMessage("geometry_msgs/msg/Inertia", InertiaTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewInertia

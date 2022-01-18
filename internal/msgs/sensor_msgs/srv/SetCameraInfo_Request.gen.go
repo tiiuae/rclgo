@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("sensor_msgs/SetCameraInfo_Request", SetCameraInfo_RequestTypeSupport)
+	typemap.RegisterMessage("sensor_msgs/srv/SetCameraInfo_Request", SetCameraInfo_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewSetCameraInfo_Request

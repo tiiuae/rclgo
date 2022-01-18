@@ -28,6 +28,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("geometry_msgs/Vector3", Vector3TypeSupport)
+	typemap.RegisterMessage("geometry_msgs/msg/Vector3", Vector3TypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewVector3

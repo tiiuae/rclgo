@@ -30,6 +30,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("std_msgs/Header", HeaderTypeSupport)
+	typemap.RegisterMessage("std_msgs/msg/Header", HeaderTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewHeader

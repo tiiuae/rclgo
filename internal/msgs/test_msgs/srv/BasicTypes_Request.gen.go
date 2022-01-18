@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("test_msgs/BasicTypes_Request", BasicTypes_RequestTypeSupport)
+	typemap.RegisterMessage("test_msgs/srv/BasicTypes_Request", BasicTypes_RequestTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewBasicTypes_Request

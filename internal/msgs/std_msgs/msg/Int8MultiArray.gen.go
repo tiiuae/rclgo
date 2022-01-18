@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("std_msgs/Int8MultiArray", Int8MultiArrayTypeSupport)
+	typemap.RegisterMessage("std_msgs/msg/Int8MultiArray", Int8MultiArrayTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewInt8MultiArray

@@ -36,6 +36,7 @@ import (
 
 func init() {
 	typemap.RegisterAction("test_msgs/NestedMessage", NestedMessageTypeSupport)
+	typemap.RegisterAction("test_msgs/action/NestedMessage", NestedMessageTypeSupport)
 }
 
 type _NestedMessageTypeSupport struct {}

@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("example_interfaces/MultiArrayLayout", MultiArrayLayoutTypeSupport)
+	typemap.RegisterMessage("example_interfaces/msg/MultiArrayLayout", MultiArrayLayoutTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewMultiArrayLayout

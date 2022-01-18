@@ -29,6 +29,7 @@ import "C"
 
 func init() {
 	typemap.RegisterMessage("geometry_msgs/PoseStamped", PoseStampedTypeSupport)
+	typemap.RegisterMessage("geometry_msgs/msg/PoseStamped", PoseStampedTypeSupport)
 }
 
 // Do not create instances of this type directly. Always use NewPoseStamped

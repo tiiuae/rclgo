@@ -344,6 +344,35 @@ func (n *Node) Logger() *Logger {
 	return n.logger
 }
 
+// GetTopicNamesAndTypes returns a map of all known topic names to corresponding
+// topic types. Note that multiple types may be associated with a single topic.
+func (n *Node) GetTopicNamesAndTypes() (map[string][]string, error) {
+	namesAndTypes := C.rcl_get_zero_initialized_names_and_types()
+	rc := C.rcl_get_topic_names_and_types(
+		n.rcl_node_t,
+		n.context.rcl_allocator_t,
+		false,
+		&namesAndTypes,
+	)
+	if rc != C.RCL_RET_OK {
+		return nil, errorsCastC(rc, "failed to get topic names and types")
+	}
+	defer C.rcl_names_and_types_fini(&namesAndTypes)
+	names := unsafe.Slice(namesAndTypes.names.data, namesAndTypes.names.size)
+	types := unsafe.Slice(namesAndTypes.types, len(names))
+	result := make(map[string][]string, len(names))
+	for i, name := range names {
+		name := C.GoString(name)
+		typesForName := unsafe.Slice(types[i].data, types[i].size)
+		resultTypes := make([]string, len(typesForName))
+		for j, typ := range typesForName {
+			resultTypes[j] = C.GoString(typ)
+		}
+		result[name] = resultTypes
+	}
+	return result, nil
+}
+
 func spinErr(spinner string, err error) error {
 	if err == nil {
 		return nil

@@ -2,9 +2,18 @@ package rclgo_test
 
 import (
 	"fmt"
+	"os"
+	"strconv"
+	"testing"
 
 	"github.com/tiiuae/rclgo/pkg/rclgo"
 )
+
+func TestMain(m *testing.M) {
+	id, _ := strconv.ParseUint(os.Getenv("ROS_DOMAIN_ID"), 10, 8)
+	os.Setenv("ROS_DOMAIN_ID", fmt.Sprint((uint8(id)-1)%100))
+	os.Exit(m.Run())
+}
 
 func ExampleParseArgs() {
 	rosArgs, restArgs, err := rclgo.ParseArgs(

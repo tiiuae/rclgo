@@ -267,7 +267,7 @@ type Node struct {
 	rosResourceStore
 	rcl_node_t      *C.rcl_node_t
 	context         *Context
-	name, namespace *C.char
+	name, namespace string
 	logger          *Logger
 }
 
@@ -282,28 +282,32 @@ func (c *Context) NewNode(node_name, namespace string) (node *Node, err error) {
 	node = &Node{
 		rcl_node_t: (*C.rcl_node_t)(C.malloc(C.sizeof_rcl_node_t)),
 		context:    c,
-		name:       C.CString(node_name),
-		namespace:  C.CString(namespace),
+		name:       node_name,
+		namespace:  namespace,
 	}
 	*node.rcl_node_t = C.rcl_get_zero_initialized_node()
 	defer onErr(&err, node.Close)
 
+	cname := C.CString(node_name)
+	defer C.free(unsafe.Pointer(cname))
+	cnamespace := C.CString(namespace)
+	defer C.free(unsafe.Pointer(cnamespace))
 	rcl_node_options := C.rcl_node_get_default_options()
 	rc := C.rcl_node_init(
 		node.rcl_node_t,
-		node.name,
-		node.namespace,
+		cname,
+		cnamespace,
 		c.rcl_context_t,
 		&rcl_node_options,
 	)
 	if rc != C.RCL_RET_OK {
 		return nil, errorsCastC(rc, "failed to create node:")
 	}
-	name := C.rcl_node_get_logger_name(node.rcl_node_t)
-	if name == nil {
+	loggerName := C.rcl_node_get_logger_name(node.rcl_node_t)
+	if loggerName == nil {
 		return nil, errors.New("unexpectedly invalid node")
 	}
-	node.logger = GetLogger(C.GoString(name))
+	node.logger = GetLogger(C.GoString(loggerName))
 
 	c.addResource(node)
 	return node, nil
@@ -328,9 +332,6 @@ func (self *Node) Close() error {
 	C.free(unsafe.Pointer(self.rcl_node_t))
 	self.rcl_node_t = nil
 
-	C.free(unsafe.Pointer(self.name))
-	C.free(unsafe.Pointer(self.namespace))
-
 	return err.ErrorOrNil()
 }
 
@@ -342,6 +343,16 @@ func (n *Node) Context() *Context {
 // Logger returns the logger associated with n.
 func (n *Node) Logger() *Logger {
 	return n.logger
+}
+
+// Name returns the name of n.
+func (n *Node) Name() string {
+	return n.name
+}
+
+// Namespace returns the namespace of n.
+func (n *Node) Namespace() string {
+	return n.namespace
 }
 
 // GetTopicNamesAndTypes returns a map of all known topic names to corresponding

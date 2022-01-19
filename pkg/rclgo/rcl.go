@@ -20,21 +20,9 @@ package rclgo
 
 #include <rcutils/allocator.h>
 #include <rcutils/types/string_array.h>
-#include <rcl/arguments.h>
+#include <rcl/rcl.h>
+#include <rcl/expand_topic_name.h>
 #include <rcl/graph.h>
-#include <rcl/init.h>
-#include <rcl/init_options.h>
-#include <rcl/logging.h>
-#include <rcl/subscription.h>
-#include <rcl/timer.h>
-#include <rcl/time.h>
-#include <rcl/wait.h>
-#include <rcl/guard_condition.h>
-#include <rcl/validate_topic_name.h>
-#include <rcl/node_options.h>
-#include <rcl/node.h>
-#include <rcl/service.h>
-#include <rcl/client.h>
 #include <rcl_action/wait.h>
 #include <rmw/rmw.h>
 */
@@ -262,13 +250,66 @@ func Deserialize(buf []byte, ts types.MessageTypeSupport) (msg types.Message, er
 	return gomsg, nil
 }
 
+// ExpandTopicName returns inputTopicName expanded to a fully qualified topic
+// name.
+//
+// substitutions may be nil, which is treated the same as an empty substitution
+// map.
+func ExpandTopicName(
+	inputTopicName, nodeName, nodeNamespace string,
+	substitutions map[string]string,
+) (expanded string, err error) {
+	csubstitutions := C.rcutils_get_zero_initialized_string_map()
+	rc := C.rcutils_string_map_init(
+		&csubstitutions,
+		C.size_t(len(substitutions)),
+		C.rcl_get_default_allocator(),
+	)
+	if rc != C.RCL_RET_OK {
+		return "", errorsCastC(rc, "failed to initialize substitution map")
+	}
+	defer C.rcutils_string_map_fini(&csubstitutions)
+	for key, value := range substitutions {
+		ckey := C.CString(key)
+		defer C.free(unsafe.Pointer(ckey))
+		cvalue := C.CString(value)
+		defer C.free(unsafe.Pointer(cvalue))
+		rc = C.rcutils_string_map_set(&csubstitutions, ckey, cvalue)
+		if rc != C.RCL_RET_OK {
+			return "", errorsCastC(rc, "failed to set substitution pair")
+		}
+	}
+	cinputTopicName := C.CString(inputTopicName)
+	defer C.free(unsafe.Pointer(cinputTopicName))
+	cnodeName := C.CString(nodeName)
+	defer C.free(unsafe.Pointer(cnodeName))
+	cnodeNamespace := C.CString(nodeNamespace)
+	defer C.free(unsafe.Pointer(cnodeNamespace))
+	var output *C.char
+	rc = C.rcl_expand_topic_name(
+		cinputTopicName,
+		cnodeName,
+		cnodeNamespace,
+		&csubstitutions,
+		C.rcl_get_default_allocator(),
+		&output,
+	)
+	if rc != C.RCL_RET_OK {
+		return "", errorsCastC(rc, "failed to expand topic name")
+	}
+	defer C.free(unsafe.Pointer(output))
+	return C.GoString(output), nil
+}
+
 type Node struct {
 	rosID
 	rosResourceStore
-	rcl_node_t      *C.rcl_node_t
-	context         *Context
-	name, namespace string
-	logger          *Logger
+	rcl_node_t         *C.rcl_node_t
+	context            *Context
+	name               string
+	namespace          string
+	fullyQualifiedName string
+	logger             *Logger
 }
 
 func NewNode(nodeName, namespace string) (*Node, error) {
@@ -282,8 +323,6 @@ func (c *Context) NewNode(node_name, namespace string) (node *Node, err error) {
 	node = &Node{
 		rcl_node_t: (*C.rcl_node_t)(C.malloc(C.sizeof_rcl_node_t)),
 		context:    c,
-		name:       node_name,
-		namespace:  namespace,
 	}
 	*node.rcl_node_t = C.rcl_get_zero_initialized_node()
 	defer onErr(&err, node.Close)
@@ -303,6 +342,21 @@ func (c *Context) NewNode(node_name, namespace string) (node *Node, err error) {
 	if rc != C.RCL_RET_OK {
 		return nil, errorsCastC(rc, "failed to create node:")
 	}
+	cstr := C.rcl_node_get_name(node.rcl_node_t)
+	if cstr == nil {
+		return nil, errors.New("unexpectedly invalid node")
+	}
+	node.name = C.GoString(cstr)
+	cstr = C.rcl_node_get_namespace(node.rcl_node_t)
+	if cstr == nil {
+		return nil, errors.New("unexpectedly invalid node")
+	}
+	node.namespace = C.GoString(cstr)
+	cstr = C.rcl_node_get_fully_qualified_name(node.rcl_node_t)
+	if cstr == nil {
+		return nil, errors.New("unexpectedly invalid node")
+	}
+	node.fullyQualifiedName = C.GoString(cstr)
 	loggerName := C.rcl_node_get_logger_name(node.rcl_node_t)
 	if loggerName == nil {
 		return nil, errors.New("unexpectedly invalid node")
@@ -353,6 +407,12 @@ func (n *Node) Name() string {
 // Namespace returns the namespace of n.
 func (n *Node) Namespace() string {
 	return n.namespace
+}
+
+// FullyQualifiedName returns the fully qualified name of n, which includes the
+// namespace as well as the name.
+func (n *Node) FullyQualifiedName() string {
+	return n.fullyQualifiedName
 }
 
 // GetTopicNamesAndTypes returns a map of all known topic names to corresponding

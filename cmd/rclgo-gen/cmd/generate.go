@@ -149,9 +149,15 @@ func getGogenConfig(cmd *cobra.Command) *gogen.Config {
 
 func getRootPaths(cmd *cobra.Command) []string {
 	pathLists := viper.GetStringSlice(getPrefix(cmd) + "root-path")
+	found := make(map[string]bool)
 	var paths []string
 	for _, pl := range pathLists {
-		paths = append(paths, filepath.SplitList(pl)...)
+		for _, p := range filepath.SplitList(pl) {
+			if !found[p] {
+				found[p] = true
+				paths = append(paths, p)
+			}
+		}
 	}
 	return paths
 }

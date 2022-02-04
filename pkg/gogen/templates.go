@@ -44,13 +44,18 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package {{ .GoPackage }}
 
 /*
-#cgo LDFLAGS: -L/opt/ros/galactic/lib -Wl,-rpath=/opt/ros/galactic/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
+{{range $dir := .RootPaths -}}
+#cgo LDFLAGS: "-L{{$dir}}/lib" "-Wl,-rpath={{$dir}}/lib"
+{{end}}
+#cgo LDFLAGS: -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
 #cgo LDFLAGS: -l{{.CPackage}}__rosidl_typesupport_c -l{{.CPackage}}__rosidl_generator_c
 {{range $k, $v := .CImports -}}
 #cgo LDFLAGS: -l{{$k}}__rosidl_typesupport_c -l{{$k}}__rosidl_generator_c
 {{""}}
 {{- end}}
-#cgo CFLAGS: -I/opt/ros/galactic/include
+{{range $dir := .RootPaths -}}
+#cgo CFLAGS: "-I{{$dir}}/include"
+{{end}}
 */
 import "C"
 `,

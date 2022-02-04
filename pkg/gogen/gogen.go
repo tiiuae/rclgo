@@ -143,7 +143,7 @@ func GenerateGolangMessageTypes(c *Config, rootPaths []string, destPath string) 
 		}
 	}
 	for pkg, imports := range cImports {
-		err := g.generateCommonPackageGoFile(pkg, imports, destPath)
+		err := g.generateCommonPackageGoFile(pkg, imports, destPath, rootPaths)
 		if err != nil {
 			fmt.Printf("Failed to generate common package file for package %s: %v", pkg, err)
 		}
@@ -335,7 +335,7 @@ func (g *generator) generateServiceGoFiles(parser *parser, dstPathPkgRoot string
 	return g.generateMessageGoFile(parser, dstPathPkgRoot, srv.Response)
 }
 
-func (g *generator) generateCommonPackageGoFile(goPkg string, cImports stringSet, destRoot string) error {
+func (g *generator) generateCommonPackageGoFile(goPkg string, cImports stringSet, destRoot string, rootPaths []string) error {
 	i := strings.LastIndex(goPkg, "_")
 	if i < 0 || i > len(goPkg)-1 {
 		return errors.New("package type suffix is missing or incorrect")
@@ -351,5 +351,6 @@ func (g *generator) generateCommonPackageGoFile(goPkg string, cImports stringSet
 		"GoPackage": goPkg,
 		"CPackage":  cPkg,
 		"CImports":  cImports,
+		"RootPaths": rootPaths,
 	})
 }

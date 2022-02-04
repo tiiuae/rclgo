@@ -615,7 +615,7 @@ func (c *Clock) Context() *Context {
 	return c.context
 }
 
-func (c *Clock) now() (time.Duration, error) {
+func (c *Clock) Now() (time.Duration, error) {
 	var t C.rcl_time_point_value_t
 	rc := C.rcl_clock_get_now(c.rcl_clock_t, &t)
 	if rc != C.RCL_RET_OK {

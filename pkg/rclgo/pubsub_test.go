@@ -506,6 +506,13 @@ func newDefaultRCLContext() (*rclgo.Context, error) {
 	)
 }
 
+func newDefaultRCLContextWithOpts(opts *rclgo.ContextOptions) (*rclgo.Context, error) {
+	return rclgo.NewContextWithOpts(
+		parseArgsMust("--ros-args", "--log-level", "DEBUG"),
+		opts,
+	)
+}
+
 func parseArgsMust(args ...string) *rclgo.Args {
 	a, _, err := rclgo.ParseArgs(args)
 	if err != nil {

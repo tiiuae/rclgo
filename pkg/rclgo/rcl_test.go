@@ -9,9 +9,13 @@ import (
 	"github.com/tiiuae/rclgo/pkg/rclgo"
 )
 
-func TestMain(m *testing.M) {
+func getNextDomainID() int {
 	id, _ := strconv.ParseUint(os.Getenv("ROS_DOMAIN_ID"), 10, 8)
-	os.Setenv("ROS_DOMAIN_ID", fmt.Sprint((uint8(id)-1)%100))
+	return int((uint8(id) - 1) % 100)
+}
+
+func TestMain(m *testing.M) {
+	os.Setenv("ROS_DOMAIN_ID", fmt.Sprint(getNextDomainID()))
 	os.Exit(m.Run())
 }
 

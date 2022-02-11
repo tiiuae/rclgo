@@ -17,6 +17,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"strings"
 	"text/template"
@@ -24,9 +25,52 @@ import (
 	"github.com/kivilahtio/go-re/v0"
 )
 
+type RuleType int
+
+const (
+	RuleInclude RuleType = iota
+	RuleExclude
+)
+
+type Rule struct {
+	Type    RuleType
+	Pattern *regexp.Regexp
+}
+
+func NewRule(typ RuleType, pattern string) (*Rule, error) {
+	re, err := regexp.Compile("^" + pattern + "$")
+	if err != nil {
+		return nil, err
+	}
+	return &Rule{
+		Type:    typ,
+		Pattern: re,
+	}, nil
+}
+
+type RuleSet []*Rule
+
+func (s RuleSet) Includes(str string) bool {
+	includes := false
+	for _, r := range s {
+		if r.Pattern.MatchString(str) {
+			switch r.Type {
+			case RuleInclude:
+				includes = true
+			case RuleExclude:
+				includes = false
+			default:
+				panic(fmt.Sprint("Unsupported rule type: ", r.Type))
+			}
+		}
+	}
+	return includes
+}
+
 type Config struct {
 	RclgoImportPath     string
 	MessageModulePrefix string
+	PackageRules        RuleSet
 }
 
 var DefaultConfig = Config{
@@ -104,7 +148,7 @@ func GenerateGolangMessageTypes(c *Config, rootPaths []string, destPath string) 
 		return set
 	}
 	g := generator{config: c}
-	for meta, path := range findInterfaceFiles(rootPaths) {
+	for meta, path := range g.findInterfaceFiles(rootPaths) {
 		fmt.Printf("Generating: %s\n", path)
 		switch meta.Type {
 		case "msg":
@@ -151,7 +195,7 @@ func GenerateGolangMessageTypes(c *Config, rootPaths []string, destPath string) 
 	return nil
 }
 
-func findInterfaceFiles(rootPaths []string) map[Metadata]string {
+func (g *generator) findInterfaceFiles(rootPaths []string) map[Metadata]string {
 	files := make(map[Metadata]string)
 	for i := len(rootPaths) - 1; i >= 0; i-- {
 		filepath.Walk(rootPaths[i], func(path string, info fs.FileInfo, err error) error {
@@ -162,10 +206,10 @@ func findInterfaceFiles(rootPaths []string) map[Metadata]string {
 			}
 			if re.M(filepath.ToSlash(path), `m!/(msg/.+\.msg)|(srv/.+\.srv)|(action/.+\.action)$!`) {
 				md, err := parseMetadataFromPath(path)
-				if err == nil {
-					files[*md] = path
-				} else {
+				if err != nil {
 					fmt.Printf("Failed to parse metadata from path %s: %v\n", path, err)
+				} else if g.config.PackageRules.Includes(md.Package) {
+					files[*md] = path
 				}
 			}
 			return nil

@@ -55,7 +55,10 @@ var generateCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		rootPaths := getRootPaths(cmd)
 		destPath := getString(cmd, "dest-path")
-		config := getGogenConfig(cmd)
+		config, err := getGogenConfig(cmd)
+		if err != nil {
+			return err
+		}
 		if err := gogen.GenerateGolangMessageTypes(config, rootPaths, destPath); err != nil {
 			return fmt.Errorf("failed to generate interface bindings: %w", err)
 		}
@@ -73,7 +76,10 @@ var generateRclgoCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		rootPaths := getRootPaths(cmd)
 		destPath := getString(cmd, "dest-path")
-		config := getGogenConfig(cmd)
+		config, err := getGogenConfig(cmd)
+		if err != nil {
+			return err
+		}
 		if err := gogen.GeneratePrimitives(config, destPath); err != nil {
 			return fmt.Errorf("failed to generate primitive types: %w", err)
 		}
@@ -98,6 +104,7 @@ func configureFlags(cmd *cobra.Command, destPathDefault string) {
 	cmd.PersistentFlags().StringP("dest-path", "d", destPathDefault, "Destination directory for the Golang typed converted ROS2 messages. ROS2 Message structure is preserved as <ros2-package>/msg/<msg-name>")
 	cmd.PersistentFlags().String("rclgo-import-path", gogen.DefaultConfig.RclgoImportPath, "Import path of rclgo library")
 	cmd.PersistentFlags().String("message-module-prefix", gogen.DefaultConfig.MessageModulePrefix, "Import path prefix for generated message binding modules")
+	cmd.PersistentFlags().StringArray("include-package", []string{".*"}, "Include only packages matching a regex. Can be passed multiple times, in which case the union of the matches is used.")
 	bindPFlags(cmd)
 }
 
@@ -130,7 +137,7 @@ func bindPFlags(cmd *cobra.Command) {
 	})
 }
 
-func getGogenConfig(cmd *cobra.Command) *gogen.Config {
+func getGogenConfig(cmd *cobra.Command) (*gogen.Config, error) {
 	modulePrefix := getString(cmd, "message-module-prefix")
 
 	if modulePrefix == gogen.DefaultConfig.MessageModulePrefix {
@@ -140,11 +147,15 @@ func getGogenConfig(cmd *cobra.Command) *gogen.Config {
 			modulePrefix = path.Join(pkgs[0].PkgPath, destPath)
 		}
 	}
-
+	rules, err := getPackageRules(cmd)
+	if err != nil {
+		return nil, err
+	}
 	return &gogen.Config{
 		RclgoImportPath:     getString(cmd, "rclgo-import-path"),
 		MessageModulePrefix: modulePrefix,
-	}
+		PackageRules:        rules,
+	}, nil
 }
 
 func getRootPaths(cmd *cobra.Command) []string {
@@ -160,4 +171,19 @@ func getRootPaths(cmd *cobra.Command) []string {
 		}
 	}
 	return paths
+}
+
+func getPackageRules(cmd *cobra.Command) (_ gogen.RuleSet, err error) {
+	includes := viper.GetStringSlice(getPrefix(cmd) + "include-package")
+	if len(includes) == 0 {
+		includes = append(includes)
+	}
+	rules := make(gogen.RuleSet, len(includes))
+	for i, pattern := range includes {
+		rules[i], err = gogen.NewRule(gogen.RuleInclude, pattern)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return rules, nil
 }

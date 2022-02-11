@@ -194,27 +194,42 @@ func (c *FibonacciClient) WatchGoal(ctx context.Context, goal *Fibonacci_Goal, o
 	resp, err := c.ActionClient.WatchGoal(ctx, goal, func(ctx context.Context, msg types.Message) {
 		onFeedback(ctx, msg.(*Fibonacci_FeedbackMessage))
 	})
-	return resp.(*Fibonacci_GetResult_Response), err
+	if r, ok := resp.(*Fibonacci_GetResult_Response); ok {
+		return r, err
+	}
+	return nil, err
 }
 
 func (c *FibonacciClient) SendGoal(ctx context.Context, goal *Fibonacci_Goal) (*Fibonacci_SendGoal_Response, *types.GoalID, error) {
 	resp, id, err := c.ActionClient.SendGoal(ctx, goal)
-	return resp.(*Fibonacci_SendGoal_Response), id, err
+	if r, ok := resp.(*Fibonacci_SendGoal_Response); ok {
+		return r, id, err
+	}
+	return nil, id, err
 }
 
 func (c *FibonacciClient) SendGoalRequest(ctx context.Context, request *Fibonacci_SendGoal_Request) (*Fibonacci_SendGoal_Response, error) {
 	resp, err := c.ActionClient.SendGoalRequest(ctx, request)
-	return resp.(*Fibonacci_SendGoal_Response), err
+	if r, ok := resp.(*Fibonacci_SendGoal_Response); ok {
+		return r, err
+	}
+	return nil, err
 }
 
 func (c *FibonacciClient) GetResult(ctx context.Context, goalID *types.GoalID) (*Fibonacci_GetResult_Response, error) {
 	resp, err := c.ActionClient.GetResult(ctx, goalID)
-	return resp.(*Fibonacci_GetResult_Response), err
+	if r, ok := resp.(*Fibonacci_GetResult_Response); ok {
+		return r, err
+	}
+	return nil, err
 }
 
 func (c *FibonacciClient) CancelGoal(ctx context.Context, request *action_msgs_srv.CancelGoal_Request) (*action_msgs_srv.CancelGoal_Response, error) {
 	resp, err := c.ActionClient.CancelGoal(ctx, request)
-	return resp.(*action_msgs_srv.CancelGoal_Response), err
+	if r, ok := resp.(*action_msgs_srv.CancelGoal_Response); ok {
+		return r, err
+	}
+	return nil, err
 }
 
 func (c *FibonacciClient) WatchFeedback(ctx context.Context, goalID *types.GoalID, handler FibonacciFeedbackHandler) <-chan error {

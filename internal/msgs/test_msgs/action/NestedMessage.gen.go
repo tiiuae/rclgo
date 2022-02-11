@@ -194,27 +194,42 @@ func (c *NestedMessageClient) WatchGoal(ctx context.Context, goal *NestedMessage
 	resp, err := c.ActionClient.WatchGoal(ctx, goal, func(ctx context.Context, msg types.Message) {
 		onFeedback(ctx, msg.(*NestedMessage_FeedbackMessage))
 	})
-	return resp.(*NestedMessage_GetResult_Response), err
+	if r, ok := resp.(*NestedMessage_GetResult_Response); ok {
+		return r, err
+	}
+	return nil, err
 }
 
 func (c *NestedMessageClient) SendGoal(ctx context.Context, goal *NestedMessage_Goal) (*NestedMessage_SendGoal_Response, *types.GoalID, error) {
 	resp, id, err := c.ActionClient.SendGoal(ctx, goal)
-	return resp.(*NestedMessage_SendGoal_Response), id, err
+	if r, ok := resp.(*NestedMessage_SendGoal_Response); ok {
+		return r, id, err
+	}
+	return nil, id, err
 }
 
 func (c *NestedMessageClient) SendGoalRequest(ctx context.Context, request *NestedMessage_SendGoal_Request) (*NestedMessage_SendGoal_Response, error) {
 	resp, err := c.ActionClient.SendGoalRequest(ctx, request)
-	return resp.(*NestedMessage_SendGoal_Response), err
+	if r, ok := resp.(*NestedMessage_SendGoal_Response); ok {
+		return r, err
+	}
+	return nil, err
 }
 
 func (c *NestedMessageClient) GetResult(ctx context.Context, goalID *types.GoalID) (*NestedMessage_GetResult_Response, error) {
 	resp, err := c.ActionClient.GetResult(ctx, goalID)
-	return resp.(*NestedMessage_GetResult_Response), err
+	if r, ok := resp.(*NestedMessage_GetResult_Response); ok {
+		return r, err
+	}
+	return nil, err
 }
 
 func (c *NestedMessageClient) CancelGoal(ctx context.Context, request *action_msgs_srv.CancelGoal_Request) (*action_msgs_srv.CancelGoal_Response, error) {
 	resp, err := c.ActionClient.CancelGoal(ctx, request)
-	return resp.(*action_msgs_srv.CancelGoal_Response), err
+	if r, ok := resp.(*action_msgs_srv.CancelGoal_Response); ok {
+		return r, err
+	}
+	return nil, err
 }
 
 func (c *NestedMessageClient) WatchFeedback(ctx context.Context, goalID *types.GoalID, handler NestedMessageFeedbackHandler) <-chan error {

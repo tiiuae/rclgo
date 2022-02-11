@@ -659,27 +659,42 @@ func (c *{{.Action.Name}}Client) WatchGoal(ctx context.Context, goal *{{.Action.
 	resp, err := c.ActionClient.WatchGoal(ctx, goal, func(ctx context.Context, msg types.Message) {
 		onFeedback(ctx, msg.(*{{.Action.Name}}_FeedbackMessage))
 	})
-	return resp.(*{{.Action.Name}}_GetResult_Response), err
+	if r, ok := resp.(*{{.Action.Name}}_GetResult_Response); ok {
+		return r, err
+	}
+	return nil, err
 }
 
 func (c *{{.Action.Name}}Client) SendGoal(ctx context.Context, goal *{{.Action.Name}}_Goal) (*{{.Action.Name}}_SendGoal_Response, *types.GoalID, error) {
 	resp, id, err := c.ActionClient.SendGoal(ctx, goal)
-	return resp.(*{{.Action.Name}}_SendGoal_Response), id, err
+	if r, ok := resp.(*{{.Action.Name}}_SendGoal_Response); ok {
+		return r, id, err
+	}
+	return nil, id, err
 }
 
 func (c *{{.Action.Name}}Client) SendGoalRequest(ctx context.Context, request *{{.Action.Name}}_SendGoal_Request) (*{{.Action.Name}}_SendGoal_Response, error) {
 	resp, err := c.ActionClient.SendGoalRequest(ctx, request)
-	return resp.(*{{.Action.Name}}_SendGoal_Response), err
+	if r, ok := resp.(*{{.Action.Name}}_SendGoal_Response); ok {
+		return r, err
+	}
+	return nil, err
 }
 
 func (c *{{.Action.Name}}Client) GetResult(ctx context.Context, goalID *types.GoalID) (*{{.Action.Name}}_GetResult_Response, error) {
 	resp, err := c.ActionClient.GetResult(ctx, goalID)
-	return resp.(*{{.Action.Name}}_GetResult_Response), err
+	if r, ok := resp.(*{{.Action.Name}}_GetResult_Response); ok {
+		return r, err
+	}
+	return nil, err
 }
 
 func (c *{{.Action.Name}}Client) CancelGoal(ctx context.Context, request *action_msgs_srv.CancelGoal_Request) (*action_msgs_srv.CancelGoal_Response, error) {
 	resp, err := c.ActionClient.CancelGoal(ctx, request)
-	return resp.(*action_msgs_srv.CancelGoal_Response), err
+	if r, ok := resp.(*action_msgs_srv.CancelGoal_Response); ok {
+		return r, err
+	}
+	return nil, err
 }
 
 func (c *{{.Action.Name}}Client) WatchFeedback(ctx context.Context, goalID *types.GoalID, handler {{.Action.Name}}FeedbackHandler) <-chan error {

@@ -27,6 +27,7 @@ package rclgo
 #include <rmw/rmw.h>
 */
 import "C"
+
 import (
 	"context"
 	"errors"
@@ -1375,7 +1376,11 @@ func (c *Client) Node() *Node {
 
 func (c *Client) Send(ctx context.Context, req types.Message) (types.Message, *RmwServiceInfo, error) {
 	resp, info, err := c.sender.Send(ctx, req)
-	return resp, info.(*RmwServiceInfo), err
+	if rmwInfo, ok := info.(*RmwServiceInfo); ok {
+		return resp, rmwInfo, err
+	}
+
+	return resp, nil, err
 }
 
 func (c *Client) sendRequest(req unsafe.Pointer) (C.long, error) {

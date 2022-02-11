@@ -91,12 +91,24 @@ var (
 // been called.
 func DefaultContext() *Context { return defaultContext }
 
-// Init initializes the global default context and logging system if they have
-// not been initalized yet. Calling Init multiple times after a successful
-// (returning nil) call is a no-op.
+// Init is like InitWithOpts except that it always uses default options.
 func Init(args *Args) (err error) {
 	if defaultContext == nil {
-		defaultContext, err = NewContext(0, args)
+		defaultContext, err = NewContextWithOpts(args, nil)
+	}
+	return
+}
+
+// InitWithOpts initializes the global default context and logging system if
+// they have not been initalized yet. Calling InitWithOpts multiple times after
+// a successful (returning nil) call is a no-op.
+//
+// A nil args is treated as an empty argument list.
+//
+// If opts is nil, default options are used.
+func InitWithOpts(args *Args, opts *ContextOptions) (err error) {
+	if defaultContext == nil {
+		defaultContext, err = NewContextWithOpts(args, opts)
 	}
 	return
 }
@@ -123,6 +135,22 @@ func Spin(ctx context.Context) error {
 	return defaultContext.Spin(ctx)
 }
 
+// ContextOptions can be used to configure a Context.
+type ContextOptions struct {
+	// The type of the default clock created for the Context.
+	ClockType ClockType
+
+	// The DDS domain ID of the Context. Should be in range [0, 101].
+	DomainID int
+}
+
+// NewDefaultContextOptions returns the default options for a Context.
+func NewDefaultContextOptions() *ContextOptions {
+	return &ContextOptions{
+		ClockType: ClockTypeROSTime,
+	}
+}
+
 // Context manages resources for a set of RCL entities.
 type Context struct {
 	rcl_allocator_t *C.rcutils_allocator_t
@@ -133,18 +161,31 @@ type Context struct {
 	rosResourceStore
 }
 
-/*
-NewContext initializes a new RCL context.
+// NewContext calls NewContextWithOpts with default options except for
+// ClockType, which is set to the value passed to this function.
+//
+// If clockType == 0, ClockTypeROSTime is used.
+func NewContext(clockType ClockType, rclArgs *Args) (*Context, error) {
+	opts := NewDefaultContextOptions()
+	if clockType == 0 {
+		opts.ClockType = ClockTypeROSTime
+	} else {
+		opts.ClockType = clockType
+	}
+	return NewContextWithOpts(rclArgs, opts)
+}
 
-clockType is the type of the default clock created for the Context. If 0,
-ClockTypeROSTime is used.
+/*
+NewContextWithOpts initializes a new RCL context.
 
 A nil rclArgs is treated as en empty argument list.
 
-If logging has not yet been initialized, NewContext will initialize it
+If logging has not yet been initialized, NewContextWithOpts will initialize it
 automatically using rclArgs for logging configuration.
+
+If opts is nil, default options are used.
 */
-func NewContext(clockType ClockType, rclArgs *Args) (ctx *Context, err error) {
+func NewContextWithOpts(rclArgs *Args, opts *ContextOptions) (ctx *Context, err error) {
 	ctx = &Context{}
 	defer onErr(&err, ctx.Close)
 
@@ -153,6 +194,9 @@ func NewContext(clockType ClockType, rclArgs *Args) (ctx *Context, err error) {
 		if err != nil {
 			return nil, err
 		}
+	}
+	if opts == nil {
+		opts = NewDefaultContextOptions()
 	}
 
 	ctx.rcl_allocator_t = (*C.rcl_allocator_t)(C.malloc(C.sizeof_rcl_allocator_t))
@@ -169,6 +213,10 @@ func NewContext(clockType ClockType, rclArgs *Args) (ctx *Context, err error) {
 	if rc != C.RCL_RET_OK {
 		return nil, errorsCast(rc)
 	}
+	rc = C.rcl_init_options_set_domain_id(&rcl_init_options_t, C.size_t(opts.DomainID))
+	if rc != C.RCL_RET_OK {
+		return nil, errorsCast(rc)
+	}
 
 	rc = C.rcl_init(rclArgs.argc(), rclArgs.argv(), &rcl_init_options_t, ctx.rcl_context_t)
 	runtime.KeepAlive(rclArgs)
@@ -176,10 +224,7 @@ func NewContext(clockType ClockType, rclArgs *Args) (ctx *Context, err error) {
 		return nil, errorsCast(rc)
 	}
 
-	if clockType == 0 {
-		clockType = ClockTypeROSTime
-	}
-	ctx.defaultClock, err = ctx.NewClock(clockType)
+	ctx.defaultClock, err = ctx.NewClock(opts.ClockType)
 	if err != nil {
 		return nil, err
 	}

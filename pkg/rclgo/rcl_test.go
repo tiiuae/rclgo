@@ -2,19 +2,25 @@ package rclgo_test
 
 import (
 	"fmt"
+	"math/rand"
 	"os"
 	"strconv"
 	"testing"
+	"time"
 
 	"github.com/tiiuae/rclgo/pkg/rclgo"
 )
 
 func getNextDomainID() int {
 	id, _ := strconv.ParseUint(os.Getenv("ROS_DOMAIN_ID"), 10, 8)
-	return int((uint8(id) - 1) % 100)
+	new := rand.Intn(101)
+	for ; new == int(id); new = rand.Intn(101) {
+	}
+	return new
 }
 
 func TestMain(m *testing.M) {
+	rand.Seed(time.Now().Unix())
 	os.Setenv("ROS_DOMAIN_ID", fmt.Sprint(getNextDomainID()))
 	os.Exit(m.Run())
 }

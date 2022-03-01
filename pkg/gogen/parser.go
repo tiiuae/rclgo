@@ -187,7 +187,7 @@ func (p *parser) parseLine(msg *ROS2Message, line string) error {
 		}
 	case nil:
 	default:
-		return fmt.Errorf("Couldn't parse the input row '%s'", line)
+		return fmt.Errorf("couldn't parse the input row '%s'", line)
 	}
 	return nil
 }
@@ -205,23 +205,23 @@ func (p *parser) parseMessageLine(testRow string, ros2msg *ROS2Message) (interfa
 		return nil, nil
 	}
 
-	typeChar, capture := isRowConstantOrField(testRow, ros2msg)
+	typeChar, capture := isRowConstantOrField(testRow)
 	switch typeChar {
 	case 'c':
 		con, err := p.ParseROS2MessageConstant(capture, ros2msg)
 		if err == nil {
-			return con, err
+			return con, nil
 		}
 	case 'f':
 		f, err := p.ParseROS2MessageField(capture, ros2msg)
 		if err == nil {
-			return f, err
+			return f, nil
 		}
 	}
-	return nil, fmt.Errorf("Couldn't parse the input row as either ROS2 Field or Constant? input '%s'", testRow)
+	return nil, fmt.Errorf("couldn't parse the input row as either ROS2 Field or Constant? input '%s'", testRow)
 }
 
-func isRowConstantOrField(textRow string, ros2msg *ROS2Message) (byte, map[string]string) {
+func isRowConstantOrField(textRow string) (byte, map[string]string) {
 	re.R(&textRow, `m!
 	# This regex might be overly complex for constant parsing but it works. It was originally a copy-paste of the ROS2 field-parser
 	^
@@ -287,7 +287,7 @@ func (p *parser) ParseROS2MessageField(capture map[string]string, ros2msg *ROS2M
 	}
 	if capture["bounded"] != "" {
 		capture["array"] = strings.Replace(capture["array"], capture["bounded"]+capture["size"], "", 1)
-		capture["bounded"] = capture["bounded"] + capture["size"]
+		capture["bounded"] += capture["size"]
 		size = 0
 	}
 	f := &ROS2Field{
@@ -365,8 +365,6 @@ func translateROS2Type(f *ROS2Field, m *ROS2Message) (pkgName string, cType stri
 }
 
 func (p *parser) cSerializationCode(f *ROS2Field, m *ROS2Message) string {
-	if f.PkgName == "" {
-	}
 	if f.TypeArray != "" && f.ArraySize > 0 && f.PkgName != "" && f.PkgIsLocal {
 		// Complex value Array local package reference
 		return ucFirst(f.RosType) + `__Array_to_C(mem.` + f.CName + `[:], m.` + f.GoName + `[:])`
@@ -414,19 +412,6 @@ func (p *parser) cSerializationCode(f *ROS2Field, m *ROS2Message) string {
 		return `mem.` + f.CName + ` = C.` + f.CType + `(m.` + f.GoName + `)`
 	}
 	return "//<MISSING cSerializationCode!!>"
-}
-
-func cStructName(f *ROS2Field, m *ROS2Message) string {
-	if f.PkgName == "primitives" {
-		return "rosidl_runtime_c__" + f.CType
-	} else if f.PkgName != "" {
-		if f.PkgIsLocal {
-			return m.Package + "__msg__" + f.CType
-		} else {
-			return f.PkgName + "__msg__" + f.CType
-		}
-	}
-	return "<MISSING cStructName!!>"
 }
 
 func (p *parser) goSerializationCode(f *ROS2Field, m *ROS2Message) string {
@@ -496,12 +481,8 @@ func defaultCode(f *ROS2Field) string {
 		defaultValues := splitMsgDefaultArrayValues(f.RosType, f.DefaultValue)
 		// Complex value array and slice
 		sb := strings.Builder{}
-		var indexesCount int
-		if f.ArraySize > 0 {
-			indexesCount = f.ArraySize
-		} else if len(defaultValues) > 0 { // Init a slice
-			indexesCount = len(defaultValues)
-			fmt.Fprint(&sb, `t.`, f.GoName, ` = make(`, f.TypeArray, f.GoPkgReference(), f.GoType, `, `, indexesCount, ")\n\t")
+		if f.ArraySize <= 0 && len(defaultValues) > 0 { // Init a slice
+			fmt.Fprint(&sb, `t.`, f.GoName, ` = make(`, f.TypeArray, f.GoPkgReference(), f.GoType, `, `, len(defaultValues), ")\n\t")
 		}
 
 		fmt.Fprint(&sb,

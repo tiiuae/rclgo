@@ -105,6 +105,7 @@ func TestContextClose(t *testing.T) {
 					&noOpAction{},
 					nil,
 				)
+				So(err, ShouldBeNil)
 				_, err = node2.NewActionClient(
 					"action1",
 					example_interfaces_action.FibonacciTypeSupport,

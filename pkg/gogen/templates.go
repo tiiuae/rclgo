@@ -836,22 +836,22 @@ func errorsCastC(rcl_ret_t C.rcl_ret_t, context string) error {
 	switch rcl_ret_t {
 	{{range $e := .errorTypes -}}{{if $e.Rcl_ret_t -}}{{if not (index $P.dedupFilter $e.Name) -}}
 	case C.{{$e.Name}}:
-		return &{{$e.Name|cReturnCodeNameToGo}}{rclRetStruct: rclRetStruct{rclRetCode: {{$e.Rcl_ret_t}}, trace: string(stackTraceBuffer), context: errorsBuildContext(&{{$e.Name|cReturnCodeNameToGo}}{}, context, string(stackTraceBuffer))}}
+		return &{{$e.Name|cReturnCodeNameToGo}}{rclError: rclError{rclRetCode: {{$e.Rcl_ret_t}}, trace: string(stackTraceBuffer), context: errorsBuildContext(&{{$e.Name|cReturnCodeNameToGo}}{}, context, string(stackTraceBuffer))}}
 	{{""}}
 	{{- end}}{{- end}}{{- end}}
 	default:
-		return &UnknownReturnCode{rclRetStruct: rclRetStruct{rclRetCode: int(rcl_ret_t), context: context}}
+		return &UnknownReturnCode{rclError: rclError{rclRetCode: int(rcl_ret_t), context: context}}
 	}
 }
 
 type UnknownReturnCode struct {
-	rclRetStruct
+	rclError
 }
 
 {{range $e := .errorTypes -}}{{if $e.Rcl_ret_t}}
 // {{$e.Name|cReturnCodeNameToGo}} {{$e.Comment}}
 type {{$e.Name|cReturnCodeNameToGo}} struct {
-	rclRetStruct
+	rclError
 }
 {{""}}
 {{- end}}{{- end}}

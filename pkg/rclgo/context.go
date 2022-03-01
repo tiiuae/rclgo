@@ -84,7 +84,7 @@ func (s *rosResourceStore) Close() error {
 
 var (
 	defaultContext   *Context
-	initNotCalledErr = errors.New("Init has not been called")
+	errInitNotCalled = errors.New("Init has not been called")
 )
 
 // DefaultContext returns the global default context or nil if Init has not yet
@@ -130,7 +130,7 @@ func Uninit() (err error) {
 // ctx is canceled.
 func Spin(ctx context.Context) error {
 	if defaultContext == nil {
-		return initNotCalledErr
+		return errInitNotCalled
 	}
 	return defaultContext.Spin(ctx)
 }

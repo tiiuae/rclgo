@@ -291,7 +291,7 @@ func TestMultipleTimersInSingleWaitSet(t *testing.T) {
 }
 
 func BenchmarkPubsubMemoryLeakAllocateInLoop(t *testing.B) {
-	var messagesReceived int = 0
+	var messagesReceived int
 	fmt.Printf(
 		"Mem from pmap(1) '%skB' messages '%d'\n",
 		getMemReading(),
@@ -364,7 +364,7 @@ func BenchmarkPubsubMemoryLeakAllocateInLoop(t *testing.B) {
 }
 
 func BenchmarkPubsubMemoryLeakAllocateOutOfLoop(t *testing.B) {
-	var messagesReceived int64 = 0
+	var messagesReceived int64
 	fmt.Printf(
 		"Mem from pmap(1) '%skB' messages '%d'\n",
 		getMemReading(),
@@ -426,9 +426,12 @@ func BenchmarkPubsubMemoryLeakAllocateOutOfLoop(t *testing.B) {
 }
 
 func getMemReading() string {
-	cmd := `pmap ` + fmt.Sprint(
+	cmd := fmt.Sprint(
+		`pmap `,
 		os.Getpid(),
-	) + ` | tail -n 1 | grep -Po '\d+'` //  total          2102728K => 2102728
+		` | tail -n 1 | grep -Po '\d+'`,
+	) //  total          2102728K => 2102728
+	//#nosec G204 -- Using a variable here improves clarity.
 	output, err := exec.Command("bash", "-c", cmd).Output()
 	if err != nil {
 		return fmt.Sprintf("Failed to execute command: %s", cmd)
@@ -453,7 +456,7 @@ func receiveColorRGBA(subChan chan *std_msgs.ColorRGBA, r, g, b, a float32) {
 	So(m, ShouldResemble, &std_msgs.ColorRGBA{R: r, G: g, B: b, A: a})
 }
 
-func timeOut(timeoutMs int, f func(), testDescription string) bool {
+func timeOut(timeoutMs int, f func(), testDescription string) {
 	done := make(chan bool)
 	go func() {
 		f()
@@ -463,10 +466,8 @@ func timeOut(timeoutMs int, f func(), testDescription string) bool {
 	select {
 	case <-time.After(time.Duration(timeoutMs) * time.Millisecond):
 		So("Test timeoutted!", ShouldEqual, testDescription)
-		return false
 	case <-done:
 		So(testDescription, ShouldEqual, testDescription)
-		return true
 	}
 }
 
@@ -482,7 +483,7 @@ func receiveString(subs <-chan receiveResult, expected string) {
 	So(m.msg, ShouldNotBeNil)
 	So(m.rmi, ShouldNotBeNil)
 	So(m.err, ShouldBeNil)
-	So(string(m.msg.Data), ShouldEqual, expected)
+	So(m.msg.Data, ShouldEqual, expected)
 }
 
 func receiveNothing(subs interface{}) {
@@ -595,14 +596,17 @@ func newContextWithPublisherTimer(
 		// timer callback, but this way the tests can test for memory leaks too
 		// using this same codebase.
 		ros2msg := ts.New()
-		err_yaml := yaml.Unmarshal(
+		err := yaml.Unmarshal(
 			[]byte(strings.ReplaceAll(payload, "\\n", "\n")),
 			ros2msg,
 		)
-		if err_yaml == nil {
-			p.Publish(ros2msg)
-		} else {
-			fmt.Println(rclgo.Testing_errorsCastC(1003, fmt.Sprintf("Error '%v' unmarshalling YAML '%s' to ROS2 message type '%T'", err_yaml, payload, ros2msg)))
+		if err != nil {
+			fmt.Println(rclgo.Testing_errorsCastC(1003, fmt.Sprintf("Error '%v' unmarshalling YAML '%s' to ROS2 message type '%T'", err, payload, ros2msg)))
+			return
+		}
+		if err = p.Publish(ros2msg); err != nil {
+			fmt.Printf("Failed to publish YAML %q: %v\n", payload, err)
+			return
 		}
 	})
 	if err != nil {

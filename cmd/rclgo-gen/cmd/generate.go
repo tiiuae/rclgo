@@ -40,6 +40,7 @@ func validateGenerateArgs(cmd *cobra.Command, args []string) error {
 
 	_, err := os.Stat(destPath)
 	if errors.Is(err, os.ErrNotExist) {
+		//#nosec G301 -- The generated directory doesn't contain secrets.
 		err = os.MkdirAll(destPath, 0755)
 	}
 	if err != nil {
@@ -175,9 +176,6 @@ func getRootPaths(cmd *cobra.Command) []string {
 
 func getPackageRules(cmd *cobra.Command) (_ gogen.RuleSet, err error) {
 	includes := viper.GetStringSlice(getPrefix(cmd) + "include-package")
-	if len(includes) == 0 {
-		includes = append(includes)
-	}
 	rules := make(gogen.RuleSet, len(includes))
 	for i, pattern := range includes {
 		rules[i], err = gogen.NewRule(gogen.RuleInclude, pattern)

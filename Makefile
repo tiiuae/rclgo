@@ -8,12 +8,10 @@ all: configure build #default make target
 configure:
 	echo "" # make configure unimplemented. Unified deployment API between all software components.
 
-build: vet
-	cd cmd/rclgo     && go build
+build:
 	cd cmd/rclgo-gen && go build
 
 install:
-	cd cmd/rclgo     && go install
 	cd cmd/rclgo-gen && go install
 
 .PHONY: test
@@ -41,5 +39,5 @@ generate:
 	rm "$$dest_path/msgs.gen.go" || exit 1
 	go run ./cmd/rclgo-gen generate-rclgo --root-path /opt/ros/galactic
 
-vet:
-	go vet ./...
+lint:
+	golangci-lint run ./...

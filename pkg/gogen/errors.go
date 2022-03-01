@@ -33,8 +33,8 @@ func GenerateROS2ErrorTypes(rootPaths []string, destFilePath string) error {
 		for tries := 0; tries < 10; tries++ {
 			fmt.Printf("Looking for rcl C include files to parse error definitions from '%s'\n", includeLookupDir)
 
-			filepath.Walk(includeLookupDir, func(path string, info os.FileInfo, err error) error {
-				if re.M(path, errorTypesCFileMatchingRegexp) {
+			filepath.Walk(includeLookupDir, func(path string, info os.FileInfo, err error) error { //nolint:errcheck
+				if err == nil && re.M(path, errorTypesCFileMatchingRegexp) {
 					fmt.Printf("Analyzing: %s\n", path)
 					errorTypes, err = generateGolangErrorTypesFromROS2ErrorDefinitionsPath(errorTypes, path)
 					if err != nil {
@@ -80,10 +80,7 @@ func generateGolangErrorTypesFromROS2ErrorDefinitionsPath(errorTypes []*ROS2Erro
 	}
 
 	for _, line := range strings.Split(string(content), "\n") {
-		errType, err := parseROS2ErrorType(line)
-		if err != nil {
-			return nil, err
-		}
+		errType := parseROS2ErrorType(line)
 		if errType != nil {
 			errorTypes = append(errorTypes, errType)
 		}
@@ -96,7 +93,7 @@ var ros2errorTypesCommentsBuffer = strings.Builder{}                  // Collect
 var ros2errorTypesDeduplicationMap = make(map[string]string, 1024)    // Some RMW and RCL error codes overlap, so we need to deduplicate them from the dynamic type casting switch-case
 var ros2errorTypesDeduplicationFilter = make(map[string]string, 1024) // Entries ending up here actually filter template entries
 
-func parseROS2ErrorType(row string) (*ROS2ErrorType, error) {
+func parseROS2ErrorType(row string) *ROS2ErrorType {
 	if re.M(row, `m!
 		^
 		\#define\s+
@@ -113,22 +110,22 @@ func parseROS2ErrorType(row string) (*ROS2ErrorType, error) {
 		}
 		ros2errorTypesCommentsBuffer.Reset()
 		updateROS2errorTypesDeduplicationMap(et.Rcl_ret_t, et.Name)
-		return et, nil
+		return et
 
 	} else if re.M(row, `m!/{2,}\s*(.+)$!`) { // this is a comment line
 		if re.R0.S[1] != "" {
 			ros2errorTypesCommentsBuffer.WriteString(re.R0.S[1])
 		}
 
-		return nil, nil
+		return nil
 
 	} else if row == "" { // do not process empty lines or comment lines
 		ros2errorTypesCommentsBuffer.Reset()
 
-		return nil, nil
+		return nil
 
 	}
-	return nil, nil
+	return nil
 }
 
 func updateROS2errorTypesDeduplicationMap(rcl_ret_t string, name string) {

@@ -7,6 +7,8 @@ Licensed under the Apache License, Version 2.0 (the "License");
     http://www.apache.org/licenses/LICENSE-2.0
 */
 
+//#nosec G401,G501
+
 package gogen
 
 import (
@@ -235,39 +237,34 @@ string input
 func TestCErrorTypeParser(t *testing.T) {
 	SetDefaultFailureMode(FailureContinues)
 	Convey("", t, func() {
-		et, err := parseROS2ErrorType("/// Success return code.")
+		et := parseROS2ErrorType("/// Success return code.")
 		So(et, ShouldBeNil)
-		So(err, ShouldBeNil)
 		So(ros2errorTypesCommentsBuffer.String(), ShouldEqual, "Success return code.")
 
-		et, err = parseROS2ErrorType("#define RCL_RET_OK RMW_RET_OK")
+		et = parseROS2ErrorType("#define RCL_RET_OK RMW_RET_OK")
 		So(et, ShouldResemble, &ROS2ErrorType{
 			Name:      "RCL_RET_OK",
 			Rcl_ret_t: "",
 			Reference: "RMW_RET_OK",
 			Comment:   "Success return code.",
 		})
-		So(err, ShouldBeNil)
 		So(ros2errorTypesCommentsBuffer.Len(), ShouldEqual, 0)
 
-		et, err = parseROS2ErrorType("/// This comment is flushed because it is not part of a continuous stream.")
+		et = parseROS2ErrorType("/// This comment is flushed because it is not part of a continuous stream.")
 		So(et, ShouldBeNil)
-		So(err, ShouldBeNil)
 		So(ros2errorTypesCommentsBuffer.Len(), ShouldBeGreaterThan, 0)
 
-		et, err = parseROS2ErrorType("")
+		et = parseROS2ErrorType("")
 		So(et, ShouldBeNil)
-		So(err, ShouldBeNil)
 		So(ros2errorTypesCommentsBuffer.String(), ShouldEqual, "")
 
-		et, err = parseROS2ErrorType("#define RCL_RET_NOT_INIT 101")
+		et = parseROS2ErrorType("#define RCL_RET_NOT_INIT 101")
 		So(et, ShouldResemble, &ROS2ErrorType{
 			Name:      "RCL_RET_NOT_INIT",
 			Rcl_ret_t: "101",
 			Reference: "",
 			Comment:   "",
 		})
-		So(err, ShouldBeNil)
 		So(ros2errorTypesCommentsBuffer.Len(), ShouldEqual, 0)
 	})
 }

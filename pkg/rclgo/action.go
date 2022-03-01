@@ -718,7 +718,9 @@ func (s *ActionServer) handleReadyEntities(ctx context.Context, ws *WaitSet) {
 		s.handleResultRequest()
 	}
 	if expired {
-		s.expireGoals()
+		if err := s.expireGoals(); err != nil {
+			s.node.logger.Error("failed to expire goals: ", err)
+		}
 	}
 }
 
@@ -754,7 +756,7 @@ func NewDefaultActionClientOptions() *ActionClientOptions {
 type actionClientHandler = func(context.Context, types.Message)
 
 type actionClientHandlerMapEntry struct {
-	ctx     context.Context
+	ctx     context.Context //nolint:containedctx // Used to keep track of Contexts
 	handler actionClientHandler
 }
 
@@ -1100,9 +1102,7 @@ func (c *ActionClient) subscribe(
 		return func() {
 			c.rclClientMu.Lock()
 			defer c.rclClientMu.Unlock()
-			if _, ok := subs.allGoals[subID]; ok {
-				delete(subs.allGoals, subID)
-			}
+			delete(subs.allGoals, subID)
 		}
 	}
 	goalID := *id

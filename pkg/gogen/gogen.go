@@ -198,7 +198,7 @@ func GenerateGolangMessageTypes(c *Config, rootPaths []string, destPath string) 
 func (g *generator) findInterfaceFiles(rootPaths []string) map[Metadata]string {
 	files := make(map[Metadata]string)
 	for i := len(rootPaths) - 1; i >= 0; i-- {
-		filepath.Walk(rootPaths[i], func(path string, info fs.FileInfo, err error) error {
+		filepath.Walk(rootPaths[i], func(path string, info fs.FileInfo, err error) error { //nolint:errcheck
 			skip, blacklistEntry := blacklisted(path)
 			if skip {
 				fmt.Printf("Blacklisted: %s, matched regex '%s'\n", path, blacklistEntry)
@@ -270,7 +270,7 @@ func createTargetGolangTypeFile(destPathPkgRoot string, m *Metadata) (*os.File, 
 
 func (g *generator) generateService(m *Metadata, srcPath, dstPathPkgRoot string) (*ROS2Service, error) {
 	service := NewROS2Service(m.Package, m.Name)
-	srcFile, err := os.ReadFile(srcPath)
+	srcFile, err := os.ReadFile(filepath.Clean(srcPath))
 	if err != nil {
 		return nil, err
 	}

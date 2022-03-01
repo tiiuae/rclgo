@@ -17,7 +17,7 @@ import (
 )
 
 func StringAsCStruct(dst unsafe.Pointer, m string) {
-	mem := (*C.rosidl_runtime_c__String)(dst) //TODO add this to template generator
+	mem := (*C.rosidl_runtime_c__String)(dst) // TODO add this to template generator
 	mem.data = (*C.char)(C.malloc(C.sizeof_char * C.size_t(len(m)+1)))
 	mem.size = C.size_t(len(m))
 	mem.capacity = C.size_t(len(m) + 1)

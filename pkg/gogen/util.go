@@ -57,9 +57,6 @@ func camelToSnake(in string) string {
 				sb.WriteRune(unicode.ToLower(tmp[i]))
 			} else if unicode.IsUpper(tmp[i+1]) || unicode.IsNumber(tmp[i+1]) {
 				sb.WriteRune(unicode.ToLower(tmp[i]))
-			} else if ucSequenceLength >= 2 {
-				sb.WriteRune('_')
-				sb.WriteRune(unicode.ToLower(tmp[i]))
 			} else {
 				sb.WriteRune('_')
 				sb.WriteRune(unicode.ToLower(tmp[i]))
@@ -124,7 +121,7 @@ func splitMsgDefaultArrayValues(ros2type string, defaultsField string) []string 
 	csv.LazyQuotes = true
 	csv.TrimLeadingSpace = true
 	defaultValues, err := csv.Read()
-	if err != nil && err != io.EOF {
+	if err != nil && !errors.Is(err, io.EOF) {
 		fmt.Printf("%+v", err)
 	}
 	switch ros2type {

@@ -2,9 +2,9 @@ name: main
 
 on:
   push:
-    branches: main
+    branches: [main]
   pull_request:
-    branches: main
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -25,3 +25,10 @@ jobs:
 
       - name: Run tests
         run: make test
+
+  run-linter:
+    runs-on: ubuntu-latest
+    container: ghcr.io/tiiuae/tii-golang-ros:galactic-go1.17
+    steps:
+      - uses: actions/checkout@v2
+      - uses: golangci/golangci-lint-action@v2

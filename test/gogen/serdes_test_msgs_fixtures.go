@@ -323,7 +323,7 @@ func Fixture_Go_test_msgs__MultiNested() *test_msgs.MultiNested {
 	obj.ArrayOfArrays[0].BoolValues[1] = false
 	obj.ArrayOfArrays[0].BoolValues[2] = true
 	obj.ArrayOfArrays[1].BasicTypesValues[0].Float32Value = 3.14159
-	//obj.ArrayOfArrays[1].BasicTypesValues[1].Float32Value
+	// obj.ArrayOfArrays[1].BasicTypesValues[1].Float32Value
 	obj.ArrayOfArrays[1].BasicTypesValues[2].Float32Value = 1.61803
 	obj.ArrayOfArrays[2].Int8ValuesDefault[1] = 64
 	obj.ArrayOfArrays[2].AlignmentCheck = 32

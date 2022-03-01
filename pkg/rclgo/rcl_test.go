@@ -1,3 +1,5 @@
+//#nosec G404
+
 package rclgo_test
 
 import (
@@ -13,10 +15,10 @@ import (
 
 func getNextDomainID() int {
 	id, _ := strconv.ParseUint(os.Getenv("ROS_DOMAIN_ID"), 10, 8)
-	new := rand.Intn(101)
-	for ; new == int(id); new = rand.Intn(101) {
+	newID := rand.Intn(101)
+	for ; newID == int(id); newID = rand.Intn(101) {
 	}
-	return new
+	return newID
 }
 
 func TestMain(m *testing.M) {

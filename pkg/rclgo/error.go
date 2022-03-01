@@ -19,23 +19,13 @@ import (
 	"fmt"
 )
 
-func errStr(strs ...string) string {
-	var msg string
-	for _, v := range strs {
-		if v != "" {
-			msg = fmt.Sprintf("%v: %v", msg, v)
-		}
-	}
-	return msg
-}
-
-type rclRetStruct struct {
+type rclError struct {
 	rclRetCode int
 	context    string
 	trace      string
 }
 
-func (e *rclRetStruct) Error() string {
+func (e *rclError) Error() string {
 	return e.context
 }
 
@@ -78,7 +68,7 @@ func errorsCast(rcl_ret_t C.rcl_ret_t) error {
 
 func onErr(err *error, f func() error) {
 	if *err != nil {
-		f()
+		f() //nolint:errcheck
 	}
 }
 

@@ -315,7 +315,7 @@ type Node struct {
 
 func NewNode(nodeName, namespace string) (*Node, error) {
 	if defaultContext == nil {
-		return nil, initNotCalledErr
+		return nil, errInitNotCalled
 	}
 	return defaultContext.NewNode(nodeName, namespace)
 }
@@ -567,7 +567,7 @@ type Clock struct {
 
 func NewClock(clockType ClockType) (*Clock, error) {
 	if defaultContext == nil {
-		return nil, initNotCalledErr
+		return nil, errInitNotCalled
 	}
 	return defaultContext.NewClock(clockType)
 }
@@ -634,7 +634,7 @@ type Timer struct {
 
 func NewTimer(timeout time.Duration, timerCallback func(*Timer)) (*Timer, error) {
 	if defaultContext == nil {
-		return nil, initNotCalledErr
+		return nil, errInitNotCalled
 	}
 	return defaultContext.NewTimer(timeout, timerCallback)
 }
@@ -682,8 +682,7 @@ func (self *Timer) GetTimeUntilNextCall() (int64, error) {
 }
 
 func (self *Timer) Reset() error {
-	var rc C.rcl_ret_t
-	rc = C.rcl_timer_reset(self.rcl_timer_t)
+	rc := C.rcl_timer_reset(self.rcl_timer_t)
 	if rc != C.RCL_RET_OK {
 		return errorsCast(rc)
 	}
@@ -899,7 +898,7 @@ type WaitSet struct {
 
 func NewWaitSet() (*WaitSet, error) {
 	if defaultContext == nil {
-		return nil, initNotCalledErr
+		return nil, errInitNotCalled
 	}
 	return defaultContext.NewWaitSet()
 }
@@ -1029,7 +1028,7 @@ func (self *WaitSet) Run(ctx context.Context) (err error) {
 		timers := unsafe.Slice(self.rcl_wait_set_t.timers, len(self.Timers))
 		for i, t := range self.Timers {
 			if timers[i] != nil {
-				t.Reset()
+				t.Reset() //nolint:errcheck
 				t.Callback(t)
 			}
 		}

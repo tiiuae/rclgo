@@ -336,6 +336,7 @@ func TestActionStatuses(t *testing.T) {
 		Convey("Spin RCL context", func() {
 			go func() { spinErr <- rclctx.Spin(ctx) }()
 		})
+		//nolint:contextcheck // send returns an inherited context
 		Convey("Server reports correct statuses for goals", func() {
 			type testResult struct {
 				Result   types.Message

@@ -31,7 +31,12 @@ jobs:
     container: ghcr.io/tiiuae/tii-golang-ros:galactic-go1.17
     steps:
       - uses: actions/checkout@v2
-      - run: |
+      - shell: bash
+        run: |
           env | sort -n
-          echo $SHELL
+          echo
+          source /opt/ros/galactic/setup.bash
+          env | sort -n
+          echo
+          cat "$GITHUB_ENV"
       - uses: golangci/golangci-lint-action@v2

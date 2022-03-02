@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  rclgo:
+  run-tests:
     runs-on: ubuntu-latest
     container: ghcr.io/tiiuae/tii-golang-ros:galactic-go1.17
     steps:
@@ -31,4 +31,15 @@ jobs:
     container: ghcr.io/tiiuae/tii-golang-ros:galactic-go1.17
     steps:
       - uses: actions/checkout@v2
+
+      - name: Prepare environment
+        shell: bash
+        run: |
+          apt-get update
+          apt-get install -y \
+            ros-galactic-action-msgs \
+            ros-galactic-example-interfaces \
+            ros-galactic-test-msgs
+          env > "$GITHUB_ENV"
+
       - uses: golangci/golangci-lint-action@v2

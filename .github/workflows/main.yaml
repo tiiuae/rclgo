@@ -15,6 +15,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install additional tools and libraries
+        shell: bash
         run: |
           apt-get update
           apt-get install -y \
@@ -22,22 +23,9 @@ jobs:
             ros-galactic-action-msgs \
             ros-galactic-example-interfaces \
             ros-galactic-test-msgs
+          env > "$GITHUB_ENV" # Export env for lint action
+
+      - uses: golangci/golangci-lint-action@v2
 
       - name: Run tests
         run: make test
-
-  run-linter:
-    runs-on: ubuntu-latest
-    container: ghcr.io/tiiuae/tii-golang-ros:galactic-go1.17
-    steps:
-      - uses: actions/checkout@v2
-      - shell: bash
-        run: |
-          apt-get update
-          apt-get install -y \
-            make \
-            ros-galactic-action-msgs \
-            ros-galactic-example-interfaces \
-            ros-galactic-test-msgs
-          env > "$GITHUB_ENV"
-      - uses: golangci/golangci-lint-action@v2

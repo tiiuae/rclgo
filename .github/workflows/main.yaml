@@ -33,10 +33,5 @@ jobs:
       - uses: actions/checkout@v2
       - shell: bash
         run: |
-          env | sort -n
-          echo
-          source /opt/ros/galactic/setup.bash
-          env | sort -n
-          echo
-          cat "$GITHUB_ENV"
+          env > "$GITHUB_ENV"
       - uses: golangci/golangci-lint-action@v2

@@ -33,5 +33,11 @@ jobs:
       - uses: actions/checkout@v2
       - shell: bash
         run: |
+          apt-get update
+          apt-get install -y \
+            make \
+            ros-galactic-action-msgs \
+            ros-galactic-example-interfaces \
+            ros-galactic-test-msgs
           env > "$GITHUB_ENV"
       - uses: golangci/golangci-lint-action@v2

@@ -18,11 +18,18 @@ import (
 	"path/filepath"
 	"strings"
 	"unicode"
+	"unicode/utf8"
 
 	"github.com/kivilahtio/go-re/v0"
 )
 
-func ucFirst(s string) string { return strings.Title(s) }
+func ucFirst(s string) string {
+	r, size := utf8.DecodeRuneInString(s)
+	if r == utf8.RuneError {
+		return s
+	}
+	return string(unicode.ToUpper(r)) + s[size:]
+}
 
 func snakeToCamel(in string) string {
 	tmp := []rune(in)

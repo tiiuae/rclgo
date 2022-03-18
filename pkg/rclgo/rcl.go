@@ -540,6 +540,21 @@ func (self *Publisher) Publish(ros2msg types.Message) error {
 	return nil
 }
 
+// PublishSerialized publishes a message that has already been serialized.
+func (self *Publisher) PublishSerialized(msg []byte) error {
+	rclMsg, err := newSerializedMessage(len(msg))
+	if err != nil {
+		return fmt.Errorf("failed to publish serialized message: %v", err)
+	}
+	defer rclMsg.Close()
+	copy(rclMsg.AsSlice(), msg)
+	rc := C.rcl_publish_serialized_message(self.rcl_publisher_t, rclMsg.c(), nil)
+	if rc != C.RCL_RET_OK {
+		return errorsCastC(rc, "failed to publish serialized message")
+	}
+	return nil
+}
+
 /*
 Close frees the allocated memory
 */

@@ -1040,6 +1040,12 @@ func (self *WaitSet) Run(ctx context.Context) (err error) {
 		if rc := C.rcl_wait(&self.rcl_wait_set_t, -1); rc != C.RCL_RET_OK {
 			return errorsCast(rc)
 		}
+		guardConditions := unsafe.Slice(self.rcl_wait_set_t.guard_conditions, len(self.guardConditions))
+		for i := range self.guardConditions {
+			if guardConditions[i] == self.cancelWait.rclGuardCondition {
+				return ctx.Err()
+			}
+		}
 		timers := unsafe.Slice(self.rcl_wait_set_t.timers, len(self.Timers))
 		for i, t := range self.Timers {
 			if timers[i] != nil {
@@ -1070,12 +1076,6 @@ func (self *WaitSet) Run(ctx context.Context) (err error) {
 		}
 		for _, c := range self.ActionClients {
 			c.handleReadyEntities(self)
-		}
-		guardConditions := unsafe.Slice(self.rcl_wait_set_t.guard_conditions, len(self.guardConditions))
-		for i := range self.guardConditions {
-			if guardConditions[i] == self.cancelWait.rclGuardCondition {
-				return ctx.Err()
-			}
 		}
 	}
 }

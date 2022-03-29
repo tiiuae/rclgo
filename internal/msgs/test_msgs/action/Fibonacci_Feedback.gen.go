@@ -35,7 +35,7 @@ func init() {
 // Do not create instances of this type directly. Always use NewFibonacci_Feedback
 // function instead.
 type Fibonacci_Feedback struct {
-	Sequence []int32 `yaml:"sequence"`// goal definitionresult definitionfeedback
+	Sequence []int32 `yaml:"sequence"`// feedback
 }
 
 // NewFibonacci_Feedback creates a new Fibonacci_Feedback with default values.

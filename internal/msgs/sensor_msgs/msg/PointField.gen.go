@@ -33,22 +33,22 @@ func init() {
 }
 const (
 	PointField_INT8 uint8 = 1// This message holds the description of one point entry in thePointCloud2 message format.
-	PointField_UINT8 uint8 = 2// This message holds the description of one point entry in thePointCloud2 message format.
-	PointField_INT16 uint8 = 3// This message holds the description of one point entry in thePointCloud2 message format.
-	PointField_UINT16 uint8 = 4// This message holds the description of one point entry in thePointCloud2 message format.
-	PointField_INT32 uint8 = 5// This message holds the description of one point entry in thePointCloud2 message format.
-	PointField_UINT32 uint8 = 6// This message holds the description of one point entry in thePointCloud2 message format.
-	PointField_FLOAT32 uint8 = 7// This message holds the description of one point entry in thePointCloud2 message format.
-	PointField_FLOAT64 uint8 = 8// This message holds the description of one point entry in thePointCloud2 message format.
+	PointField_UINT8 uint8 = 2
+	PointField_INT16 uint8 = 3
+	PointField_UINT16 uint8 = 4
+	PointField_INT32 uint8 = 5
+	PointField_UINT32 uint8 = 6
+	PointField_FLOAT32 uint8 = 7
+	PointField_FLOAT64 uint8 = 8
 )
 
 // Do not create instances of this type directly. Always use NewPointField
 // function instead.
 type PointField struct {
 	Name string `yaml:"name"`// Name of field. Common PointField names are x, y, z, intensity, rgb, rgba
-	Offset uint32 `yaml:"offset"`// Offset from start of point struct. Common PointField names are x, y, z, intensity, rgb, rgba
-	Datatype uint8 `yaml:"datatype"`// Datatype enumeration, see above. Common PointField names are x, y, z, intensity, rgb, rgba
-	Count uint32 `yaml:"count"`// How many elements in the field. Common PointField names are x, y, z, intensity, rgb, rgba
+	Offset uint32 `yaml:"offset"`// Offset from start of point struct
+	Datatype uint8 `yaml:"datatype"`// Datatype enumeration, see above
+	Count uint32 `yaml:"count"`// How many elements in the field
 }
 
 // NewPointField creates a new PointField with default values.

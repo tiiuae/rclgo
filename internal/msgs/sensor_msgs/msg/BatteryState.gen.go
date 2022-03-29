@@ -34,26 +34,26 @@ func init() {
 }
 const (
 	BatteryState_POWER_SUPPLY_STATUS_UNKNOWN uint8 = 0// Power supply status constants
-	BatteryState_POWER_SUPPLY_STATUS_CHARGING uint8 = 1// Power supply status constants
-	BatteryState_POWER_SUPPLY_STATUS_DISCHARGING uint8 = 2// Power supply status constants
-	BatteryState_POWER_SUPPLY_STATUS_NOT_CHARGING uint8 = 3// Power supply status constants
-	BatteryState_POWER_SUPPLY_STATUS_FULL uint8 = 4// Power supply status constants
+	BatteryState_POWER_SUPPLY_STATUS_CHARGING uint8 = 1
+	BatteryState_POWER_SUPPLY_STATUS_DISCHARGING uint8 = 2
+	BatteryState_POWER_SUPPLY_STATUS_NOT_CHARGING uint8 = 3
+	BatteryState_POWER_SUPPLY_STATUS_FULL uint8 = 4
 	BatteryState_POWER_SUPPLY_HEALTH_UNKNOWN uint8 = 0// Power supply health constants
-	BatteryState_POWER_SUPPLY_HEALTH_GOOD uint8 = 1// Power supply health constants
-	BatteryState_POWER_SUPPLY_HEALTH_OVERHEAT uint8 = 2// Power supply health constants
-	BatteryState_POWER_SUPPLY_HEALTH_DEAD uint8 = 3// Power supply health constants
-	BatteryState_POWER_SUPPLY_HEALTH_OVERVOLTAGE uint8 = 4// Power supply health constants
-	BatteryState_POWER_SUPPLY_HEALTH_UNSPEC_FAILURE uint8 = 5// Power supply health constants
-	BatteryState_POWER_SUPPLY_HEALTH_COLD uint8 = 6// Power supply health constants
-	BatteryState_POWER_SUPPLY_HEALTH_WATCHDOG_TIMER_EXPIRE uint8 = 7// Power supply health constants
-	BatteryState_POWER_SUPPLY_HEALTH_SAFETY_TIMER_EXPIRE uint8 = 8// Power supply health constants
+	BatteryState_POWER_SUPPLY_HEALTH_GOOD uint8 = 1
+	BatteryState_POWER_SUPPLY_HEALTH_OVERHEAT uint8 = 2
+	BatteryState_POWER_SUPPLY_HEALTH_DEAD uint8 = 3
+	BatteryState_POWER_SUPPLY_HEALTH_OVERVOLTAGE uint8 = 4
+	BatteryState_POWER_SUPPLY_HEALTH_UNSPEC_FAILURE uint8 = 5
+	BatteryState_POWER_SUPPLY_HEALTH_COLD uint8 = 6
+	BatteryState_POWER_SUPPLY_HEALTH_WATCHDOG_TIMER_EXPIRE uint8 = 7
+	BatteryState_POWER_SUPPLY_HEALTH_SAFETY_TIMER_EXPIRE uint8 = 8
 	BatteryState_POWER_SUPPLY_TECHNOLOGY_UNKNOWN uint8 = 0// Power supply technology (chemistry) constants
-	BatteryState_POWER_SUPPLY_TECHNOLOGY_NIMH uint8 = 1// Power supply technology (chemistry) constants
-	BatteryState_POWER_SUPPLY_TECHNOLOGY_LION uint8 = 2// Power supply technology (chemistry) constants
-	BatteryState_POWER_SUPPLY_TECHNOLOGY_LIPO uint8 = 3// Power supply technology (chemistry) constants
-	BatteryState_POWER_SUPPLY_TECHNOLOGY_LIFE uint8 = 4// Power supply technology (chemistry) constants
-	BatteryState_POWER_SUPPLY_TECHNOLOGY_NICD uint8 = 5// Power supply technology (chemistry) constants
-	BatteryState_POWER_SUPPLY_TECHNOLOGY_LIMN uint8 = 6// Power supply technology (chemistry) constants
+	BatteryState_POWER_SUPPLY_TECHNOLOGY_NIMH uint8 = 1
+	BatteryState_POWER_SUPPLY_TECHNOLOGY_LION uint8 = 2
+	BatteryState_POWER_SUPPLY_TECHNOLOGY_LIPO uint8 = 3
+	BatteryState_POWER_SUPPLY_TECHNOLOGY_LIFE uint8 = 4
+	BatteryState_POWER_SUPPLY_TECHNOLOGY_NICD uint8 = 5
+	BatteryState_POWER_SUPPLY_TECHNOLOGY_LIMN uint8 = 6
 )
 
 // Do not create instances of this type directly. Always use NewBatteryState
@@ -73,8 +73,8 @@ type BatteryState struct {
 	Present bool `yaml:"present"`// True if the battery is present
 	CellVoltage []float32 `yaml:"cell_voltage"`// An array of individual cell voltages for each cell in the pack
 	CellTemperature []float32 `yaml:"cell_temperature"`// An array of individual cell temperatures for each cell in the pack. If individual voltages unknown but number of cells known set each to NaN
-	Location string `yaml:"location"`// The location into which the battery is inserted. (slot number or plug). If individual voltages unknown but number of cells known set each to NaNIf individual temperatures unknown but number of cells known set each to NaN
-	SerialNumber string `yaml:"serial_number"`// The best approximation of the battery serial number. If individual voltages unknown but number of cells known set each to NaNIf individual temperatures unknown but number of cells known set each to NaN
+	Location string `yaml:"location"`// The location into which the battery is inserted. (slot number or plug). If individual temperatures unknown but number of cells known set each to NaN
+	SerialNumber string `yaml:"serial_number"`// The best approximation of the battery serial number
 }
 
 // NewBatteryState creates a new BatteryState with default values.

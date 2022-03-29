@@ -32,8 +32,8 @@ func init() {
 }
 const (
 	JoyFeedback_TYPE_LED uint8 = 0// Declare of the type of feedback
-	JoyFeedback_TYPE_RUMBLE uint8 = 1// Declare of the type of feedback
-	JoyFeedback_TYPE_BUZZER uint8 = 2// Declare of the type of feedback
+	JoyFeedback_TYPE_RUMBLE uint8 = 1
+	JoyFeedback_TYPE_BUZZER uint8 = 2
 )
 
 // Do not create instances of this type directly. Always use NewJoyFeedback

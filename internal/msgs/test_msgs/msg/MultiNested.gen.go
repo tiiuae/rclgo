@@ -35,14 +35,14 @@ func init() {
 // function instead.
 type MultiNested struct {
 	ArrayOfArrays [3]Arrays `yaml:"array_of_arrays"`// Mulitple levels of nested messages
-	ArrayOfBoundedSequences [3]BoundedSequences `yaml:"array_of_bounded_sequences"`// Mulitple levels of nested messages
-	ArrayOfUnboundedSequences [3]UnboundedSequences `yaml:"array_of_unbounded_sequences"`// Mulitple levels of nested messages
-	BoundedSequenceOfArrays []Arrays `yaml:"bounded_sequence_of_arrays"`// Mulitple levels of nested messages
-	BoundedSequenceOfBoundedSequences []BoundedSequences `yaml:"bounded_sequence_of_bounded_sequences"`// Mulitple levels of nested messages
-	BoundedSequenceOfUnboundedSequences []UnboundedSequences `yaml:"bounded_sequence_of_unbounded_sequences"`// Mulitple levels of nested messages
-	UnboundedSequenceOfArrays []Arrays `yaml:"unbounded_sequence_of_arrays"`// Mulitple levels of nested messages
-	UnboundedSequenceOfBoundedSequences []BoundedSequences `yaml:"unbounded_sequence_of_bounded_sequences"`// Mulitple levels of nested messages
-	UnboundedSequenceOfUnboundedSequences []UnboundedSequences `yaml:"unbounded_sequence_of_unbounded_sequences"`// Mulitple levels of nested messages
+	ArrayOfBoundedSequences [3]BoundedSequences `yaml:"array_of_bounded_sequences"`
+	ArrayOfUnboundedSequences [3]UnboundedSequences `yaml:"array_of_unbounded_sequences"`
+	BoundedSequenceOfArrays []Arrays `yaml:"bounded_sequence_of_arrays"`
+	BoundedSequenceOfBoundedSequences []BoundedSequences `yaml:"bounded_sequence_of_bounded_sequences"`
+	BoundedSequenceOfUnboundedSequences []UnboundedSequences `yaml:"bounded_sequence_of_unbounded_sequences"`
+	UnboundedSequenceOfArrays []Arrays `yaml:"unbounded_sequence_of_arrays"`
+	UnboundedSequenceOfBoundedSequences []BoundedSequences `yaml:"unbounded_sequence_of_bounded_sequences"`
+	UnboundedSequenceOfUnboundedSequences []UnboundedSequences `yaml:"unbounded_sequence_of_unbounded_sequences"`
 }
 
 // NewMultiNested creates a new MultiNested with default values.

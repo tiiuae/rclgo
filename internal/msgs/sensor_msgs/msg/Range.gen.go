@@ -33,7 +33,7 @@ func init() {
 }
 const (
 	Range_ULTRASOUND uint8 = 0// Radiation type enumsIf you want a value added to this list, send an email to the ros-users list
-	Range_INFRARED uint8 = 1// Radiation type enumsIf you want a value added to this list, send an email to the ros-users list
+	Range_INFRARED uint8 = 1
 )
 
 // Do not create instances of this type directly. Always use NewRange

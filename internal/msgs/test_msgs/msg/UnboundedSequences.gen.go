@@ -36,37 +36,37 @@ func init() {
 // function instead.
 type UnboundedSequences struct {
 	BoolValues []bool `yaml:"bool_values"`// Unbounded sequences of different types
-	ByteValues []byte `yaml:"byte_values"`// Unbounded sequences of different types
-	CharValues []byte `yaml:"char_values"`// Unbounded sequences of different types
-	Float32Values []float32 `yaml:"float32_values"`// Unbounded sequences of different types
-	Float64Values []float64 `yaml:"float64_values"`// Unbounded sequences of different types
-	Int8Values []int8 `yaml:"int8_values"`// Unbounded sequences of different types
-	Uint8Values []uint8 `yaml:"uint8_values"`// Unbounded sequences of different types
-	Int16Values []int16 `yaml:"int16_values"`// Unbounded sequences of different types
-	Uint16Values []uint16 `yaml:"uint16_values"`// Unbounded sequences of different types
-	Int32Values []int32 `yaml:"int32_values"`// Unbounded sequences of different types
-	Uint32Values []uint32 `yaml:"uint32_values"`// Unbounded sequences of different types
-	Int64Values []int64 `yaml:"int64_values"`// Unbounded sequences of different types
-	Uint64Values []uint64 `yaml:"uint64_values"`// Unbounded sequences of different types
-	StringValues []string `yaml:"string_values"`// Unbounded sequences of different types
-	BasicTypesValues []BasicTypes `yaml:"basic_types_values"`// Unbounded sequences of different types
-	ConstantsValues []Constants `yaml:"constants_values"`// Unbounded sequences of different types
-	DefaultsValues []Defaults `yaml:"defaults_values"`// Unbounded sequences of different types
-	BoolValuesDefault []bool `yaml:"bool_values_default"`// Unbounded sequences of different types
-	ByteValuesDefault []byte `yaml:"byte_values_default"`// Unbounded sequences of different types
-	CharValuesDefault []byte `yaml:"char_values_default"`// Unbounded sequences of different types
-	Float32ValuesDefault []float32 `yaml:"float32_values_default"`// Unbounded sequences of different types
-	Float64ValuesDefault []float64 `yaml:"float64_values_default"`// Unbounded sequences of different types
-	Int8ValuesDefault []int8 `yaml:"int8_values_default"`// Unbounded sequences of different types
-	Uint8ValuesDefault []uint8 `yaml:"uint8_values_default"`// Unbounded sequences of different types
-	Int16ValuesDefault []int16 `yaml:"int16_values_default"`// Unbounded sequences of different types
-	Uint16ValuesDefault []uint16 `yaml:"uint16_values_default"`// Unbounded sequences of different types
-	Int32ValuesDefault []int32 `yaml:"int32_values_default"`// Unbounded sequences of different types
-	Uint32ValuesDefault []uint32 `yaml:"uint32_values_default"`// Unbounded sequences of different types
-	Int64ValuesDefault []int64 `yaml:"int64_values_default"`// Unbounded sequences of different types
-	Uint64ValuesDefault []uint64 `yaml:"uint64_values_default"`// Unbounded sequences of different types
-	StringValuesDefault []string `yaml:"string_values_default"`// Unbounded sequences of different types
-	AlignmentCheck int32 `yaml:"alignment_check"`// Unbounded sequences of different typesRegression test: check alignment of basic field after a sequence field is correct
+	ByteValues []byte `yaml:"byte_values"`
+	CharValues []byte `yaml:"char_values"`
+	Float32Values []float32 `yaml:"float32_values"`
+	Float64Values []float64 `yaml:"float64_values"`
+	Int8Values []int8 `yaml:"int8_values"`
+	Uint8Values []uint8 `yaml:"uint8_values"`
+	Int16Values []int16 `yaml:"int16_values"`
+	Uint16Values []uint16 `yaml:"uint16_values"`
+	Int32Values []int32 `yaml:"int32_values"`
+	Uint32Values []uint32 `yaml:"uint32_values"`
+	Int64Values []int64 `yaml:"int64_values"`
+	Uint64Values []uint64 `yaml:"uint64_values"`
+	StringValues []string `yaml:"string_values"`
+	BasicTypesValues []BasicTypes `yaml:"basic_types_values"`
+	ConstantsValues []Constants `yaml:"constants_values"`
+	DefaultsValues []Defaults `yaml:"defaults_values"`
+	BoolValuesDefault []bool `yaml:"bool_values_default"`
+	ByteValuesDefault []byte `yaml:"byte_values_default"`
+	CharValuesDefault []byte `yaml:"char_values_default"`
+	Float32ValuesDefault []float32 `yaml:"float32_values_default"`
+	Float64ValuesDefault []float64 `yaml:"float64_values_default"`
+	Int8ValuesDefault []int8 `yaml:"int8_values_default"`
+	Uint8ValuesDefault []uint8 `yaml:"uint8_values_default"`
+	Int16ValuesDefault []int16 `yaml:"int16_values_default"`
+	Uint16ValuesDefault []uint16 `yaml:"uint16_values_default"`
+	Int32ValuesDefault []int32 `yaml:"int32_values_default"`
+	Uint32ValuesDefault []uint32 `yaml:"uint32_values_default"`
+	Int64ValuesDefault []int64 `yaml:"int64_values_default"`
+	Uint64ValuesDefault []uint64 `yaml:"uint64_values_default"`
+	StringValuesDefault []string `yaml:"string_values_default"`
+	AlignmentCheck int32 `yaml:"alignment_check"`// Regression test: check alignment of basic field after a sequence field is correct
 }
 
 // NewUnboundedSequences creates a new UnboundedSequences with default values.

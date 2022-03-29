@@ -35,7 +35,7 @@ func init() {
 // Do not create instances of this type directly. Always use NewFibonacci_Result
 // function instead.
 type Fibonacci_Result struct {
-	Sequence []int32 `yaml:"sequence"`// GoalResult
+	Sequence []int32 `yaml:"sequence"`// Result
 }
 
 // NewFibonacci_Result creates a new Fibonacci_Result with default values.

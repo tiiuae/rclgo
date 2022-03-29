@@ -36,8 +36,8 @@ func init() {
 type RegionOfInterest struct {
 	XOffset uint32 `yaml:"x_offset"`// Leftmost pixel of the ROI
 	YOffset uint32 `yaml:"y_offset"`// Topmost pixel of the ROI. (0 if the ROI includes the left edge of the image)
-	Height uint32 `yaml:"height"`// Height of ROI. (0 if the ROI includes the left edge of the image)(0 if the ROI includes the top edge of the image)
-	Width uint32 `yaml:"width"`// Width of ROI. (0 if the ROI includes the left edge of the image)(0 if the ROI includes the top edge of the image)
+	Height uint32 `yaml:"height"`// Height of ROI. (0 if the ROI includes the top edge of the image)
+	Width uint32 `yaml:"width"`// Width of ROI
 	DoRectify bool `yaml:"do_rectify"`// True if a distinct rectified ROI should be calculated from the "raw"ROI in this message. Typically this should be False if the full imageis captured (ROI not used), and True if a subwindow is captured (ROIused).
 }
 

@@ -77,16 +77,14 @@ func camelToSnake(in string) string {
 }
 
 func commentSerializer(lineComment string, preComments *strings.Builder) string {
-	if lineComment != "" && preComments.Len() > 0 {
-		return lineComment + `. ` + preComments.String()
-	}
-	if lineComment != "" {
+	if preComments.Len() == 0 {
 		return lineComment
 	}
-	if preComments.Len() > 0 {
+	defer preComments.Reset()
+	if lineComment == "" {
 		return preComments.String()
 	}
-	return ""
+	return lineComment + `. ` + preComments.String()
 }
 
 /*

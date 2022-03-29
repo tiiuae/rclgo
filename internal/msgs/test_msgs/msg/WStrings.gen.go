@@ -40,8 +40,8 @@ type WStrings struct {
 	WstringValueDefault2 string `yaml:"wstring_value_default2"`
 	WstringValueDefault3 string `yaml:"wstring_value_default3"`
 	ArrayOfWstrings [3]string `yaml:"array_of_wstrings"`// wstring WSTRING_CONST="Hello world!"wstring<=22 bounded_wstring_valuewstring<=22 bounded_wstring_value_default1 "Hello world!"
-	BoundedSequenceOfWstrings []string `yaml:"bounded_sequence_of_wstrings"`// wstring WSTRING_CONST="Hello world!"wstring<=22 bounded_wstring_valuewstring<=22 bounded_wstring_value_default1 "Hello world!"
-	UnboundedSequenceOfWstrings []string `yaml:"unbounded_sequence_of_wstrings"`// wstring WSTRING_CONST="Hello world!"wstring<=22 bounded_wstring_valuewstring<=22 bounded_wstring_value_default1 "Hello world!"
+	BoundedSequenceOfWstrings []string `yaml:"bounded_sequence_of_wstrings"`
+	UnboundedSequenceOfWstrings []string `yaml:"unbounded_sequence_of_wstrings"`
 }
 
 // NewWStrings creates a new WStrings with default values.

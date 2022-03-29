@@ -37,11 +37,11 @@ type Inertia struct {
 	M float64 `yaml:"m"`// Mass [kg]
 	Com Vector3 `yaml:"com"`// Center of mass [m]
 	Ixx float64 `yaml:"ixx"`// Inertia Tensor [kg-m^2]| ixx ixy ixz |I = | ixy iyy iyz || ixz iyz izz |
-	Ixy float64 `yaml:"ixy"`// Inertia Tensor [kg-m^2]| ixx ixy ixz |I = | ixy iyy iyz || ixz iyz izz |
-	Ixz float64 `yaml:"ixz"`// Inertia Tensor [kg-m^2]| ixx ixy ixz |I = | ixy iyy iyz || ixz iyz izz |
-	Iyy float64 `yaml:"iyy"`// Inertia Tensor [kg-m^2]| ixx ixy ixz |I = | ixy iyy iyz || ixz iyz izz |
-	Iyz float64 `yaml:"iyz"`// Inertia Tensor [kg-m^2]| ixx ixy ixz |I = | ixy iyy iyz || ixz iyz izz |
-	Izz float64 `yaml:"izz"`// Inertia Tensor [kg-m^2]| ixx ixy ixz |I = | ixy iyy iyz || ixz iyz izz |
+	Ixy float64 `yaml:"ixy"`
+	Ixz float64 `yaml:"ixz"`
+	Iyy float64 `yaml:"iyy"`
+	Iyz float64 `yaml:"iyz"`
+	Izz float64 `yaml:"izz"`
 }
 
 // NewInertia creates a new Inertia with default values.

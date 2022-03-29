@@ -36,9 +36,9 @@ func init() {
 // Do not create instances of this type directly. Always use NewNestedMessage_Result
 // function instead.
 type NestedMessage_Result struct {
-	NestedFieldNoPkg test_msgs_msg.Builtins `yaml:"nested_field_no_pkg"`// goal definitionresult definition
-	NestedField test_msgs_msg.BasicTypes `yaml:"nested_field"`// goal definitionresult definition
-	NestedDifferentPkg builtin_interfaces_msg.Time `yaml:"nested_different_pkg"`// goal definitionresult definition
+	NestedFieldNoPkg test_msgs_msg.Builtins `yaml:"nested_field_no_pkg"`// result definition
+	NestedField test_msgs_msg.BasicTypes `yaml:"nested_field"`
+	NestedDifferentPkg builtin_interfaces_msg.Time `yaml:"nested_different_pkg"`
 }
 
 // NewNestedMessage_Result creates a new NestedMessage_Result with default values.

@@ -35,8 +35,8 @@ func init() {
 // function instead.
 type Point struct {
 	X float64 `yaml:"x"`// This contains the position of a point in free space
-	Y float64 `yaml:"y"`// This contains the position of a point in free space
-	Z float64 `yaml:"z"`// This contains the position of a point in free space
+	Y float64 `yaml:"y"`
+	Z float64 `yaml:"z"`
 }
 
 // NewPoint creates a new Point with default values.

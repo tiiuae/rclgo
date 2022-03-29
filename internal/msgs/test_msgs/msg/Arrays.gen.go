@@ -36,37 +36,37 @@ func init() {
 // function instead.
 type Arrays struct {
 	BoolValues [3]bool `yaml:"bool_values"`// Arrays of different types
-	ByteValues [3]byte `yaml:"byte_values"`// Arrays of different types
-	CharValues [3]byte `yaml:"char_values"`// Arrays of different types
-	Float32Values [3]float32 `yaml:"float32_values"`// Arrays of different types
-	Float64Values [3]float64 `yaml:"float64_values"`// Arrays of different types
-	Int8Values [3]int8 `yaml:"int8_values"`// Arrays of different types
-	Uint8Values [3]uint8 `yaml:"uint8_values"`// Arrays of different types
-	Int16Values [3]int16 `yaml:"int16_values"`// Arrays of different types
-	Uint16Values [3]uint16 `yaml:"uint16_values"`// Arrays of different types
-	Int32Values [3]int32 `yaml:"int32_values"`// Arrays of different types
-	Uint32Values [3]uint32 `yaml:"uint32_values"`// Arrays of different types
-	Int64Values [3]int64 `yaml:"int64_values"`// Arrays of different types
-	Uint64Values [3]uint64 `yaml:"uint64_values"`// Arrays of different types
-	StringValues [3]string `yaml:"string_values"`// Arrays of different types
-	BasicTypesValues [3]BasicTypes `yaml:"basic_types_values"`// Arrays of different types
-	ConstantsValues [3]Constants `yaml:"constants_values"`// Arrays of different types
-	DefaultsValues [3]Defaults `yaml:"defaults_values"`// Arrays of different types
-	BoolValuesDefault [3]bool `yaml:"bool_values_default"`// Arrays of different types
-	ByteValuesDefault [3]byte `yaml:"byte_values_default"`// Arrays of different types
-	CharValuesDefault [3]byte `yaml:"char_values_default"`// Arrays of different types
-	Float32ValuesDefault [3]float32 `yaml:"float32_values_default"`// Arrays of different types
-	Float64ValuesDefault [3]float64 `yaml:"float64_values_default"`// Arrays of different types
-	Int8ValuesDefault [3]int8 `yaml:"int8_values_default"`// Arrays of different types
-	Uint8ValuesDefault [3]uint8 `yaml:"uint8_values_default"`// Arrays of different types
-	Int16ValuesDefault [3]int16 `yaml:"int16_values_default"`// Arrays of different types
-	Uint16ValuesDefault [3]uint16 `yaml:"uint16_values_default"`// Arrays of different types
-	Int32ValuesDefault [3]int32 `yaml:"int32_values_default"`// Arrays of different types
-	Uint32ValuesDefault [3]uint32 `yaml:"uint32_values_default"`// Arrays of different types
-	Int64ValuesDefault [3]int64 `yaml:"int64_values_default"`// Arrays of different types
-	Uint64ValuesDefault [3]uint64 `yaml:"uint64_values_default"`// Arrays of different types
-	StringValuesDefault [3]string `yaml:"string_values_default"`// Arrays of different types
-	AlignmentCheck int32 `yaml:"alignment_check"`// Arrays of different typesRegression test: check alignment of basic field after an array field is correct
+	ByteValues [3]byte `yaml:"byte_values"`
+	CharValues [3]byte `yaml:"char_values"`
+	Float32Values [3]float32 `yaml:"float32_values"`
+	Float64Values [3]float64 `yaml:"float64_values"`
+	Int8Values [3]int8 `yaml:"int8_values"`
+	Uint8Values [3]uint8 `yaml:"uint8_values"`
+	Int16Values [3]int16 `yaml:"int16_values"`
+	Uint16Values [3]uint16 `yaml:"uint16_values"`
+	Int32Values [3]int32 `yaml:"int32_values"`
+	Uint32Values [3]uint32 `yaml:"uint32_values"`
+	Int64Values [3]int64 `yaml:"int64_values"`
+	Uint64Values [3]uint64 `yaml:"uint64_values"`
+	StringValues [3]string `yaml:"string_values"`
+	BasicTypesValues [3]BasicTypes `yaml:"basic_types_values"`
+	ConstantsValues [3]Constants `yaml:"constants_values"`
+	DefaultsValues [3]Defaults `yaml:"defaults_values"`
+	BoolValuesDefault [3]bool `yaml:"bool_values_default"`
+	ByteValuesDefault [3]byte `yaml:"byte_values_default"`
+	CharValuesDefault [3]byte `yaml:"char_values_default"`
+	Float32ValuesDefault [3]float32 `yaml:"float32_values_default"`
+	Float64ValuesDefault [3]float64 `yaml:"float64_values_default"`
+	Int8ValuesDefault [3]int8 `yaml:"int8_values_default"`
+	Uint8ValuesDefault [3]uint8 `yaml:"uint8_values_default"`
+	Int16ValuesDefault [3]int16 `yaml:"int16_values_default"`
+	Uint16ValuesDefault [3]uint16 `yaml:"uint16_values_default"`
+	Int32ValuesDefault [3]int32 `yaml:"int32_values_default"`
+	Uint32ValuesDefault [3]uint32 `yaml:"uint32_values_default"`
+	Int64ValuesDefault [3]int64 `yaml:"int64_values_default"`
+	Uint64ValuesDefault [3]uint64 `yaml:"uint64_values_default"`
+	StringValuesDefault [3]string `yaml:"string_values_default"`
+	AlignmentCheck int32 `yaml:"alignment_check"`// Regression test: check alignment of basic field after an array field is correct
 }
 
 // NewArrays creates a new Arrays with default values.

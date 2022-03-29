@@ -37,8 +37,8 @@ func init() {
 // function instead.
 type NestedMessage_Goal struct {
 	NestedFieldNoPkg test_msgs_msg.Builtins `yaml:"nested_field_no_pkg"`// goal definition
-	NestedField test_msgs_msg.BasicTypes `yaml:"nested_field"`// goal definition
-	NestedDifferentPkg builtin_interfaces_msg.Time `yaml:"nested_different_pkg"`// goal definition
+	NestedField test_msgs_msg.BasicTypes `yaml:"nested_field"`
+	NestedDifferentPkg builtin_interfaces_msg.Time `yaml:"nested_different_pkg"`
 }
 
 // NewNestedMessage_Goal creates a new NestedMessage_Goal with default values.

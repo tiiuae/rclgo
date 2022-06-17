@@ -1074,7 +1074,7 @@ func (c *ActionClient) takeCancelResponse(resp unsafe.Pointer) (C.long, interfac
 // The type support of the message passed to handler is
 // types.ActionTypeSupport.FeedbackMessage().
 func (c *ActionClient) WatchFeedback(ctx context.Context, goalID *types.GoalID, handler FeedbackHandler) <-chan error {
-	unsub := c.subscribe(ctx, &c.statusSubs, goalID, handler)
+	unsub := c.subscribe(ctx, &c.feedbackSubs, goalID, handler)
 	errc := make(chan error, 1)
 	go func() {
 		defer unsub()

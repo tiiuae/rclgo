@@ -191,9 +191,15 @@ func NewNestedMessageClient(node *rclgo.Node, name string, opts *rclgo.ActionCli
 }
 
 func (c *NestedMessageClient) WatchGoal(ctx context.Context, goal *NestedMessage_Goal, onFeedback NestedMessageFeedbackHandler) (*NestedMessage_GetResult_Response, error) {
-	resp, err := c.ActionClient.WatchGoal(ctx, goal, func(ctx context.Context, msg types.Message) {
-		onFeedback(ctx, msg.(*NestedMessage_FeedbackMessage))
-	})
+	var resp types.Message
+	var err error
+	if onFeedback == nil {
+		resp, err = c.ActionClient.WatchGoal(ctx, goal, nil)
+	} else {
+		resp, err = c.ActionClient.WatchGoal(ctx, goal, func(ctx context.Context, msg types.Message) {
+			onFeedback(ctx, msg.(*NestedMessage_FeedbackMessage))
+		})
+	}
 	if r, ok := resp.(*NestedMessage_GetResult_Response); ok {
 		return r, err
 	}

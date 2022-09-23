@@ -311,6 +311,7 @@ func NewDefaultActionServerOptions() *ActionServerOptions {
 // ActionServer listens for and executes goals sent by action clients.
 type ActionServer struct {
 	rosID
+	waitable      singleUse
 	node          *Node
 	action        Action
 	typeSupport   types.ActionTypeSupport
@@ -787,7 +788,8 @@ func newActionClientHandlers() actionClientSubs {
 // All methods except Close are safe for concurrent use.
 type ActionClient struct {
 	rosID
-	node *Node
+	waitable singleUse
+	node     *Node
 
 	typeSupport types.ActionTypeSupport
 	rclClient   C.rcl_action_client_t

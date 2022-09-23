@@ -1,6 +1,6 @@
 module github.com/tiiuae/rclgo
 
-go 1.17
+go 1.19
 
 require (
 	github.com/bradleyjkemp/cupaloy/v2 v2.6.0

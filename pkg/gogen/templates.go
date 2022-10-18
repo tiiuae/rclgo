@@ -317,6 +317,9 @@ func {{$Md.Name}}__Sequence_to_Go(goSlice *[]{{$Md.Name}}, cSlice C{{$Md.Name}}_
 }
 func {{$Md.Name}}__Sequence_to_C(cSlice *C{{$Md.Name}}__Sequence, goSlice []{{$Md.Name}}) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.{{$Md.Package}}__{{$Md.Type}}__{{$Md.Name}})(C.malloc(C.sizeof_struct_{{$Md.Package}}__{{$Md.Type}}__{{$Md.Name}} * C.size_t(len(goSlice))))
@@ -761,6 +764,9 @@ func {{.RosType | ucFirst}}__Sequence_to_Go(goSlice *[]{{.GoType}}, cSlice C{{.R
 }
 func {{.RosType | ucFirst}}__Sequence_to_C(cSlice *C{{.RosType | ucFirst}}__Sequence, goSlice []{{.GoType}}) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.{{.CType}})(C.malloc(C.sizeof_{{.CType}} * C.size_t(len(goSlice))))

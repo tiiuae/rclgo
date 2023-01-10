@@ -480,9 +480,9 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package {{ .Action.GoPackage }}
 
 /*
-#cgo LDFLAGS: -L/opt/ros/${ROS_DISTRO}/lib -Wl,-rpath=/opt/ros/${ROS_DISTRO}/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
+#cgo LDFLAGS: -L/opt/ros/humble/lib -Wl,-rpath=/opt/ros/humble/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
 #cgo LDFLAGS: -l{{.Action.Package}}__rosidl_typesupport_c -l{{.Action.Package}}__rosidl_generator_c
-#cgo CFLAGS: -I/opt/ros/${ROS_DISTRO}/include
+#cgo CFLAGS: -I/opt/ros/humble/include
 
 #include <rosidl_runtime_c/message_type_support_struct.h>
 #include <{{.Action.Package}}/action/{{.Action.Name | actionNameFromActionSrvName | camelToSnake}}.h>
@@ -735,8 +735,8 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package primitives
 
 /*
-#cgo LDFLAGS: -L/opt/ros/${ROS_DISTRO}/lib -Wl,-rpath=/opt/ros/${ROS_DISTRO}/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
-#cgo CFLAGS: -I/opt/ros/${ROS_DISTRO}/include
+#cgo LDFLAGS: -L/opt/ros/humble/lib -Wl,-rpath=/opt/ros/humble/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
+#cgo CFLAGS: -I/opt/ros/humble/include
 
 #include "rosidl_runtime_c/string.h"
 #include "rosidl_runtime_c/primitives_sequence.h"

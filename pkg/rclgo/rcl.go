@@ -10,10 +10,10 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package rclgo
 
 /*
-#cgo LDFLAGS: -L/opt/ros/${ROS_DISTRO}/lib -Wl,-rpath=/opt/ros/${ROS_DISTRO}/lib
+#cgo LDFLAGS: -L/opt/ros/humble/lib -Wl,-rpath=/opt/ros/humble/lib
 #cgo LDFLAGS: -lrcl -lrmw -lrosidl_runtime_c -lrosidl_typesupport_c
 #cgo LDFLAGS: -lrcutils -lrcl_action -lrmw_implementation
-#cgo CFLAGS: -I/opt/ros/${ROS_DISTRO}/include
+#cgo CFLAGS: -I/opt/ros/humble/include
 
 #include <stdlib.h>
 #include <string.h>

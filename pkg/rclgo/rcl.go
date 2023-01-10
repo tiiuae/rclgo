@@ -10,10 +10,10 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package rclgo
 
 /*
-#cgo LDFLAGS: -L/opt/ros/galactic/lib -Wl,-rpath=/opt/ros/galactic/lib
+#cgo LDFLAGS: -L/opt/ros/${ROS_DISTRO}/lib -Wl,-rpath=/opt/ros/${ROS_DISTRO}/lib
 #cgo LDFLAGS: -lrcl -lrmw -lrosidl_runtime_c -lrosidl_typesupport_c
 #cgo LDFLAGS: -lrcutils -lrcl_action -lrmw_implementation
-#cgo CFLAGS: -I/opt/ros/galactic/include
+#cgo CFLAGS: -I/opt/ros/${ROS_DISTRO}/include
 
 #include <stdlib.h>
 #include <string.h>

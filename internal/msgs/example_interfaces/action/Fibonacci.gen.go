@@ -12,9 +12,9 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package example_interfaces_action
 
 /*
-#cgo LDFLAGS: -L/opt/ros/galactic/lib -Wl,-rpath=/opt/ros/galactic/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
+#cgo LDFLAGS: -L/opt/ros/${ROS_DISTRO}/lib -Wl,-rpath=/opt/ros/${ROS_DISTRO}/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
 #cgo LDFLAGS: -lexample_interfaces__rosidl_typesupport_c -lexample_interfaces__rosidl_generator_c
-#cgo CFLAGS: -I/opt/ros/galactic/include
+#cgo CFLAGS: -I/opt/ros/${ROS_DISTRO}/include
 
 #include <rosidl_runtime_c/message_type_support_struct.h>
 #include <example_interfaces/action/fibonacci.h>

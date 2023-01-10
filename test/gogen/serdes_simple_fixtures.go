@@ -5,10 +5,10 @@ These are handy when you need to make bigger changes to the way the templates ar
 package test
 
 /*
-#cgo LDFLAGS: -L/opt/ros/galactic/lib -Wl,-rpath=/opt/ros/galactic/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation -lrcl_interfaces__rosidl_typesupport_c
+#cgo LDFLAGS: -L/opt/ros/${ROS_DISTRO}/lib -Wl,-rpath=/opt/ros/${ROS_DISTRO}/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation -lrcl_interfaces__rosidl_typesupport_c
 #cgo LDFLAGS: -lsensor_msgs__rosidl_typesupport_c -lsensor_msgs__rosidl_generator_c
 #cgo LDFLAGS: -lstd_msgs__rosidl_typesupport_c -lstd_msgs__rosidl_generator_c
-#cgo CFLAGS: -I/opt/ros/galactic/include
+#cgo CFLAGS: -I/opt/ros/${ROS_DISTRO}/include
 
 #include <rosidl_runtime_c/message_type_support_struct.h>
 #include <rosidl_runtime_c/primitives_sequence_functions.h>

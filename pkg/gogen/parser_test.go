@@ -281,7 +281,7 @@ func TestBlacklist(t *testing.T) {
 	SetDefaultFailureMode(FailureContinues)
 
 	Convey("Blacklist", t, func() {
-		skip, blacklistEntry := blacklisted("/opt/ros/galactic/this-is-a-test-blacklist-entry-do-not-remove-used-for-internal-testing/msgs/Lol.msg")
+		skip, blacklistEntry := blacklisted("/opt/ros/humble/this-is-a-test-blacklist-entry-do-not-remove-used-for-internal-testing/msgs/Lol.msg")
 		So(skip, ShouldBeTrue)
 		So(blacklistEntry, ShouldEqual, "this-is-a-test-blacklist-entry-do-not-remove-used-for-internal-testing")
 	})

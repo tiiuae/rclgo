@@ -11,13 +11,13 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package sensor_msgs_srv
 
 /*
-#cgo LDFLAGS: "-L/opt/ros/galactic/lib" "-Wl,-rpath=/opt/ros/galactic/lib"
+#cgo LDFLAGS: "-L/opt/ros/${ROS_DISTRO}/lib" "-Wl,-rpath=/opt/ros/${ROS_DISTRO}/lib"
 
 #cgo LDFLAGS: -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
 #cgo LDFLAGS: -lsensor_msgs__rosidl_typesupport_c -lsensor_msgs__rosidl_generator_c
 #cgo LDFLAGS: -lsensor_msgs__rosidl_typesupport_c -lsensor_msgs__rosidl_generator_c
 
-#cgo CFLAGS: "-I/opt/ros/galactic/include"
+#cgo CFLAGS: "-I/opt/ros/${ROS_DISTRO}/include"
 
 */
 import "C"

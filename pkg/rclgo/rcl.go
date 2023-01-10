@@ -13,7 +13,16 @@ package rclgo
 #cgo LDFLAGS: -L/opt/ros/humble/lib -Wl,-rpath=/opt/ros/humble/lib
 #cgo LDFLAGS: -lrcl -lrmw -lrosidl_runtime_c -lrosidl_typesupport_c
 #cgo LDFLAGS: -lrcutils -lrcl_action -lrmw_implementation
-#cgo CFLAGS: -I/opt/ros/humble/include
+#cgo CFLAGS: -I/opt/ros/humble/include/rcl_action
+#cgo CFLAGS: -I/opt/ros/humble/include/action_msgs
+#cgo CFLAGS: -I/opt/ros/humble/include/unique_identifier_msgs
+#cgo CFLAGS: -I/opt/ros/humble/include/builtin_interfaces
+#cgo CFLAGS: -I/opt/ros/humble/include/rosidl_runtime_c
+#cgo CFLAGS: -I/opt/ros/humble/include/rosidl_typesupport_interface
+#cgo CFLAGS: -I/opt/ros/humble/include/rcl
+#cgo CFLAGS: -I/opt/ros/humble/include/rcutils
+#cgo CFLAGS: -I/opt/ros/humble/include/rmw
+#cgo CFLAGS: -I/opt/ros/humble/include/rcl_yaml_param_parser
 
 #include <stdlib.h>
 #include <string.h>
@@ -21,6 +30,7 @@ package rclgo
 #include <rcutils/allocator.h>
 #include <rcutils/types/string_array.h>
 #include <rcl/rcl.h>
+#include <rcl/client.h>
 #include <rcl/expand_topic_name.h>
 #include <rcl_action/wait.h>
 #include <rmw/rmw.h>

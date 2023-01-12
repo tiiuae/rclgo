@@ -167,6 +167,9 @@ func UInt8__Sequence_to_Go(goSlice *[]UInt8, cSlice CUInt8__Sequence) {
 }
 func UInt8__Sequence_to_C(cSlice *CUInt8__Sequence, goSlice []UInt8) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.example_interfaces__msg__UInt8)(C.malloc(C.sizeof_struct_example_interfaces__msg__UInt8 * C.size_t(len(goSlice))))

@@ -172,6 +172,9 @@ func AddTwoInts_Request__Sequence_to_Go(goSlice *[]AddTwoInts_Request, cSlice CA
 }
 func AddTwoInts_Request__Sequence_to_C(cSlice *CAddTwoInts_Request__Sequence, goSlice []AddTwoInts_Request) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.example_interfaces__srv__AddTwoInts_Request)(C.malloc(C.sizeof_struct_example_interfaces__srv__AddTwoInts_Request * C.size_t(len(goSlice))))

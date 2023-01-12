@@ -176,6 +176,9 @@ func Int64MultiArray__Sequence_to_Go(goSlice *[]Int64MultiArray, cSlice CInt64Mu
 }
 func Int64MultiArray__Sequence_to_C(cSlice *CInt64MultiArray__Sequence, goSlice []Int64MultiArray) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.std_msgs__msg__Int64MultiArray)(C.malloc(C.sizeof_struct_std_msgs__msg__Int64MultiArray * C.size_t(len(goSlice))))

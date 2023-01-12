@@ -179,6 +179,9 @@ func NestedMessage_Feedback__Sequence_to_Go(goSlice *[]NestedMessage_Feedback, c
 }
 func NestedMessage_Feedback__Sequence_to_C(cSlice *CNestedMessage_Feedback__Sequence, goSlice []NestedMessage_Feedback) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.test_msgs__action__NestedMessage_Feedback)(C.malloc(C.sizeof_struct_test_msgs__action__NestedMessage_Feedback * C.size_t(len(goSlice))))

@@ -385,6 +385,9 @@ func Arrays__Sequence_to_Go(goSlice *[]Arrays, cSlice CArrays__Sequence) {
 }
 func Arrays__Sequence_to_C(cSlice *CArrays__Sequence, goSlice []Arrays) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.test_msgs__msg__Arrays)(C.malloc(C.sizeof_struct_test_msgs__msg__Arrays * C.size_t(len(goSlice))))

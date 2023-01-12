@@ -201,6 +201,9 @@ func JointState__Sequence_to_Go(goSlice *[]JointState, cSlice CJointState__Seque
 }
 func JointState__Sequence_to_C(cSlice *CJointState__Sequence, goSlice []JointState) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.sensor_msgs__msg__JointState)(C.malloc(C.sizeof_struct_sensor_msgs__msg__JointState * C.size_t(len(goSlice))))

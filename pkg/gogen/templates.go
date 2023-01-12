@@ -54,7 +54,17 @@ package {{ .GoPackage }}
 {{""}}
 {{- end}}
 {{range $dir := .RootPaths -}}
-#cgo CFLAGS: "-I{{$dir}}/include"
+#cgo CFLAGS: "-I{{$dir}}/include/action_msgs"
+#cgo CFLAGS: "-I{{$dir}}/include/builtin_interfaces"
+#cgo CFLAGS: "-I{{$dir}}/include/example_interfaces"
+#cgo CFLAGS: "-I{{$dir}}/include/geometry_msgs"
+#cgo CFLAGS: "-I{{$dir}}/include/rosidl_runtime_c"
+#cgo CFLAGS: "-I{{$dir}}/include/rosidl_typesupport_interface"
+#cgo CFLAGS: "-I{{$dir}}/include/sensor_msgs"
+#cgo CFLAGS: "-I{{$dir}}/include/std_msgs"
+#cgo CFLAGS: "-I{{$dir}}/include/std_srvs"
+#cgo CFLAGS: "-I{{$dir}}/include/test_msgs"
+#cgo CFLAGS: "-I{{$dir}}/include/unique_identifier_msgs"
 {{end}}
 */
 import "C"

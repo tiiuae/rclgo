@@ -16,7 +16,17 @@ package unique_identifier_msgs_msg
 #cgo LDFLAGS: -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
 #cgo LDFLAGS: -lunique_identifier_msgs__rosidl_typesupport_c -lunique_identifier_msgs__rosidl_generator_c
 
-#cgo CFLAGS: "-I/opt/ros/humble/include"
+#cgo CFLAGS: "-I/opt/ros/humble/include/action_msgs"
+#cgo CFLAGS: "-I/opt/ros/humble/include/builtin_interfaces"
+#cgo CFLAGS: "-I/opt/ros/humble/include/example_interfaces"
+#cgo CFLAGS: "-I/opt/ros/humble/include/geometry_msgs"
+#cgo CFLAGS: "-I/opt/ros/humble/include/rosidl_runtime_c"
+#cgo CFLAGS: "-I/opt/ros/humble/include/rosidl_typesupport_interface"
+#cgo CFLAGS: "-I/opt/ros/humble/include/sensor_msgs"
+#cgo CFLAGS: "-I/opt/ros/humble/include/std_msgs"
+#cgo CFLAGS: "-I/opt/ros/humble/include/std_srvs"
+#cgo CFLAGS: "-I/opt/ros/humble/include/test_msgs"
+#cgo CFLAGS: "-I/opt/ros/humble/include/unique_identifier_msgs"
 
 */
 import "C"

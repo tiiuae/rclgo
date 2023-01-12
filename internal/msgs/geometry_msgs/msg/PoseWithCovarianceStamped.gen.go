@@ -173,6 +173,9 @@ func PoseWithCovarianceStamped__Sequence_to_Go(goSlice *[]PoseWithCovarianceStam
 }
 func PoseWithCovarianceStamped__Sequence_to_C(cSlice *CPoseWithCovarianceStamped__Sequence, goSlice []PoseWithCovarianceStamped) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.geometry_msgs__msg__PoseWithCovarianceStamped)(C.malloc(C.sizeof_struct_geometry_msgs__msg__PoseWithCovarianceStamped * C.size_t(len(goSlice))))

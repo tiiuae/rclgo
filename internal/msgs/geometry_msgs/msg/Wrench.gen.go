@@ -172,6 +172,9 @@ func Wrench__Sequence_to_Go(goSlice *[]Wrench, cSlice CWrench__Sequence) {
 }
 func Wrench__Sequence_to_C(cSlice *CWrench__Sequence, goSlice []Wrench) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.geometry_msgs__msg__Wrench)(C.malloc(C.sizeof_struct_geometry_msgs__msg__Wrench * C.size_t(len(goSlice))))

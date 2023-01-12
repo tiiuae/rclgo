@@ -173,6 +173,9 @@ func TwistWithCovarianceStamped__Sequence_to_Go(goSlice *[]TwistWithCovarianceSt
 }
 func TwistWithCovarianceStamped__Sequence_to_C(cSlice *CTwistWithCovarianceStamped__Sequence, goSlice []TwistWithCovarianceStamped) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.geometry_msgs__msg__TwistWithCovarianceStamped)(C.malloc(C.sizeof_struct_geometry_msgs__msg__TwistWithCovarianceStamped * C.size_t(len(goSlice))))

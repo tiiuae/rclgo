@@ -231,6 +231,9 @@ func MultiNested__Sequence_to_Go(goSlice *[]MultiNested, cSlice CMultiNested__Se
 }
 func MultiNested__Sequence_to_C(cSlice *CMultiNested__Sequence, goSlice []MultiNested) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.test_msgs__msg__MultiNested)(C.malloc(C.sizeof_struct_test_msgs__msg__MultiNested * C.size_t(len(goSlice))))

@@ -172,6 +172,9 @@ func Accel__Sequence_to_Go(goSlice *[]Accel, cSlice CAccel__Sequence) {
 }
 func Accel__Sequence_to_C(cSlice *CAccel__Sequence, goSlice []Accel) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.geometry_msgs__msg__Accel)(C.malloc(C.sizeof_struct_geometry_msgs__msg__Accel * C.size_t(len(goSlice))))

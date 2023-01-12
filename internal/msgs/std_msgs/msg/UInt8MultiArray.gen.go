@@ -176,6 +176,9 @@ func UInt8MultiArray__Sequence_to_Go(goSlice *[]UInt8MultiArray, cSlice CUInt8Mu
 }
 func UInt8MultiArray__Sequence_to_C(cSlice *CUInt8MultiArray__Sequence, goSlice []UInt8MultiArray) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.std_msgs__msg__UInt8MultiArray)(C.malloc(C.sizeof_struct_std_msgs__msg__UInt8MultiArray * C.size_t(len(goSlice))))

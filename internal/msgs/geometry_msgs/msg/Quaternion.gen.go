@@ -182,6 +182,9 @@ func Quaternion__Sequence_to_Go(goSlice *[]Quaternion, cSlice CQuaternion__Seque
 }
 func Quaternion__Sequence_to_C(cSlice *CQuaternion__Sequence, goSlice []Quaternion) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.geometry_msgs__msg__Quaternion)(C.malloc(C.sizeof_struct_geometry_msgs__msg__Quaternion * C.size_t(len(goSlice))))

@@ -160,6 +160,9 @@ func Empty_Response__Sequence_to_Go(goSlice *[]Empty_Response, cSlice CEmpty_Res
 }
 func Empty_Response__Sequence_to_C(cSlice *CEmpty_Response__Sequence, goSlice []Empty_Response) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.std_srvs__srv__Empty_Response)(C.malloc(C.sizeof_struct_std_srvs__srv__Empty_Response * C.size_t(len(goSlice))))

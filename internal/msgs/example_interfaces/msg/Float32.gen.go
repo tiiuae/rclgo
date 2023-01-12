@@ -167,6 +167,9 @@ func Float32__Sequence_to_Go(goSlice *[]Float32, cSlice CFloat32__Sequence) {
 }
 func Float32__Sequence_to_C(cSlice *CFloat32__Sequence, goSlice []Float32) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.example_interfaces__msg__Float32)(C.malloc(C.sizeof_struct_example_interfaces__msg__Float32 * C.size_t(len(goSlice))))

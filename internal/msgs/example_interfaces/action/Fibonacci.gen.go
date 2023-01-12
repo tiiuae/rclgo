@@ -14,7 +14,7 @@ package example_interfaces_action
 /*
 #cgo LDFLAGS: -L/opt/ros/humble/lib -Wl,-rpath=/opt/ros/humble/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
 #cgo LDFLAGS: -lexample_interfaces__rosidl_typesupport_c -lexample_interfaces__rosidl_generator_c
-#cgo CFLAGS: -I/opt/ros/humble/include
+#cgo CFLAGS: -I/opt/ros/humble/include/rosidl_runtime_c
 
 #include <rosidl_runtime_c/message_type_support_struct.h>
 #include <example_interfaces/action/fibonacci.h>

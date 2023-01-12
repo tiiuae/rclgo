@@ -173,6 +173,9 @@ func Builtins__Sequence_to_Go(goSlice *[]Builtins, cSlice CBuiltins__Sequence) {
 }
 func Builtins__Sequence_to_C(cSlice *CBuiltins__Sequence, goSlice []Builtins) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.test_msgs__msg__Builtins)(C.malloc(C.sizeof_struct_test_msgs__msg__Builtins * C.size_t(len(goSlice))))

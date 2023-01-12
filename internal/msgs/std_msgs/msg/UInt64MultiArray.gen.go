@@ -176,6 +176,9 @@ func UInt64MultiArray__Sequence_to_Go(goSlice *[]UInt64MultiArray, cSlice CUInt6
 }
 func UInt64MultiArray__Sequence_to_C(cSlice *CUInt64MultiArray__Sequence, goSlice []UInt64MultiArray) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.std_msgs__msg__UInt64MultiArray)(C.malloc(C.sizeof_struct_std_msgs__msg__UInt64MultiArray * C.size_t(len(goSlice))))

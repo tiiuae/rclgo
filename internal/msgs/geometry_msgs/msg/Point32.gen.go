@@ -177,6 +177,9 @@ func Point32__Sequence_to_Go(goSlice *[]Point32, cSlice CPoint32__Sequence) {
 }
 func Point32__Sequence_to_C(cSlice *CPoint32__Sequence, goSlice []Point32) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.geometry_msgs__msg__Point32)(C.malloc(C.sizeof_struct_geometry_msgs__msg__Point32 * C.size_t(len(goSlice))))

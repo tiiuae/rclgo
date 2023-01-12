@@ -206,6 +206,9 @@ func Imu__Sequence_to_Go(goSlice *[]Imu, cSlice CImu__Sequence) {
 }
 func Imu__Sequence_to_C(cSlice *CImu__Sequence, goSlice []Imu) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.sensor_msgs__msg__Imu)(C.malloc(C.sizeof_struct_sensor_msgs__msg__Imu * C.size_t(len(goSlice))))

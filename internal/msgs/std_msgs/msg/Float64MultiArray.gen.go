@@ -176,6 +176,9 @@ func Float64MultiArray__Sequence_to_Go(goSlice *[]Float64MultiArray, cSlice CFlo
 }
 func Float64MultiArray__Sequence_to_C(cSlice *CFloat64MultiArray__Sequence, goSlice []Float64MultiArray) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.std_msgs__msg__Float64MultiArray)(C.malloc(C.sizeof_struct_std_msgs__msg__Float64MultiArray * C.size_t(len(goSlice))))

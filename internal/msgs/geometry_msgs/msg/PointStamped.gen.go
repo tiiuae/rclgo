@@ -173,6 +173,9 @@ func PointStamped__Sequence_to_Go(goSlice *[]PointStamped, cSlice CPointStamped_
 }
 func PointStamped__Sequence_to_C(cSlice *CPointStamped__Sequence, goSlice []PointStamped) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.geometry_msgs__msg__PointStamped)(C.malloc(C.sizeof_struct_geometry_msgs__msg__PointStamped * C.size_t(len(goSlice))))

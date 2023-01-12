@@ -160,6 +160,9 @@ func Trigger_Request__Sequence_to_Go(goSlice *[]Trigger_Request, cSlice CTrigger
 }
 func Trigger_Request__Sequence_to_C(cSlice *CTrigger_Request__Sequence, goSlice []Trigger_Request) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.std_srvs__srv__Trigger_Request)(C.malloc(C.sizeof_struct_std_srvs__srv__Trigger_Request * C.size_t(len(goSlice))))

@@ -167,6 +167,9 @@ func Int32__Sequence_to_Go(goSlice *[]Int32, cSlice CInt32__Sequence) {
 }
 func Int32__Sequence_to_C(cSlice *CInt32__Sequence, goSlice []Int32) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.example_interfaces__msg__Int32)(C.malloc(C.sizeof_struct_example_interfaces__msg__Int32 * C.size_t(len(goSlice))))

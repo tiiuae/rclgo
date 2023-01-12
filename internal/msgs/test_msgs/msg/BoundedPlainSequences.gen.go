@@ -22,20 +22,20 @@ import (
 /*
 #include <rosidl_runtime_c/message_type_support_struct.h>
 
-#include <test_msgs/msg/bounded_sequences.h>
+#include <test_msgs/msg/bounded_plain_sequences.h>
 
 */
 import "C"
 
 func init() {
-	typemap.RegisterMessage("test_msgs/BoundedSequences", BoundedSequencesTypeSupport)
-	typemap.RegisterMessage("test_msgs/msg/BoundedSequences", BoundedSequencesTypeSupport)
+	typemap.RegisterMessage("test_msgs/BoundedPlainSequences", BoundedPlainSequencesTypeSupport)
+	typemap.RegisterMessage("test_msgs/msg/BoundedPlainSequences", BoundedPlainSequencesTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewBoundedSequences
+// Do not create instances of this type directly. Always use NewBoundedPlainSequences
 // function instead.
-type BoundedSequences struct {
-	BoolValues []bool `yaml:"bool_values"`// Bounded sequences of different types
+type BoundedPlainSequences struct {
+	BoolValues []bool `yaml:"bool_values"`// Bounded sequences of different POD types
 	ByteValues []byte `yaml:"byte_values"`
 	CharValues []byte `yaml:"char_values"`
 	Float32Values []float32 `yaml:"float32_values"`
@@ -48,7 +48,6 @@ type BoundedSequences struct {
 	Uint32Values []uint32 `yaml:"uint32_values"`
 	Int64Values []int64 `yaml:"int64_values"`
 	Uint64Values []uint64 `yaml:"uint64_values"`
-	StringValues []string `yaml:"string_values"`
 	BasicTypesValues []BasicTypes `yaml:"basic_types_values"`
 	ConstantsValues []Constants `yaml:"constants_values"`
 	DefaultsValues []Defaults `yaml:"defaults_values"`
@@ -65,19 +64,18 @@ type BoundedSequences struct {
 	Uint32ValuesDefault []uint32 `yaml:"uint32_values_default"`
 	Int64ValuesDefault []int64 `yaml:"int64_values_default"`
 	Uint64ValuesDefault []uint64 `yaml:"uint64_values_default"`
-	StringValuesDefault []string `yaml:"string_values_default"`
 	AlignmentCheck int32 `yaml:"alignment_check"`// Regression test: check alignment of basic field after a sequence field is correct
 }
 
-// NewBoundedSequences creates a new BoundedSequences with default values.
-func NewBoundedSequences() *BoundedSequences {
-	self := BoundedSequences{}
+// NewBoundedPlainSequences creates a new BoundedPlainSequences with default values.
+func NewBoundedPlainSequences() *BoundedPlainSequences {
+	self := BoundedPlainSequences{}
 	self.SetDefaults()
 	return &self
 }
 
-func (t *BoundedSequences) Clone() *BoundedSequences {
-	c := &BoundedSequences{}
+func (t *BoundedPlainSequences) Clone() *BoundedPlainSequences {
+	c := &BoundedPlainSequences{}
 	if t.BoolValues != nil {
 		c.BoolValues = make([]bool, len(t.BoolValues))
 		copy(c.BoolValues, t.BoolValues)
@@ -129,10 +127,6 @@ func (t *BoundedSequences) Clone() *BoundedSequences {
 	if t.Uint64Values != nil {
 		c.Uint64Values = make([]uint64, len(t.Uint64Values))
 		copy(c.Uint64Values, t.Uint64Values)
-	}
-	if t.StringValues != nil {
-		c.StringValues = make([]string, len(t.StringValues))
-		copy(c.StringValues, t.StringValues)
 	}
 	if t.BasicTypesValues != nil {
 		c.BasicTypesValues = make([]BasicTypes, len(t.BasicTypesValues))
@@ -198,19 +192,15 @@ func (t *BoundedSequences) Clone() *BoundedSequences {
 		c.Uint64ValuesDefault = make([]uint64, len(t.Uint64ValuesDefault))
 		copy(c.Uint64ValuesDefault, t.Uint64ValuesDefault)
 	}
-	if t.StringValuesDefault != nil {
-		c.StringValuesDefault = make([]string, len(t.StringValuesDefault))
-		copy(c.StringValuesDefault, t.StringValuesDefault)
-	}
 	c.AlignmentCheck = t.AlignmentCheck
 	return c
 }
 
-func (t *BoundedSequences) CloneMsg() types.Message {
+func (t *BoundedPlainSequences) CloneMsg() types.Message {
 	return t.Clone()
 }
 
-func (t *BoundedSequences) SetDefaults() {
+func (t *BoundedPlainSequences) SetDefaults() {
 	t.BoolValues = nil
 	t.ByteValues = nil
 	t.CharValues = nil
@@ -224,7 +214,6 @@ func (t *BoundedSequences) SetDefaults() {
 	t.Uint32Values = nil
 	t.Int64Values = nil
 	t.Uint64Values = nil
-	t.StringValues = nil
 	t.BasicTypesValues = nil
 	t.ConstantsValues = nil
 	t.DefaultsValues = nil
@@ -241,91 +230,90 @@ func (t *BoundedSequences) SetDefaults() {
 	t.Uint32ValuesDefault = []uint32{0,1,4294967295}
 	t.Int64ValuesDefault = []int64{0,9223372036854775807,-9223372036854775808}
 	t.Uint64ValuesDefault = []uint64{0,1,18446744073709551615}
-	t.StringValuesDefault = []string{"","max value","min value"}
 	t.AlignmentCheck = 0
 }
 
-func (t *BoundedSequences) GetTypeSupport() types.MessageTypeSupport {
-	return BoundedSequencesTypeSupport
+func (t *BoundedPlainSequences) GetTypeSupport() types.MessageTypeSupport {
+	return BoundedPlainSequencesTypeSupport
 }
 
-// BoundedSequencesPublisher wraps rclgo.Publisher to provide type safe helper
+// BoundedPlainSequencesPublisher wraps rclgo.Publisher to provide type safe helper
 // functions
-type BoundedSequencesPublisher struct {
+type BoundedPlainSequencesPublisher struct {
 	*rclgo.Publisher
 }
 
-// NewBoundedSequencesPublisher creates and returns a new publisher for the
-// BoundedSequences
-func NewBoundedSequencesPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*BoundedSequencesPublisher, error) {
-	pub, err := node.NewPublisher(topic_name, BoundedSequencesTypeSupport, options)
+// NewBoundedPlainSequencesPublisher creates and returns a new publisher for the
+// BoundedPlainSequences
+func NewBoundedPlainSequencesPublisher(node *rclgo.Node, topic_name string, options *rclgo.PublisherOptions) (*BoundedPlainSequencesPublisher, error) {
+	pub, err := node.NewPublisher(topic_name, BoundedPlainSequencesTypeSupport, options)
 	if err != nil {
 		return nil, err
 	}
-	return &BoundedSequencesPublisher{pub}, nil
+	return &BoundedPlainSequencesPublisher{pub}, nil
 }
 
-func (p *BoundedSequencesPublisher) Publish(msg *BoundedSequences) error {
+func (p *BoundedPlainSequencesPublisher) Publish(msg *BoundedPlainSequences) error {
 	return p.Publisher.Publish(msg)
 }
 
-// BoundedSequencesSubscription wraps rclgo.Subscription to provide type safe helper
+// BoundedPlainSequencesSubscription wraps rclgo.Subscription to provide type safe helper
 // functions
-type BoundedSequencesSubscription struct {
+type BoundedPlainSequencesSubscription struct {
 	*rclgo.Subscription
 }
 
-// BoundedSequencesSubscriptionCallback type is used to provide a subscription
-// handler function for a BoundedSequencesSubscription.
-type BoundedSequencesSubscriptionCallback func(msg *BoundedSequences, info *rclgo.RmwMessageInfo, err error)
+// BoundedPlainSequencesSubscriptionCallback type is used to provide a subscription
+// handler function for a BoundedPlainSequencesSubscription.
+type BoundedPlainSequencesSubscriptionCallback func(msg *BoundedPlainSequences, info *rclgo.RmwMessageInfo, err error)
 
-// NewBoundedSequencesSubscription creates and returns a new subscription for the
-// BoundedSequences
-func NewBoundedSequencesSubscription(node *rclgo.Node, topic_name string, subscriptionCallback BoundedSequencesSubscriptionCallback) (*BoundedSequencesSubscription, error) {
+// NewBoundedPlainSequencesSubscription creates and returns a new subscription for the
+// BoundedPlainSequences
+func NewBoundedPlainSequencesSubscription(node *rclgo.Node, topic_name string, subscriptionCallback BoundedPlainSequencesSubscriptionCallback) (*BoundedPlainSequencesSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
-		var msg BoundedSequences
+		var msg BoundedPlainSequences
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, BoundedSequencesTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, BoundedPlainSequencesTypeSupport, callback)
 	if err != nil {
 		return nil, err
 	}
-	return &BoundedSequencesSubscription{sub}, nil
+	return &BoundedPlainSequencesSubscription{sub}, nil
 }
 
-func (s *BoundedSequencesSubscription) TakeMessage(out *BoundedSequences) (*rclgo.RmwMessageInfo, error) {
+func (s *BoundedPlainSequencesSubscription) TakeMessage(out *BoundedPlainSequences) (*rclgo.RmwMessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 
-// CloneBoundedSequencesSlice clones src to dst by calling Clone for each element in
+// CloneBoundedPlainSequencesSlice clones src to dst by calling Clone for each element in
 // src. Panics if len(dst) < len(src).
-func CloneBoundedSequencesSlice(dst, src []BoundedSequences) {
+func CloneBoundedPlainSequencesSlice(dst, src []BoundedPlainSequences) {
 	for i := range src {
 		dst[i] = *src[i].Clone()
 	}
 }
 
 // Modifying this variable is undefined behavior.
-var BoundedSequencesTypeSupport types.MessageTypeSupport = _BoundedSequencesTypeSupport{}
+var BoundedPlainSequencesTypeSupport types.MessageTypeSupport = _BoundedPlainSequencesTypeSupport{}
 
-type _BoundedSequencesTypeSupport struct{}
+type _BoundedPlainSequencesTypeSupport struct{}
 
-func (t _BoundedSequencesTypeSupport) New() types.Message {
-	return NewBoundedSequences()
+func (t _BoundedPlainSequencesTypeSupport) New() types.Message {
+	return NewBoundedPlainSequences()
 }
 
-func (t _BoundedSequencesTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__msg__BoundedSequences
-	return (unsafe.Pointer)(C.test_msgs__msg__BoundedSequences__create())
+func (t _BoundedPlainSequencesTypeSupport) PrepareMemory() unsafe.Pointer { //returns *C.test_msgs__msg__BoundedPlainSequences
+	return (unsafe.Pointer)(C.test_msgs__msg__BoundedPlainSequences__create())
 }
 
-func (t _BoundedSequencesTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
-	C.test_msgs__msg__BoundedSequences__destroy((*C.test_msgs__msg__BoundedSequences)(pointer_to_free))
+func (t _BoundedPlainSequencesTypeSupport) ReleaseMemory(pointer_to_free unsafe.Pointer) {
+	C.test_msgs__msg__BoundedPlainSequences__destroy((*C.test_msgs__msg__BoundedPlainSequences)(pointer_to_free))
 }
 
-func (t _BoundedSequencesTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
-	m := msg.(*BoundedSequences)
-	mem := (*C.test_msgs__msg__BoundedSequences)(dst)
+func (t _BoundedPlainSequencesTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Message) {
+	m := msg.(*BoundedPlainSequences)
+	mem := (*C.test_msgs__msg__BoundedPlainSequences)(dst)
 	primitives.Bool__Sequence_to_C((*primitives.CBool__Sequence)(unsafe.Pointer(&mem.bool_values)), m.BoolValues)
 	primitives.Byte__Sequence_to_C((*primitives.CByte__Sequence)(unsafe.Pointer(&mem.byte_values)), m.ByteValues)
 	primitives.Char__Sequence_to_C((*primitives.CChar__Sequence)(unsafe.Pointer(&mem.char_values)), m.CharValues)
@@ -339,7 +327,6 @@ func (t _BoundedSequencesTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Me
 	primitives.Uint32__Sequence_to_C((*primitives.CUint32__Sequence)(unsafe.Pointer(&mem.uint32_values)), m.Uint32Values)
 	primitives.Int64__Sequence_to_C((*primitives.CInt64__Sequence)(unsafe.Pointer(&mem.int64_values)), m.Int64Values)
 	primitives.Uint64__Sequence_to_C((*primitives.CUint64__Sequence)(unsafe.Pointer(&mem.uint64_values)), m.Uint64Values)
-	primitives.String__Sequence_to_C((*primitives.CString__Sequence)(unsafe.Pointer(&mem.string_values)), m.StringValues)
 	BasicTypes__Sequence_to_C(&mem.basic_types_values, m.BasicTypesValues)
 	Constants__Sequence_to_C(&mem.constants_values, m.ConstantsValues)
 	Defaults__Sequence_to_C(&mem.defaults_values, m.DefaultsValues)
@@ -356,13 +343,12 @@ func (t _BoundedSequencesTypeSupport) AsCStruct(dst unsafe.Pointer, msg types.Me
 	primitives.Uint32__Sequence_to_C((*primitives.CUint32__Sequence)(unsafe.Pointer(&mem.uint32_values_default)), m.Uint32ValuesDefault)
 	primitives.Int64__Sequence_to_C((*primitives.CInt64__Sequence)(unsafe.Pointer(&mem.int64_values_default)), m.Int64ValuesDefault)
 	primitives.Uint64__Sequence_to_C((*primitives.CUint64__Sequence)(unsafe.Pointer(&mem.uint64_values_default)), m.Uint64ValuesDefault)
-	primitives.String__Sequence_to_C((*primitives.CString__Sequence)(unsafe.Pointer(&mem.string_values_default)), m.StringValuesDefault)
 	mem.alignment_check = C.int32_t(m.AlignmentCheck)
 }
 
-func (t _BoundedSequencesTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
-	m := msg.(*BoundedSequences)
-	mem := (*C.test_msgs__msg__BoundedSequences)(ros2_message_buffer)
+func (t _BoundedPlainSequencesTypeSupport) AsGoStruct(msg types.Message, ros2_message_buffer unsafe.Pointer) {
+	m := msg.(*BoundedPlainSequences)
+	mem := (*C.test_msgs__msg__BoundedPlainSequences)(ros2_message_buffer)
 	primitives.Bool__Sequence_to_Go(&m.BoolValues, *(*primitives.CBool__Sequence)(unsafe.Pointer(&mem.bool_values)))
 	primitives.Byte__Sequence_to_Go(&m.ByteValues, *(*primitives.CByte__Sequence)(unsafe.Pointer(&mem.byte_values)))
 	primitives.Char__Sequence_to_Go(&m.CharValues, *(*primitives.CChar__Sequence)(unsafe.Pointer(&mem.char_values)))
@@ -376,7 +362,6 @@ func (t _BoundedSequencesTypeSupport) AsGoStruct(msg types.Message, ros2_message
 	primitives.Uint32__Sequence_to_Go(&m.Uint32Values, *(*primitives.CUint32__Sequence)(unsafe.Pointer(&mem.uint32_values)))
 	primitives.Int64__Sequence_to_Go(&m.Int64Values, *(*primitives.CInt64__Sequence)(unsafe.Pointer(&mem.int64_values)))
 	primitives.Uint64__Sequence_to_Go(&m.Uint64Values, *(*primitives.CUint64__Sequence)(unsafe.Pointer(&mem.uint64_values)))
-	primitives.String__Sequence_to_Go(&m.StringValues, *(*primitives.CString__Sequence)(unsafe.Pointer(&mem.string_values)))
 	BasicTypes__Sequence_to_Go(&m.BasicTypesValues, mem.basic_types_values)
 	Constants__Sequence_to_Go(&m.ConstantsValues, mem.constants_values)
 	Defaults__Sequence_to_Go(&m.DefaultsValues, mem.defaults_values)
@@ -393,49 +378,48 @@ func (t _BoundedSequencesTypeSupport) AsGoStruct(msg types.Message, ros2_message
 	primitives.Uint32__Sequence_to_Go(&m.Uint32ValuesDefault, *(*primitives.CUint32__Sequence)(unsafe.Pointer(&mem.uint32_values_default)))
 	primitives.Int64__Sequence_to_Go(&m.Int64ValuesDefault, *(*primitives.CInt64__Sequence)(unsafe.Pointer(&mem.int64_values_default)))
 	primitives.Uint64__Sequence_to_Go(&m.Uint64ValuesDefault, *(*primitives.CUint64__Sequence)(unsafe.Pointer(&mem.uint64_values_default)))
-	primitives.String__Sequence_to_Go(&m.StringValuesDefault, *(*primitives.CString__Sequence)(unsafe.Pointer(&mem.string_values_default)))
 	m.AlignmentCheck = int32(mem.alignment_check)
 }
 
-func (t _BoundedSequencesTypeSupport) TypeSupport() unsafe.Pointer {
-	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__msg__BoundedSequences())
+func (t _BoundedPlainSequencesTypeSupport) TypeSupport() unsafe.Pointer {
+	return unsafe.Pointer(C.rosidl_typesupport_c__get_message_type_support_handle__test_msgs__msg__BoundedPlainSequences())
 }
 
-type CBoundedSequences = C.test_msgs__msg__BoundedSequences
-type CBoundedSequences__Sequence = C.test_msgs__msg__BoundedSequences__Sequence
+type CBoundedPlainSequences = C.test_msgs__msg__BoundedPlainSequences
+type CBoundedPlainSequences__Sequence = C.test_msgs__msg__BoundedPlainSequences__Sequence
 
-func BoundedSequences__Sequence_to_Go(goSlice *[]BoundedSequences, cSlice CBoundedSequences__Sequence) {
+func BoundedPlainSequences__Sequence_to_Go(goSlice *[]BoundedPlainSequences, cSlice CBoundedPlainSequences__Sequence) {
 	if cSlice.size == 0 {
 		return
 	}
-	*goSlice = make([]BoundedSequences, cSlice.size)
+	*goSlice = make([]BoundedPlainSequences, cSlice.size)
 	src := unsafe.Slice(cSlice.data, cSlice.size)
 	for i := range src {
-		BoundedSequencesTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
+		BoundedPlainSequencesTypeSupport.AsGoStruct(&(*goSlice)[i], unsafe.Pointer(&src[i]))
 	}
 }
-func BoundedSequences__Sequence_to_C(cSlice *CBoundedSequences__Sequence, goSlice []BoundedSequences) {
+func BoundedPlainSequences__Sequence_to_C(cSlice *CBoundedPlainSequences__Sequence, goSlice []BoundedPlainSequences) {
 	if len(goSlice) == 0 {
 		cSlice.data = nil
 		cSlice.capacity = 0
 		cSlice.size = 0
 		return
 	}
-	cSlice.data = (*C.test_msgs__msg__BoundedSequences)(C.malloc(C.sizeof_struct_test_msgs__msg__BoundedSequences * C.size_t(len(goSlice))))
+	cSlice.data = (*C.test_msgs__msg__BoundedPlainSequences)(C.malloc(C.sizeof_struct_test_msgs__msg__BoundedPlainSequences * C.size_t(len(goSlice))))
 	cSlice.capacity = C.size_t(len(goSlice))
 	cSlice.size = cSlice.capacity
 	dst := unsafe.Slice(cSlice.data, cSlice.size)
 	for i := range goSlice {
-		BoundedSequencesTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
+		BoundedPlainSequencesTypeSupport.AsCStruct(unsafe.Pointer(&dst[i]), &goSlice[i])
 	}
 }
-func BoundedSequences__Array_to_Go(goSlice []BoundedSequences, cSlice []CBoundedSequences) {
+func BoundedPlainSequences__Array_to_Go(goSlice []BoundedPlainSequences, cSlice []CBoundedPlainSequences) {
 	for i := 0; i < len(cSlice); i++ {
-		BoundedSequencesTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
+		BoundedPlainSequencesTypeSupport.AsGoStruct(&goSlice[i], unsafe.Pointer(&cSlice[i]))
 	}
 }
-func BoundedSequences__Array_to_C(cSlice []CBoundedSequences, goSlice []BoundedSequences) {
+func BoundedPlainSequences__Array_to_C(cSlice []CBoundedPlainSequences, goSlice []BoundedPlainSequences) {
 	for i := 0; i < len(goSlice); i++ {
-		BoundedSequencesTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
+		BoundedPlainSequencesTypeSupport.AsCStruct(unsafe.Pointer(&cSlice[i]), &goSlice[i])
 	}
 }

@@ -173,6 +173,9 @@ func PolygonStamped__Sequence_to_Go(goSlice *[]PolygonStamped, cSlice CPolygonSt
 }
 func PolygonStamped__Sequence_to_C(cSlice *CPolygonStamped__Sequence, goSlice []PolygonStamped) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.geometry_msgs__msg__PolygonStamped)(C.malloc(C.sizeof_struct_geometry_msgs__msg__PolygonStamped * C.size_t(len(goSlice))))

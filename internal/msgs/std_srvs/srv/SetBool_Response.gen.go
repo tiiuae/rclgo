@@ -173,6 +173,9 @@ func SetBool_Response__Sequence_to_Go(goSlice *[]SetBool_Response, cSlice CSetBo
 }
 func SetBool_Response__Sequence_to_C(cSlice *CSetBool_Response__Sequence, goSlice []SetBool_Response) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.std_srvs__srv__SetBool_Response)(C.malloc(C.sizeof_struct_std_srvs__srv__SetBool_Response * C.size_t(len(goSlice))))

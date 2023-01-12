@@ -182,6 +182,9 @@ func NavSatStatus__Sequence_to_Go(goSlice *[]NavSatStatus, cSlice CNavSatStatus_
 }
 func NavSatStatus__Sequence_to_C(cSlice *CNavSatStatus__Sequence, goSlice []NavSatStatus) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.sensor_msgs__msg__NavSatStatus)(C.malloc(C.sizeof_struct_sensor_msgs__msg__NavSatStatus * C.size_t(len(goSlice))))

@@ -176,6 +176,9 @@ func Float32MultiArray__Sequence_to_Go(goSlice *[]Float32MultiArray, cSlice CFlo
 }
 func Float32MultiArray__Sequence_to_C(cSlice *CFloat32MultiArray__Sequence, goSlice []Float32MultiArray) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.std_msgs__msg__Float32MultiArray)(C.malloc(C.sizeof_struct_std_msgs__msg__Float32MultiArray * C.size_t(len(goSlice))))

@@ -65,6 +65,10 @@ package {{ .GoPackage }}
 #cgo CFLAGS: "-I{{$dir}}/include/std_srvs"
 #cgo CFLAGS: "-I{{$dir}}/include/test_msgs"
 #cgo CFLAGS: "-I{{$dir}}/include/unique_identifier_msgs"
+{{range $k, $v := $.CImports -}}
+#cgo CFLAGS: "-I{{$dir}}/include/{{$k}}"
+{{end}}
+#cgo CFLAGS: "-I{{$dir}}/include/{{$.CPackage}}"
 {{end}}
 */
 import "C"

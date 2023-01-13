@@ -6,6 +6,7 @@ import (
 	"sort"
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/bradleyjkemp/cupaloy/v2"
 	. "github.com/smartystreets/goconvey/convey"
@@ -52,6 +53,7 @@ func newWaitAction() (chan struct{}, rclgo.Action) {
 			}
 			select {
 			case <-ctx.Done():
+				return nil, ctx.Err()
 			case <-ch:
 			}
 			return test_msgs_action.NewFibonacci_Result(), nil
@@ -383,10 +385,22 @@ func TestActionStatuses(t *testing.T) {
 					So(err, ShouldEqual, context.Canceled)
 				}
 			}
+			waitForStatus := func(status rclgo.GoalStatus) {
+				timeOut(1000, func() {
+					for {
+						statusesMu.Lock()
+						if len(statuses) > 0 && statuses[len(statuses)-1].Status == status {
+							statusesMu.Unlock()
+							return
+						}
+						statusesMu.Unlock()
+						time.Sleep(10 * time.Millisecond)
+					}
+				}, "Wait for status change")
+			}
 			var testResults []testResult
 			addResult := func(ctx context.Context, id *types.GoalID) {
 				resp, err := client.GetResult(ctx, id)
-				sort.Sort(statuses)
 				testResults = append(testResults, testResult{
 					Result:   resp,
 					Statuses: statuses,
@@ -396,11 +410,13 @@ func TestActionStatuses(t *testing.T) {
 
 			id, ctx, cancel := send(0) // should succeed
 			continueChan <- struct{}{}
+			waitForStatus(rclgo.GoalSucceeded)
 			addResult(ctx, id)
 			cancel()
 
 			id, ctx, cancel = send(0) // should be canceled
 			sendCancel(ctx, id)
+			waitForStatus(rclgo.GoalCanceled)
 			addResult(ctx, id)
 			cancel()
 
@@ -409,6 +425,7 @@ func TestActionStatuses(t *testing.T) {
 			cancel()
 
 			id, ctx, cancel = send(1) // should be aborted
+			waitForStatus(rclgo.GoalAborted)
 			addResult(ctx, id)
 			cancel()
 

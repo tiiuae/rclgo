@@ -10,7 +10,7 @@ on:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
-    container: ghcr.io/tiiuae/tii-golang-ros:galactic-go1.17
+    container: ghcr.io/tiiuae/fog-ros-baseimage-builder:dp-4266_humble_upgrade
     steps:
       - uses: actions/checkout@v2
 
@@ -19,16 +19,16 @@ jobs:
           apt-get update
           apt-get install -y \
             make \
-            ros-galactic-action-msgs \
-            ros-galactic-example-interfaces \
-            ros-galactic-test-msgs
+            ros-humble-action-msgs \
+            ros-humble-example-interfaces \
+            ros-humble-test-msgs
 
       - name: Run tests
         run: make test
 
   run-linter:
     runs-on: ubuntu-latest
-    container: ghcr.io/tiiuae/tii-golang-ros:galactic-go1.17
+    container: ghcr.io/tiiuae/fog-ros-baseimage-builder:dp-4266_humble_upgrade
     steps:
       - uses: actions/checkout@v2
 
@@ -37,9 +37,9 @@ jobs:
         run: |
           apt-get update
           apt-get install -y \
-            ros-galactic-action-msgs \
-            ros-galactic-example-interfaces \
-            ros-galactic-test-msgs
+            ros-humble-action-msgs \
+            ros-humble-example-interfaces \
+            ros-humble-test-msgs
           env > "$GITHUB_ENV"
 
       - uses: golangci/golangci-lint-action@v2

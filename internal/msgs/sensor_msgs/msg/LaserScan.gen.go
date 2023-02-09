@@ -220,6 +220,9 @@ func LaserScan__Sequence_to_Go(goSlice *[]LaserScan, cSlice CLaserScan__Sequence
 }
 func LaserScan__Sequence_to_C(cSlice *CLaserScan__Sequence, goSlice []LaserScan) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.sensor_msgs__msg__LaserScan)(C.malloc(C.sizeof_struct_sensor_msgs__msg__LaserScan * C.size_t(len(goSlice))))

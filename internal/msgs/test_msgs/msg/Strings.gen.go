@@ -226,6 +226,9 @@ func Strings__Sequence_to_Go(goSlice *[]Strings, cSlice CStrings__Sequence) {
 }
 func Strings__Sequence_to_C(cSlice *CStrings__Sequence, goSlice []Strings) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.test_msgs__msg__Strings)(C.malloc(C.sizeof_struct_test_msgs__msg__Strings * C.size_t(len(goSlice))))

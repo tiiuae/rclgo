@@ -12,8 +12,8 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package primitives
 
 /*
-#cgo LDFLAGS: -L/opt/ros/galactic/lib -Wl,-rpath=/opt/ros/galactic/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
-#cgo CFLAGS: -I/opt/ros/galactic/include
+#cgo LDFLAGS: -L/opt/ros/humble/lib -Wl,-rpath=/opt/ros/humble/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
+#cgo CFLAGS: -I/opt/ros/humble/include/rosidl_runtime_c
 
 #include "rosidl_runtime_c/string.h"
 #include "rosidl_runtime_c/primitives_sequence.h"
@@ -40,6 +40,9 @@ func Bool__Sequence_to_Go(goSlice *[]bool, cSlice CBool__Sequence) {
 }
 func Bool__Sequence_to_C(cSlice *CBool__Sequence, goSlice []bool) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.bool)(C.malloc(C.sizeof_bool * C.size_t(len(goSlice))))
@@ -77,6 +80,9 @@ func Byte__Sequence_to_Go(goSlice *[]byte, cSlice CByte__Sequence) {
 }
 func Byte__Sequence_to_C(cSlice *CByte__Sequence, goSlice []byte) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.uint8_t)(C.malloc(C.sizeof_uint8_t * C.size_t(len(goSlice))))
@@ -114,6 +120,9 @@ func Float32__Sequence_to_Go(goSlice *[]float32, cSlice CFloat32__Sequence) {
 }
 func Float32__Sequence_to_C(cSlice *CFloat32__Sequence, goSlice []float32) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.float)(C.malloc(C.sizeof_float * C.size_t(len(goSlice))))
@@ -151,6 +160,9 @@ func Float64__Sequence_to_Go(goSlice *[]float64, cSlice CFloat64__Sequence) {
 }
 func Float64__Sequence_to_C(cSlice *CFloat64__Sequence, goSlice []float64) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.double)(C.malloc(C.sizeof_double * C.size_t(len(goSlice))))
@@ -188,6 +200,9 @@ func Int16__Sequence_to_Go(goSlice *[]int16, cSlice CInt16__Sequence) {
 }
 func Int16__Sequence_to_C(cSlice *CInt16__Sequence, goSlice []int16) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.int16_t)(C.malloc(C.sizeof_int16_t * C.size_t(len(goSlice))))
@@ -225,6 +240,9 @@ func Int32__Sequence_to_Go(goSlice *[]int32, cSlice CInt32__Sequence) {
 }
 func Int32__Sequence_to_C(cSlice *CInt32__Sequence, goSlice []int32) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.int32_t)(C.malloc(C.sizeof_int32_t * C.size_t(len(goSlice))))
@@ -262,6 +280,9 @@ func Int64__Sequence_to_Go(goSlice *[]int64, cSlice CInt64__Sequence) {
 }
 func Int64__Sequence_to_C(cSlice *CInt64__Sequence, goSlice []int64) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.int64_t)(C.malloc(C.sizeof_int64_t * C.size_t(len(goSlice))))
@@ -299,6 +320,9 @@ func Int8__Sequence_to_Go(goSlice *[]int8, cSlice CInt8__Sequence) {
 }
 func Int8__Sequence_to_C(cSlice *CInt8__Sequence, goSlice []int8) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.int8_t)(C.malloc(C.sizeof_int8_t * C.size_t(len(goSlice))))
@@ -336,6 +360,9 @@ func Uint16__Sequence_to_Go(goSlice *[]uint16, cSlice CUint16__Sequence) {
 }
 func Uint16__Sequence_to_C(cSlice *CUint16__Sequence, goSlice []uint16) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.uint16_t)(C.malloc(C.sizeof_uint16_t * C.size_t(len(goSlice))))
@@ -373,6 +400,9 @@ func Uint32__Sequence_to_Go(goSlice *[]uint32, cSlice CUint32__Sequence) {
 }
 func Uint32__Sequence_to_C(cSlice *CUint32__Sequence, goSlice []uint32) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.uint32_t)(C.malloc(C.sizeof_uint32_t * C.size_t(len(goSlice))))
@@ -410,6 +440,9 @@ func Uint64__Sequence_to_Go(goSlice *[]uint64, cSlice CUint64__Sequence) {
 }
 func Uint64__Sequence_to_C(cSlice *CUint64__Sequence, goSlice []uint64) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.uint64_t)(C.malloc(C.sizeof_uint64_t * C.size_t(len(goSlice))))
@@ -447,6 +480,9 @@ func Uint8__Sequence_to_Go(goSlice *[]uint8, cSlice CUint8__Sequence) {
 }
 func Uint8__Sequence_to_C(cSlice *CUint8__Sequence, goSlice []uint8) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.uint8_t)(C.malloc(C.sizeof_uint8_t * C.size_t(len(goSlice))))

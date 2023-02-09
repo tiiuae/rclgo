@@ -227,6 +227,9 @@ func Defaults__Sequence_to_Go(goSlice *[]Defaults, cSlice CDefaults__Sequence) {
 }
 func Defaults__Sequence_to_C(cSlice *CDefaults__Sequence, goSlice []Defaults) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.test_msgs__msg__Defaults)(C.malloc(C.sizeof_struct_test_msgs__msg__Defaults * C.size_t(len(goSlice))))

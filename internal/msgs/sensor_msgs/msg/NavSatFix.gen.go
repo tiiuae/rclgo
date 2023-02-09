@@ -207,6 +207,9 @@ func NavSatFix__Sequence_to_Go(goSlice *[]NavSatFix, cSlice CNavSatFix__Sequence
 }
 func NavSatFix__Sequence_to_C(cSlice *CNavSatFix__Sequence, goSlice []NavSatFix) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.sensor_msgs__msg__NavSatFix)(C.malloc(C.sizeof_struct_sensor_msgs__msg__NavSatFix * C.size_t(len(goSlice))))

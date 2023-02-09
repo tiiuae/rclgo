@@ -8,7 +8,7 @@ rclgo the ROS2 client library Golang wrapper
 rclgo is used with the Go module system like most Go libraries. It also requires
 a ROS 2 installation as well as C bindings to any ROS interface type used with
 the library. The ROS core components can be installed by installing the Debian
-package `ros-galactic-ros-core`. C bindings for ROS interfaces are also usually
+package `ros-humble-ros-core`. C bindings for ROS interfaces are also usually
 distributed as Debian packages.
 
 API documentation is available at [pkg.go.dev][docs].

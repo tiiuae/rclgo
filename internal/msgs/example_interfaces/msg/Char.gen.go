@@ -167,6 +167,9 @@ func Char__Sequence_to_Go(goSlice *[]Char, cSlice CChar__Sequence) {
 }
 func Char__Sequence_to_C(cSlice *CChar__Sequence, goSlice []Char) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.example_interfaces__msg__Char)(C.malloc(C.sizeof_struct_example_interfaces__msg__Char * C.size_t(len(goSlice))))

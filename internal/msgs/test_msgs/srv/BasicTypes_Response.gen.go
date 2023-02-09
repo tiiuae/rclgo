@@ -233,6 +233,9 @@ func BasicTypes_Response__Sequence_to_Go(goSlice *[]BasicTypes_Response, cSlice 
 }
 func BasicTypes_Response__Sequence_to_C(cSlice *CBasicTypes_Response__Sequence, goSlice []BasicTypes_Response) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.test_msgs__srv__BasicTypes_Response)(C.malloc(C.sizeof_struct_test_msgs__srv__BasicTypes_Response * C.size_t(len(goSlice))))

@@ -10,10 +10,19 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package rclgo
 
 /*
-#cgo LDFLAGS: -L/opt/ros/galactic/lib -Wl,-rpath=/opt/ros/galactic/lib
+#cgo LDFLAGS: -L/opt/ros/humble/lib -Wl,-rpath=/opt/ros/humble/lib
 #cgo LDFLAGS: -lrcl -lrmw -lrosidl_runtime_c -lrosidl_typesupport_c
 #cgo LDFLAGS: -lrcutils -lrcl_action -lrmw_implementation
-#cgo CFLAGS: -I/opt/ros/galactic/include
+#cgo CFLAGS: -I/opt/ros/humble/include/rcl
+#cgo CFLAGS: -I/opt/ros/humble/include/rmw
+#cgo CFLAGS: -I/opt/ros/humble/include/rosidl_runtime_c
+#cgo CFLAGS: -I/opt/ros/humble/include/rosidl_typesupport_interface
+#cgo CFLAGS: -I/opt/ros/humble/include/rcutils
+#cgo CFLAGS: -I/opt/ros/humble/include/rcl_action
+#cgo CFLAGS: -I/opt/ros/humble/include/action_msgs
+#cgo CFLAGS: -I/opt/ros/humble/include/unique_identifier_msgs
+#cgo CFLAGS: -I/opt/ros/humble/include/builtin_interfaces
+#cgo CFLAGS: -I/opt/ros/humble/include/rcl_yaml_param_parser
 
 #include <stdlib.h>
 #include <string.h>
@@ -21,6 +30,9 @@ package rclgo
 #include <rcutils/allocator.h>
 #include <rcutils/types/string_array.h>
 #include <rcl/rcl.h>
+#include <rcl/client.h>
+#include <rcl/service.h>
+#include <rcl/timer.h>
 #include <rcl/expand_topic_name.h>
 #include <rcl_action/wait.h>
 #include <rmw/rmw.h>
@@ -567,7 +579,7 @@ func (c *Context) NewClock(clockType ClockType) (clock *Clock, err error) {
 	clock.rcl_clock_t = (*C.rcl_clock_t)(C.calloc(1, C.sizeof_rcl_clock_t))
 	defer onErr(&err, c.Close)
 	rc := C.rcl_clock_init(
-		uint32(clockType),
+		C.rcl_clock_type_t(clockType),
 		clock.rcl_clock_t,
 		c.rcl_allocator_t,
 	)
@@ -936,7 +948,7 @@ func (n *Node) NewService(
 		requestTypeSupport:  typeSupport.Request(),
 		responseTypeSupport: typeSupport.Response(),
 		node:                n,
-		rclService:          (*C.rcl_service_t)(C.malloc(C.sizeof_struct_rcl_service_t)),
+		rclService:          (*C.rcl_service_t)(C.malloc(C.sizeof_rcl_service_t)),
 		name:                C.CString(name),
 		handler:             handler,
 	}
@@ -979,7 +991,7 @@ func (s *Service) Node() *Node {
 }
 
 func (s *Service) handleRequest() {
-	var reqHeader C.struct_rmw_service_info_t
+	var reqHeader C.rmw_service_info_t
 	reqBuffer := s.requestTypeSupport.PrepareMemory()
 	defer s.requestTypeSupport.ReleaseMemory(reqBuffer)
 	rc := C.rcl_take_request_with_info(s.rclService, &reqHeader, reqBuffer)
@@ -1025,7 +1037,7 @@ type Client struct {
 	rosID
 	waitable  singleUse
 	node      *Node
-	rclClient *C.struct_rcl_client_t
+	rclClient *C.rcl_client_t
 	sender    requestSender
 }
 
@@ -1043,7 +1055,7 @@ func (n *Node) NewClient(
 	}
 	c = &Client{
 		node:      n,
-		rclClient: (*C.struct_rcl_client_t)(C.malloc(C.sizeof_struct_rcl_client_t)),
+		rclClient: (*C.rcl_client_t)(C.malloc(C.sizeof_rcl_client_t)),
 	}
 	c.sender = newRequestSender(requestSenderTransport{
 		SendRequest:  c.sendRequest,
@@ -1053,7 +1065,7 @@ func (n *Node) NewClient(
 	})
 	*c.rclClient = C.rcl_get_zero_initialized_client()
 	defer onErr(&err, c.Close)
-	opts := C.struct_rcl_client_options_t{allocator: *n.context.rcl_allocator_t}
+	opts := C.rcl_client_options_t{allocator: *n.context.rcl_allocator_t}
 	options.Qos.asCStruct(&opts.qos)
 	cserviceName := C.CString(serviceName)
 	defer C.free(unsafe.Pointer(cserviceName))
@@ -1112,7 +1124,7 @@ func (c *Client) sendRequest(req unsafe.Pointer) (C.long, error) {
 }
 
 func (c *Client) takeResponse(resp unsafe.Pointer) (C.long, interface{}, error) {
-	var header C.struct_rmw_service_info_t
+	var header C.rmw_service_info_t
 	rc := C.rcl_take_response_with_info(c.rclClient, &header, resp)
 	if rc != C.RCL_RET_OK {
 		return 0, nil, errorsCastC(rc, "failed to take response")

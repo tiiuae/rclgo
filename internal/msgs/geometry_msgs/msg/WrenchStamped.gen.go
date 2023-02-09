@@ -173,6 +173,9 @@ func WrenchStamped__Sequence_to_Go(goSlice *[]WrenchStamped, cSlice CWrenchStamp
 }
 func WrenchStamped__Sequence_to_C(cSlice *CWrenchStamped__Sequence, goSlice []WrenchStamped) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.geometry_msgs__msg__WrenchStamped)(C.malloc(C.sizeof_struct_geometry_msgs__msg__WrenchStamped * C.size_t(len(goSlice))))

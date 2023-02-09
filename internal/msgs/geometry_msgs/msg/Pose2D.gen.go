@@ -177,6 +177,9 @@ func Pose2D__Sequence_to_Go(goSlice *[]Pose2D, cSlice CPose2D__Sequence) {
 }
 func Pose2D__Sequence_to_C(cSlice *CPose2D__Sequence, goSlice []Pose2D) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.geometry_msgs__msg__Pose2D)(C.malloc(C.sizeof_struct_geometry_msgs__msg__Pose2D * C.size_t(len(goSlice))))

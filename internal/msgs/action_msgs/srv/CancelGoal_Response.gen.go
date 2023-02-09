@@ -187,6 +187,9 @@ func CancelGoal_Response__Sequence_to_Go(goSlice *[]CancelGoal_Response, cSlice 
 }
 func CancelGoal_Response__Sequence_to_C(cSlice *CCancelGoal_Response__Sequence, goSlice []CancelGoal_Response) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.action_msgs__srv__CancelGoal_Response)(C.malloc(C.sizeof_struct_action_msgs__srv__CancelGoal_Response * C.size_t(len(goSlice))))

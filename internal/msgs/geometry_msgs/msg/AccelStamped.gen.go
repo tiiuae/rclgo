@@ -173,6 +173,9 @@ func AccelStamped__Sequence_to_Go(goSlice *[]AccelStamped, cSlice CAccelStamped_
 }
 func AccelStamped__Sequence_to_C(cSlice *CAccelStamped__Sequence, goSlice []AccelStamped) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.geometry_msgs__msg__AccelStamped)(C.malloc(C.sizeof_struct_geometry_msgs__msg__AccelStamped * C.size_t(len(goSlice))))

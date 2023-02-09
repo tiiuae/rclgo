@@ -176,6 +176,9 @@ func ByteMultiArray__Sequence_to_Go(goSlice *[]ByteMultiArray, cSlice CByteMulti
 }
 func ByteMultiArray__Sequence_to_C(cSlice *CByteMultiArray__Sequence, goSlice []ByteMultiArray) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.std_msgs__msg__ByteMultiArray)(C.malloc(C.sizeof_struct_std_msgs__msg__ByteMultiArray * C.size_t(len(goSlice))))

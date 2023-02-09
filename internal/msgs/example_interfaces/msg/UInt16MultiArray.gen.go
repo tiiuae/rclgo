@@ -176,6 +176,9 @@ func UInt16MultiArray__Sequence_to_Go(goSlice *[]UInt16MultiArray, cSlice CUInt1
 }
 func UInt16MultiArray__Sequence_to_C(cSlice *CUInt16MultiArray__Sequence, goSlice []UInt16MultiArray) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.example_interfaces__msg__UInt16MultiArray)(C.malloc(C.sizeof_struct_example_interfaces__msg__UInt16MultiArray * C.size_t(len(goSlice))))

@@ -193,6 +193,9 @@ func PointField__Sequence_to_Go(goSlice *[]PointField, cSlice CPointField__Seque
 }
 func PointField__Sequence_to_C(cSlice *CPointField__Sequence, goSlice []PointField) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.sensor_msgs__msg__PointField)(C.malloc(C.sizeof_struct_sensor_msgs__msg__PointField * C.size_t(len(goSlice))))

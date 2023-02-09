@@ -416,6 +416,9 @@ func UnboundedSequences__Sequence_to_Go(goSlice *[]UnboundedSequences, cSlice CU
 }
 func UnboundedSequences__Sequence_to_C(cSlice *CUnboundedSequences__Sequence, goSlice []UnboundedSequences) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.test_msgs__msg__UnboundedSequences)(C.malloc(C.sizeof_struct_test_msgs__msg__UnboundedSequences * C.size_t(len(goSlice))))

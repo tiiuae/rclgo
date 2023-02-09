@@ -228,6 +228,9 @@ func CameraInfo__Sequence_to_Go(goSlice *[]CameraInfo, cSlice CCameraInfo__Seque
 }
 func CameraInfo__Sequence_to_C(cSlice *CCameraInfo__Sequence, goSlice []CameraInfo) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.sensor_msgs__msg__CameraInfo)(C.malloc(C.sizeof_struct_sensor_msgs__msg__CameraInfo * C.size_t(len(goSlice))))

@@ -54,7 +54,21 @@ package {{ .GoPackage }}
 {{""}}
 {{- end}}
 {{range $dir := .RootPaths -}}
-#cgo CFLAGS: "-I{{$dir}}/include"
+#cgo CFLAGS: "-I{{$dir}}/include/action_msgs"
+#cgo CFLAGS: "-I{{$dir}}/include/builtin_interfaces"
+#cgo CFLAGS: "-I{{$dir}}/include/example_interfaces"
+#cgo CFLAGS: "-I{{$dir}}/include/geometry_msgs"
+#cgo CFLAGS: "-I{{$dir}}/include/rosidl_runtime_c"
+#cgo CFLAGS: "-I{{$dir}}/include/rosidl_typesupport_interface"
+#cgo CFLAGS: "-I{{$dir}}/include/sensor_msgs"
+#cgo CFLAGS: "-I{{$dir}}/include/std_msgs"
+#cgo CFLAGS: "-I{{$dir}}/include/std_srvs"
+#cgo CFLAGS: "-I{{$dir}}/include/test_msgs"
+#cgo CFLAGS: "-I{{$dir}}/include/unique_identifier_msgs"
+{{range $k, $v := $.CImports -}}
+#cgo CFLAGS: "-I{{$dir}}/include/{{$k}}"
+{{end}}
+#cgo CFLAGS: "-I{{$dir}}/include/{{$.CPackage}}"
 {{end}}
 */
 import "C"
@@ -480,9 +494,9 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package {{ .Action.GoPackage }}
 
 /*
-#cgo LDFLAGS: -L/opt/ros/galactic/lib -Wl,-rpath=/opt/ros/galactic/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
+#cgo LDFLAGS: -L/opt/ros/humble/lib -Wl,-rpath=/opt/ros/humble/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
 #cgo LDFLAGS: -l{{.Action.Package}}__rosidl_typesupport_c -l{{.Action.Package}}__rosidl_generator_c
-#cgo CFLAGS: -I/opt/ros/galactic/include
+#cgo CFLAGS: -I/opt/ros/humble/include/rosidl_runtime_c
 
 #include <rosidl_runtime_c/message_type_support_struct.h>
 #include <{{.Action.Package}}/action/{{.Action.Name | actionNameFromActionSrvName | camelToSnake}}.h>
@@ -735,8 +749,8 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package primitives
 
 /*
-#cgo LDFLAGS: -L/opt/ros/galactic/lib -Wl,-rpath=/opt/ros/galactic/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
-#cgo CFLAGS: -I/opt/ros/galactic/include
+#cgo LDFLAGS: -L/opt/ros/humble/lib -Wl,-rpath=/opt/ros/humble/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
+#cgo CFLAGS: -I/opt/ros/humble/include/rosidl_runtime_c
 
 #include "rosidl_runtime_c/string.h"
 #include "rosidl_runtime_c/primitives_sequence.h"

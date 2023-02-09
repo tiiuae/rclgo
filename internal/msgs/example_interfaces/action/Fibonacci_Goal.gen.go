@@ -167,6 +167,9 @@ func Fibonacci_Goal__Sequence_to_Go(goSlice *[]Fibonacci_Goal, cSlice CFibonacci
 }
 func Fibonacci_Goal__Sequence_to_C(cSlice *CFibonacci_Goal__Sequence, goSlice []Fibonacci_Goal) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.example_interfaces__action__Fibonacci_Goal)(C.malloc(C.sizeof_struct_example_interfaces__action__Fibonacci_Goal * C.size_t(len(goSlice))))

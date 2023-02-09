@@ -178,6 +178,9 @@ func RelativeHumidity__Sequence_to_Go(goSlice *[]RelativeHumidity, cSlice CRelat
 }
 func RelativeHumidity__Sequence_to_C(cSlice *CRelativeHumidity__Sequence, goSlice []RelativeHumidity) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.sensor_msgs__msg__RelativeHumidity)(C.malloc(C.sizeof_struct_sensor_msgs__msg__RelativeHumidity * C.size_t(len(goSlice))))

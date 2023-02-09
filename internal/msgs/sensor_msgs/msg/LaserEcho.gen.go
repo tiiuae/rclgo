@@ -171,6 +171,9 @@ func LaserEcho__Sequence_to_Go(goSlice *[]LaserEcho, cSlice CLaserEcho__Sequence
 }
 func LaserEcho__Sequence_to_C(cSlice *CLaserEcho__Sequence, goSlice []LaserEcho) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.sensor_msgs__msg__LaserEcho)(C.malloc(C.sizeof_struct_sensor_msgs__msg__LaserEcho * C.size_t(len(goSlice))))

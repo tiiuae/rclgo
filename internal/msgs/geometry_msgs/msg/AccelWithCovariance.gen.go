@@ -175,6 +175,9 @@ func AccelWithCovariance__Sequence_to_Go(goSlice *[]AccelWithCovariance, cSlice 
 }
 func AccelWithCovariance__Sequence_to_C(cSlice *CAccelWithCovariance__Sequence, goSlice []AccelWithCovariance) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.geometry_msgs__msg__AccelWithCovariance)(C.malloc(C.sizeof_struct_geometry_msgs__msg__AccelWithCovariance * C.size_t(len(goSlice))))

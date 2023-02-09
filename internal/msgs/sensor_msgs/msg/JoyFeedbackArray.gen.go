@@ -170,6 +170,9 @@ func JoyFeedbackArray__Sequence_to_Go(goSlice *[]JoyFeedbackArray, cSlice CJoyFe
 }
 func JoyFeedbackArray__Sequence_to_C(cSlice *CJoyFeedbackArray__Sequence, goSlice []JoyFeedbackArray) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.sensor_msgs__msg__JoyFeedbackArray)(C.malloc(C.sizeof_struct_sensor_msgs__msg__JoyFeedbackArray * C.size_t(len(goSlice))))

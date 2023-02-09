@@ -11,12 +11,22 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package builtin_interfaces_msg
 
 /*
-#cgo LDFLAGS: "-L/opt/ros/galactic/lib" "-Wl,-rpath=/opt/ros/galactic/lib"
+#cgo LDFLAGS: "-L/opt/ros/humble/lib" "-Wl,-rpath=/opt/ros/humble/lib"
 
 #cgo LDFLAGS: -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
 #cgo LDFLAGS: -lbuiltin_interfaces__rosidl_typesupport_c -lbuiltin_interfaces__rosidl_generator_c
 
-#cgo CFLAGS: "-I/opt/ros/galactic/include"
+#cgo CFLAGS: "-I/opt/ros/humble/include/action_msgs"
+#cgo CFLAGS: "-I/opt/ros/humble/include/builtin_interfaces"
+#cgo CFLAGS: "-I/opt/ros/humble/include/example_interfaces"
+#cgo CFLAGS: "-I/opt/ros/humble/include/geometry_msgs"
+#cgo CFLAGS: "-I/opt/ros/humble/include/rosidl_runtime_c"
+#cgo CFLAGS: "-I/opt/ros/humble/include/rosidl_typesupport_interface"
+#cgo CFLAGS: "-I/opt/ros/humble/include/sensor_msgs"
+#cgo CFLAGS: "-I/opt/ros/humble/include/std_msgs"
+#cgo CFLAGS: "-I/opt/ros/humble/include/std_srvs"
+#cgo CFLAGS: "-I/opt/ros/humble/include/test_msgs"
+#cgo CFLAGS: "-I/opt/ros/humble/include/unique_identifier_msgs"
 
 */
 import "C"

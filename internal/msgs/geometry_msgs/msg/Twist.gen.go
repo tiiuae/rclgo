@@ -172,6 +172,9 @@ func Twist__Sequence_to_Go(goSlice *[]Twist, cSlice CTwist__Sequence) {
 }
 func Twist__Sequence_to_C(cSlice *CTwist__Sequence, goSlice []Twist) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.geometry_msgs__msg__Twist)(C.malloc(C.sizeof_struct_geometry_msgs__msg__Twist * C.size_t(len(goSlice))))

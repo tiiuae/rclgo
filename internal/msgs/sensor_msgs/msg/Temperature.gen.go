@@ -178,6 +178,9 @@ func Temperature__Sequence_to_Go(goSlice *[]Temperature, cSlice CTemperature__Se
 }
 func Temperature__Sequence_to_C(cSlice *CTemperature__Sequence, goSlice []Temperature) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.sensor_msgs__msg__Temperature)(C.malloc(C.sizeof_struct_sensor_msgs__msg__Temperature * C.size_t(len(goSlice))))

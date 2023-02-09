@@ -178,6 +178,9 @@ func MultiArrayDimension__Sequence_to_Go(goSlice *[]MultiArrayDimension, cSlice 
 }
 func MultiArrayDimension__Sequence_to_C(cSlice *CMultiArrayDimension__Sequence, goSlice []MultiArrayDimension) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.std_msgs__msg__MultiArrayDimension)(C.malloc(C.sizeof_struct_std_msgs__msg__MultiArrayDimension * C.size_t(len(goSlice))))

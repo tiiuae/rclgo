@@ -215,6 +215,9 @@ func PointCloud2__Sequence_to_Go(goSlice *[]PointCloud2, cSlice CPointCloud2__Se
 }
 func PointCloud2__Sequence_to_C(cSlice *CPointCloud2__Sequence, goSlice []PointCloud2) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.sensor_msgs__msg__PointCloud2)(C.malloc(C.sizeof_struct_sensor_msgs__msg__PointCloud2 * C.size_t(len(goSlice))))

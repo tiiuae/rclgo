@@ -180,6 +180,9 @@ func TimeReference__Sequence_to_Go(goSlice *[]TimeReference, cSlice CTimeReferen
 }
 func TimeReference__Sequence_to_C(cSlice *CTimeReference__Sequence, goSlice []TimeReference) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.sensor_msgs__msg__TimeReference)(C.malloc(C.sizeof_struct_sensor_msgs__msg__TimeReference * C.size_t(len(goSlice))))

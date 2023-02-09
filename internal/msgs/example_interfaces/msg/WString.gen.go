@@ -168,6 +168,9 @@ func WString__Sequence_to_Go(goSlice *[]WString, cSlice CWString__Sequence) {
 }
 func WString__Sequence_to_C(cSlice *CWString__Sequence, goSlice []WString) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.example_interfaces__msg__WString)(C.malloc(C.sizeof_struct_example_interfaces__msg__WString * C.size_t(len(goSlice))))

@@ -172,6 +172,9 @@ func Transform__Sequence_to_Go(goSlice *[]Transform, cSlice CTransform__Sequence
 }
 func Transform__Sequence_to_C(cSlice *CTransform__Sequence, goSlice []Transform) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.geometry_msgs__msg__Transform)(C.malloc(C.sizeof_struct_geometry_msgs__msg__Transform * C.size_t(len(goSlice))))

@@ -176,6 +176,9 @@ func Int16MultiArray__Sequence_to_Go(goSlice *[]Int16MultiArray, cSlice CInt16Mu
 }
 func Int16MultiArray__Sequence_to_C(cSlice *CInt16MultiArray__Sequence, goSlice []Int16MultiArray) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.std_msgs__msg__Int16MultiArray)(C.malloc(C.sizeof_struct_std_msgs__msg__Int16MultiArray * C.size_t(len(goSlice))))

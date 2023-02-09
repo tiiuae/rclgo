@@ -175,6 +175,9 @@ func Fibonacci_GetResult_Request__Sequence_to_Go(goSlice *[]Fibonacci_GetResult_
 }
 func Fibonacci_GetResult_Request__Sequence_to_C(cSlice *CFibonacci_GetResult_Request__Sequence, goSlice []Fibonacci_GetResult_Request) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.test_msgs__action__Fibonacci_GetResult_Request)(C.malloc(C.sizeof_struct_test_msgs__action__Fibonacci_GetResult_Request * C.size_t(len(goSlice))))

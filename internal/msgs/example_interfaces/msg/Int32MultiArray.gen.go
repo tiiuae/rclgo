@@ -176,6 +176,9 @@ func Int32MultiArray__Sequence_to_Go(goSlice *[]Int32MultiArray, cSlice CInt32Mu
 }
 func Int32MultiArray__Sequence_to_C(cSlice *CInt32MultiArray__Sequence, goSlice []Int32MultiArray) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.example_interfaces__msg__Int32MultiArray)(C.malloc(C.sizeof_struct_example_interfaces__msg__Int32MultiArray * C.size_t(len(goSlice))))

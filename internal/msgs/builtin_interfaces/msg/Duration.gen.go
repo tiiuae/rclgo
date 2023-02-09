@@ -172,6 +172,9 @@ func Duration__Sequence_to_Go(goSlice *[]Duration, cSlice CDuration__Sequence) {
 }
 func Duration__Sequence_to_C(cSlice *CDuration__Sequence, goSlice []Duration) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.builtin_interfaces__msg__Duration)(C.malloc(C.sizeof_struct_builtin_interfaces__msg__Duration * C.size_t(len(goSlice))))

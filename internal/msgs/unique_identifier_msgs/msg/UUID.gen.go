@@ -170,6 +170,9 @@ func UUID__Sequence_to_Go(goSlice *[]UUID, cSlice CUUID__Sequence) {
 }
 func UUID__Sequence_to_C(cSlice *CUUID__Sequence, goSlice []UUID) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.unique_identifier_msgs__msg__UUID)(C.malloc(C.sizeof_struct_unique_identifier_msgs__msg__UUID * C.size_t(len(goSlice))))

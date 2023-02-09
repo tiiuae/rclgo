@@ -197,6 +197,9 @@ func Range__Sequence_to_Go(goSlice *[]Range, cSlice CRange__Sequence) {
 }
 func Range__Sequence_to_C(cSlice *CRange__Sequence, goSlice []Range) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.sensor_msgs__msg__Range)(C.malloc(C.sizeof_struct_sensor_msgs__msg__Range * C.size_t(len(goSlice))))

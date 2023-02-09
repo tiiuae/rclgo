@@ -167,6 +167,9 @@ func Byte__Sequence_to_Go(goSlice *[]Byte, cSlice CByte__Sequence) {
 }
 func Byte__Sequence_to_C(cSlice *CByte__Sequence, goSlice []Byte) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.std_msgs__msg__Byte)(C.malloc(C.sizeof_struct_std_msgs__msg__Byte * C.size_t(len(goSlice))))

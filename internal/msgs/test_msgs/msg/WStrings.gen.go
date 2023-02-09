@@ -206,6 +206,9 @@ func WStrings__Sequence_to_Go(goSlice *[]WStrings, cSlice CWStrings__Sequence) {
 }
 func WStrings__Sequence_to_C(cSlice *CWStrings__Sequence, goSlice []WStrings) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.test_msgs__msg__WStrings)(C.malloc(C.sizeof_struct_test_msgs__msg__WStrings * C.size_t(len(goSlice))))

@@ -167,6 +167,9 @@ func Nested__Sequence_to_Go(goSlice *[]Nested, cSlice CNested__Sequence) {
 }
 func Nested__Sequence_to_C(cSlice *CNested__Sequence, goSlice []Nested) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.test_msgs__msg__Nested)(C.malloc(C.sizeof_struct_test_msgs__msg__Nested * C.size_t(len(goSlice))))

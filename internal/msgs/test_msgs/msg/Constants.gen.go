@@ -175,6 +175,9 @@ func Constants__Sequence_to_Go(goSlice *[]Constants, cSlice CConstants__Sequence
 }
 func Constants__Sequence_to_C(cSlice *CConstants__Sequence, goSlice []Constants) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.test_msgs__msg__Constants)(C.malloc(C.sizeof_struct_test_msgs__msg__Constants * C.size_t(len(goSlice))))

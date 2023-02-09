@@ -227,6 +227,9 @@ func BasicTypes__Sequence_to_Go(goSlice *[]BasicTypes, cSlice CBasicTypes__Seque
 }
 func BasicTypes__Sequence_to_C(cSlice *CBasicTypes__Sequence, goSlice []BasicTypes) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.test_msgs__msg__BasicTypes)(C.malloc(C.sizeof_struct_test_msgs__msg__BasicTypes * C.size_t(len(goSlice))))

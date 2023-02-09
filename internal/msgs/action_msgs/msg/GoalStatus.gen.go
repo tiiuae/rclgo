@@ -188,6 +188,9 @@ func GoalStatus__Sequence_to_Go(goSlice *[]GoalStatus, cSlice CGoalStatus__Seque
 }
 func GoalStatus__Sequence_to_C(cSlice *CGoalStatus__Sequence, goSlice []GoalStatus) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.action_msgs__msg__GoalStatus)(C.malloc(C.sizeof_struct_action_msgs__msg__GoalStatus * C.size_t(len(goSlice))))

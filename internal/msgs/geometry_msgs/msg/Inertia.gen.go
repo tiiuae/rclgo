@@ -202,6 +202,9 @@ func Inertia__Sequence_to_Go(goSlice *[]Inertia, cSlice CInertia__Sequence) {
 }
 func Inertia__Sequence_to_C(cSlice *CInertia__Sequence, goSlice []Inertia) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.geometry_msgs__msg__Inertia)(C.malloc(C.sizeof_struct_geometry_msgs__msg__Inertia * C.size_t(len(goSlice))))

@@ -273,6 +273,9 @@ func BatteryState__Sequence_to_Go(goSlice *[]BatteryState, cSlice CBatteryState_
 }
 func BatteryState__Sequence_to_C(cSlice *CBatteryState__Sequence, goSlice []BatteryState) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.sensor_msgs__msg__BatteryState)(C.malloc(C.sizeof_struct_sensor_msgs__msg__BatteryState * C.size_t(len(goSlice))))

@@ -988,7 +988,7 @@ func (c *ActionClient) takeGoalResponse(resp unsafe.Pointer) (C.long, interface{
 	var header C.rmw_request_id_t
 	rc := C.rcl_action_take_goal_response(&c.rclClient, &header, resp)
 	if rc != C.RCL_RET_OK {
-		return 0, nil, errorsCastC(rc, "failed to send goal request")
+		return 0, nil, errorsCastC(rc, "failed to take goal response")
 	}
 	return header.sequence_number, nil, nil
 }
@@ -1019,7 +1019,7 @@ func (c *ActionClient) takeResultResponse(resp unsafe.Pointer) (C.long, interfac
 	var header C.rmw_request_id_t
 	rc := C.rcl_action_take_result_response(&c.rclClient, &header, resp)
 	if rc != C.RCL_RET_OK {
-		return 0, nil, errorsCastC(rc, "failed to send result request")
+		return 0, nil, errorsCastC(rc, "failed to take result response")
 	}
 	return header.sequence_number, nil, nil
 }
@@ -1059,7 +1059,7 @@ func (c *ActionClient) takeCancelResponse(resp unsafe.Pointer) (C.long, interfac
 	var header C.rmw_request_id_t
 	rc := C.rcl_action_take_cancel_response(&c.rclClient, &header, resp)
 	if rc != C.RCL_RET_OK {
-		return 0, nil, errorsCastC(rc, "failed to send cancel request")
+		return 0, nil, errorsCastC(rc, "failed to take cancel response")
 	}
 	return header.sequence_number, nil, nil
 }

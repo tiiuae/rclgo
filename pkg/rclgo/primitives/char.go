@@ -34,6 +34,9 @@ func Char__Sequence_to_Go(goSlice *[]byte, cSlice CChar__Sequence) {
 }
 func Char__Sequence_to_C(cSlice *CChar__Sequence, goSlice []byte) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.schar)(C.malloc(C.sizeof_schar * C.size_t(len(goSlice))))

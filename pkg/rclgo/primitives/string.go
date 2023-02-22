@@ -50,6 +50,9 @@ func String__Sequence_to_Go(goSlice *[]string, cSlice CString__Sequence) {
 
 func String__Sequence_to_C(cSlice *CString__Sequence, goSlice []string) {
 	if len(goSlice) == 0 {
+		cSlice.data = nil
+		cSlice.capacity = 0
+		cSlice.size = 0
 		return
 	}
 	cSlice.data = (*C.rosidl_runtime_c__String)(C.malloc((C.size_t)(C.sizeof_struct_rosidl_runtime_c__String * uintptr(len(goSlice)))))

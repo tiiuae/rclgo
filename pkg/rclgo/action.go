@@ -469,7 +469,9 @@ func (s *ActionServer) handleGoalRequest(ctx context.Context) {
 	go func() {
 		defer cancel()
 		if err != nil {
-			s.node.Logger().Error(err)
+			if !errors.Is(err, &ActionServerTakeFailed{}) {
+				s.node.Logger().Error(err)
+			}
 			return
 		}
 		var result types.Message
@@ -584,7 +586,9 @@ func (s *ActionServer) handleResultRequest() {
 	req, err := s.takeResultRequest(&header)
 	go func() {
 		if err != nil {
-			s.node.Logger().Error(err)
+			if !errors.Is(err, &ActionServerTakeFailed{}) {
+				s.node.Logger().Error(err)
+			}
 			return
 		}
 		goal := s.getGoal(req.GetGoalID(), true)
@@ -630,7 +634,9 @@ func (s *ActionServer) handleCancelRequest() {
 	go func() {
 		defer ts.Request().ReleaseMemory(reqBuf)
 		if rc != C.RCL_RET_OK {
-			s.node.Logger().Error(errorsCastC(rc, "failed to take cancel request"))
+			if rc != C.RCL_RET_ACTION_SERVER_TAKE_FAILED {
+				s.node.Logger().Error(errorsCastC(rc, "failed to take cancel request"))
+			}
 			return
 		}
 		err := s.processCancelRequest(&header, reqBuf, &respBuf)
@@ -986,11 +992,14 @@ func (c *ActionClient) sendGoalRequest(req unsafe.Pointer) (C.long, error) {
 
 func (c *ActionClient) takeGoalResponse(resp unsafe.Pointer) (C.long, interface{}, error) {
 	var header C.rmw_request_id_t
-	rc := C.rcl_action_take_goal_response(&c.rclClient, &header, resp)
-	if rc != C.RCL_RET_OK {
+	switch rc := C.rcl_action_take_goal_response(&c.rclClient, &header, resp); rc {
+	case C.RCL_RET_OK:
+		return header.sequence_number, nil, nil
+	case C.RCL_RET_ACTION_CLIENT_TAKE_FAILED:
+		return 0, nil, errTakeFailed
+	default:
 		return 0, nil, errorsCastC(rc, "failed to take goal response")
 	}
-	return header.sequence_number, nil, nil
 }
 
 // GetResult returns the result of the goal with goalID or an error if getting
@@ -1017,11 +1026,14 @@ func (c *ActionClient) sendResultRequest(req unsafe.Pointer) (C.long, error) {
 
 func (c *ActionClient) takeResultResponse(resp unsafe.Pointer) (C.long, interface{}, error) {
 	var header C.rmw_request_id_t
-	rc := C.rcl_action_take_result_response(&c.rclClient, &header, resp)
-	if rc != C.RCL_RET_OK {
+	switch rc := C.rcl_action_take_result_response(&c.rclClient, &header, resp); rc {
+	case C.RCL_RET_OK:
+		return header.sequence_number, nil, nil
+	case C.RCL_RET_ACTION_CLIENT_TAKE_FAILED:
+		return 0, nil, errTakeFailed
+	default:
 		return 0, nil, errorsCastC(rc, "failed to take result response")
 	}
-	return header.sequence_number, nil, nil
 }
 
 // CancelGoal cancels goals.
@@ -1057,11 +1069,14 @@ func (c *ActionClient) sendCancelRequest(req unsafe.Pointer) (C.long, error) {
 
 func (c *ActionClient) takeCancelResponse(resp unsafe.Pointer) (C.long, interface{}, error) {
 	var header C.rmw_request_id_t
-	rc := C.rcl_action_take_cancel_response(&c.rclClient, &header, resp)
-	if rc != C.RCL_RET_OK {
+	switch rc := C.rcl_action_take_cancel_response(&c.rclClient, &header, resp); rc {
+	case C.RCL_RET_OK:
+		return header.sequence_number, nil, nil
+	case C.RCL_RET_ACTION_CLIENT_TAKE_FAILED:
+		return 0, nil, errTakeFailed
+	default:
 		return 0, nil, errorsCastC(rc, "failed to take cancel response")
 	}
-	return header.sequence_number, nil, nil
 }
 
 // WatchFeedback calls handler for every feedback message for the goal with id
@@ -1137,15 +1152,16 @@ func (c *ActionClient) handleFeedback() {
 	ts := c.typeSupport.FeedbackMessage()
 	buf := ts.PrepareMemory()
 	defer ts.ReleaseMemory(buf)
-	rc := C.rcl_action_take_feedback(&c.rclClient, buf)
-	if rc != C.RCL_RET_OK {
+	switch rc := C.rcl_action_take_feedback(&c.rclClient, buf); rc {
+	case C.RCL_RET_OK:
+		msg := ts.New().(goalIDMessage)
+		ts.AsGoStruct(msg, buf)
+		c.feedbackSubs.allGoals.call(msg)
+		c.feedbackSubs.perGoal[*msg.GetGoalID()].call(msg)
+	case C.RCL_RET_ACTION_CLIENT_TAKE_FAILED:
+	default:
 		c.node.Logger().Error(errorsCastC(rc, "failed to take feedback"))
-		return
 	}
-	msg := ts.New().(goalIDMessage)
-	ts.AsGoStruct(msg, buf)
-	c.feedbackSubs.allGoals.call(msg)
-	c.feedbackSubs.perGoal[*msg.GetGoalID()].call(msg)
 }
 
 // WatchStatus calls handler for every status message regarding the goal with id
@@ -1173,18 +1189,19 @@ func (c *ActionClient) handleStatus() {
 	ts := c.typeSupport.GoalStatusArray()
 	buf := ts.PrepareMemory()
 	defer ts.ReleaseMemory(buf)
-	rc := C.rcl_action_take_status(&c.rclClient, buf)
-	if rc != C.RCL_RET_OK {
+	switch rc := C.rcl_action_take_status(&c.rclClient, buf); rc {
+	case C.RCL_RET_OK:
+		msg := ts.New()
+		ts.AsGoStruct(msg, buf)
+		msg.(forEach).CallForEach(func(info interface{}) {
+			msg := info.(goalIDMessage)
+			c.statusSubs.perGoal[*msg.GetGoalID()].call(msg)
+			c.statusSubs.allGoals.call(msg)
+		})
+	case C.RCL_RET_ACTION_CLIENT_TAKE_FAILED:
+	default:
 		c.node.Logger().Error(errorsCastC(rc, "failed to take status"))
-		return
 	}
-	msg := ts.New()
-	ts.AsGoStruct(msg, buf)
-	msg.(forEach).CallForEach(func(info interface{}) {
-		msg := info.(goalIDMessage)
-		c.statusSubs.perGoal[*msg.GetGoalID()].call(msg)
-		c.statusSubs.allGoals.call(msg)
-	})
 }
 
 func (c *ActionClient) handleReadyEntities(ws *WaitSet) {

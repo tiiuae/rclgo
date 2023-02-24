@@ -994,32 +994,33 @@ func (s *Service) handleRequest() {
 	var reqHeader C.rmw_service_info_t
 	reqBuffer := s.requestTypeSupport.PrepareMemory()
 	defer s.requestTypeSupport.ReleaseMemory(reqBuffer)
-	rc := C.rcl_take_request_with_info(s.rclService, &reqHeader, reqBuffer)
-	if rc != C.RCL_RET_OK {
+	switch rc := C.rcl_take_request_with_info(s.rclService, &reqHeader, reqBuffer); rc {
+	case C.RCL_RET_OK:
+		info := RmwServiceInfo{
+			SourceTimestamp:   time.Unix(0, int64(reqHeader.source_timestamp)),
+			ReceivedTimestamp: time.Unix(0, int64(reqHeader.received_timestamp)),
+			RequestID:         newRmwRequestID(&reqHeader.request_id),
+		}
+		req := s.requestTypeSupport.New()
+		s.requestTypeSupport.AsGoStruct(req, reqBuffer)
+		s.handler(
+			&info,
+			req,
+			serviceResponseSender(func(resp types.Message) error {
+				respBuffer := s.responseTypeSupport.PrepareMemory()
+				defer s.responseTypeSupport.ReleaseMemory(respBuffer)
+				s.responseTypeSupport.AsCStruct(respBuffer, resp)
+				rc := C.rcl_send_response(s.rclService, &reqHeader.request_id, respBuffer)
+				if rc != C.RCL_RET_OK {
+					return errorsCastC(rc, "failed to send response")
+				}
+				return nil
+			}),
+		)
+	case C.RCL_RET_SERVICE_TAKE_FAILED:
+	default:
 		s.node.Logger().Debug(errorsCastC(rc, "failed to take request"))
-		return
 	}
-	info := RmwServiceInfo{
-		SourceTimestamp:   time.Unix(0, int64(reqHeader.source_timestamp)),
-		ReceivedTimestamp: time.Unix(0, int64(reqHeader.received_timestamp)),
-		RequestID:         newRmwRequestID(&reqHeader.request_id),
-	}
-	req := s.requestTypeSupport.New()
-	s.requestTypeSupport.AsGoStruct(req, reqBuffer)
-	s.handler(
-		&info,
-		req,
-		serviceResponseSender(func(resp types.Message) error {
-			respBuffer := s.responseTypeSupport.PrepareMemory()
-			defer s.responseTypeSupport.ReleaseMemory(respBuffer)
-			s.responseTypeSupport.AsCStruct(respBuffer, resp)
-			rc := C.rcl_send_response(s.rclService, &reqHeader.request_id, respBuffer)
-			if rc != C.RCL_RET_OK {
-				return errorsCastC(rc, "failed to send response")
-			}
-			return nil
-		}),
-	)
 }
 
 type ClientOptions struct {
@@ -1125,16 +1126,21 @@ func (c *Client) sendRequest(req unsafe.Pointer) (C.long, error) {
 
 func (c *Client) takeResponse(resp unsafe.Pointer) (C.long, interface{}, error) {
 	var header C.rmw_service_info_t
-	rc := C.rcl_take_response_with_info(c.rclClient, &header, resp)
-	if rc != C.RCL_RET_OK {
+	switch rc := C.rcl_take_response_with_info(c.rclClient, &header, resp); rc {
+	case C.RCL_RET_OK:
+		return header.request_id.sequence_number, &RmwServiceInfo{
+			SourceTimestamp:   time.Unix(0, int64(header.source_timestamp)),
+			ReceivedTimestamp: time.Unix(0, int64(header.received_timestamp)),
+			RequestID:         newRmwRequestID(&header.request_id),
+		}, nil
+	case C.RCL_RET_CLIENT_TAKE_FAILED:
+		return 0, nil, errTakeFailed
+	default:
 		return 0, nil, errorsCastC(rc, "failed to take response")
 	}
-	return header.request_id.sequence_number, &RmwServiceInfo{
-		SourceTimestamp:   time.Unix(0, int64(header.source_timestamp)),
-		ReceivedTimestamp: time.Unix(0, int64(header.received_timestamp)),
-		RequestID:         newRmwRequestID(&header.request_id),
-	}, nil
 }
+
+var errTakeFailed = errors.New("take failed")
 
 type sendResult struct {
 	resp      types.Message
@@ -1217,7 +1223,9 @@ func (s *requestSender) HandleResponse() {
 		defer s.mutex.Unlock()
 		seqNum, otherData, err := s.transport.TakeResponse(buf)
 		if err != nil {
-			s.transport.Logger.Error(err)
+			if !errors.Is(err, errTakeFailed) {
+				s.transport.Logger.Error(err)
+			}
 			return nil, nil
 		}
 		ch := s.pendingRequests[seqNum]

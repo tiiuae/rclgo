@@ -105,19 +105,12 @@ type GoalHandle struct {
 }
 
 func newEmptyGoal(s *ActionServer, cancel context.CancelFunc) *GoalHandle {
-	goal := &GoalHandle{
+	return &GoalHandle{
 		server:       s,
 		cancelContex: cancel,
 		info:         C.rcl_action_get_zero_initialized_goal_info(),
 		resultCond:   sync.NewCond(&sync.Mutex{}),
 	}
-	runtime.SetFinalizer(goal, func(g *GoalHandle) {
-		if g.handle != nil {
-			C.rcl_action_goal_handle_fini(g.handle)
-			g.handle = nil
-		}
-	})
-	return goal
 }
 
 // Server returns the ActionServer that is handling g.
@@ -421,10 +414,21 @@ func (s *ActionServer) takeGoalRequest(goal *GoalHandle) error {
 func (s *ActionServer) acceptGoal(goal *GoalHandle) error {
 	s.rclServerMu.Lock()
 	defer s.rclServerMu.Unlock()
-	goal.handle = C.rcl_action_accept_new_goal(&s.rclServer, &goal.info)
-	if goal.handle == nil {
+	handle := C.rcl_action_accept_new_goal(&s.rclServer, &goal.info)
+	if handle == nil {
 		return errors.New("accepting a goal handle failed: " + errorString())
 	}
+	// The handle must be copied because it's deallocated when the goal expires
+	// and then it wouldn't be possible to finalize it.
+	goal.handle = (*C.rcl_action_goal_handle_t)(C.malloc(C.sizeof_rcl_action_goal_handle_t))
+	*goal.handle = *handle
+	runtime.SetFinalizer(goal, func(g *GoalHandle) {
+		if g.handle != nil {
+			C.rcl_action_goal_handle_fini(g.handle)
+			C.free(unsafe.Pointer(g.handle))
+			g.handle = nil
+		}
+	})
 	s.sendStatuses(false)
 	s.goalsMu.Lock()
 	defer s.goalsMu.Unlock()

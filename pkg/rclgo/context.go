@@ -26,8 +26,6 @@ import (
 	"runtime"
 	"sync"
 	"unsafe"
-
-	"github.com/hashicorp/go-multierror"
 )
 
 type rosID uint64
@@ -74,12 +72,11 @@ func (s *rosResourceStore) removeResource(r rosResource) {
 	delete(s.resources, r.getID())
 }
 
-func (s *rosResourceStore) Close() error {
-	var err *multierror.Error
+func (s *rosResourceStore) Close() (err error) {
 	for _, r := range s.resources {
-		err = multierror.Append(err, r.Close())
+		err = errors.Join(err, r.Close())
 	}
-	return err.ErrorOrNil()
+	return err
 }
 
 var (
@@ -237,12 +234,12 @@ func (c *Context) Close() error {
 	if c.rcl_context_t == nil && c.rcl_allocator_t == nil {
 		return closeErr("context")
 	}
-	errs := multierror.Append(c.rosResourceStore.Close())
+	errs := c.rosResourceStore.Close()
 	if c.rcl_context_t != nil {
 		if rc := C.rcl_shutdown(c.rcl_context_t); rc != C.RCL_RET_OK {
-			errs = multierror.Append(errs, errorsCastC(rc, fmt.Sprintf("C.rcl_shutdown(%+v)", c.rcl_context_t)))
+			errs = errors.Join(errs, errorsCastC(rc, fmt.Sprintf("C.rcl_shutdown(%+v)", c.rcl_context_t)))
 		} else if rc := C.rcl_context_fini(c.rcl_context_t); rc != C.RCL_RET_OK {
-			errs = multierror.Append(errs, errorsCastC(rc, "rcl_context_fini failed"))
+			errs = errors.Join(errs, errorsCastC(rc, "rcl_context_fini failed"))
 		}
 		C.free(unsafe.Pointer(c.rcl_context_t))
 		c.rcl_context_t = nil
@@ -251,7 +248,7 @@ func (c *Context) Close() error {
 		C.free(unsafe.Pointer(c.rcl_allocator_t))
 		c.rcl_allocator_t = nil
 	}
-	return errs.ErrorOrNil()
+	return errs
 }
 
 func (c *Context) Clock() *Clock {

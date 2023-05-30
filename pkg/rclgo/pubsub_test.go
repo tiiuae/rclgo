@@ -14,7 +14,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/go-multierror"
 	. "github.com/smartystreets/goconvey/convey"
 	std_msgs "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
 	test_msgs "github.com/tiiuae/rclgo/internal/msgs/test_msgs/msg"
@@ -219,7 +218,7 @@ func TestMultipleSubscribersInSingleWaitSet(t *testing.T) {
 			Convey("Then all subscribers stop", func() {
 				var err error
 				timeOut(2000, func() {
-					err = multierror.Append(<-errChan, <-errChan)
+					err = errors.Join(<-errChan, <-errChan)
 				}, "Subscriber waitGroup waiting to finish")
 				So(err, shouldContainError, context.Canceled)
 			})
@@ -644,20 +643,8 @@ func shouldContainError(actual interface{}, expected ...interface{}) string {
 	if !ok {
 		return fmt.Sprintf("expected argument to be error, not %T", expected[0])
 	}
-	if errorIs(err, target) {
+	if errors.Is(err, target) {
 		return ""
 	}
 	return fmt.Sprintf("expected %+v to contain %+v", err, target)
-}
-
-func errorIs(err, target error) bool {
-	var errs *multierror.Error
-	if errors.As(err, &errs) {
-		for _, err := range errs.Errors {
-			if errorIs(err, target) {
-				return true
-			}
-		}
-	}
-	return errors.Is(err, target)
 }

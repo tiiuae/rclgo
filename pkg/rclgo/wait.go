@@ -12,8 +12,6 @@ import (
 	"fmt"
 	"sync/atomic"
 	"unsafe"
-
-	"github.com/hashicorp/go-multierror"
 )
 
 type singleUse atomic.Bool
@@ -188,7 +186,7 @@ func (self *WaitSet) Run(ctx context.Context) (err error) {
 	}
 	errs := make(chan error, 1)
 	defer func() {
-		err = multierror.Append(err, <-errs).ErrorOrNil()
+		err = errors.Join(err, <-errs)
 	}()
 	errctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -312,21 +310,20 @@ func (self *WaitSet) initEntities() error {
 /*
 Close frees the allocated memory
 */
-func (self *WaitSet) Close() error {
+func (self *WaitSet) Close() (err error) {
 	if self.context == nil {
 		return closeErr("wait set")
 	}
-	var errs *multierror.Error
 	self.context.removeResource(self)
 	self.context = nil
 	rc := C.rcl_wait_set_fini(&self.rcl_wait_set_t)
 	if rc != C.RCL_RET_OK {
-		errs = multierror.Append(errs, errorsCast(rc))
+		err = errors.Join(err, errorsCast(rc))
 	}
 	var closeError closeError
-	err := self.cancelWait.Close()
-	if err != nil && !errors.As(err, &closeError) {
-		errs = multierror.Append(errs, err)
+	cancelWaitErr := self.cancelWait.Close()
+	if cancelWaitErr != nil && !errors.As(cancelWaitErr, &closeError) {
+		err = errors.Join(err, cancelWaitErr)
 	}
-	return errs.ErrorOrNil()
+	return err
 }

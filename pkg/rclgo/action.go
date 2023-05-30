@@ -18,7 +18,6 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/hashicorp/go-multierror"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 )
 
@@ -882,20 +881,20 @@ func (c *ActionClient) Close() error {
 		return closeErr("action client")
 	}
 	c.node.removeResource(c)
-	err := multierror.Append(
+	err := errors.Join(
 		c.cancelSender.Close(),
 		c.goalSender.Close(),
 		c.resultSender.Close(),
 	)
 	rc := C.rcl_action_client_fini(&c.rclClient, c.node.rcl_node_t)
 	if rc != C.RCL_RET_OK {
-		err = multierror.Append(
+		err = errors.Join(
 			err,
 			errorsCastC(rc, "failed to finalize action client"),
 		)
 	}
 	c.typeSupport = nil
-	return err.ErrorOrNil()
+	return err
 }
 
 // Node returns the node c was created with.

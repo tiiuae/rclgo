@@ -51,7 +51,6 @@ import (
 	"unsafe"
 
 	"github.com/google/shlex"
-	"github.com/hashicorp/go-multierror"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 )
 
@@ -388,17 +387,16 @@ func (self *Node) Close() error {
 	}
 	self.context.removeResource(self)
 
-	var err *multierror.Error
-	err = multierror.Append(err, self.rosResourceStore.Close())
+	err := self.rosResourceStore.Close()
 
 	rc := C.rcl_node_fini(self.rcl_node_t)
 	if rc != C.RCL_RET_OK {
-		err = multierror.Append(err, errorsCast(rc))
+		err = errors.Join(err, errorsCast(rc))
 	}
 	C.free(unsafe.Pointer(self.rcl_node_t))
 	self.rcl_node_t = nil
 
-	return err.ErrorOrNil()
+	return err
 }
 
 // Context returns the context n belongs to.
@@ -540,20 +538,19 @@ func (self *Publisher) PublishSerialized(msg []byte) error {
 /*
 Close frees the allocated memory
 */
-func (self *Publisher) Close() error {
+func (self *Publisher) Close() (err error) {
 	if self.rcl_publisher_t == nil {
 		return closeErr("publisher")
 	}
-	var err *multierror.Error
 	self.node.removeResource(self)
 	rc := C.rcl_publisher_fini(self.rcl_publisher_t, self.node.rcl_node_t)
 	if rc != C.RCL_RET_OK {
-		err = multierror.Append(err, errorsCast(rc))
+		err = errors.Join(err, errorsCast(rc))
 	}
 	C.free(unsafe.Pointer(self.rcl_publisher_t))
 	self.rcl_publisher_t = nil
 	C.free(unsafe.Pointer(self.topicName))
-	return err.ErrorOrNil()
+	return err
 }
 
 type Clock struct {
@@ -593,19 +590,18 @@ func (c *Context) NewClock(clockType ClockType) (clock *Clock, err error) {
 /*
 Close frees the allocated memory
 */
-func (self *Clock) Close() error {
+func (self *Clock) Close() (err error) {
 	if self.rcl_clock_t == nil {
 		return closeErr("clock")
 	}
-	var err *multierror.Error
 	self.context.removeResource(self)
 	rc := C.rcl_clock_fini(self.rcl_clock_t)
 	if rc != C.RCL_RET_OK {
-		err = multierror.Append(err, errorsCast(rc))
+		err = errors.Join(err, errorsCast(rc))
 	}
 	C.free(unsafe.Pointer(self.rcl_clock_t))
 	self.rcl_clock_t = nil
-	return err.ErrorOrNil()
+	return err
 }
 
 // Context returns the context c belongs to.
@@ -690,19 +686,18 @@ func (self *Timer) Reset() error {
 /*
 Close frees the allocated memory
 */
-func (self *Timer) Close() error {
+func (self *Timer) Close() (err error) {
 	if self.rcl_timer_t == nil {
 		return closeErr("timer")
 	}
-	var err *multierror.Error
 	self.context.removeResource(self)
 	rc := C.rcl_timer_fini(self.rcl_timer_t)
 	if rc != C.RCL_RET_OK {
-		err = multierror.Append(err, errorsCast(rc))
+		err = errors.Join(err, errorsCast(rc))
 	}
 	C.free(unsafe.Pointer(self.rcl_timer_t))
 	self.rcl_timer_t = nil
-	return err.ErrorOrNil()
+	return err
 }
 
 type SubscriptionOptions struct {
@@ -818,20 +813,19 @@ func (s *Subscription) TakeSerializedMessage() ([]byte, *RmwMessageInfo, error) 
 /*
 Close frees the allocated memory
 */
-func (self *Subscription) Close() error {
+func (self *Subscription) Close() (err error) {
 	if self.rcl_subscription_t == nil {
 		return closeErr("subscription")
 	}
-	var err *multierror.Error
 	self.node.removeResource(self)
 	rc := C.rcl_subscription_fini(self.rcl_subscription_t, self.node.rcl_node_t)
 	if rc != C.RCL_RET_OK {
-		err = multierror.Append(err, errorsCast(rc))
+		err = errors.Join(err, errorsCast(rc))
 	}
 	C.free(unsafe.Pointer(self.rcl_subscription_t))
 	self.rcl_subscription_t = nil
 	C.free(unsafe.Pointer(self.topicName))
-	return err.ErrorOrNil()
+	return err
 }
 
 type guardCondition struct {
@@ -1088,17 +1082,16 @@ func (c *Client) Close() error {
 	if c.rclClient == nil {
 		return closeErr("client")
 	}
-	var err *multierror.Error
 	c.node.removeResource(c)
-	err = multierror.Append(err, c.sender.Close())
+	err := c.sender.Close()
 	rc := C.rcl_client_fini(c.rclClient, c.node.rcl_node_t)
 	if rc != C.RCL_RET_OK {
-		err = multierror.Append(err, errorsCastC(rc, "failed to finalize client"))
+		err = errors.Join(err, errorsCastC(rc, "failed to finalize client"))
 	}
 	C.free(unsafe.Pointer(c.rclClient))
 	c.rclClient = nil
 
-	return err.ErrorOrNil()
+	return err
 }
 
 // Node returns the node c belongs to.

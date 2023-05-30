@@ -13,9 +13,15 @@ linters:
     # The following are not useful and/or produce too many false positives
     - cyclop
     - exhaustivestruct
+    - exhaustruct
     - forbidigo
     - forcetypeassert
+    - testableexamples
+    - interfacebloat
     - funlen
+    - nonamedreturns
+    - nosnakecase
+    - gocyclo
     - gci
     - gochecknoglobals
     - gochecknoinits

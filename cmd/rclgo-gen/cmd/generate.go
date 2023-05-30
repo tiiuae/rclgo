@@ -24,6 +24,8 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
+const correctDistro = "humble"
+
 func validateGenerateArgs(cmd *cobra.Command, args []string) error {
 	rootPaths := getRootPaths(cmd)
 	if len(rootPaths) == 0 {
@@ -31,6 +33,15 @@ func validateGenerateArgs(cmd *cobra.Command, args []string) error {
 			return fmt.Errorf("You haven't sourced your ROS2 environment! Cannot autodetect --root-path. Source your ROS2 or pass --root-path")
 		}
 		return fmt.Errorf("root-path is required")
+	}
+
+	distro := os.Getenv("ROS_DISTRO")
+	if getBool(cmd, "ignore-ros-distro-mismatch") {
+		if distro != correctDistro {
+			fmt.Printf("NOTE: Environment variable ROS_DISTRO is set to %q, generating files for %q\n", distro, correctDistro)
+		}
+	} else if distro != correctDistro {
+		return fmt.Errorf("ROS_DISTRO should be set to %q", correctDistro)
 	}
 
 	destPath := getString(cmd, "dest-path")
@@ -106,6 +117,7 @@ func configureFlags(cmd *cobra.Command, destPathDefault string) {
 	cmd.PersistentFlags().String("rclgo-import-path", gogen.DefaultConfig.RclgoImportPath, "Import path of rclgo library")
 	cmd.PersistentFlags().String("message-module-prefix", gogen.DefaultConfig.MessageModulePrefix, "Import path prefix for generated message binding modules")
 	cmd.PersistentFlags().StringArray("include-package", []string{".*"}, "Include only packages matching a regex. Can be passed multiple times, in which case the union of the matches is used.")
+	cmd.PersistentFlags().Bool("ignore-ros-distro-mismatch", false, "If true, ignores possible mismatches in sourced and supported ROS distro")
 	bindPFlags(cmd)
 }
 
@@ -126,6 +138,10 @@ func getPrefix(cmd *cobra.Command) string {
 
 func getString(cmd *cobra.Command, key string) string {
 	return viper.GetString(getPrefix(cmd) + key)
+}
+
+func getBool(cmd *cobra.Command, key string) bool {
+	return viper.GetBool(getPrefix(cmd) + key)
 }
 
 func bindPFlags(cmd *cobra.Command) {

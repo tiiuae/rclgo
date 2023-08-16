@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     container: ghcr.io/tiiuae/fog-ros-baseimage-builder:dp-4266_humble_upgrade
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Install additional tools and libraries
         run: |
@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     container: ghcr.io/tiiuae/fog-ros-baseimage-builder:dp-4266_humble_upgrade
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Prepare environment
         shell: bash
@@ -42,4 +42,4 @@ jobs:
             ros-humble-test-msgs
           env > "$GITHUB_ENV"
 
-      - uses: golangci/golangci-lint-action@v2
+      - uses: golangci/golangci-lint-action@v3

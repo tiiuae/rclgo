@@ -93,6 +93,12 @@ var generateRclgoCmd = &cobra.Command{
 		if err := gogen.GeneratePrimitives(config, destPath); err != nil {
 			return fmt.Errorf("failed to generate primitive types: %w", err)
 		}
+		if err := gogen.GenerateRclgoFlags(config, destPath); err != nil {
+			return fmt.Errorf("failed to generate rclgo flags: %w", err)
+		}
+		if err := gogen.GenerateTestGogenFlags(config, destPath); err != nil {
+			return fmt.Errorf("failed to generate rclgo flags: %w", err)
+		}
 		if err := gogen.GenerateROS2ErrorTypes(config.RootPaths, destPath); err != nil {
 			return fmt.Errorf("failed to generate error types: %w", err)
 		}

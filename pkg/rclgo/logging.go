@@ -10,8 +10,6 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package rclgo
 
 /*
-#cgo CFLAGS: -Wno-format-security
-
 #include <rcl/logging.h>
 
 const rcutils_log_location_t zero_location = {
@@ -25,9 +23,10 @@ void rcutils_log_wrapper(
     const rcutils_log_location_t* location,
     int severity,
     const char* name,
-    const char* format
+    const char* format,
+    const char* msg
 ) {
-    rcutils_log(location, severity, name, format);
+    rcutils_log(location, severity, name, format, msg);
 }
 
 void loggingOutputHandler(
@@ -42,7 +41,6 @@ import "C"
 import (
 	"errors"
 	"fmt"
-	"reflect"
 	"regexp"
 	"runtime"
 	"strings"
@@ -127,21 +125,14 @@ func rclInitLogging(rclArgs *Args, update bool) error {
 	return nil
 }
 
+var rcutilsLogFormat = C.CString("%s")
+
 // logNamed logs msg with severity level to logger named name. logNamed should
 // not be used for logging directly. Use one of the exported logging functions
 // instead.
 func logNamed(level LogSeverity, name, msg string) error {
-	// rcutils_log takes a C-style format string as an argument. We want to do
-	// string formatting in Go to avoid the pitfalls of C string formatting
-	// functions, so the message must be escaped before calling rcutils_log.
-	buf := make([]byte, 0, len(msg)+1)
-	for i := range msg {
-		buf = append(buf, msg[i])
-		if msg[i] == '%' {
-			buf = append(buf, '%')
-		}
-	}
-	buf = append(buf, 0) // Null terminator
+	cmsg := C.CString(msg)
+	defer C.free(unsafe.Pointer(cmsg))
 
 	loc := C.zero_location
 	// Because convenience wrappers are provided for logging, two stack frames
@@ -157,13 +148,7 @@ func logNamed(level LogSeverity, name, msg string) error {
 	}
 	cname := C.CString(name)
 	defer C.free(unsafe.Pointer(cname))
-	bufHeader := (*reflect.SliceHeader)(unsafe.Pointer(&buf))
-	C.rcutils_log_wrapper(
-		&loc,
-		C.int(level),
-		cname,
-		(*C.char)(unsafe.Pointer(bufHeader.Data)),
-	)
+	C.rcutils_log_wrapper(&loc, C.int(level), cname, rcutilsLogFormat, cmsg)
 	return nil
 }
 

@@ -10,20 +10,6 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package rclgo
 
 /*
-#cgo LDFLAGS: -L/opt/ros/humble/lib -Wl,-rpath=/opt/ros/humble/lib
-#cgo LDFLAGS: -lrcl -lrmw -lrosidl_runtime_c -lrosidl_typesupport_c
-#cgo LDFLAGS: -lrcutils -lrcl_action -lrmw_implementation
-#cgo CFLAGS: -I/usr/include/rcl -I/opt/ros/humble/include/rcl
-#cgo CFLAGS: -I/usr/include/rmw -I/opt/ros/humble/include/rmw
-#cgo CFLAGS: -I/usr/include/rosidl_runtime_c -I/opt/ros/humble/include/rosidl_runtime_c
-#cgo CFLAGS: -I/usr/include/rosidl_typesupport_interface -I/opt/ros/humble/include/rosidl_typesupport_interface
-#cgo CFLAGS: -I/usr/include/rcutils -I/opt/ros/humble/include/rcutils
-#cgo CFLAGS: -I/usr/include/rcl_action -I/opt/ros/humble/include/rcl_action
-#cgo CFLAGS: -I/usr/include/action_msgs -I/opt/ros/humble/include/action_msgs
-#cgo CFLAGS: -I/usr/include/unique_identifier_msgs -I/opt/ros/humble/include/unique_identifier_msgs
-#cgo CFLAGS: -I/usr/include/builtin_interfaces -I/opt/ros/humble/include/builtin_interfaces
-#cgo CFLAGS: -I/usr/include/rcl_yaml_param_parser -I/opt/ros/humble/include/rcl_yaml_param_parser
-
 #include <stdlib.h>
 #include <string.h>
 

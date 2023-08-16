@@ -5,16 +5,6 @@ These are handy when you need to make bigger changes to the way the templates ar
 package test
 
 /*
-#cgo LDFLAGS: -L/opt/ros/humble/lib -Wl,-rpath=/opt/ros/humble/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation -lrcl_interfaces__rosidl_typesupport_c
-#cgo LDFLAGS: -lsensor_msgs__rosidl_typesupport_c -lsensor_msgs__rosidl_generator_c
-#cgo LDFLAGS: -lstd_msgs__rosidl_typesupport_c -lstd_msgs__rosidl_generator_c
-#cgo CFLAGS: "-I/usr/include/builtin_interfaces" "-I/opt/ros/humble/include/builtin_interfaces"
-#cgo CFLAGS: "-I/usr/include/rosidl_runtime_c" "-I/opt/ros/humble/include/rosidl_runtime_c"
-#cgo CFLAGS: "-I/usr/include/rosidl_typesupport_interface" "-I/opt/ros/humble/include/rosidl_typesupport_interface"
-#cgo CFLAGS: "-I/usr/include/sensor_msgs" "-I/opt/ros/humble/include/sensor_msgs"
-#cgo CFLAGS: "-I/usr/include/std_msgs" "-I/opt/ros/humble/include/std_msgs"
-#cgo CFLAGS: "-I/usr/include/test_msgs" "-I/opt/ros/humble/include/test_msgs"
-
 #include <rosidl_runtime_c/message_type_support_struct.h>
 #include <rosidl_runtime_c/primitives_sequence_functions.h>
 #include <rosidl_runtime_c/string_functions.h>

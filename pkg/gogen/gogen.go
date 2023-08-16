@@ -93,18 +93,43 @@ type generator struct {
 }
 
 func GeneratePrimitives(c *Config, destFilePath string) error {
-	destFilePath = filepath.Join(destFilePath, "pkg/rclgo/primitives/primitives.gen.go")
+	return generateRclgoFile(
+		"primitive types",
+		filepath.Join(destFilePath, "pkg/rclgo/primitives/primitives.gen.go"),
+		primitiveTypes,
+		templateData{
+			"PMap":   &primitiveTypeMappings,
+			"Config": c,
+		},
+	)
+}
+
+func GenerateRclgoFlags(c *Config, destFilePath string) error {
+	return generateRclgoFile(
+		"rclgo flags",
+		filepath.Join(destFilePath, "pkg/rclgo/flags.gen.go"),
+		rclgoFlags,
+		templateData{"Config": c},
+	)
+}
+
+func GenerateTestGogenFlags(c *Config, destFilePath string) error {
+	return generateRclgoFile(
+		"gogen flags",
+		filepath.Join(destFilePath, "test/gogen/flags.gen.go"),
+		gogenTestFlags,
+		templateData{"Config": c},
+	)
+}
+
+func generateRclgoFile(fileType, destFilePath string, tmpl *template.Template, data templateData) error {
 	destFile, err := mkdir_p(destFilePath)
 	if err != nil {
 		return err
 	}
 	defer destFile.Close()
-
-	fmt.Printf("Generating primitive types: %s\n", destFilePath)
-	return primitiveTypes.Execute(destFile, templateData{
-		"PMap":   &primitiveTypeMappings,
-		"Config": c,
-	})
+	fmt.Printf("Generating %s: %s\n", fileType, destFilePath)
+	return tmpl.Execute(destFile, data)
 }
 
 func GenerateROS2AllMessagesImporter(c *Config, destPathPkgRoot string) error {

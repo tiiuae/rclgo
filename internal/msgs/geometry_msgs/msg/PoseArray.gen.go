@@ -101,13 +101,13 @@ type PoseArraySubscriptionCallback func(msg *PoseArray, info *rclgo.MessageInfo,
 
 // NewPoseArraySubscription creates and returns a new subscription for the
 // PoseArray
-func NewPoseArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback PoseArraySubscriptionCallback) (*PoseArraySubscription, error) {
+func NewPoseArraySubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback PoseArraySubscriptionCallback) (*PoseArraySubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg PoseArray
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, PoseArrayTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, PoseArrayTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

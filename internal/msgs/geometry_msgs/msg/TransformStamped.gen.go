@@ -102,13 +102,13 @@ type TransformStampedSubscriptionCallback func(msg *TransformStamped, info *rclg
 
 // NewTransformStampedSubscription creates and returns a new subscription for the
 // TransformStamped
-func NewTransformStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback TransformStampedSubscriptionCallback) (*TransformStampedSubscription, error) {
+func NewTransformStampedSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback TransformStampedSubscriptionCallback) (*TransformStampedSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg TransformStamped
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, TransformStampedTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, TransformStampedTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

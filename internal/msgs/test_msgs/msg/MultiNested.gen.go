@@ -142,13 +142,13 @@ type MultiNestedSubscriptionCallback func(msg *MultiNested, info *rclgo.MessageI
 
 // NewMultiNestedSubscription creates and returns a new subscription for the
 // MultiNested
-func NewMultiNestedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback MultiNestedSubscriptionCallback) (*MultiNestedSubscription, error) {
+func NewMultiNestedSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback MultiNestedSubscriptionCallback) (*MultiNestedSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg MultiNested
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, MultiNestedTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, MultiNestedTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

@@ -100,13 +100,13 @@ type Pose2DSubscriptionCallback func(msg *Pose2D, info *rclgo.MessageInfo, err e
 
 // NewPose2DSubscription creates and returns a new subscription for the
 // Pose2D
-func NewPose2DSubscription(node *rclgo.Node, topic_name string, subscriptionCallback Pose2DSubscriptionCallback) (*Pose2DSubscription, error) {
+func NewPose2DSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback Pose2DSubscriptionCallback) (*Pose2DSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Pose2D
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, Pose2DTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, Pose2DTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

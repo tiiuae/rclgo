@@ -97,13 +97,13 @@ type TimeSubscriptionCallback func(msg *Time, info *rclgo.MessageInfo, err error
 
 // NewTimeSubscription creates and returns a new subscription for the
 // Time
-func NewTimeSubscription(node *rclgo.Node, topic_name string, subscriptionCallback TimeSubscriptionCallback) (*TimeSubscription, error) {
+func NewTimeSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback TimeSubscriptionCallback) (*TimeSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Time
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, TimeTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, TimeTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

@@ -115,13 +115,13 @@ type ImuSubscriptionCallback func(msg *Imu, info *rclgo.MessageInfo, err error)
 
 // NewImuSubscription creates and returns a new subscription for the
 // Imu
-func NewImuSubscription(node *rclgo.Node, topic_name string, subscriptionCallback ImuSubscriptionCallback) (*ImuSubscription, error) {
+func NewImuSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback ImuSubscriptionCallback) (*ImuSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Imu
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, ImuTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, ImuTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

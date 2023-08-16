@@ -98,13 +98,13 @@ type AccelWithCovarianceSubscriptionCallback func(msg *AccelWithCovariance, info
 
 // NewAccelWithCovarianceSubscription creates and returns a new subscription for the
 // AccelWithCovariance
-func NewAccelWithCovarianceSubscription(node *rclgo.Node, topic_name string, subscriptionCallback AccelWithCovarianceSubscriptionCallback) (*AccelWithCovarianceSubscription, error) {
+func NewAccelWithCovarianceSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback AccelWithCovarianceSubscriptionCallback) (*AccelWithCovarianceSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg AccelWithCovariance
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, AccelWithCovarianceTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, AccelWithCovarianceTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

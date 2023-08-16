@@ -156,6 +156,7 @@ func TestMultipleSubscribersInSingleWaitSet(t *testing.T) {
 				_, err = node.NewSubscription(
 					"/topic1",
 					std_msgs.StringTypeSupport,
+					nil,
 					sendToChan(topic1Chan),
 				)
 				So(err, ShouldBeNil)
@@ -166,6 +167,7 @@ func TestMultipleSubscribersInSingleWaitSet(t *testing.T) {
 				_, err = node.NewSubscription(
 					"/topic2",
 					std_msgs.StringTypeSupport,
+					nil,
 					sendToChan(topic2Chan),
 				)
 				So(err, ShouldBeNil)
@@ -545,7 +547,7 @@ func newContextWithSubscriber(
 	}
 	opts := rclgo.NewDefaultSubscriptionOptions()
 	opts.Qos = reliableQos
-	_, err = n.NewSubscriptionWithOpts(topic, ts, opts, cb)
+	_, err = n.NewSubscription(topic, ts, opts, cb)
 	if err != nil {
 		return nil, err
 	}

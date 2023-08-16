@@ -98,13 +98,13 @@ type PointStampedSubscriptionCallback func(msg *PointStamped, info *rclgo.Messag
 
 // NewPointStampedSubscription creates and returns a new subscription for the
 // PointStamped
-func NewPointStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback PointStampedSubscriptionCallback) (*PointStampedSubscription, error) {
+func NewPointStampedSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback PointStampedSubscriptionCallback) (*PointStampedSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg PointStamped
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, PointStampedTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, PointStampedTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

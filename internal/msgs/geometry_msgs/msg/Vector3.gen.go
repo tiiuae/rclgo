@@ -100,13 +100,13 @@ type Vector3SubscriptionCallback func(msg *Vector3, info *rclgo.MessageInfo, err
 
 // NewVector3Subscription creates and returns a new subscription for the
 // Vector3
-func NewVector3Subscription(node *rclgo.Node, topic_name string, subscriptionCallback Vector3SubscriptionCallback) (*Vector3Subscription, error) {
+func NewVector3Subscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback Vector3SubscriptionCallback) (*Vector3Subscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Vector3
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, Vector3TypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, Vector3TypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

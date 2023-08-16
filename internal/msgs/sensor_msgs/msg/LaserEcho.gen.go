@@ -98,13 +98,13 @@ type LaserEchoSubscriptionCallback func(msg *LaserEcho, info *rclgo.MessageInfo,
 
 // NewLaserEchoSubscription creates and returns a new subscription for the
 // LaserEcho
-func NewLaserEchoSubscription(node *rclgo.Node, topic_name string, subscriptionCallback LaserEchoSubscriptionCallback) (*LaserEchoSubscription, error) {
+func NewLaserEchoSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback LaserEchoSubscriptionCallback) (*LaserEchoSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg LaserEcho
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, LaserEchoTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, LaserEchoTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

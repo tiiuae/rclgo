@@ -103,13 +103,13 @@ type MagneticFieldSubscriptionCallback func(msg *MagneticField, info *rclgo.Mess
 
 // NewMagneticFieldSubscription creates and returns a new subscription for the
 // MagneticField
-func NewMagneticFieldSubscription(node *rclgo.Node, topic_name string, subscriptionCallback MagneticFieldSubscriptionCallback) (*MagneticFieldSubscription, error) {
+func NewMagneticFieldSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback MagneticFieldSubscriptionCallback) (*MagneticFieldSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg MagneticField
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, MagneticFieldTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, MagneticFieldTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

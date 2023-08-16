@@ -95,13 +95,13 @@ type WStringSubscriptionCallback func(msg *WString, info *rclgo.MessageInfo, err
 
 // NewWStringSubscription creates and returns a new subscription for the
 // WString
-func NewWStringSubscription(node *rclgo.Node, topic_name string, subscriptionCallback WStringSubscriptionCallback) (*WStringSubscription, error) {
+func NewWStringSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback WStringSubscriptionCallback) (*WStringSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg WString
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, WStringTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, WStringTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

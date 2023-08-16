@@ -98,13 +98,13 @@ type TwistStampedSubscriptionCallback func(msg *TwistStamped, info *rclgo.Messag
 
 // NewTwistStampedSubscription creates and returns a new subscription for the
 // TwistStamped
-func NewTwistStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback TwistStampedSubscriptionCallback) (*TwistStampedSubscription, error) {
+func NewTwistStampedSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback TwistStampedSubscriptionCallback) (*TwistStampedSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg TwistStamped
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, TwistStampedTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, TwistStampedTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

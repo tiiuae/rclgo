@@ -120,13 +120,13 @@ type NavSatFixSubscriptionCallback func(msg *NavSatFix, info *rclgo.MessageInfo,
 
 // NewNavSatFixSubscription creates and returns a new subscription for the
 // NavSatFix
-func NewNavSatFixSubscription(node *rclgo.Node, topic_name string, subscriptionCallback NavSatFixSubscriptionCallback) (*NavSatFixSubscription, error) {
+func NewNavSatFixSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback NavSatFixSubscriptionCallback) (*NavSatFixSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg NavSatFix
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, NavSatFixTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, NavSatFixTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

@@ -94,13 +94,13 @@ type NestedSubscriptionCallback func(msg *Nested, info *rclgo.MessageInfo, err e
 
 // NewNestedSubscription creates and returns a new subscription for the
 // Nested
-func NewNestedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback NestedSubscriptionCallback) (*NestedSubscription, error) {
+func NewNestedSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback NestedSubscriptionCallback) (*NestedSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Nested
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, NestedTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, NestedTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

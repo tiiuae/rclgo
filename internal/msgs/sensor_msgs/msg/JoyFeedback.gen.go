@@ -105,13 +105,13 @@ type JoyFeedbackSubscriptionCallback func(msg *JoyFeedback, info *rclgo.MessageI
 
 // NewJoyFeedbackSubscription creates and returns a new subscription for the
 // JoyFeedback
-func NewJoyFeedbackSubscription(node *rclgo.Node, topic_name string, subscriptionCallback JoyFeedbackSubscriptionCallback) (*JoyFeedbackSubscription, error) {
+func NewJoyFeedbackSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback JoyFeedbackSubscriptionCallback) (*JoyFeedbackSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg JoyFeedback
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, JoyFeedbackTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, JoyFeedbackTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

@@ -91,13 +91,13 @@ type Empty_RequestSubscriptionCallback func(msg *Empty_Request, info *rclgo.Mess
 
 // NewEmpty_RequestSubscription creates and returns a new subscription for the
 // Empty_Request
-func NewEmpty_RequestSubscription(node *rclgo.Node, topic_name string, subscriptionCallback Empty_RequestSubscriptionCallback) (*Empty_RequestSubscription, error) {
+func NewEmpty_RequestSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback Empty_RequestSubscriptionCallback) (*Empty_RequestSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Empty_Request
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, Empty_RequestTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, Empty_RequestTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

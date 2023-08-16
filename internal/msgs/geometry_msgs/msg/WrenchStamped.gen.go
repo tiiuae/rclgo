@@ -98,13 +98,13 @@ type WrenchStampedSubscriptionCallback func(msg *WrenchStamped, info *rclgo.Mess
 
 // NewWrenchStampedSubscription creates and returns a new subscription for the
 // WrenchStamped
-func NewWrenchStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback WrenchStampedSubscriptionCallback) (*WrenchStampedSubscription, error) {
+func NewWrenchStampedSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback WrenchStampedSubscriptionCallback) (*WrenchStampedSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg WrenchStamped
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, WrenchStampedTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, WrenchStampedTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

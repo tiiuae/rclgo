@@ -95,13 +95,13 @@ type CancelGoal_RequestSubscriptionCallback func(msg *CancelGoal_Request, info *
 
 // NewCancelGoal_RequestSubscription creates and returns a new subscription for the
 // CancelGoal_Request
-func NewCancelGoal_RequestSubscription(node *rclgo.Node, topic_name string, subscriptionCallback CancelGoal_RequestSubscriptionCallback) (*CancelGoal_RequestSubscription, error) {
+func NewCancelGoal_RequestSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback CancelGoal_RequestSubscriptionCallback) (*CancelGoal_RequestSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg CancelGoal_Request
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, CancelGoal_RequestTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, CancelGoal_RequestTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

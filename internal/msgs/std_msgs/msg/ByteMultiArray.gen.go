@@ -101,13 +101,13 @@ type ByteMultiArraySubscriptionCallback func(msg *ByteMultiArray, info *rclgo.Me
 
 // NewByteMultiArraySubscription creates and returns a new subscription for the
 // ByteMultiArray
-func NewByteMultiArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback ByteMultiArraySubscriptionCallback) (*ByteMultiArraySubscription, error) {
+func NewByteMultiArraySubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback ByteMultiArraySubscriptionCallback) (*ByteMultiArraySubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg ByteMultiArray
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, ByteMultiArrayTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, ByteMultiArrayTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

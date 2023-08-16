@@ -101,13 +101,13 @@ type FluidPressureSubscriptionCallback func(msg *FluidPressure, info *rclgo.Mess
 
 // NewFluidPressureSubscription creates and returns a new subscription for the
 // FluidPressure
-func NewFluidPressureSubscription(node *rclgo.Node, topic_name string, subscriptionCallback FluidPressureSubscriptionCallback) (*FluidPressureSubscription, error) {
+func NewFluidPressureSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback FluidPressureSubscriptionCallback) (*FluidPressureSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg FluidPressure
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, FluidPressureTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, FluidPressureTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

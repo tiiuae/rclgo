@@ -281,13 +281,13 @@ type UnboundedSequencesSubscriptionCallback func(msg *UnboundedSequences, info *
 
 // NewUnboundedSequencesSubscription creates and returns a new subscription for the
 // UnboundedSequences
-func NewUnboundedSequencesSubscription(node *rclgo.Node, topic_name string, subscriptionCallback UnboundedSequencesSubscriptionCallback) (*UnboundedSequencesSubscription, error) {
+func NewUnboundedSequencesSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback UnboundedSequencesSubscriptionCallback) (*UnboundedSequencesSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg UnboundedSequences
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, UnboundedSequencesTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, UnboundedSequencesTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

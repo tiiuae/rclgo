@@ -101,13 +101,13 @@ type RelativeHumiditySubscriptionCallback func(msg *RelativeHumidity, info *rclg
 
 // NewRelativeHumiditySubscription creates and returns a new subscription for the
 // RelativeHumidity
-func NewRelativeHumiditySubscription(node *rclgo.Node, topic_name string, subscriptionCallback RelativeHumiditySubscriptionCallback) (*RelativeHumiditySubscription, error) {
+func NewRelativeHumiditySubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback RelativeHumiditySubscriptionCallback) (*RelativeHumiditySubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg RelativeHumidity
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, RelativeHumidityTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, RelativeHumidityTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

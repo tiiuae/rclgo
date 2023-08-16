@@ -117,13 +117,13 @@ type ImageSubscriptionCallback func(msg *Image, info *rclgo.MessageInfo, err err
 
 // NewImageSubscription creates and returns a new subscription for the
 // Image
-func NewImageSubscription(node *rclgo.Node, topic_name string, subscriptionCallback ImageSubscriptionCallback) (*ImageSubscription, error) {
+func NewImageSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback ImageSubscriptionCallback) (*ImageSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Image
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, ImageTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, ImageTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

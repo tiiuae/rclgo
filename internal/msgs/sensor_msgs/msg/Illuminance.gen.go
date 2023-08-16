@@ -101,13 +101,13 @@ type IlluminanceSubscriptionCallback func(msg *Illuminance, info *rclgo.MessageI
 
 // NewIlluminanceSubscription creates and returns a new subscription for the
 // Illuminance
-func NewIlluminanceSubscription(node *rclgo.Node, topic_name string, subscriptionCallback IlluminanceSubscriptionCallback) (*IlluminanceSubscription, error) {
+func NewIlluminanceSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback IlluminanceSubscriptionCallback) (*IlluminanceSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Illuminance
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, IlluminanceTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, IlluminanceTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

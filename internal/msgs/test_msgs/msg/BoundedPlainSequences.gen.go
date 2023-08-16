@@ -269,13 +269,13 @@ type BoundedPlainSequencesSubscriptionCallback func(msg *BoundedPlainSequences, 
 
 // NewBoundedPlainSequencesSubscription creates and returns a new subscription for the
 // BoundedPlainSequences
-func NewBoundedPlainSequencesSubscription(node *rclgo.Node, topic_name string, subscriptionCallback BoundedPlainSequencesSubscriptionCallback) (*BoundedPlainSequencesSubscription, error) {
+func NewBoundedPlainSequencesSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback BoundedPlainSequencesSubscriptionCallback) (*BoundedPlainSequencesSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg BoundedPlainSequences
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, BoundedPlainSequencesTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, BoundedPlainSequencesTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

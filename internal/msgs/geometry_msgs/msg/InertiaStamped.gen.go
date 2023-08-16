@@ -98,13 +98,13 @@ type InertiaStampedSubscriptionCallback func(msg *InertiaStamped, info *rclgo.Me
 
 // NewInertiaStampedSubscription creates and returns a new subscription for the
 // InertiaStamped
-func NewInertiaStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback InertiaStampedSubscriptionCallback) (*InertiaStampedSubscription, error) {
+func NewInertiaStampedSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback InertiaStampedSubscriptionCallback) (*InertiaStampedSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg InertiaStamped
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, InertiaStampedTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, InertiaStampedTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

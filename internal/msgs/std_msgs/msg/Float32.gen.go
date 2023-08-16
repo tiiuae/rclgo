@@ -94,13 +94,13 @@ type Float32SubscriptionCallback func(msg *Float32, info *rclgo.MessageInfo, err
 
 // NewFloat32Subscription creates and returns a new subscription for the
 // Float32
-func NewFloat32Subscription(node *rclgo.Node, topic_name string, subscriptionCallback Float32SubscriptionCallback) (*Float32Subscription, error) {
+func NewFloat32Subscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback Float32SubscriptionCallback) (*Float32Subscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Float32
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, Float32TypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, Float32TypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

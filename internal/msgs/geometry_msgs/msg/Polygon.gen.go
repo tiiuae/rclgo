@@ -97,13 +97,13 @@ type PolygonSubscriptionCallback func(msg *Polygon, info *rclgo.MessageInfo, err
 
 // NewPolygonSubscription creates and returns a new subscription for the
 // Polygon
-func NewPolygonSubscription(node *rclgo.Node, topic_name string, subscriptionCallback PolygonSubscriptionCallback) (*PolygonSubscription, error) {
+func NewPolygonSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback PolygonSubscriptionCallback) (*PolygonSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Polygon
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, PolygonTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, PolygonTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

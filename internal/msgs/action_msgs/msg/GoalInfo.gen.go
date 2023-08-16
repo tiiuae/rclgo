@@ -99,13 +99,13 @@ type GoalInfoSubscriptionCallback func(msg *GoalInfo, info *rclgo.MessageInfo, e
 
 // NewGoalInfoSubscription creates and returns a new subscription for the
 // GoalInfo
-func NewGoalInfoSubscription(node *rclgo.Node, topic_name string, subscriptionCallback GoalInfoSubscriptionCallback) (*GoalInfoSubscription, error) {
+func NewGoalInfoSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback GoalInfoSubscriptionCallback) (*GoalInfoSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg GoalInfo
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, GoalInfoTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, GoalInfoTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

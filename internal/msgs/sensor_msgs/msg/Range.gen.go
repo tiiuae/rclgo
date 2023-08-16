@@ -114,13 +114,13 @@ type RangeSubscriptionCallback func(msg *Range, info *rclgo.MessageInfo, err err
 
 // NewRangeSubscription creates and returns a new subscription for the
 // Range
-func NewRangeSubscription(node *rclgo.Node, topic_name string, subscriptionCallback RangeSubscriptionCallback) (*RangeSubscription, error) {
+func NewRangeSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback RangeSubscriptionCallback) (*RangeSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Range
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, RangeTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, RangeTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

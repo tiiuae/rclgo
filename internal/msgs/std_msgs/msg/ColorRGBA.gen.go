@@ -103,13 +103,13 @@ type ColorRGBASubscriptionCallback func(msg *ColorRGBA, info *rclgo.MessageInfo,
 
 // NewColorRGBASubscription creates and returns a new subscription for the
 // ColorRGBA
-func NewColorRGBASubscription(node *rclgo.Node, topic_name string, subscriptionCallback ColorRGBASubscriptionCallback) (*ColorRGBASubscription, error) {
+func NewColorRGBASubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback ColorRGBASubscriptionCallback) (*ColorRGBASubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg ColorRGBA
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, ColorRGBATypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, ColorRGBATypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

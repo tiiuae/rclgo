@@ -100,13 +100,13 @@ type MultiArrayLayoutSubscriptionCallback func(msg *MultiArrayLayout, info *rclg
 
 // NewMultiArrayLayoutSubscription creates and returns a new subscription for the
 // MultiArrayLayout
-func NewMultiArrayLayoutSubscription(node *rclgo.Node, topic_name string, subscriptionCallback MultiArrayLayoutSubscriptionCallback) (*MultiArrayLayoutSubscription, error) {
+func NewMultiArrayLayoutSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback MultiArrayLayoutSubscriptionCallback) (*MultiArrayLayoutSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg MultiArrayLayout
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, MultiArrayLayoutTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, MultiArrayLayoutTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

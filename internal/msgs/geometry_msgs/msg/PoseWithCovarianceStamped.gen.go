@@ -98,13 +98,13 @@ type PoseWithCovarianceStampedSubscriptionCallback func(msg *PoseWithCovarianceS
 
 // NewPoseWithCovarianceStampedSubscription creates and returns a new subscription for the
 // PoseWithCovarianceStamped
-func NewPoseWithCovarianceStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback PoseWithCovarianceStampedSubscriptionCallback) (*PoseWithCovarianceStampedSubscription, error) {
+func NewPoseWithCovarianceStampedSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback PoseWithCovarianceStampedSubscriptionCallback) (*PoseWithCovarianceStampedSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg PoseWithCovarianceStamped
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, PoseWithCovarianceStampedTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, PoseWithCovarianceStampedTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

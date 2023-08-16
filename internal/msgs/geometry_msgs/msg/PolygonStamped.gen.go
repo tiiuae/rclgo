@@ -98,13 +98,13 @@ type PolygonStampedSubscriptionCallback func(msg *PolygonStamped, info *rclgo.Me
 
 // NewPolygonStampedSubscription creates and returns a new subscription for the
 // PolygonStamped
-func NewPolygonStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback PolygonStampedSubscriptionCallback) (*PolygonStampedSubscription, error) {
+func NewPolygonStampedSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback PolygonStampedSubscriptionCallback) (*PolygonStampedSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg PolygonStamped
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, PolygonStampedTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, PolygonStampedTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

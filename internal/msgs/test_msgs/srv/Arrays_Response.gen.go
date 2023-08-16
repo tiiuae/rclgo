@@ -192,13 +192,13 @@ type Arrays_ResponseSubscriptionCallback func(msg *Arrays_Response, info *rclgo.
 
 // NewArrays_ResponseSubscription creates and returns a new subscription for the
 // Arrays_Response
-func NewArrays_ResponseSubscription(node *rclgo.Node, topic_name string, subscriptionCallback Arrays_ResponseSubscriptionCallback) (*Arrays_ResponseSubscription, error) {
+func NewArrays_ResponseSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback Arrays_ResponseSubscriptionCallback) (*Arrays_ResponseSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Arrays_Response
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, Arrays_ResponseTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, Arrays_ResponseTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

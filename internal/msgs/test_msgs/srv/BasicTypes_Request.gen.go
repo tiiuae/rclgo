@@ -134,13 +134,13 @@ type BasicTypes_RequestSubscriptionCallback func(msg *BasicTypes_Request, info *
 
 // NewBasicTypes_RequestSubscription creates and returns a new subscription for the
 // BasicTypes_Request
-func NewBasicTypes_RequestSubscription(node *rclgo.Node, topic_name string, subscriptionCallback BasicTypes_RequestSubscriptionCallback) (*BasicTypes_RequestSubscription, error) {
+func NewBasicTypes_RequestSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback BasicTypes_RequestSubscriptionCallback) (*BasicTypes_RequestSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg BasicTypes_Request
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, BasicTypes_RequestTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, BasicTypes_RequestTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

@@ -98,13 +98,13 @@ type SetCameraInfo_ResponseSubscriptionCallback func(msg *SetCameraInfo_Response
 
 // NewSetCameraInfo_ResponseSubscription creates and returns a new subscription for the
 // SetCameraInfo_Response
-func NewSetCameraInfo_ResponseSubscription(node *rclgo.Node, topic_name string, subscriptionCallback SetCameraInfo_ResponseSubscriptionCallback) (*SetCameraInfo_ResponseSubscription, error) {
+func NewSetCameraInfo_ResponseSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback SetCameraInfo_ResponseSubscriptionCallback) (*SetCameraInfo_ResponseSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg SetCameraInfo_Response
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, SetCameraInfo_ResponseTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, SetCameraInfo_ResponseTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

@@ -98,13 +98,13 @@ type BuiltinsSubscriptionCallback func(msg *Builtins, info *rclgo.MessageInfo, e
 
 // NewBuiltinsSubscription creates and returns a new subscription for the
 // Builtins
-func NewBuiltinsSubscription(node *rclgo.Node, topic_name string, subscriptionCallback BuiltinsSubscriptionCallback) (*BuiltinsSubscription, error) {
+func NewBuiltinsSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback BuiltinsSubscriptionCallback) (*BuiltinsSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Builtins
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, BuiltinsTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, BuiltinsTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

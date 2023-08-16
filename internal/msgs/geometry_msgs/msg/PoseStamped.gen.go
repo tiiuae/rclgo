@@ -98,13 +98,13 @@ type PoseStampedSubscriptionCallback func(msg *PoseStamped, info *rclgo.MessageI
 
 // NewPoseStampedSubscription creates and returns a new subscription for the
 // PoseStamped
-func NewPoseStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback PoseStampedSubscriptionCallback) (*PoseStampedSubscription, error) {
+func NewPoseStampedSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback PoseStampedSubscriptionCallback) (*PoseStampedSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg PoseStamped
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, PoseStampedTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, PoseStampedTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

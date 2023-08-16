@@ -98,13 +98,13 @@ type TwistWithCovarianceSubscriptionCallback func(msg *TwistWithCovariance, info
 
 // NewTwistWithCovarianceSubscription creates and returns a new subscription for the
 // TwistWithCovariance
-func NewTwistWithCovarianceSubscription(node *rclgo.Node, topic_name string, subscriptionCallback TwistWithCovarianceSubscriptionCallback) (*TwistWithCovarianceSubscription, error) {
+func NewTwistWithCovarianceSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback TwistWithCovarianceSubscriptionCallback) (*TwistWithCovarianceSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg TwistWithCovariance
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, TwistWithCovarianceTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, TwistWithCovarianceTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

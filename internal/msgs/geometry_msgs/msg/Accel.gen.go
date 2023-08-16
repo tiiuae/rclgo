@@ -97,13 +97,13 @@ type AccelSubscriptionCallback func(msg *Accel, info *rclgo.MessageInfo, err err
 
 // NewAccelSubscription creates and returns a new subscription for the
 // Accel
-func NewAccelSubscription(node *rclgo.Node, topic_name string, subscriptionCallback AccelSubscriptionCallback) (*AccelSubscription, error) {
+func NewAccelSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback AccelSubscriptionCallback) (*AccelSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Accel
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, AccelTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, AccelTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

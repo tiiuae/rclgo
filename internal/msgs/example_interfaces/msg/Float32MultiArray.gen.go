@@ -101,13 +101,13 @@ type Float32MultiArraySubscriptionCallback func(msg *Float32MultiArray, info *rc
 
 // NewFloat32MultiArraySubscription creates and returns a new subscription for the
 // Float32MultiArray
-func NewFloat32MultiArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback Float32MultiArraySubscriptionCallback) (*Float32MultiArraySubscription, error) {
+func NewFloat32MultiArraySubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback Float32MultiArraySubscriptionCallback) (*Float32MultiArraySubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Float32MultiArray
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, Float32MultiArrayTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, Float32MultiArrayTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

@@ -98,13 +98,13 @@ type Vector3StampedSubscriptionCallback func(msg *Vector3Stamped, info *rclgo.Me
 
 // NewVector3StampedSubscription creates and returns a new subscription for the
 // Vector3Stamped
-func NewVector3StampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback Vector3StampedSubscriptionCallback) (*Vector3StampedSubscription, error) {
+func NewVector3StampedSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback Vector3StampedSubscriptionCallback) (*Vector3StampedSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Vector3Stamped
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, Vector3StampedTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, Vector3StampedTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

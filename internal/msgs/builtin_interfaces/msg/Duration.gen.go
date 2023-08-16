@@ -97,13 +97,13 @@ type DurationSubscriptionCallback func(msg *Duration, info *rclgo.MessageInfo, e
 
 // NewDurationSubscription creates and returns a new subscription for the
 // Duration
-func NewDurationSubscription(node *rclgo.Node, topic_name string, subscriptionCallback DurationSubscriptionCallback) (*DurationSubscription, error) {
+func NewDurationSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback DurationSubscriptionCallback) (*DurationSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Duration
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, DurationTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, DurationTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

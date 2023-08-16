@@ -102,13 +102,13 @@ type GoalStatusArraySubscriptionCallback func(msg *GoalStatusArray, info *rclgo.
 
 // NewGoalStatusArraySubscription creates and returns a new subscription for the
 // GoalStatusArray
-func NewGoalStatusArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback GoalStatusArraySubscriptionCallback) (*GoalStatusArraySubscription, error) {
+func NewGoalStatusArraySubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback GoalStatusArraySubscriptionCallback) (*GoalStatusArraySubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg GoalStatusArray
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, GoalStatusArrayTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, GoalStatusArrayTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

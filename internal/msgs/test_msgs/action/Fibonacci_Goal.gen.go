@@ -94,13 +94,13 @@ type Fibonacci_GoalSubscriptionCallback func(msg *Fibonacci_Goal, info *rclgo.Me
 
 // NewFibonacci_GoalSubscription creates and returns a new subscription for the
 // Fibonacci_Goal
-func NewFibonacci_GoalSubscription(node *rclgo.Node, topic_name string, subscriptionCallback Fibonacci_GoalSubscriptionCallback) (*Fibonacci_GoalSubscription, error) {
+func NewFibonacci_GoalSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback Fibonacci_GoalSubscriptionCallback) (*Fibonacci_GoalSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Fibonacci_Goal
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, Fibonacci_GoalTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, Fibonacci_GoalTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

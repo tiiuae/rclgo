@@ -94,13 +94,13 @@ type Int16SubscriptionCallback func(msg *Int16, info *rclgo.MessageInfo, err err
 
 // NewInt16Subscription creates and returns a new subscription for the
 // Int16
-func NewInt16Subscription(node *rclgo.Node, topic_name string, subscriptionCallback Int16SubscriptionCallback) (*Int16Subscription, error) {
+func NewInt16Subscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback Int16SubscriptionCallback) (*Int16Subscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Int16
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, Int16TypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, Int16TypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

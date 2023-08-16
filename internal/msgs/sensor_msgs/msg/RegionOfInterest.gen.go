@@ -106,13 +106,13 @@ type RegionOfInterestSubscriptionCallback func(msg *RegionOfInterest, info *rclg
 
 // NewRegionOfInterestSubscription creates and returns a new subscription for the
 // RegionOfInterest
-func NewRegionOfInterestSubscription(node *rclgo.Node, topic_name string, subscriptionCallback RegionOfInterestSubscriptionCallback) (*RegionOfInterestSubscription, error) {
+func NewRegionOfInterestSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback RegionOfInterestSubscriptionCallback) (*RegionOfInterestSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg RegionOfInterest
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, RegionOfInterestTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, RegionOfInterestTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

@@ -97,13 +97,13 @@ type TransformSubscriptionCallback func(msg *Transform, info *rclgo.MessageInfo,
 
 // NewTransformSubscription creates and returns a new subscription for the
 // Transform
-func NewTransformSubscription(node *rclgo.Node, topic_name string, subscriptionCallback TransformSubscriptionCallback) (*TransformSubscription, error) {
+func NewTransformSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback TransformSubscriptionCallback) (*TransformSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Transform
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, TransformTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, TransformTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

@@ -112,13 +112,13 @@ type NestedMessage_SendGoal_RequestSubscriptionCallback func(msg *NestedMessage_
 
 // NewNestedMessage_SendGoal_RequestSubscription creates and returns a new subscription for the
 // NestedMessage_SendGoal_Request
-func NewNestedMessage_SendGoal_RequestSubscription(node *rclgo.Node, topic_name string, subscriptionCallback NestedMessage_SendGoal_RequestSubscriptionCallback) (*NestedMessage_SendGoal_RequestSubscription, error) {
+func NewNestedMessage_SendGoal_RequestSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback NestedMessage_SendGoal_RequestSubscriptionCallback) (*NestedMessage_SendGoal_RequestSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg NestedMessage_SendGoal_Request
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, NestedMessage_SendGoal_RequestTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, NestedMessage_SendGoal_RequestTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

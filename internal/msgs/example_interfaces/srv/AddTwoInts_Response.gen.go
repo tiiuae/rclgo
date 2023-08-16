@@ -94,13 +94,13 @@ type AddTwoInts_ResponseSubscriptionCallback func(msg *AddTwoInts_Response, info
 
 // NewAddTwoInts_ResponseSubscription creates and returns a new subscription for the
 // AddTwoInts_Response
-func NewAddTwoInts_ResponseSubscription(node *rclgo.Node, topic_name string, subscriptionCallback AddTwoInts_ResponseSubscriptionCallback) (*AddTwoInts_ResponseSubscription, error) {
+func NewAddTwoInts_ResponseSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback AddTwoInts_ResponseSubscriptionCallback) (*AddTwoInts_ResponseSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg AddTwoInts_Response
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, AddTwoInts_ResponseTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, AddTwoInts_ResponseTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

@@ -101,13 +101,13 @@ type MultiArrayDimensionSubscriptionCallback func(msg *MultiArrayDimension, info
 
 // NewMultiArrayDimensionSubscription creates and returns a new subscription for the
 // MultiArrayDimension
-func NewMultiArrayDimensionSubscription(node *rclgo.Node, topic_name string, subscriptionCallback MultiArrayDimensionSubscriptionCallback) (*MultiArrayDimensionSubscription, error) {
+func NewMultiArrayDimensionSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback MultiArrayDimensionSubscriptionCallback) (*MultiArrayDimensionSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg MultiArrayDimension
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, MultiArrayDimensionTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, MultiArrayDimensionTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

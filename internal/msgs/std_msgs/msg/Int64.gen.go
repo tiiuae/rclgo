@@ -94,13 +94,13 @@ type Int64SubscriptionCallback func(msg *Int64, info *rclgo.MessageInfo, err err
 
 // NewInt64Subscription creates and returns a new subscription for the
 // Int64
-func NewInt64Subscription(node *rclgo.Node, topic_name string, subscriptionCallback Int64SubscriptionCallback) (*Int64Subscription, error) {
+func NewInt64Subscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback Int64SubscriptionCallback) (*Int64Subscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Int64
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, Int64TypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, Int64TypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

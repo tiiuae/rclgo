@@ -97,13 +97,13 @@ type JoyFeedbackArraySubscriptionCallback func(msg *JoyFeedbackArray, info *rclg
 
 // NewJoyFeedbackArraySubscription creates and returns a new subscription for the
 // JoyFeedbackArray
-func NewJoyFeedbackArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback JoyFeedbackArraySubscriptionCallback) (*JoyFeedbackArraySubscription, error) {
+func NewJoyFeedbackArraySubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback JoyFeedbackArraySubscriptionCallback) (*JoyFeedbackArraySubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg JoyFeedbackArray
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, JoyFeedbackArrayTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, JoyFeedbackArrayTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

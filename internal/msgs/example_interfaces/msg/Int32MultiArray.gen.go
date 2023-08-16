@@ -101,13 +101,13 @@ type Int32MultiArraySubscriptionCallback func(msg *Int32MultiArray, info *rclgo.
 
 // NewInt32MultiArraySubscription creates and returns a new subscription for the
 // Int32MultiArray
-func NewInt32MultiArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback Int32MultiArraySubscriptionCallback) (*Int32MultiArraySubscription, error) {
+func NewInt32MultiArraySubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback Int32MultiArraySubscriptionCallback) (*Int32MultiArraySubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Int32MultiArray
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, Int32MultiArrayTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, Int32MultiArrayTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

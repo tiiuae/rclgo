@@ -97,13 +97,13 @@ type Fibonacci_GetResult_ResponseSubscriptionCallback func(msg *Fibonacci_GetRes
 
 // NewFibonacci_GetResult_ResponseSubscription creates and returns a new subscription for the
 // Fibonacci_GetResult_Response
-func NewFibonacci_GetResult_ResponseSubscription(node *rclgo.Node, topic_name string, subscriptionCallback Fibonacci_GetResult_ResponseSubscriptionCallback) (*Fibonacci_GetResult_ResponseSubscription, error) {
+func NewFibonacci_GetResult_ResponseSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback Fibonacci_GetResult_ResponseSubscriptionCallback) (*Fibonacci_GetResult_ResponseSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Fibonacci_GetResult_Response
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, Fibonacci_GetResult_ResponseTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, Fibonacci_GetResult_ResponseTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

@@ -669,22 +669,18 @@ type Subscription struct {
 	topicName          *C.char
 }
 
+// NewSubscription creates a new subscription.
+//
+// options must not be modified after passing it to this function. If options is
+// nil, default options are used.
 func (n *Node) NewSubscription(
 	topicName string,
-	typeSupport types.MessageTypeSupport,
-	callBack SubscriptionCallback,
-) (*Subscription, error) {
-	return n.NewSubscriptionWithOpts(topicName, typeSupport, nil, callBack)
-}
-
-func (n *Node) NewSubscriptionWithOpts(
-	topicName string,
 	ros2msg types.MessageTypeSupport,
-	opts *SubscriptionOptions,
+	options *SubscriptionOptions,
 	subscriptionCallback SubscriptionCallback,
 ) (sub *Subscription, err error) {
-	if opts == nil {
-		opts = NewDefaultSubscriptionOptions()
+	if options == nil {
+		options = NewDefaultSubscriptionOptions()
 	}
 	sub = &Subscription{
 		TopicName:          topicName,
@@ -698,7 +694,7 @@ func (n *Node) NewSubscriptionWithOpts(
 	defer onErr(&err, sub.Close)
 	rclOpts := C.rcl_subscription_get_default_options()
 	rclOpts.allocator = *n.context.rcl_allocator_t
-	opts.Qos.asCStruct(&rclOpts.qos)
+	options.Qos.asCStruct(&rclOpts.qos)
 
 	rc := C.rcl_subscription_init(
 		sub.rcl_subscription_t,

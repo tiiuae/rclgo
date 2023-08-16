@@ -103,13 +103,13 @@ type QuaternionSubscriptionCallback func(msg *Quaternion, info *rclgo.MessageInf
 
 // NewQuaternionSubscription creates and returns a new subscription for the
 // Quaternion
-func NewQuaternionSubscription(node *rclgo.Node, topic_name string, subscriptionCallback QuaternionSubscriptionCallback) (*QuaternionSubscription, error) {
+func NewQuaternionSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback QuaternionSubscriptionCallback) (*QuaternionSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Quaternion
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, QuaternionTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, QuaternionTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

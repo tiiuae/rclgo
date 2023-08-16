@@ -100,13 +100,13 @@ type PointSubscriptionCallback func(msg *Point, info *rclgo.MessageInfo, err err
 
 // NewPointSubscription creates and returns a new subscription for the
 // Point
-func NewPointSubscription(node *rclgo.Node, topic_name string, subscriptionCallback PointSubscriptionCallback) (*PointSubscription, error) {
+func NewPointSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback PointSubscriptionCallback) (*PointSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Point
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, PointTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, PointTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

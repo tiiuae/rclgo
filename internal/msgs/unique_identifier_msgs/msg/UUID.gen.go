@@ -95,13 +95,13 @@ type UUIDSubscriptionCallback func(msg *UUID, info *rclgo.MessageInfo, err error
 
 // NewUUIDSubscription creates and returns a new subscription for the
 // UUID
-func NewUUIDSubscription(node *rclgo.Node, topic_name string, subscriptionCallback UUIDSubscriptionCallback) (*UUIDSubscription, error) {
+func NewUUIDSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback UUIDSubscriptionCallback) (*UUIDSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg UUID
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, UUIDTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, UUIDTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

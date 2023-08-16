@@ -94,13 +94,13 @@ type Int8SubscriptionCallback func(msg *Int8, info *rclgo.MessageInfo, err error
 
 // NewInt8Subscription creates and returns a new subscription for the
 // Int8
-func NewInt8Subscription(node *rclgo.Node, topic_name string, subscriptionCallback Int8SubscriptionCallback) (*Int8Subscription, error) {
+func NewInt8Subscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback Int8SubscriptionCallback) (*Int8Subscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Int8
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, Int8TypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, Int8TypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

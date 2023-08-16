@@ -105,13 +105,13 @@ type CompressedImageSubscriptionCallback func(msg *CompressedImage, info *rclgo.
 
 // NewCompressedImageSubscription creates and returns a new subscription for the
 // CompressedImage
-func NewCompressedImageSubscription(node *rclgo.Node, topic_name string, subscriptionCallback CompressedImageSubscriptionCallback) (*CompressedImageSubscription, error) {
+func NewCompressedImageSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback CompressedImageSubscriptionCallback) (*CompressedImageSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg CompressedImage
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, CompressedImageTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, CompressedImageTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

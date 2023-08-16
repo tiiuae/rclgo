@@ -98,13 +98,13 @@ type SetBool_ResponseSubscriptionCallback func(msg *SetBool_Response, info *rclg
 
 // NewSetBool_ResponseSubscription creates and returns a new subscription for the
 // SetBool_Response
-func NewSetBool_ResponseSubscription(node *rclgo.Node, topic_name string, subscriptionCallback SetBool_ResponseSubscriptionCallback) (*SetBool_ResponseSubscription, error) {
+func NewSetBool_ResponseSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback SetBool_ResponseSubscriptionCallback) (*SetBool_ResponseSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg SetBool_Response
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, SetBool_ResponseTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, SetBool_ResponseTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

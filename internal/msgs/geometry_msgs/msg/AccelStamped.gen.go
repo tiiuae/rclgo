@@ -98,13 +98,13 @@ type AccelStampedSubscriptionCallback func(msg *AccelStamped, info *rclgo.Messag
 
 // NewAccelStampedSubscription creates and returns a new subscription for the
 // AccelStamped
-func NewAccelStampedSubscription(node *rclgo.Node, topic_name string, subscriptionCallback AccelStampedSubscriptionCallback) (*AccelStampedSubscription, error) {
+func NewAccelStampedSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback AccelStampedSubscriptionCallback) (*AccelStampedSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg AccelStamped
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, AccelStampedTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, AccelStampedTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

@@ -101,13 +101,13 @@ type UInt16MultiArraySubscriptionCallback func(msg *UInt16MultiArray, info *rclg
 
 // NewUInt16MultiArraySubscription creates and returns a new subscription for the
 // UInt16MultiArray
-func NewUInt16MultiArraySubscription(node *rclgo.Node, topic_name string, subscriptionCallback UInt16MultiArraySubscriptionCallback) (*UInt16MultiArraySubscription, error) {
+func NewUInt16MultiArraySubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback UInt16MultiArraySubscriptionCallback) (*UInt16MultiArraySubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg UInt16MultiArray
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, UInt16MultiArrayTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, UInt16MultiArrayTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

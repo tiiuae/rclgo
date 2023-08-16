@@ -77,6 +77,7 @@ func TestContextClose(t *testing.T) {
 				_, err = node2.NewSubscription(
 					"/test_topic",
 					std_msgs.StringTypeSupport,
+					nil,
 					func(s *rclgo.Subscription) {},
 				)
 				So(err, ShouldBeNil)

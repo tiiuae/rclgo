@@ -94,13 +94,13 @@ type BoolSubscriptionCallback func(msg *Bool, info *rclgo.MessageInfo, err error
 
 // NewBoolSubscription creates and returns a new subscription for the
 // Bool
-func NewBoolSubscription(node *rclgo.Node, topic_name string, subscriptionCallback BoolSubscriptionCallback) (*BoolSubscription, error) {
+func NewBoolSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback BoolSubscriptionCallback) (*BoolSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Bool
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, BoolTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, BoolTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

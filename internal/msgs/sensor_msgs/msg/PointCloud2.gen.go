@@ -126,13 +126,13 @@ type PointCloud2SubscriptionCallback func(msg *PointCloud2, info *rclgo.MessageI
 
 // NewPointCloud2Subscription creates and returns a new subscription for the
 // PointCloud2
-func NewPointCloud2Subscription(node *rclgo.Node, topic_name string, subscriptionCallback PointCloud2SubscriptionCallback) (*PointCloud2Subscription, error) {
+func NewPointCloud2Subscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback PointCloud2SubscriptionCallback) (*PointCloud2Subscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg PointCloud2
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, PointCloud2TypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, PointCloud2TypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

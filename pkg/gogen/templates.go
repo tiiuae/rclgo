@@ -250,13 +250,13 @@ type {{$Md.Name}}SubscriptionCallback func(msg *{{$Md.Name}}, info *rclgo.Messag
 
 // New{{$Md.Name}}Subscription creates and returns a new subscription for the
 // {{$Md.Name}}
-func New{{$Md.Name}}Subscription(node *rclgo.Node, topic_name string, subscriptionCallback {{$Md.Name}}SubscriptionCallback) (*{{$Md.Name}}Subscription, error) {
+func New{{$Md.Name}}Subscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback {{$Md.Name}}SubscriptionCallback) (*{{$Md.Name}}Subscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg {{$Md.Name}}
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, {{$Md.Name}}TypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, {{$Md.Name}}TypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

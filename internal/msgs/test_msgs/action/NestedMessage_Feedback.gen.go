@@ -102,13 +102,13 @@ type NestedMessage_FeedbackSubscriptionCallback func(msg *NestedMessage_Feedback
 
 // NewNestedMessage_FeedbackSubscription creates and returns a new subscription for the
 // NestedMessage_Feedback
-func NewNestedMessage_FeedbackSubscription(node *rclgo.Node, topic_name string, subscriptionCallback NestedMessage_FeedbackSubscriptionCallback) (*NestedMessage_FeedbackSubscription, error) {
+func NewNestedMessage_FeedbackSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback NestedMessage_FeedbackSubscriptionCallback) (*NestedMessage_FeedbackSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg NestedMessage_Feedback
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, NestedMessage_FeedbackTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, NestedMessage_FeedbackTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

@@ -105,13 +105,13 @@ type Fibonacci_FeedbackMessageSubscriptionCallback func(msg *Fibonacci_FeedbackM
 
 // NewFibonacci_FeedbackMessageSubscription creates and returns a new subscription for the
 // Fibonacci_FeedbackMessage
-func NewFibonacci_FeedbackMessageSubscription(node *rclgo.Node, topic_name string, subscriptionCallback Fibonacci_FeedbackMessageSubscriptionCallback) (*Fibonacci_FeedbackMessageSubscription, error) {
+func NewFibonacci_FeedbackMessageSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback Fibonacci_FeedbackMessageSubscriptionCallback) (*Fibonacci_FeedbackMessageSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Fibonacci_FeedbackMessage
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, Fibonacci_FeedbackMessageTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, Fibonacci_FeedbackMessageTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

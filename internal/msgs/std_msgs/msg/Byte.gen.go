@@ -94,13 +94,13 @@ type ByteSubscriptionCallback func(msg *Byte, info *rclgo.MessageInfo, err error
 
 // NewByteSubscription creates and returns a new subscription for the
 // Byte
-func NewByteSubscription(node *rclgo.Node, topic_name string, subscriptionCallback ByteSubscriptionCallback) (*ByteSubscription, error) {
+func NewByteSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback ByteSubscriptionCallback) (*ByteSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Byte
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, ByteTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, ByteTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

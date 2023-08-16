@@ -115,13 +115,13 @@ type InertiaSubscriptionCallback func(msg *Inertia, info *rclgo.MessageInfo, err
 
 // NewInertiaSubscription creates and returns a new subscription for the
 // Inertia
-func NewInertiaSubscription(node *rclgo.Node, topic_name string, subscriptionCallback InertiaSubscriptionCallback) (*InertiaSubscription, error) {
+func NewInertiaSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback InertiaSubscriptionCallback) (*InertiaSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Inertia
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, InertiaTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, InertiaTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

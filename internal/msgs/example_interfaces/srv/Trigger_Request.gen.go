@@ -91,13 +91,13 @@ type Trigger_RequestSubscriptionCallback func(msg *Trigger_Request, info *rclgo.
 
 // NewTrigger_RequestSubscription creates and returns a new subscription for the
 // Trigger_Request
-func NewTrigger_RequestSubscription(node *rclgo.Node, topic_name string, subscriptionCallback Trigger_RequestSubscriptionCallback) (*Trigger_RequestSubscription, error) {
+func NewTrigger_RequestSubscription(node *rclgo.Node, topic_name string, opts *rclgo.SubscriptionOptions, subscriptionCallback Trigger_RequestSubscriptionCallback) (*Trigger_RequestSubscription, error) {
 	callback := func(s *rclgo.Subscription) {
 		var msg Trigger_Request
 		info, err := s.TakeMessage(&msg)
 		subscriptionCallback(&msg, info, err)
 	}
-	sub, err := node.NewSubscription(topic_name, Trigger_RequestTypeSupport, callback)
+	sub, err := node.NewSubscription(topic_name, Trigger_RequestTypeSupport, opts, callback)
 	if err != nil {
 		return nil, err
 	}

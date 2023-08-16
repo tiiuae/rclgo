@@ -12,10 +12,6 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package test_msgs_action
 
 /*
-#cgo LDFLAGS: -L/opt/ros/humble/lib -Wl,-rpath=/opt/ros/humble/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
-#cgo LDFLAGS: -ltest_msgs__rosidl_typesupport_c -ltest_msgs__rosidl_generator_c
-#cgo CFLAGS: -I/opt/ros/humble/include/rosidl_runtime_c
-
 #include <rosidl_runtime_c/message_type_support_struct.h>
 #include <test_msgs/action/fibonacci.h>
 */

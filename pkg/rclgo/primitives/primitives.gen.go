@@ -12,8 +12,12 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package primitives
 
 /*
-#cgo LDFLAGS: -L/opt/ros/humble/lib -Wl,-rpath=/opt/ros/humble/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
-#cgo CFLAGS: -I/opt/ros/humble/include/rosidl_runtime_c
+#cgo LDFLAGS: "-L/usr/lib" "-Wl,-rpath=/usr/lib"
+#cgo CFLAGS: "-I/usr/include/rosidl_runtime_c"
+#cgo LDFLAGS: "-L/opt/ros/humble/lib" "-Wl,-rpath=/opt/ros/humble/lib"
+#cgo CFLAGS: "-I/opt/ros/humble/include/rosidl_runtime_c"
+
+#cgo LDFLAGS: -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
 
 #include "rosidl_runtime_c/string.h"
 #include "rosidl_runtime_c/primitives_sequence.h"

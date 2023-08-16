@@ -69,6 +69,7 @@ func (s RuleSet) Includes(str string) bool {
 type Config struct {
 	RclgoImportPath     string
 	MessageModulePrefix string
+	RootPaths           []string
 	PackageRules        RuleSet
 }
 
@@ -136,7 +137,7 @@ func GenerateROS2AllMessagesImporter(c *Config, destPathPkgRoot string) error {
 	})
 }
 
-func GenerateGolangMessageTypes(c *Config, rootPaths []string, destPath string) error {
+func GenerateGolangMessageTypes(c *Config, destPath string) error {
 	cImports := make(map[string]stringSet)
 	getOrDefault := func(s string) stringSet {
 		set := cImports[s]
@@ -147,7 +148,7 @@ func GenerateGolangMessageTypes(c *Config, rootPaths []string, destPath string) 
 		return set
 	}
 	g := generator{config: c}
-	for meta, path := range g.findInterfaceFiles(rootPaths) {
+	for meta, path := range g.findInterfaceFiles(c.RootPaths) {
 		fmt.Printf("Generating: %s\n", path)
 		switch meta.Type {
 		case "msg":
@@ -186,7 +187,7 @@ func GenerateGolangMessageTypes(c *Config, rootPaths []string, destPath string) 
 		}
 	}
 	for pkg, imports := range cImports {
-		err := g.generateCommonPackageGoFile(pkg, imports, destPath, rootPaths)
+		err := g.generateCommonPackageGoFile(pkg, imports, destPath, c.RootPaths)
 		if err != nil {
 			fmt.Printf("Failed to generate common package file for package %s: %v", pkg, err)
 		}

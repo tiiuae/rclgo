@@ -65,13 +65,12 @@ var generateCmd = &cobra.Command{
 	Use:   "generate",
 	Short: "Generate Go bindings for ROS2 interface definitions under <root-path>",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		rootPaths := getRootPaths(cmd)
 		destPath := getString(cmd, "dest-path")
 		config, err := getGogenConfig(cmd)
 		if err != nil {
 			return err
 		}
-		if err := gogen.GenerateGolangMessageTypes(config, rootPaths, destPath); err != nil {
+		if err := gogen.GenerateGolangMessageTypes(config, destPath); err != nil {
 			return fmt.Errorf("failed to generate interface bindings: %w", err)
 		}
 		if err := gogen.GenerateROS2AllMessagesImporter(config, destPath); err != nil {
@@ -86,7 +85,6 @@ var generateRclgoCmd = &cobra.Command{
 	Use:   "generate-rclgo",
 	Short: "Generate Go code that forms a part of rclgo",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		rootPaths := getRootPaths(cmd)
 		destPath := getString(cmd, "dest-path")
 		config, err := getGogenConfig(cmd)
 		if err != nil {
@@ -95,7 +93,7 @@ var generateRclgoCmd = &cobra.Command{
 		if err := gogen.GeneratePrimitives(config, destPath); err != nil {
 			return fmt.Errorf("failed to generate primitive types: %w", err)
 		}
-		if err := gogen.GenerateROS2ErrorTypes(rootPaths, destPath); err != nil {
+		if err := gogen.GenerateROS2ErrorTypes(config.RootPaths, destPath); err != nil {
 			return fmt.Errorf("failed to generate error types: %w", err)
 		}
 		return nil
@@ -171,6 +169,7 @@ func getGogenConfig(cmd *cobra.Command) (*gogen.Config, error) {
 	return &gogen.Config{
 		RclgoImportPath:     getString(cmd, "rclgo-import-path"),
 		MessageModulePrefix: modulePrefix,
+		RootPaths:           getRootPaths(cmd),
 		PackageRules:        rules,
 	}, nil
 }

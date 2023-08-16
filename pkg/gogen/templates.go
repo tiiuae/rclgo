@@ -52,8 +52,8 @@ package {{ .GoPackage }}
 {{range $k, $v := .CImports -}}
 #cgo LDFLAGS: -l{{$k}}__rosidl_typesupport_c -l{{$k}}__rosidl_generator_c
 {{""}}
-{{- end}}
-{{range $dir := .RootPaths -}}
+{{- end -}}
+{{range $dir := .RootPaths}}
 #cgo CFLAGS: "-I{{$dir}}/include/action_msgs"
 #cgo CFLAGS: "-I{{$dir}}/include/builtin_interfaces"
 #cgo CFLAGS: "-I{{$dir}}/include/example_interfaces"
@@ -65,11 +65,11 @@ package {{ .GoPackage }}
 #cgo CFLAGS: "-I{{$dir}}/include/std_srvs"
 #cgo CFLAGS: "-I{{$dir}}/include/test_msgs"
 #cgo CFLAGS: "-I{{$dir}}/include/unique_identifier_msgs"
-{{range $k, $v := $.CImports -}}
+{{- range $k, $v := $.CImports}}
 #cgo CFLAGS: "-I{{$dir}}/include/{{$k}}"
 {{end}}
 #cgo CFLAGS: "-I{{$dir}}/include/{{$.CPackage}}"
-{{end}}
+{{end -}}
 */
 import "C"
 `,
@@ -494,10 +494,6 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package {{ .Action.GoPackage }}
 
 /*
-#cgo LDFLAGS: -L/opt/ros/humble/lib -Wl,-rpath=/opt/ros/humble/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
-#cgo LDFLAGS: -l{{.Action.Package}}__rosidl_typesupport_c -l{{.Action.Package}}__rosidl_generator_c
-#cgo CFLAGS: -I/opt/ros/humble/include/rosidl_runtime_c
-
 #include <rosidl_runtime_c/message_type_support_struct.h>
 #include <{{.Action.Package}}/action/{{.Action.Name | actionNameFromActionSrvName | camelToSnake}}.h>
 */
@@ -749,8 +745,11 @@ Licensed under the Apache License, Version 2.0 (the "License");
 package primitives
 
 /*
-#cgo LDFLAGS: -L/opt/ros/humble/lib -Wl,-rpath=/opt/ros/humble/lib -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
-#cgo CFLAGS: -I/opt/ros/humble/include/rosidl_runtime_c
+{{range $rootPath := $.Config.RootPaths -}}
+#cgo LDFLAGS: "-L{{$rootPath}}/lib" "-Wl,-rpath={{$rootPath}}/lib"
+#cgo CFLAGS: "-I{{$rootPath}}/include/rosidl_runtime_c"
+{{end}}
+#cgo LDFLAGS: -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
 
 #include "rosidl_runtime_c/string.h"
 #include "rosidl_runtime_c/primitives_sequence.h"

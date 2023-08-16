@@ -23,6 +23,7 @@ generate:
 
 	rm -rf "$$dest_path/"*
 	go run ./cmd/rclgo-gen generate \
+	    --root-path /usr \
 	    --root-path /opt/ros/${ROS_DISTRO} \
 	    --dest-path "$$dest_path" \
 		--message-module-prefix "github.com/tiiuae/rclgo/$$dest_path" \
@@ -37,7 +38,7 @@ generate:
 		--include-package unique_identifier_msgs \
 		|| exit 1
 	rm "$$dest_path/msgs.gen.go" || exit 1
-	go run ./cmd/rclgo-gen generate-rclgo --root-path /opt/ros/${ROS_DISTRO}
+	go run ./cmd/rclgo-gen generate-rclgo --root-path /usr --root-path /opt/ros/${ROS_DISTRO}
 
 lint:
 	golangci-lint run ./...

@@ -6,38 +6,42 @@ linters:
   enable-all: true
   disable:
     # The following are deprecated
+    - deadcode
     - golint
     - interfacer
     - maligned
     - scopelint
+    - structcheck
+    - varcheck
     # The following are not useful and/or produce too many false positives
     - cyclop
+    - depguard
     - exhaustivestruct
     - exhaustruct
     - forbidigo
     - forcetypeassert
-    - testableexamples
-    - interfacebloat
     - funlen
-    - nonamedreturns
-    - nosnakecase
-    - gocyclo
     - gci
     - gochecknoglobals
     - gochecknoinits
     - gocognit
     - goconst
+    - gocyclo
     - godot
     - godox
     - gofumpt
     - gomnd
     - ifshort
+    - interfacebloat
     - ireturn
     - lll
     - nestif
     - nilnil
     - nlreturn
+    - nonamedreturns
+    - nosnakecase
     - paralleltest
+    - testableexamples
     - testpackage
     - varnamelen
     - whitespace

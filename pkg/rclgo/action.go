@@ -611,7 +611,6 @@ func (s *ActionServer) handleResultRequest() {
 }
 
 func (s *ActionServer) processCancelRequest(
-	header *C.rmw_request_id_t,
 	req unsafe.Pointer,
 	resp *C.rcl_action_cancel_response_t,
 ) error {
@@ -642,7 +641,7 @@ func (s *ActionServer) handleCancelRequest() {
 			}
 			return
 		}
-		err := s.processCancelRequest(&header, reqBuf, &respBuf)
+		err := s.processCancelRequest(reqBuf, &respBuf)
 		if err != nil {
 			s.node.Logger().Error(err)
 			return
@@ -905,7 +904,7 @@ func (c *ActionClient) Node() *Node {
 // WatchGoal combines functionality of SendGoal and WatchFeedback. It sends a
 // goal to the server. If the goal is accepted, feedback for the goal is watched
 // until the goal reaches a terminal state or ctx is canceled. If the goal is
-// accepted and completes succesfully, its result is returned. Otherwise a
+// accepted and completes successfully, its result is returned. Otherwise a
 // non-nil error is returned.
 //
 // onFeedback may be nil, in which case feedback for the goal is not watched.

@@ -381,20 +381,20 @@ func (c *Context) NewNode(node_name, namespace string) (node *Node, err error) {
 /*
 Close frees the allocated memory
 */
-func (self *Node) Close() error {
-	if self.rcl_node_t == nil {
+func (n *Node) Close() error {
+	if n.rcl_node_t == nil {
 		return closeErr("node")
 	}
-	self.context.removeResource(self)
+	n.context.removeResource(n)
 
-	err := self.rosResourceStore.Close()
+	err := n.rosResourceStore.Close()
 
-	rc := C.rcl_node_fini(self.rcl_node_t)
+	rc := C.rcl_node_fini(n.rcl_node_t)
 	if rc != C.RCL_RET_OK {
 		err = errors.Join(err, errorsCast(rc))
 	}
-	C.free(unsafe.Pointer(self.rcl_node_t))
-	self.rcl_node_t = nil
+	C.free(unsafe.Pointer(n.rcl_node_t))
+	n.rcl_node_t = nil
 
 	return err
 }
@@ -465,7 +465,7 @@ type Publisher struct {
 //
 // options must not be modified after passing it to this function. If options is
 // nil, default options are used.
-func (self *Node) NewPublisher(
+func (n *Node) NewPublisher(
 	topicName string,
 	ros2msg types.MessageTypeSupport,
 	options *PublisherOptions,
@@ -476,19 +476,19 @@ func (self *Node) NewPublisher(
 	pub = &Publisher{
 		TopicName:       topicName,
 		typeSupport:     ros2msg,
-		node:            self,
+		node:            n,
 		rcl_publisher_t: (*C.rcl_publisher_t)(C.malloc(C.sizeof_rcl_publisher_t)),
 		topicName:       C.CString(topicName),
 	}
 	*pub.rcl_publisher_t = C.rcl_get_zero_initialized_publisher()
 	defer onErr(&err, pub.Close)
 	rcl_publisher_options_t := C.rcl_publisher_get_default_options()
-	rcl_publisher_options_t.allocator = *self.context.rcl_allocator_t
+	rcl_publisher_options_t.allocator = *n.context.rcl_allocator_t
 	options.Qos.asCStruct(&rcl_publisher_options_t.qos)
 
 	var rc C.rcl_ret_t = C.rcl_publisher_init(
 		pub.rcl_publisher_t,
-		self.rcl_node_t,
+		n.rcl_node_t,
 		(*C.rosidl_message_type_support_t)(ros2msg.TypeSupport()),
 		pub.topicName,
 		&rcl_publisher_options_t,
@@ -497,7 +497,7 @@ func (self *Node) NewPublisher(
 		return nil, errorsCast(rc)
 	}
 
-	self.addResource(pub)
+	n.addResource(pub)
 	return pub, nil
 }
 
@@ -506,29 +506,29 @@ func (p *Publisher) Node() *Node {
 	return p.node
 }
 
-func (self *Publisher) Publish(ros2msg types.Message) error {
+func (p *Publisher) Publish(ros2msg types.Message) error {
 	var rc C.rcl_ret_t
 
-	ptr := self.typeSupport.PrepareMemory()
-	defer self.typeSupport.ReleaseMemory(ptr)
-	self.typeSupport.AsCStruct(ptr, ros2msg)
+	ptr := p.typeSupport.PrepareMemory()
+	defer p.typeSupport.ReleaseMemory(ptr)
+	p.typeSupport.AsCStruct(ptr, ros2msg)
 
-	rc = C.rcl_publish(self.rcl_publisher_t, ptr, nil)
+	rc = C.rcl_publish(p.rcl_publisher_t, ptr, nil)
 	if rc != C.RCL_RET_OK {
-		return errorsCastC(rc, fmt.Sprintf("rcl_publish() failed for publisher '%+v'", self))
+		return errorsCastC(rc, fmt.Sprintf("rcl_publish() failed for publisher '%+v'", p))
 	}
 	return nil
 }
 
 // PublishSerialized publishes a message that has already been serialized.
-func (self *Publisher) PublishSerialized(msg []byte) error {
+func (p *Publisher) PublishSerialized(msg []byte) error {
 	rclMsg, err := newSerializedMessage(len(msg))
 	if err != nil {
 		return fmt.Errorf("failed to publish serialized message: %v", err)
 	}
 	defer rclMsg.Close()
 	copy(rclMsg.AsSlice(), msg)
-	rc := C.rcl_publish_serialized_message(self.rcl_publisher_t, rclMsg.c(), nil)
+	rc := C.rcl_publish_serialized_message(p.rcl_publisher_t, rclMsg.c(), nil)
 	if rc != C.RCL_RET_OK {
 		return errorsCastC(rc, "failed to publish serialized message")
 	}
@@ -538,18 +538,18 @@ func (self *Publisher) PublishSerialized(msg []byte) error {
 /*
 Close frees the allocated memory
 */
-func (self *Publisher) Close() (err error) {
-	if self.rcl_publisher_t == nil {
+func (p *Publisher) Close() (err error) {
+	if p.rcl_publisher_t == nil {
 		return closeErr("publisher")
 	}
-	self.node.removeResource(self)
-	rc := C.rcl_publisher_fini(self.rcl_publisher_t, self.node.rcl_node_t)
+	p.node.removeResource(p)
+	rc := C.rcl_publisher_fini(p.rcl_publisher_t, p.node.rcl_node_t)
 	if rc != C.RCL_RET_OK {
 		err = errors.Join(err, errorsCast(rc))
 	}
-	C.free(unsafe.Pointer(self.rcl_publisher_t))
-	self.rcl_publisher_t = nil
-	C.free(unsafe.Pointer(self.topicName))
+	C.free(unsafe.Pointer(p.rcl_publisher_t))
+	p.rcl_publisher_t = nil
+	C.free(unsafe.Pointer(p.topicName))
 	return err
 }
 
@@ -590,17 +590,17 @@ func (c *Context) NewClock(clockType ClockType) (clock *Clock, err error) {
 /*
 Close frees the allocated memory
 */
-func (self *Clock) Close() (err error) {
-	if self.rcl_clock_t == nil {
+func (c *Clock) Close() (err error) {
+	if c.rcl_clock_t == nil {
 		return closeErr("clock")
 	}
-	self.context.removeResource(self)
-	rc := C.rcl_clock_fini(self.rcl_clock_t)
+	c.context.removeResource(c)
+	rc := C.rcl_clock_fini(c.rcl_clock_t)
 	if rc != C.RCL_RET_OK {
 		err = errors.Join(err, errorsCast(rc))
 	}
-	C.free(unsafe.Pointer(self.rcl_clock_t))
-	self.rcl_clock_t = nil
+	C.free(unsafe.Pointer(c.rcl_clock_t))
+	c.rcl_clock_t = nil
 	return err
 }
 
@@ -666,17 +666,17 @@ func (t *Timer) Context() *Context {
 	return t.context
 }
 
-func (self *Timer) GetTimeUntilNextCall() (int64, error) {
+func (t *Timer) GetTimeUntilNextCall() (int64, error) {
 	var time_until_next_call C.int64_t
-	rc := C.rcl_timer_get_time_until_next_call(self.rcl_timer_t, &time_until_next_call)
+	rc := C.rcl_timer_get_time_until_next_call(t.rcl_timer_t, &time_until_next_call)
 	if rc != C.RCL_RET_OK {
 		return 0, errorsCast(rc)
 	}
 	return int64(time_until_next_call), nil
 }
 
-func (self *Timer) Reset() error {
-	rc := C.rcl_timer_reset(self.rcl_timer_t)
+func (t *Timer) Reset() error {
+	rc := C.rcl_timer_reset(t.rcl_timer_t)
 	if rc != C.RCL_RET_OK {
 		return errorsCast(rc)
 	}
@@ -686,17 +686,17 @@ func (self *Timer) Reset() error {
 /*
 Close frees the allocated memory
 */
-func (self *Timer) Close() (err error) {
-	if self.rcl_timer_t == nil {
+func (t *Timer) Close() (err error) {
+	if t.rcl_timer_t == nil {
 		return closeErr("timer")
 	}
-	self.context.removeResource(self)
-	rc := C.rcl_timer_fini(self.rcl_timer_t)
+	t.context.removeResource(t)
+	rc := C.rcl_timer_fini(t.rcl_timer_t)
 	if rc != C.RCL_RET_OK {
 		err = errors.Join(err, errorsCast(rc))
 	}
-	C.free(unsafe.Pointer(self.rcl_timer_t))
-	self.rcl_timer_t = nil
+	C.free(unsafe.Pointer(t.rcl_timer_t))
+	t.rcl_timer_t = nil
 	return err
 }
 
@@ -729,7 +729,7 @@ func (n *Node) NewSubscription(
 	return n.NewSubscriptionWithOpts(topicName, typeSupport, nil, callBack)
 }
 
-func (self *Node) NewSubscriptionWithOpts(
+func (n *Node) NewSubscriptionWithOpts(
 	topicName string,
 	ros2msg types.MessageTypeSupport,
 	opts *SubscriptionOptions,
@@ -742,19 +742,19 @@ func (self *Node) NewSubscriptionWithOpts(
 		TopicName:          topicName,
 		Ros2MsgType:        ros2msg,
 		Callback:           subscriptionCallback,
-		node:               self,
+		node:               n,
 		rcl_subscription_t: (*C.rcl_subscription_t)(C.malloc(C.sizeof_rcl_subscription_t)),
 		topicName:          C.CString(topicName),
 	}
 	*sub.rcl_subscription_t = C.rcl_get_zero_initialized_subscription()
 	defer onErr(&err, sub.Close)
 	rclOpts := C.rcl_subscription_get_default_options()
-	rclOpts.allocator = *self.context.rcl_allocator_t
+	rclOpts.allocator = *n.context.rcl_allocator_t
 	opts.Qos.asCStruct(&rclOpts.qos)
 
 	rc := C.rcl_subscription_init(
 		sub.rcl_subscription_t,
-		self.rcl_node_t,
+		n.rcl_node_t,
 		(*C.rosidl_message_type_support_t)(ros2msg.TypeSupport()),
 		sub.topicName,
 		&rclOpts,
@@ -763,7 +763,7 @@ func (self *Node) NewSubscriptionWithOpts(
 		return sub, errorsCastC(rc, fmt.Sprintf("Topic name '%s'", topicName))
 	}
 
-	self.addResource(sub)
+	n.addResource(sub)
 	return sub, nil
 }
 
@@ -813,18 +813,18 @@ func (s *Subscription) TakeSerializedMessage() ([]byte, *RmwMessageInfo, error) 
 /*
 Close frees the allocated memory
 */
-func (self *Subscription) Close() (err error) {
-	if self.rcl_subscription_t == nil {
+func (s *Subscription) Close() (err error) {
+	if s.rcl_subscription_t == nil {
 		return closeErr("subscription")
 	}
-	self.node.removeResource(self)
-	rc := C.rcl_subscription_fini(self.rcl_subscription_t, self.node.rcl_node_t)
+	s.node.removeResource(s)
+	rc := C.rcl_subscription_fini(s.rcl_subscription_t, s.node.rcl_node_t)
 	if rc != C.RCL_RET_OK {
 		err = errors.Join(err, errorsCast(rc))
 	}
-	C.free(unsafe.Pointer(self.rcl_subscription_t))
-	self.rcl_subscription_t = nil
-	C.free(unsafe.Pointer(self.topicName))
+	C.free(unsafe.Pointer(s.rcl_subscription_t))
+	s.rcl_subscription_t = nil
+	C.free(unsafe.Pointer(s.topicName))
 	return err
 }
 

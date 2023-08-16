@@ -26,7 +26,7 @@ import (
 
 const correctDistro = "humble"
 
-func validateGenerateArgs(cmd *cobra.Command, args []string) error {
+func validateGenerateArgs(cmd *cobra.Command, _ []string) error {
 	rootPaths := getRootPaths(cmd)
 	if len(rootPaths) == 0 {
 		if os.Getenv("AMENT_PREFIX_PATH") == "" {

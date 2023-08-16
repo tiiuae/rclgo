@@ -208,7 +208,7 @@ func (p *parser) parseMessageLine(testRow string, ros2msg *ROS2Message) (interfa
 	typeChar, capture := isRowConstantOrField(testRow)
 	switch typeChar {
 	case 'c':
-		con, err := p.ParseROS2MessageConstant(capture, ros2msg)
+		con, err := p.ParseROS2MessageConstant(capture)
 		if err == nil {
 			return con, nil
 		}
@@ -258,7 +258,7 @@ func isRowConstantOrField(textRow string) (byte, map[string]string) {
 	return 'e', nil
 }
 
-func (p *parser) ParseROS2MessageConstant(capture map[string]string, ros2msg *ROS2Message) (*ROS2Constant, error) {
+func (p *parser) ParseROS2MessageConstant(capture map[string]string) (*ROS2Constant, error) {
 	d := &ROS2Constant{
 		RosType: capture["type"],
 		RosName: capture["field"],

@@ -24,7 +24,7 @@ import (
 
 type noOpAction struct{}
 
-func (a *noOpAction) ExecuteGoal(ctx context.Context, handle *rclgo.GoalHandle) (types.Message, error) {
+func (a *noOpAction) ExecuteGoal(_ context.Context, _ *rclgo.GoalHandle) (types.Message, error) {
 	return nil, errors.New("not implemented")
 }
 

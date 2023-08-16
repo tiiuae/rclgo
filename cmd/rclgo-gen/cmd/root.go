@@ -11,9 +11,7 @@ package cmd
 
 import (
 	"fmt"
-	"math/rand"
 	"os"
-	"time"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
@@ -34,7 +32,6 @@ func Execute() {
 }
 
 func init() {
-	rand.Seed(time.Now().UnixNano())
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.PersistentFlags().StringP("config-file", "c", "", "config file (default is $HOME/.rclgo.yaml)")

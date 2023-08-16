@@ -828,6 +828,7 @@ import (
 `),
 )
 
+//nolint:dupword
 var ros2ErrorCodes = template.Must(
 	template.New("ros2ErrorCodes").Funcs(templateFuncMap).Parse(
 		`/*{{ $P := . }}

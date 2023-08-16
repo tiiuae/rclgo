@@ -13,7 +13,6 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
-	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -224,7 +223,7 @@ func (g *generator) generateMessage(md *Metadata, sourcePath string, destPathPkg
 
 	msg.Metadata = md
 
-	content, err := ioutil.ReadFile(sourcePath)
+	content, err := os.ReadFile(sourcePath)
 	if err != nil {
 		return nil, err
 	}

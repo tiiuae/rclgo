@@ -289,7 +289,7 @@ func TestMultipleTimersInSingleWaitSet(t *testing.T) {
 	})
 }
 
-func BenchmarkPubsubMemoryLeakAllocateInLoop(t *testing.B) {
+func BenchmarkPubsubMemoryLeakAllocateInLoop(_ *testing.B) {
 	var messagesReceived int
 	fmt.Printf(
 		"Mem from pmap(1) '%skB' messages '%d'\n",
@@ -362,7 +362,7 @@ func BenchmarkPubsubMemoryLeakAllocateInLoop(t *testing.B) {
 	}
 }
 
-func BenchmarkPubsubMemoryLeakAllocateOutOfLoop(t *testing.B) {
+func BenchmarkPubsubMemoryLeakAllocateOutOfLoop(_ *testing.B) {
 	var messagesReceived int64
 	fmt.Printf(
 		"Mem from pmap(1) '%skB' messages '%d'\n",

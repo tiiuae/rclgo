@@ -69,7 +69,7 @@ func (a *fibonacciAction) TypeSupport() types.ActionTypeSupport {
 	return test_msgs_action.FibonacciTypeSupport
 }
 
-func (a *fibonacciAction) ExecuteGoal(ctx context.Context, goal *rclgo.GoalHandle) (types.Message, error) {
+func (a *fibonacciAction) ExecuteGoal(_ context.Context, goal *rclgo.GoalHandle) (types.Message, error) {
 	desc := goal.Description.(*test_msgs_action.Fibonacci_Goal)
 	if desc.Order < 0 {
 		return nil, errors.New("order must be non-negative")

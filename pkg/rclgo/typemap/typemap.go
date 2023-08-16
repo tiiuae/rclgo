@@ -28,7 +28,7 @@ var messageTypeMap = make(map[string]types.MessageTypeSupport)
 RegisterMessage sets the type string to implementation dispatcher, so the
 correct type can be dynamically chosen. The Golang types of ROS2 Message use
 
-    func init() {}
+	func init() {}
 
 to automatically populate this when imported.
 */
@@ -38,9 +38,12 @@ func RegisterMessage(alias string, msgType types.MessageTypeSupport) {
 
 /*
 GetMessage translates for ex
-    "std_msgs/ColorRGBA"
+
+	"std_msgs/ColorRGBA"
+
 to
-    std_msgs.ColorRGBA -Go type
+
+	std_msgs.ColorRGBA -Go type
 
 returns true if the type mapping is found
 */

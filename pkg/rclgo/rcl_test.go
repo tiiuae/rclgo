@@ -8,7 +8,6 @@ import (
 	"os"
 	"strconv"
 	"testing"
-	"time"
 
 	"github.com/tiiuae/rclgo/pkg/rclgo"
 )
@@ -16,13 +15,13 @@ import (
 func getNextDomainID() int {
 	id, _ := strconv.ParseUint(os.Getenv("ROS_DOMAIN_ID"), 10, 8)
 	newID := rand.Intn(101)
-	for ; newID == int(id); newID = rand.Intn(101) {
+	for newID == int(id) {
+		newID = rand.Intn(101)
 	}
 	return newID
 }
 
 func TestMain(m *testing.M) {
-	rand.Seed(time.Now().Unix())
 	os.Setenv("ROS_DOMAIN_ID", fmt.Sprint(getNextDomainID()))
 	os.Exit(m.Run())
 }

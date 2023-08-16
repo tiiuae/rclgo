@@ -97,7 +97,7 @@ func Init(args *Args) (err error) {
 }
 
 // InitWithOpts initializes the global default context and logging system if
-// they have not been initalized yet. Calling InitWithOpts multiple times after
+// they have not been initialized yet. Calling InitWithOpts multiple times after
 // a successful (returning nil) call is a no-op.
 //
 // A nil args is treated as an empty argument list.

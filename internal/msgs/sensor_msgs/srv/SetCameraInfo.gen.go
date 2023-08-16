@@ -65,7 +65,7 @@ func NewSetCameraInfoClient(node *rclgo.Node, serviceName string, options *rclgo
 	return &SetCameraInfoClient{client}, nil
 }
 
-func (s *SetCameraInfoClient) Send(ctx context.Context, req *SetCameraInfo_Request) (*SetCameraInfo_Response, *rclgo.RmwServiceInfo, error) {
+func (s *SetCameraInfoClient) Send(ctx context.Context, req *SetCameraInfo_Request) (*SetCameraInfo_Response, *rclgo.ServiceInfo, error) {
 	msg, rmw, err := s.Client.Send(ctx, req)
 	if err != nil {
 		return nil, rmw, err
@@ -85,7 +85,7 @@ func (s SetCameraInfoServiceResponseSender) SendResponse(resp *SetCameraInfo_Res
 	return s.sender.SendResponse(resp)
 }
 
-type SetCameraInfoServiceRequestHandler func(*rclgo.RmwServiceInfo, *SetCameraInfo_Request, SetCameraInfoServiceResponseSender)
+type SetCameraInfoServiceRequestHandler func(*rclgo.ServiceInfo, *SetCameraInfo_Request, SetCameraInfoServiceResponseSender)
 
 // SetCameraInfoService wraps rclgo.Service to provide type safe helper
 // functions
@@ -96,7 +96,7 @@ type SetCameraInfoService struct {
 // NewSetCameraInfoService creates and returns a new service for the
 // SetCameraInfo
 func NewSetCameraInfoService(node *rclgo.Node, name string, options *rclgo.ServiceOptions, handler SetCameraInfoServiceRequestHandler) (*SetCameraInfoService, error) {
-	h := func(rmw *rclgo.RmwServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
+	h := func(rmw *rclgo.ServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
 		m := msg.(*SetCameraInfo_Request)
 		responseSender := SetCameraInfoServiceResponseSender{sender: rs} 
 		handler(rmw, m, responseSender)

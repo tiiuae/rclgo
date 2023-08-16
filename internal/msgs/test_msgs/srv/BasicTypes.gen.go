@@ -65,7 +65,7 @@ func NewBasicTypesClient(node *rclgo.Node, serviceName string, options *rclgo.Cl
 	return &BasicTypesClient{client}, nil
 }
 
-func (s *BasicTypesClient) Send(ctx context.Context, req *BasicTypes_Request) (*BasicTypes_Response, *rclgo.RmwServiceInfo, error) {
+func (s *BasicTypesClient) Send(ctx context.Context, req *BasicTypes_Request) (*BasicTypes_Response, *rclgo.ServiceInfo, error) {
 	msg, rmw, err := s.Client.Send(ctx, req)
 	if err != nil {
 		return nil, rmw, err
@@ -85,7 +85,7 @@ func (s BasicTypesServiceResponseSender) SendResponse(resp *BasicTypes_Response)
 	return s.sender.SendResponse(resp)
 }
 
-type BasicTypesServiceRequestHandler func(*rclgo.RmwServiceInfo, *BasicTypes_Request, BasicTypesServiceResponseSender)
+type BasicTypesServiceRequestHandler func(*rclgo.ServiceInfo, *BasicTypes_Request, BasicTypesServiceResponseSender)
 
 // BasicTypesService wraps rclgo.Service to provide type safe helper
 // functions
@@ -96,7 +96,7 @@ type BasicTypesService struct {
 // NewBasicTypesService creates and returns a new service for the
 // BasicTypes
 func NewBasicTypesService(node *rclgo.Node, name string, options *rclgo.ServiceOptions, handler BasicTypesServiceRequestHandler) (*BasicTypesService, error) {
-	h := func(rmw *rclgo.RmwServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
+	h := func(rmw *rclgo.ServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
 		m := msg.(*BasicTypes_Request)
 		responseSender := BasicTypesServiceResponseSender{sender: rs} 
 		handler(rmw, m, responseSender)

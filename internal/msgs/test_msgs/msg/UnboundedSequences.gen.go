@@ -277,7 +277,7 @@ type UnboundedSequencesSubscription struct {
 
 // UnboundedSequencesSubscriptionCallback type is used to provide a subscription
 // handler function for a UnboundedSequencesSubscription.
-type UnboundedSequencesSubscriptionCallback func(msg *UnboundedSequences, info *rclgo.RmwMessageInfo, err error)
+type UnboundedSequencesSubscriptionCallback func(msg *UnboundedSequences, info *rclgo.MessageInfo, err error)
 
 // NewUnboundedSequencesSubscription creates and returns a new subscription for the
 // UnboundedSequences
@@ -294,7 +294,7 @@ func NewUnboundedSequencesSubscription(node *rclgo.Node, topic_name string, subs
 	return &UnboundedSequencesSubscription{sub}, nil
 }
 
-func (s *UnboundedSequencesSubscription) TakeMessage(out *UnboundedSequences) (*rclgo.RmwMessageInfo, error) {
+func (s *UnboundedSequencesSubscription) TakeMessage(out *UnboundedSequences) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

@@ -94,7 +94,7 @@ type AccelWithCovarianceStampedSubscription struct {
 
 // AccelWithCovarianceStampedSubscriptionCallback type is used to provide a subscription
 // handler function for a AccelWithCovarianceStampedSubscription.
-type AccelWithCovarianceStampedSubscriptionCallback func(msg *AccelWithCovarianceStamped, info *rclgo.RmwMessageInfo, err error)
+type AccelWithCovarianceStampedSubscriptionCallback func(msg *AccelWithCovarianceStamped, info *rclgo.MessageInfo, err error)
 
 // NewAccelWithCovarianceStampedSubscription creates and returns a new subscription for the
 // AccelWithCovarianceStamped
@@ -111,7 +111,7 @@ func NewAccelWithCovarianceStampedSubscription(node *rclgo.Node, topic_name stri
 	return &AccelWithCovarianceStampedSubscription{sub}, nil
 }
 
-func (s *AccelWithCovarianceStampedSubscription) TakeMessage(out *AccelWithCovarianceStamped) (*rclgo.RmwMessageInfo, error) {
+func (s *AccelWithCovarianceStampedSubscription) TakeMessage(out *AccelWithCovarianceStamped) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

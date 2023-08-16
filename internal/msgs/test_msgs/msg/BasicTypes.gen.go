@@ -126,7 +126,7 @@ type BasicTypesSubscription struct {
 
 // BasicTypesSubscriptionCallback type is used to provide a subscription
 // handler function for a BasicTypesSubscription.
-type BasicTypesSubscriptionCallback func(msg *BasicTypes, info *rclgo.RmwMessageInfo, err error)
+type BasicTypesSubscriptionCallback func(msg *BasicTypes, info *rclgo.MessageInfo, err error)
 
 // NewBasicTypesSubscription creates and returns a new subscription for the
 // BasicTypes
@@ -143,7 +143,7 @@ func NewBasicTypesSubscription(node *rclgo.Node, topic_name string, subscription
 	return &BasicTypesSubscription{sub}, nil
 }
 
-func (s *BasicTypesSubscription) TakeMessage(out *BasicTypes) (*rclgo.RmwMessageInfo, error) {
+func (s *BasicTypesSubscription) TakeMessage(out *BasicTypes) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

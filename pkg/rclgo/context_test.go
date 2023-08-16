@@ -90,14 +90,14 @@ func TestContextClose(t *testing.T) {
 					"service1",
 					std_srvs_srv.EmptyTypeSupport,
 					nil,
-					func(rsi *rclgo.RmwServiceInfo, rm types.Message, srs rclgo.ServiceResponseSender) {},
+					func(rsi *rclgo.ServiceInfo, rm types.Message, srs rclgo.ServiceResponseSender) {},
 				)
 				So(err, ShouldBeNil)
 				_, err = node2.NewService(
 					"service2",
 					std_srvs_srv.EmptyTypeSupport,
 					nil,
-					func(rsi *rclgo.RmwServiceInfo, rm types.Message, srs rclgo.ServiceResponseSender) {},
+					func(rsi *rclgo.ServiceInfo, rm types.Message, srs rclgo.ServiceResponseSender) {},
 				)
 				So(err, ShouldBeNil)
 				_, err = node2.NewActionServer(

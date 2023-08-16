@@ -65,7 +65,7 @@ func NewFibonacci_SendGoalClient(node *rclgo.Node, serviceName string, options *
 	return &Fibonacci_SendGoalClient{client}, nil
 }
 
-func (s *Fibonacci_SendGoalClient) Send(ctx context.Context, req *Fibonacci_SendGoal_Request) (*Fibonacci_SendGoal_Response, *rclgo.RmwServiceInfo, error) {
+func (s *Fibonacci_SendGoalClient) Send(ctx context.Context, req *Fibonacci_SendGoal_Request) (*Fibonacci_SendGoal_Response, *rclgo.ServiceInfo, error) {
 	msg, rmw, err := s.Client.Send(ctx, req)
 	if err != nil {
 		return nil, rmw, err
@@ -85,7 +85,7 @@ func (s Fibonacci_SendGoalServiceResponseSender) SendResponse(resp *Fibonacci_Se
 	return s.sender.SendResponse(resp)
 }
 
-type Fibonacci_SendGoalServiceRequestHandler func(*rclgo.RmwServiceInfo, *Fibonacci_SendGoal_Request, Fibonacci_SendGoalServiceResponseSender)
+type Fibonacci_SendGoalServiceRequestHandler func(*rclgo.ServiceInfo, *Fibonacci_SendGoal_Request, Fibonacci_SendGoalServiceResponseSender)
 
 // Fibonacci_SendGoalService wraps rclgo.Service to provide type safe helper
 // functions
@@ -96,7 +96,7 @@ type Fibonacci_SendGoalService struct {
 // NewFibonacci_SendGoalService creates and returns a new service for the
 // Fibonacci_SendGoal
 func NewFibonacci_SendGoalService(node *rclgo.Node, name string, options *rclgo.ServiceOptions, handler Fibonacci_SendGoalServiceRequestHandler) (*Fibonacci_SendGoalService, error) {
-	h := func(rmw *rclgo.RmwServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
+	h := func(rmw *rclgo.ServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
 		m := msg.(*Fibonacci_SendGoal_Request)
 		responseSender := Fibonacci_SendGoalServiceResponseSender{sender: rs} 
 		handler(rmw, m, responseSender)

@@ -90,7 +90,7 @@ type Int16Subscription struct {
 
 // Int16SubscriptionCallback type is used to provide a subscription
 // handler function for a Int16Subscription.
-type Int16SubscriptionCallback func(msg *Int16, info *rclgo.RmwMessageInfo, err error)
+type Int16SubscriptionCallback func(msg *Int16, info *rclgo.MessageInfo, err error)
 
 // NewInt16Subscription creates and returns a new subscription for the
 // Int16
@@ -107,7 +107,7 @@ func NewInt16Subscription(node *rclgo.Node, topic_name string, subscriptionCallb
 	return &Int16Subscription{sub}, nil
 }
 
-func (s *Int16Subscription) TakeMessage(out *Int16) (*rclgo.RmwMessageInfo, error) {
+func (s *Int16Subscription) TakeMessage(out *Int16) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

@@ -65,7 +65,7 @@ func NewSetBoolClient(node *rclgo.Node, serviceName string, options *rclgo.Clien
 	return &SetBoolClient{client}, nil
 }
 
-func (s *SetBoolClient) Send(ctx context.Context, req *SetBool_Request) (*SetBool_Response, *rclgo.RmwServiceInfo, error) {
+func (s *SetBoolClient) Send(ctx context.Context, req *SetBool_Request) (*SetBool_Response, *rclgo.ServiceInfo, error) {
 	msg, rmw, err := s.Client.Send(ctx, req)
 	if err != nil {
 		return nil, rmw, err
@@ -85,7 +85,7 @@ func (s SetBoolServiceResponseSender) SendResponse(resp *SetBool_Response) error
 	return s.sender.SendResponse(resp)
 }
 
-type SetBoolServiceRequestHandler func(*rclgo.RmwServiceInfo, *SetBool_Request, SetBoolServiceResponseSender)
+type SetBoolServiceRequestHandler func(*rclgo.ServiceInfo, *SetBool_Request, SetBoolServiceResponseSender)
 
 // SetBoolService wraps rclgo.Service to provide type safe helper
 // functions
@@ -96,7 +96,7 @@ type SetBoolService struct {
 // NewSetBoolService creates and returns a new service for the
 // SetBool
 func NewSetBoolService(node *rclgo.Node, name string, options *rclgo.ServiceOptions, handler SetBoolServiceRequestHandler) (*SetBoolService, error) {
-	h := func(rmw *rclgo.RmwServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
+	h := func(rmw *rclgo.ServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
 		m := msg.(*SetBool_Request)
 		responseSender := SetBoolServiceResponseSender{sender: rs} 
 		handler(rmw, m, responseSender)

@@ -101,7 +101,7 @@ type JoyFeedbackSubscription struct {
 
 // JoyFeedbackSubscriptionCallback type is used to provide a subscription
 // handler function for a JoyFeedbackSubscription.
-type JoyFeedbackSubscriptionCallback func(msg *JoyFeedback, info *rclgo.RmwMessageInfo, err error)
+type JoyFeedbackSubscriptionCallback func(msg *JoyFeedback, info *rclgo.MessageInfo, err error)
 
 // NewJoyFeedbackSubscription creates and returns a new subscription for the
 // JoyFeedback
@@ -118,7 +118,7 @@ func NewJoyFeedbackSubscription(node *rclgo.Node, topic_name string, subscriptio
 	return &JoyFeedbackSubscription{sub}, nil
 }
 
-func (s *JoyFeedbackSubscription) TakeMessage(out *JoyFeedback) (*rclgo.RmwMessageInfo, error) {
+func (s *JoyFeedbackSubscription) TakeMessage(out *JoyFeedback) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

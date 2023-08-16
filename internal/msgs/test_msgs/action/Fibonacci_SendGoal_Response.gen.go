@@ -97,7 +97,7 @@ type Fibonacci_SendGoal_ResponseSubscription struct {
 
 // Fibonacci_SendGoal_ResponseSubscriptionCallback type is used to provide a subscription
 // handler function for a Fibonacci_SendGoal_ResponseSubscription.
-type Fibonacci_SendGoal_ResponseSubscriptionCallback func(msg *Fibonacci_SendGoal_Response, info *rclgo.RmwMessageInfo, err error)
+type Fibonacci_SendGoal_ResponseSubscriptionCallback func(msg *Fibonacci_SendGoal_Response, info *rclgo.MessageInfo, err error)
 
 // NewFibonacci_SendGoal_ResponseSubscription creates and returns a new subscription for the
 // Fibonacci_SendGoal_Response
@@ -114,7 +114,7 @@ func NewFibonacci_SendGoal_ResponseSubscription(node *rclgo.Node, topic_name str
 	return &Fibonacci_SendGoal_ResponseSubscription{sub}, nil
 }
 
-func (s *Fibonacci_SendGoal_ResponseSubscription) TakeMessage(out *Fibonacci_SendGoal_Response) (*rclgo.RmwMessageInfo, error) {
+func (s *Fibonacci_SendGoal_ResponseSubscription) TakeMessage(out *Fibonacci_SendGoal_Response) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

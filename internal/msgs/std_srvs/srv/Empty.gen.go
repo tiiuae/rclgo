@@ -65,7 +65,7 @@ func NewEmptyClient(node *rclgo.Node, serviceName string, options *rclgo.ClientO
 	return &EmptyClient{client}, nil
 }
 
-func (s *EmptyClient) Send(ctx context.Context, req *Empty_Request) (*Empty_Response, *rclgo.RmwServiceInfo, error) {
+func (s *EmptyClient) Send(ctx context.Context, req *Empty_Request) (*Empty_Response, *rclgo.ServiceInfo, error) {
 	msg, rmw, err := s.Client.Send(ctx, req)
 	if err != nil {
 		return nil, rmw, err
@@ -85,7 +85,7 @@ func (s EmptyServiceResponseSender) SendResponse(resp *Empty_Response) error {
 	return s.sender.SendResponse(resp)
 }
 
-type EmptyServiceRequestHandler func(*rclgo.RmwServiceInfo, *Empty_Request, EmptyServiceResponseSender)
+type EmptyServiceRequestHandler func(*rclgo.ServiceInfo, *Empty_Request, EmptyServiceResponseSender)
 
 // EmptyService wraps rclgo.Service to provide type safe helper
 // functions
@@ -96,7 +96,7 @@ type EmptyService struct {
 // NewEmptyService creates and returns a new service for the
 // Empty
 func NewEmptyService(node *rclgo.Node, name string, options *rclgo.ServiceOptions, handler EmptyServiceRequestHandler) (*EmptyService, error) {
-	h := func(rmw *rclgo.RmwServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
+	h := func(rmw *rclgo.ServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
 		m := msg.(*Empty_Request)
 		responseSender := EmptyServiceResponseSender{sender: rs} 
 		handler(rmw, m, responseSender)

@@ -109,7 +109,7 @@ type GoalStatusSubscription struct {
 
 // GoalStatusSubscriptionCallback type is used to provide a subscription
 // handler function for a GoalStatusSubscription.
-type GoalStatusSubscriptionCallback func(msg *GoalStatus, info *rclgo.RmwMessageInfo, err error)
+type GoalStatusSubscriptionCallback func(msg *GoalStatus, info *rclgo.MessageInfo, err error)
 
 // NewGoalStatusSubscription creates and returns a new subscription for the
 // GoalStatus
@@ -126,7 +126,7 @@ func NewGoalStatusSubscription(node *rclgo.Node, topic_name string, subscription
 	return &GoalStatusSubscription{sub}, nil
 }
 
-func (s *GoalStatusSubscription) TakeMessage(out *GoalStatus) (*rclgo.RmwMessageInfo, error) {
+func (s *GoalStatusSubscription) TakeMessage(out *GoalStatus) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

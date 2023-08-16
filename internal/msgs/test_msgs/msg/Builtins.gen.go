@@ -94,7 +94,7 @@ type BuiltinsSubscription struct {
 
 // BuiltinsSubscriptionCallback type is used to provide a subscription
 // handler function for a BuiltinsSubscription.
-type BuiltinsSubscriptionCallback func(msg *Builtins, info *rclgo.RmwMessageInfo, err error)
+type BuiltinsSubscriptionCallback func(msg *Builtins, info *rclgo.MessageInfo, err error)
 
 // NewBuiltinsSubscription creates and returns a new subscription for the
 // Builtins
@@ -111,7 +111,7 @@ func NewBuiltinsSubscription(node *rclgo.Node, topic_name string, subscriptionCa
 	return &BuiltinsSubscription{sub}, nil
 }
 
-func (s *BuiltinsSubscription) TakeMessage(out *Builtins) (*rclgo.RmwMessageInfo, error) {
+func (s *BuiltinsSubscription) TakeMessage(out *Builtins) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

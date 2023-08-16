@@ -94,7 +94,7 @@ type WrenchStampedSubscription struct {
 
 // WrenchStampedSubscriptionCallback type is used to provide a subscription
 // handler function for a WrenchStampedSubscription.
-type WrenchStampedSubscriptionCallback func(msg *WrenchStamped, info *rclgo.RmwMessageInfo, err error)
+type WrenchStampedSubscriptionCallback func(msg *WrenchStamped, info *rclgo.MessageInfo, err error)
 
 // NewWrenchStampedSubscription creates and returns a new subscription for the
 // WrenchStamped
@@ -111,7 +111,7 @@ func NewWrenchStampedSubscription(node *rclgo.Node, topic_name string, subscript
 	return &WrenchStampedSubscription{sub}, nil
 }
 
-func (s *WrenchStampedSubscription) TakeMessage(out *WrenchStamped) (*rclgo.RmwMessageInfo, error) {
+func (s *WrenchStampedSubscription) TakeMessage(out *WrenchStamped) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

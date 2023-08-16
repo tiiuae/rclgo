@@ -94,7 +94,7 @@ type Fibonacci_ResultSubscription struct {
 
 // Fibonacci_ResultSubscriptionCallback type is used to provide a subscription
 // handler function for a Fibonacci_ResultSubscription.
-type Fibonacci_ResultSubscriptionCallback func(msg *Fibonacci_Result, info *rclgo.RmwMessageInfo, err error)
+type Fibonacci_ResultSubscriptionCallback func(msg *Fibonacci_Result, info *rclgo.MessageInfo, err error)
 
 // NewFibonacci_ResultSubscription creates and returns a new subscription for the
 // Fibonacci_Result
@@ -111,7 +111,7 @@ func NewFibonacci_ResultSubscription(node *rclgo.Node, topic_name string, subscr
 	return &Fibonacci_ResultSubscription{sub}, nil
 }
 
-func (s *Fibonacci_ResultSubscription) TakeMessage(out *Fibonacci_Result) (*rclgo.RmwMessageInfo, error) {
+func (s *Fibonacci_ResultSubscription) TakeMessage(out *Fibonacci_Result) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

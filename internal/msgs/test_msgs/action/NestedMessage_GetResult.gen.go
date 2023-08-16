@@ -65,7 +65,7 @@ func NewNestedMessage_GetResultClient(node *rclgo.Node, serviceName string, opti
 	return &NestedMessage_GetResultClient{client}, nil
 }
 
-func (s *NestedMessage_GetResultClient) Send(ctx context.Context, req *NestedMessage_GetResult_Request) (*NestedMessage_GetResult_Response, *rclgo.RmwServiceInfo, error) {
+func (s *NestedMessage_GetResultClient) Send(ctx context.Context, req *NestedMessage_GetResult_Request) (*NestedMessage_GetResult_Response, *rclgo.ServiceInfo, error) {
 	msg, rmw, err := s.Client.Send(ctx, req)
 	if err != nil {
 		return nil, rmw, err
@@ -85,7 +85,7 @@ func (s NestedMessage_GetResultServiceResponseSender) SendResponse(resp *NestedM
 	return s.sender.SendResponse(resp)
 }
 
-type NestedMessage_GetResultServiceRequestHandler func(*rclgo.RmwServiceInfo, *NestedMessage_GetResult_Request, NestedMessage_GetResultServiceResponseSender)
+type NestedMessage_GetResultServiceRequestHandler func(*rclgo.ServiceInfo, *NestedMessage_GetResult_Request, NestedMessage_GetResultServiceResponseSender)
 
 // NestedMessage_GetResultService wraps rclgo.Service to provide type safe helper
 // functions
@@ -96,7 +96,7 @@ type NestedMessage_GetResultService struct {
 // NewNestedMessage_GetResultService creates and returns a new service for the
 // NestedMessage_GetResult
 func NewNestedMessage_GetResultService(node *rclgo.Node, name string, options *rclgo.ServiceOptions, handler NestedMessage_GetResultServiceRequestHandler) (*NestedMessage_GetResultService, error) {
-	h := func(rmw *rclgo.RmwServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
+	h := func(rmw *rclgo.ServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
 		m := msg.(*NestedMessage_GetResult_Request)
 		responseSender := NestedMessage_GetResultServiceResponseSender{sender: rs} 
 		handler(rmw, m, responseSender)

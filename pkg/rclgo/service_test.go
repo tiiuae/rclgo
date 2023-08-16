@@ -16,7 +16,7 @@ func TestServiceAndClient(t *testing.T) {
 	type testSendResult struct {
 		req  types.Message
 		resp types.Message
-		info *rclgo.RmwServiceInfo
+		info *rclgo.ServiceInfo
 		err  error
 		sum  int64
 	}
@@ -36,9 +36,9 @@ func TestServiceAndClient(t *testing.T) {
 
 		randGen = rand.NewSource(42)
 
-		qosProfile = rclgo.NewRmwQosProfileServicesDefault()
+		qosProfile = rclgo.NewDefaultServiceQosProfile()
 	)
-	qosProfile.History = rclgo.RmwQosHistoryPolicyKeepAll
+	qosProfile.History = rclgo.HistoryKeepAll
 	sendReq := func(a, b int64) *testSendResult {
 		req := example_interfaces_srv.NewAddTwoInts_Request()
 		req.A = a
@@ -66,7 +66,7 @@ func TestServiceAndClient(t *testing.T) {
 				"add",
 				example_interfaces_srv.AddTwoIntsTypeSupport,
 				&rclgo.ServiceOptions{Qos: qosProfile},
-				func(rsi *rclgo.RmwServiceInfo, rm types.Message, srs rclgo.ServiceResponseSender) {
+				func(rsi *rclgo.ServiceInfo, rm types.Message, srs rclgo.ServiceResponseSender) {
 					req := rm.(*example_interfaces_srv.AddTwoInts_Request)
 					requestReceivedChan <- req
 					resp := example_interfaces_srv.NewAddTwoInts_Response()

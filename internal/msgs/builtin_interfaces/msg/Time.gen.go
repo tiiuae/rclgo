@@ -93,7 +93,7 @@ type TimeSubscription struct {
 
 // TimeSubscriptionCallback type is used to provide a subscription
 // handler function for a TimeSubscription.
-type TimeSubscriptionCallback func(msg *Time, info *rclgo.RmwMessageInfo, err error)
+type TimeSubscriptionCallback func(msg *Time, info *rclgo.MessageInfo, err error)
 
 // NewTimeSubscription creates and returns a new subscription for the
 // Time
@@ -110,7 +110,7 @@ func NewTimeSubscription(node *rclgo.Node, topic_name string, subscriptionCallba
 	return &TimeSubscription{sub}, nil
 }
 
-func (s *TimeSubscription) TakeMessage(out *Time) (*rclgo.RmwMessageInfo, error) {
+func (s *TimeSubscription) TakeMessage(out *Time) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

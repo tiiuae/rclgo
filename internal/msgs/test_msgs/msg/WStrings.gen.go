@@ -115,7 +115,7 @@ type WStringsSubscription struct {
 
 // WStringsSubscriptionCallback type is used to provide a subscription
 // handler function for a WStringsSubscription.
-type WStringsSubscriptionCallback func(msg *WStrings, info *rclgo.RmwMessageInfo, err error)
+type WStringsSubscriptionCallback func(msg *WStrings, info *rclgo.MessageInfo, err error)
 
 // NewWStringsSubscription creates and returns a new subscription for the
 // WStrings
@@ -132,7 +132,7 @@ func NewWStringsSubscription(node *rclgo.Node, topic_name string, subscriptionCa
 	return &WStringsSubscription{sub}, nil
 }
 
-func (s *WStringsSubscription) TakeMessage(out *WStrings) (*rclgo.RmwMessageInfo, error) {
+func (s *WStringsSubscription) TakeMessage(out *WStrings) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

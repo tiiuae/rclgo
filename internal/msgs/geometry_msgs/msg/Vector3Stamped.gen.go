@@ -94,7 +94,7 @@ type Vector3StampedSubscription struct {
 
 // Vector3StampedSubscriptionCallback type is used to provide a subscription
 // handler function for a Vector3StampedSubscription.
-type Vector3StampedSubscriptionCallback func(msg *Vector3Stamped, info *rclgo.RmwMessageInfo, err error)
+type Vector3StampedSubscriptionCallback func(msg *Vector3Stamped, info *rclgo.MessageInfo, err error)
 
 // NewVector3StampedSubscription creates and returns a new subscription for the
 // Vector3Stamped
@@ -111,7 +111,7 @@ func NewVector3StampedSubscription(node *rclgo.Node, topic_name string, subscrip
 	return &Vector3StampedSubscription{sub}, nil
 }
 
-func (s *Vector3StampedSubscription) TakeMessage(out *Vector3Stamped) (*rclgo.RmwMessageInfo, error) {
+func (s *Vector3StampedSubscription) TakeMessage(out *Vector3Stamped) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

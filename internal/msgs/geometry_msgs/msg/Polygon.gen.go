@@ -93,7 +93,7 @@ type PolygonSubscription struct {
 
 // PolygonSubscriptionCallback type is used to provide a subscription
 // handler function for a PolygonSubscription.
-type PolygonSubscriptionCallback func(msg *Polygon, info *rclgo.RmwMessageInfo, err error)
+type PolygonSubscriptionCallback func(msg *Polygon, info *rclgo.MessageInfo, err error)
 
 // NewPolygonSubscription creates and returns a new subscription for the
 // Polygon
@@ -110,7 +110,7 @@ func NewPolygonSubscription(node *rclgo.Node, topic_name string, subscriptionCal
 	return &PolygonSubscription{sub}, nil
 }
 
-func (s *PolygonSubscription) TakeMessage(out *Polygon) (*rclgo.RmwMessageInfo, error) {
+func (s *PolygonSubscription) TakeMessage(out *Polygon) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

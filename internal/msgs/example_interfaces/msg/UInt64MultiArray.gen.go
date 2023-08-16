@@ -97,7 +97,7 @@ type UInt64MultiArraySubscription struct {
 
 // UInt64MultiArraySubscriptionCallback type is used to provide a subscription
 // handler function for a UInt64MultiArraySubscription.
-type UInt64MultiArraySubscriptionCallback func(msg *UInt64MultiArray, info *rclgo.RmwMessageInfo, err error)
+type UInt64MultiArraySubscriptionCallback func(msg *UInt64MultiArray, info *rclgo.MessageInfo, err error)
 
 // NewUInt64MultiArraySubscription creates and returns a new subscription for the
 // UInt64MultiArray
@@ -114,7 +114,7 @@ func NewUInt64MultiArraySubscription(node *rclgo.Node, topic_name string, subscr
 	return &UInt64MultiArraySubscription{sub}, nil
 }
 
-func (s *UInt64MultiArraySubscription) TakeMessage(out *UInt64MultiArray) (*rclgo.RmwMessageInfo, error) {
+func (s *UInt64MultiArraySubscription) TakeMessage(out *UInt64MultiArray) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

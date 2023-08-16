@@ -91,7 +91,7 @@ type SetCameraInfo_RequestSubscription struct {
 
 // SetCameraInfo_RequestSubscriptionCallback type is used to provide a subscription
 // handler function for a SetCameraInfo_RequestSubscription.
-type SetCameraInfo_RequestSubscriptionCallback func(msg *SetCameraInfo_Request, info *rclgo.RmwMessageInfo, err error)
+type SetCameraInfo_RequestSubscriptionCallback func(msg *SetCameraInfo_Request, info *rclgo.MessageInfo, err error)
 
 // NewSetCameraInfo_RequestSubscription creates and returns a new subscription for the
 // SetCameraInfo_Request
@@ -108,7 +108,7 @@ func NewSetCameraInfo_RequestSubscription(node *rclgo.Node, topic_name string, s
 	return &SetCameraInfo_RequestSubscription{sub}, nil
 }
 
-func (s *SetCameraInfo_RequestSubscription) TakeMessage(out *SetCameraInfo_Request) (*rclgo.RmwMessageInfo, error) {
+func (s *SetCameraInfo_RequestSubscription) TakeMessage(out *SetCameraInfo_Request) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

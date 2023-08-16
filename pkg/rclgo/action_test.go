@@ -23,15 +23,15 @@ var (
 )
 
 func init() {
-	actionServerOpts.GoalServiceQos.History = rclgo.RmwQosHistoryPolicyKeepAll
-	actionServerOpts.CancelServiceQos.History = rclgo.RmwQosHistoryPolicyKeepAll
-	actionServerOpts.ResultServiceQos.History = rclgo.RmwQosHistoryPolicyKeepAll
+	actionServerOpts.GoalServiceQos.History = rclgo.HistoryKeepAll
+	actionServerOpts.CancelServiceQos.History = rclgo.HistoryKeepAll
+	actionServerOpts.ResultServiceQos.History = rclgo.HistoryKeepAll
 	actionServerOpts.FeedbackTopicQos = reliableQos
 	actionServerOpts.StatusTopicQos = reliableQos
 
-	actionClientOpts.GoalServiceQos.History = rclgo.RmwQosHistoryPolicyKeepAll
-	actionClientOpts.CancelServiceQos.History = rclgo.RmwQosHistoryPolicyKeepAll
-	actionClientOpts.ResultServiceQos.History = rclgo.RmwQosHistoryPolicyKeepAll
+	actionClientOpts.GoalServiceQos.History = rclgo.HistoryKeepAll
+	actionClientOpts.CancelServiceQos.History = rclgo.HistoryKeepAll
+	actionClientOpts.ResultServiceQos.History = rclgo.HistoryKeepAll
 	actionClientOpts.FeedbackTopicQos = reliableQos
 	actionClientOpts.StatusTopicQos = reliableQos
 }

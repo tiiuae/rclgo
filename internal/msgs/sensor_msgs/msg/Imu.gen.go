@@ -111,7 +111,7 @@ type ImuSubscription struct {
 
 // ImuSubscriptionCallback type is used to provide a subscription
 // handler function for a ImuSubscription.
-type ImuSubscriptionCallback func(msg *Imu, info *rclgo.RmwMessageInfo, err error)
+type ImuSubscriptionCallback func(msg *Imu, info *rclgo.MessageInfo, err error)
 
 // NewImuSubscription creates and returns a new subscription for the
 // Imu
@@ -128,7 +128,7 @@ func NewImuSubscription(node *rclgo.Node, topic_name string, subscriptionCallbac
 	return &ImuSubscription{sub}, nil
 }
 
-func (s *ImuSubscription) TakeMessage(out *Imu) (*rclgo.RmwMessageInfo, error) {
+func (s *ImuSubscription) TakeMessage(out *Imu) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

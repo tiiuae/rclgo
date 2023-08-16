@@ -87,7 +87,7 @@ type EmptySubscription struct {
 
 // EmptySubscriptionCallback type is used to provide a subscription
 // handler function for a EmptySubscription.
-type EmptySubscriptionCallback func(msg *Empty, info *rclgo.RmwMessageInfo, err error)
+type EmptySubscriptionCallback func(msg *Empty, info *rclgo.MessageInfo, err error)
 
 // NewEmptySubscription creates and returns a new subscription for the
 // Empty
@@ -104,7 +104,7 @@ func NewEmptySubscription(node *rclgo.Node, topic_name string, subscriptionCallb
 	return &EmptySubscription{sub}, nil
 }
 
-func (s *EmptySubscription) TakeMessage(out *Empty) (*rclgo.RmwMessageInfo, error) {
+func (s *EmptySubscription) TakeMessage(out *Empty) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

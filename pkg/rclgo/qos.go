@@ -17,83 +17,83 @@ import (
 )
 
 const (
-	RmwQosDurationInfinite    = 9223372036*time.Second + 854775807*time.Nanosecond
-	RmwQosDurationUnspecified = time.Duration(0)
+	DurationInfinite    = 9223372036*time.Second + 854775807*time.Nanosecond
+	DurationUnspecified = time.Duration(0)
 )
 
-type RmwQosHistoryPolicy int
+type HistoryPolicy int
 
 const (
-	RmwQosHistoryPolicySystemDefault RmwQosHistoryPolicy = iota
-	RmwQosHistoryPolicyKeepLast
-	RmwQosHistoryPolicyKeepAll
-	RmwQosHistoryPolicyUnknown
+	HistorySystemDefault HistoryPolicy = iota
+	HistoryKeepLast
+	HistoryKeepAll
+	HistoryUnknown
 )
 
-type RmwQosReliabilityPolicy int
+type ReliabilityPolicy int
 
 const (
-	RmwQosReliabilityPolicySystemDefault RmwQosReliabilityPolicy = iota
-	RmwQosReliabilityPolicyReliable
-	RmwQosReliabilityPolicyBestEffort
-	RmwQosReliabilityPolicyUnknown
+	ReliabilitySystemDefault ReliabilityPolicy = iota
+	ReliabilityReliable
+	ReliabilityBestEffort
+	ReliabilityUnknown
 )
 
-type RmwQosDurabilityPolicy int
+type DurabilityPolicy int
 
 const (
-	RmwQosDurabilityPolicySystemDefault RmwQosDurabilityPolicy = iota
-	RmwQosDurabilityPolicyTransientLocal
-	RmwQosDurabilityPolicyVolatile
-	RmwQosDurabilityPolicyUnknown
+	DurabilitySystemDefault DurabilityPolicy = iota
+	DurabilityTransientLocal
+	DurabilityVolatile
+	DurabilityUnknown
 )
-const RmwQosDeadlineDefault = RmwQosDurationUnspecified
+const DeadlineDefault = DurationUnspecified
 
-const RmwQosLifespanDefault = RmwQosDurationUnspecified
+const LifespanDefault = DurationUnspecified
 
-type RmwQosLivelinessPolicy int
+type LivelinessPolicy int
 
 const (
-	RmwQosLivelinessPolicySystemDefault RmwQosLivelinessPolicy = iota
-	RmwQosLivelinessPolicyAutomatic
+	LivelinessSystemDefault LivelinessPolicy = iota
+	LivelinessAutomatic
 	_
-	RmwQosLivelinessPolicyManualByTopic
-	RmwQosLivelinessPolicyUnknown
+	LivelinessManualByTopic
+	LivelinessUnknown
 )
 
-const RmwQosLivelinessLeaseDurationDefault = RmwQosDurationUnspecified
+const LivelinessLeaseDurationDefault = DurationUnspecified
 
-type RmwQosProfile struct {
-	History                      RmwQosHistoryPolicy
+type QosProfile struct {
+	History                      HistoryPolicy
 	Depth                        int
-	Reliability                  RmwQosReliabilityPolicy
-	Durability                   RmwQosDurabilityPolicy
+	Reliability                  ReliabilityPolicy
+	Durability                   DurabilityPolicy
 	Deadline                     time.Duration
 	Lifespan                     time.Duration
-	Liveliness                   RmwQosLivelinessPolicy
+	Liveliness                   LivelinessPolicy
 	LivelinessLeaseDuration      time.Duration
 	AvoidRosNamespaceConventions bool
 }
 
-func NewRmwQosProfileDefault() RmwQosProfile {
-	return RmwQosProfile{
-		History:                      RmwQosHistoryPolicyKeepLast,
+func NewDefaultQosProfile() QosProfile {
+	return QosProfile{
+		History:                      HistoryKeepLast,
 		Depth:                        10,
-		Reliability:                  RmwQosReliabilityPolicyReliable,
-		Durability:                   RmwQosDurabilityPolicyVolatile,
-		Deadline:                     RmwQosDeadlineDefault,
-		Lifespan:                     RmwQosLifespanDefault,
-		Liveliness:                   RmwQosLivelinessPolicySystemDefault,
-		LivelinessLeaseDuration:      RmwQosLivelinessLeaseDurationDefault,
+		Reliability:                  ReliabilityReliable,
+		Durability:                   DurabilityVolatile,
+		Deadline:                     DeadlineDefault,
+		Lifespan:                     LifespanDefault,
+		Liveliness:                   LivelinessSystemDefault,
+		LivelinessLeaseDuration:      LivelinessLeaseDurationDefault,
 		AvoidRosNamespaceConventions: false,
 	}
 }
 
-func NewRmwQosProfileServicesDefault() RmwQosProfile {
-	return NewRmwQosProfileDefault()
+func NewDefaultServiceQosProfile() QosProfile {
+	return NewDefaultQosProfile()
 }
 
-func (p *RmwQosProfile) asCStruct(dst *C.rmw_qos_profile_t) {
+func (p *QosProfile) asCStruct(dst *C.rmw_qos_profile_t) {
 	dst.history = uint32(p.History)
 	dst.depth = C.ulong(p.Depth)
 	dst.reliability = uint32(p.Reliability)

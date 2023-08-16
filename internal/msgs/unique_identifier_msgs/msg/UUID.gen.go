@@ -91,7 +91,7 @@ type UUIDSubscription struct {
 
 // UUIDSubscriptionCallback type is used to provide a subscription
 // handler function for a UUIDSubscription.
-type UUIDSubscriptionCallback func(msg *UUID, info *rclgo.RmwMessageInfo, err error)
+type UUIDSubscriptionCallback func(msg *UUID, info *rclgo.MessageInfo, err error)
 
 // NewUUIDSubscription creates and returns a new subscription for the
 // UUID
@@ -108,7 +108,7 @@ func NewUUIDSubscription(node *rclgo.Node, topic_name string, subscriptionCallba
 	return &UUIDSubscription{sub}, nil
 }
 
-func (s *UUIDSubscription) TakeMessage(out *UUID) (*rclgo.RmwMessageInfo, error) {
+func (s *UUIDSubscription) TakeMessage(out *UUID) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

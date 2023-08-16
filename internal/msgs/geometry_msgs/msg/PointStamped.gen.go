@@ -94,7 +94,7 @@ type PointStampedSubscription struct {
 
 // PointStampedSubscriptionCallback type is used to provide a subscription
 // handler function for a PointStampedSubscription.
-type PointStampedSubscriptionCallback func(msg *PointStamped, info *rclgo.RmwMessageInfo, err error)
+type PointStampedSubscriptionCallback func(msg *PointStamped, info *rclgo.MessageInfo, err error)
 
 // NewPointStampedSubscription creates and returns a new subscription for the
 // PointStamped
@@ -111,7 +111,7 @@ func NewPointStampedSubscription(node *rclgo.Node, topic_name string, subscripti
 	return &PointStampedSubscription{sub}, nil
 }
 
-func (s *PointStampedSubscription) TakeMessage(out *PointStamped) (*rclgo.RmwMessageInfo, error) {
+func (s *PointStampedSubscription) TakeMessage(out *PointStamped) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

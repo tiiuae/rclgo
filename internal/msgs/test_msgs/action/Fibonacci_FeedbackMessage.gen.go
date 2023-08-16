@@ -101,7 +101,7 @@ type Fibonacci_FeedbackMessageSubscription struct {
 
 // Fibonacci_FeedbackMessageSubscriptionCallback type is used to provide a subscription
 // handler function for a Fibonacci_FeedbackMessageSubscription.
-type Fibonacci_FeedbackMessageSubscriptionCallback func(msg *Fibonacci_FeedbackMessage, info *rclgo.RmwMessageInfo, err error)
+type Fibonacci_FeedbackMessageSubscriptionCallback func(msg *Fibonacci_FeedbackMessage, info *rclgo.MessageInfo, err error)
 
 // NewFibonacci_FeedbackMessageSubscription creates and returns a new subscription for the
 // Fibonacci_FeedbackMessage
@@ -118,7 +118,7 @@ func NewFibonacci_FeedbackMessageSubscription(node *rclgo.Node, topic_name strin
 	return &Fibonacci_FeedbackMessageSubscription{sub}, nil
 }
 
-func (s *Fibonacci_FeedbackMessageSubscription) TakeMessage(out *Fibonacci_FeedbackMessage) (*rclgo.RmwMessageInfo, error) {
+func (s *Fibonacci_FeedbackMessageSubscription) TakeMessage(out *Fibonacci_FeedbackMessage) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

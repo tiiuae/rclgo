@@ -93,7 +93,7 @@ type NestedMessage_GetResult_ResponseSubscription struct {
 
 // NestedMessage_GetResult_ResponseSubscriptionCallback type is used to provide a subscription
 // handler function for a NestedMessage_GetResult_ResponseSubscription.
-type NestedMessage_GetResult_ResponseSubscriptionCallback func(msg *NestedMessage_GetResult_Response, info *rclgo.RmwMessageInfo, err error)
+type NestedMessage_GetResult_ResponseSubscriptionCallback func(msg *NestedMessage_GetResult_Response, info *rclgo.MessageInfo, err error)
 
 // NewNestedMessage_GetResult_ResponseSubscription creates and returns a new subscription for the
 // NestedMessage_GetResult_Response
@@ -110,7 +110,7 @@ func NewNestedMessage_GetResult_ResponseSubscription(node *rclgo.Node, topic_nam
 	return &NestedMessage_GetResult_ResponseSubscription{sub}, nil
 }
 
-func (s *NestedMessage_GetResult_ResponseSubscription) TakeMessage(out *NestedMessage_GetResult_Response) (*rclgo.RmwMessageInfo, error) {
+func (s *NestedMessage_GetResult_ResponseSubscription) TakeMessage(out *NestedMessage_GetResult_Response) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

@@ -65,7 +65,7 @@ func NewAddTwoIntsClient(node *rclgo.Node, serviceName string, options *rclgo.Cl
 	return &AddTwoIntsClient{client}, nil
 }
 
-func (s *AddTwoIntsClient) Send(ctx context.Context, req *AddTwoInts_Request) (*AddTwoInts_Response, *rclgo.RmwServiceInfo, error) {
+func (s *AddTwoIntsClient) Send(ctx context.Context, req *AddTwoInts_Request) (*AddTwoInts_Response, *rclgo.ServiceInfo, error) {
 	msg, rmw, err := s.Client.Send(ctx, req)
 	if err != nil {
 		return nil, rmw, err
@@ -85,7 +85,7 @@ func (s AddTwoIntsServiceResponseSender) SendResponse(resp *AddTwoInts_Response)
 	return s.sender.SendResponse(resp)
 }
 
-type AddTwoIntsServiceRequestHandler func(*rclgo.RmwServiceInfo, *AddTwoInts_Request, AddTwoIntsServiceResponseSender)
+type AddTwoIntsServiceRequestHandler func(*rclgo.ServiceInfo, *AddTwoInts_Request, AddTwoIntsServiceResponseSender)
 
 // AddTwoIntsService wraps rclgo.Service to provide type safe helper
 // functions
@@ -96,7 +96,7 @@ type AddTwoIntsService struct {
 // NewAddTwoIntsService creates and returns a new service for the
 // AddTwoInts
 func NewAddTwoIntsService(node *rclgo.Node, name string, options *rclgo.ServiceOptions, handler AddTwoIntsServiceRequestHandler) (*AddTwoIntsService, error) {
-	h := func(rmw *rclgo.RmwServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
+	h := func(rmw *rclgo.ServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
 		m := msg.(*AddTwoInts_Request)
 		responseSender := AddTwoIntsServiceResponseSender{sender: rs} 
 		handler(rmw, m, responseSender)

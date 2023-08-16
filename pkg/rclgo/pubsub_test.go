@@ -521,11 +521,11 @@ func parseArgsMust(args ...string) *rclgo.Args {
 	return a
 }
 
-var reliableQos = func() rclgo.RmwQosProfile {
-	qos := rclgo.NewRmwQosProfileDefault()
-	qos.History = rclgo.RmwQosHistoryPolicyKeepAll
-	qos.Durability = rclgo.RmwQosDurabilityPolicyTransientLocal
-	qos.Reliability = rclgo.RmwQosReliabilityPolicyReliable
+var reliableQos = func() rclgo.QosProfile {
+	qos := rclgo.NewDefaultQosProfile()
+	qos.History = rclgo.HistoryKeepAll
+	qos.Durability = rclgo.DurabilityTransientLocal
+	qos.Reliability = rclgo.ReliabilityReliable
 	return qos
 }()
 
@@ -624,7 +624,7 @@ func sendToChan(c chan<- receiveResult) func(s *rclgo.Subscription) {
 
 type receiveResult struct {
 	msg std_msgs.String
-	rmi *rclgo.RmwMessageInfo
+	rmi *rclgo.MessageInfo
 	err error
 }
 

@@ -94,7 +94,7 @@ type SetBool_ResponseSubscription struct {
 
 // SetBool_ResponseSubscriptionCallback type is used to provide a subscription
 // handler function for a SetBool_ResponseSubscription.
-type SetBool_ResponseSubscriptionCallback func(msg *SetBool_Response, info *rclgo.RmwMessageInfo, err error)
+type SetBool_ResponseSubscriptionCallback func(msg *SetBool_Response, info *rclgo.MessageInfo, err error)
 
 // NewSetBool_ResponseSubscription creates and returns a new subscription for the
 // SetBool_Response
@@ -111,7 +111,7 @@ func NewSetBool_ResponseSubscription(node *rclgo.Node, topic_name string, subscr
 	return &SetBool_ResponseSubscription{sub}, nil
 }
 
-func (s *SetBool_ResponseSubscription) TakeMessage(out *SetBool_Response) (*rclgo.RmwMessageInfo, error) {
+func (s *SetBool_ResponseSubscription) TakeMessage(out *SetBool_Response) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

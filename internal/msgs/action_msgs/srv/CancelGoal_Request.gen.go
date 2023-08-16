@@ -91,7 +91,7 @@ type CancelGoal_RequestSubscription struct {
 
 // CancelGoal_RequestSubscriptionCallback type is used to provide a subscription
 // handler function for a CancelGoal_RequestSubscription.
-type CancelGoal_RequestSubscriptionCallback func(msg *CancelGoal_Request, info *rclgo.RmwMessageInfo, err error)
+type CancelGoal_RequestSubscriptionCallback func(msg *CancelGoal_Request, info *rclgo.MessageInfo, err error)
 
 // NewCancelGoal_RequestSubscription creates and returns a new subscription for the
 // CancelGoal_Request
@@ -108,7 +108,7 @@ func NewCancelGoal_RequestSubscription(node *rclgo.Node, topic_name string, subs
 	return &CancelGoal_RequestSubscription{sub}, nil
 }
 
-func (s *CancelGoal_RequestSubscription) TakeMessage(out *CancelGoal_Request) (*rclgo.RmwMessageInfo, error) {
+func (s *CancelGoal_RequestSubscription) TakeMessage(out *CancelGoal_Request) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

@@ -246,7 +246,7 @@ type {{$Md.Name}}Subscription struct {
 
 // {{$Md.Name}}SubscriptionCallback type is used to provide a subscription
 // handler function for a {{$Md.Name}}Subscription.
-type {{$Md.Name}}SubscriptionCallback func(msg *{{$Md.Name}}, info *rclgo.RmwMessageInfo, err error)
+type {{$Md.Name}}SubscriptionCallback func(msg *{{$Md.Name}}, info *rclgo.MessageInfo, err error)
 
 // New{{$Md.Name}}Subscription creates and returns a new subscription for the
 // {{$Md.Name}}
@@ -263,7 +263,7 @@ func New{{$Md.Name}}Subscription(node *rclgo.Node, topic_name string, subscripti
 	return &{{$Md.Name}}Subscription{sub}, nil
 }
 
-func (s *{{$Md.Name}}Subscription) TakeMessage(out *{{$Md.Name}}) (*rclgo.RmwMessageInfo, error) {
+func (s *{{$Md.Name}}Subscription) TakeMessage(out *{{$Md.Name}}) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 
@@ -432,7 +432,7 @@ func New{{.Service.Name}}Client(node *rclgo.Node, serviceName string, options *r
 	return &{{.Service.Name}}Client{client}, nil
 }
 
-func (s *{{.Service.Name}}Client) Send(ctx context.Context, req *{{.Service.Request.Name}}) (*{{.Service.Response.Name}}, *rclgo.RmwServiceInfo, error) {
+func (s *{{.Service.Name}}Client) Send(ctx context.Context, req *{{.Service.Request.Name}}) (*{{.Service.Response.Name}}, *rclgo.ServiceInfo, error) {
 	msg, rmw, err := s.Client.Send(ctx, req)
 	if err != nil {
 		return nil, rmw, err
@@ -452,7 +452,7 @@ func (s {{.Service.Name}}ServiceResponseSender) SendResponse(resp *{{.Service.Re
 	return s.sender.SendResponse(resp)
 }
 
-type {{.Service.Name}}ServiceRequestHandler func(*rclgo.RmwServiceInfo, *{{.Service.Request.Name}}, {{.Service.Name}}ServiceResponseSender)
+type {{.Service.Name}}ServiceRequestHandler func(*rclgo.ServiceInfo, *{{.Service.Request.Name}}, {{.Service.Name}}ServiceResponseSender)
 
 // {{.Service.Name}}Service wraps rclgo.Service to provide type safe helper
 // functions
@@ -463,7 +463,7 @@ type {{.Service.Name}}Service struct {
 // New{{.Service.Name}}Service creates and returns a new service for the
 // {{.Service.Name}}
 func New{{.Service.Name}}Service(node *rclgo.Node, name string, options *rclgo.ServiceOptions, handler {{.Service.Name}}ServiceRequestHandler) (*{{.Service.Name}}Service, error) {
-	h := func(rmw *rclgo.RmwServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
+	h := func(rmw *rclgo.ServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
 		m := msg.(*{{.Service.Request.Name}})
 		responseSender := {{.Service.Name}}ServiceResponseSender{sender: rs} 
 		handler(rmw, m, responseSender)

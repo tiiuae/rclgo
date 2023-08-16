@@ -94,7 +94,7 @@ type PoseWithCovarianceStampedSubscription struct {
 
 // PoseWithCovarianceStampedSubscriptionCallback type is used to provide a subscription
 // handler function for a PoseWithCovarianceStampedSubscription.
-type PoseWithCovarianceStampedSubscriptionCallback func(msg *PoseWithCovarianceStamped, info *rclgo.RmwMessageInfo, err error)
+type PoseWithCovarianceStampedSubscriptionCallback func(msg *PoseWithCovarianceStamped, info *rclgo.MessageInfo, err error)
 
 // NewPoseWithCovarianceStampedSubscription creates and returns a new subscription for the
 // PoseWithCovarianceStamped
@@ -111,7 +111,7 @@ func NewPoseWithCovarianceStampedSubscription(node *rclgo.Node, topic_name strin
 	return &PoseWithCovarianceStampedSubscription{sub}, nil
 }
 
-func (s *PoseWithCovarianceStampedSubscription) TakeMessage(out *PoseWithCovarianceStamped) (*rclgo.RmwMessageInfo, error) {
+func (s *PoseWithCovarianceStampedSubscription) TakeMessage(out *PoseWithCovarianceStamped) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

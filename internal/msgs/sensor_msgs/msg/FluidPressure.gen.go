@@ -97,7 +97,7 @@ type FluidPressureSubscription struct {
 
 // FluidPressureSubscriptionCallback type is used to provide a subscription
 // handler function for a FluidPressureSubscription.
-type FluidPressureSubscriptionCallback func(msg *FluidPressure, info *rclgo.RmwMessageInfo, err error)
+type FluidPressureSubscriptionCallback func(msg *FluidPressure, info *rclgo.MessageInfo, err error)
 
 // NewFluidPressureSubscription creates and returns a new subscription for the
 // FluidPressure
@@ -114,7 +114,7 @@ func NewFluidPressureSubscription(node *rclgo.Node, topic_name string, subscript
 	return &FluidPressureSubscription{sub}, nil
 }
 
-func (s *FluidPressureSubscription) TakeMessage(out *FluidPressure) (*rclgo.RmwMessageInfo, error) {
+func (s *FluidPressureSubscription) TakeMessage(out *FluidPressure) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

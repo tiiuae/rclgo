@@ -97,7 +97,7 @@ type Int64MultiArraySubscription struct {
 
 // Int64MultiArraySubscriptionCallback type is used to provide a subscription
 // handler function for a Int64MultiArraySubscription.
-type Int64MultiArraySubscriptionCallback func(msg *Int64MultiArray, info *rclgo.RmwMessageInfo, err error)
+type Int64MultiArraySubscriptionCallback func(msg *Int64MultiArray, info *rclgo.MessageInfo, err error)
 
 // NewInt64MultiArraySubscription creates and returns a new subscription for the
 // Int64MultiArray
@@ -114,7 +114,7 @@ func NewInt64MultiArraySubscription(node *rclgo.Node, topic_name string, subscri
 	return &Int64MultiArraySubscription{sub}, nil
 }
 
-func (s *Int64MultiArraySubscription) TakeMessage(out *Int64MultiArray) (*rclgo.RmwMessageInfo, error) {
+func (s *Int64MultiArraySubscription) TakeMessage(out *Int64MultiArray) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

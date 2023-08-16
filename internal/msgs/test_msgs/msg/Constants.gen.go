@@ -102,7 +102,7 @@ type ConstantsSubscription struct {
 
 // ConstantsSubscriptionCallback type is used to provide a subscription
 // handler function for a ConstantsSubscription.
-type ConstantsSubscriptionCallback func(msg *Constants, info *rclgo.RmwMessageInfo, err error)
+type ConstantsSubscriptionCallback func(msg *Constants, info *rclgo.MessageInfo, err error)
 
 // NewConstantsSubscription creates and returns a new subscription for the
 // Constants
@@ -119,7 +119,7 @@ func NewConstantsSubscription(node *rclgo.Node, topic_name string, subscriptionC
 	return &ConstantsSubscription{sub}, nil
 }
 
-func (s *ConstantsSubscription) TakeMessage(out *Constants) (*rclgo.RmwMessageInfo, error) {
+func (s *ConstantsSubscription) TakeMessage(out *Constants) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

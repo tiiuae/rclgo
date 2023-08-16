@@ -94,7 +94,7 @@ type Trigger_ResponseSubscription struct {
 
 // Trigger_ResponseSubscriptionCallback type is used to provide a subscription
 // handler function for a Trigger_ResponseSubscription.
-type Trigger_ResponseSubscriptionCallback func(msg *Trigger_Response, info *rclgo.RmwMessageInfo, err error)
+type Trigger_ResponseSubscriptionCallback func(msg *Trigger_Response, info *rclgo.MessageInfo, err error)
 
 // NewTrigger_ResponseSubscription creates and returns a new subscription for the
 // Trigger_Response
@@ -111,7 +111,7 @@ func NewTrigger_ResponseSubscription(node *rclgo.Node, topic_name string, subscr
 	return &Trigger_ResponseSubscription{sub}, nil
 }
 
-func (s *Trigger_ResponseSubscription) TakeMessage(out *Trigger_Response) (*rclgo.RmwMessageInfo, error) {
+func (s *Trigger_ResponseSubscription) TakeMessage(out *Trigger_Response) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

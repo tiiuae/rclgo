@@ -113,7 +113,7 @@ type ImageSubscription struct {
 
 // ImageSubscriptionCallback type is used to provide a subscription
 // handler function for a ImageSubscription.
-type ImageSubscriptionCallback func(msg *Image, info *rclgo.RmwMessageInfo, err error)
+type ImageSubscriptionCallback func(msg *Image, info *rclgo.MessageInfo, err error)
 
 // NewImageSubscription creates and returns a new subscription for the
 // Image
@@ -130,7 +130,7 @@ func NewImageSubscription(node *rclgo.Node, topic_name string, subscriptionCallb
 	return &ImageSubscription{sub}, nil
 }
 
-func (s *ImageSubscription) TakeMessage(out *Image) (*rclgo.RmwMessageInfo, error) {
+func (s *ImageSubscription) TakeMessage(out *Image) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

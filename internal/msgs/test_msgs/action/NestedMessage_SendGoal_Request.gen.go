@@ -108,7 +108,7 @@ type NestedMessage_SendGoal_RequestSubscription struct {
 
 // NestedMessage_SendGoal_RequestSubscriptionCallback type is used to provide a subscription
 // handler function for a NestedMessage_SendGoal_RequestSubscription.
-type NestedMessage_SendGoal_RequestSubscriptionCallback func(msg *NestedMessage_SendGoal_Request, info *rclgo.RmwMessageInfo, err error)
+type NestedMessage_SendGoal_RequestSubscriptionCallback func(msg *NestedMessage_SendGoal_Request, info *rclgo.MessageInfo, err error)
 
 // NewNestedMessage_SendGoal_RequestSubscription creates and returns a new subscription for the
 // NestedMessage_SendGoal_Request
@@ -125,7 +125,7 @@ func NewNestedMessage_SendGoal_RequestSubscription(node *rclgo.Node, topic_name 
 	return &NestedMessage_SendGoal_RequestSubscription{sub}, nil
 }
 
-func (s *NestedMessage_SendGoal_RequestSubscription) TakeMessage(out *NestedMessage_SendGoal_Request) (*rclgo.RmwMessageInfo, error) {
+func (s *NestedMessage_SendGoal_RequestSubscription) TakeMessage(out *NestedMessage_SendGoal_Request) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

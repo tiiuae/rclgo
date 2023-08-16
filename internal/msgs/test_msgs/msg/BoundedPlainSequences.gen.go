@@ -265,7 +265,7 @@ type BoundedPlainSequencesSubscription struct {
 
 // BoundedPlainSequencesSubscriptionCallback type is used to provide a subscription
 // handler function for a BoundedPlainSequencesSubscription.
-type BoundedPlainSequencesSubscriptionCallback func(msg *BoundedPlainSequences, info *rclgo.RmwMessageInfo, err error)
+type BoundedPlainSequencesSubscriptionCallback func(msg *BoundedPlainSequences, info *rclgo.MessageInfo, err error)
 
 // NewBoundedPlainSequencesSubscription creates and returns a new subscription for the
 // BoundedPlainSequences
@@ -282,7 +282,7 @@ func NewBoundedPlainSequencesSubscription(node *rclgo.Node, topic_name string, s
 	return &BoundedPlainSequencesSubscription{sub}, nil
 }
 
-func (s *BoundedPlainSequencesSubscription) TakeMessage(out *BoundedPlainSequences) (*rclgo.RmwMessageInfo, error) {
+func (s *BoundedPlainSequencesSubscription) TakeMessage(out *BoundedPlainSequences) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

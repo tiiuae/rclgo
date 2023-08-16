@@ -111,7 +111,7 @@ type InertiaSubscription struct {
 
 // InertiaSubscriptionCallback type is used to provide a subscription
 // handler function for a InertiaSubscription.
-type InertiaSubscriptionCallback func(msg *Inertia, info *rclgo.RmwMessageInfo, err error)
+type InertiaSubscriptionCallback func(msg *Inertia, info *rclgo.MessageInfo, err error)
 
 // NewInertiaSubscription creates and returns a new subscription for the
 // Inertia
@@ -128,7 +128,7 @@ func NewInertiaSubscription(node *rclgo.Node, topic_name string, subscriptionCal
 	return &InertiaSubscription{sub}, nil
 }
 
-func (s *InertiaSubscription) TakeMessage(out *Inertia) (*rclgo.RmwMessageInfo, error) {
+func (s *InertiaSubscription) TakeMessage(out *Inertia) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

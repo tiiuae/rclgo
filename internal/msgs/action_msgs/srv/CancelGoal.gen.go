@@ -65,7 +65,7 @@ func NewCancelGoalClient(node *rclgo.Node, serviceName string, options *rclgo.Cl
 	return &CancelGoalClient{client}, nil
 }
 
-func (s *CancelGoalClient) Send(ctx context.Context, req *CancelGoal_Request) (*CancelGoal_Response, *rclgo.RmwServiceInfo, error) {
+func (s *CancelGoalClient) Send(ctx context.Context, req *CancelGoal_Request) (*CancelGoal_Response, *rclgo.ServiceInfo, error) {
 	msg, rmw, err := s.Client.Send(ctx, req)
 	if err != nil {
 		return nil, rmw, err
@@ -85,7 +85,7 @@ func (s CancelGoalServiceResponseSender) SendResponse(resp *CancelGoal_Response)
 	return s.sender.SendResponse(resp)
 }
 
-type CancelGoalServiceRequestHandler func(*rclgo.RmwServiceInfo, *CancelGoal_Request, CancelGoalServiceResponseSender)
+type CancelGoalServiceRequestHandler func(*rclgo.ServiceInfo, *CancelGoal_Request, CancelGoalServiceResponseSender)
 
 // CancelGoalService wraps rclgo.Service to provide type safe helper
 // functions
@@ -96,7 +96,7 @@ type CancelGoalService struct {
 // NewCancelGoalService creates and returns a new service for the
 // CancelGoal
 func NewCancelGoalService(node *rclgo.Node, name string, options *rclgo.ServiceOptions, handler CancelGoalServiceRequestHandler) (*CancelGoalService, error) {
-	h := func(rmw *rclgo.RmwServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
+	h := func(rmw *rclgo.ServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
 		m := msg.(*CancelGoal_Request)
 		responseSender := CancelGoalServiceResponseSender{sender: rs} 
 		handler(rmw, m, responseSender)

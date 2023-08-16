@@ -65,7 +65,7 @@ func NewNestedMessage_SendGoalClient(node *rclgo.Node, serviceName string, optio
 	return &NestedMessage_SendGoalClient{client}, nil
 }
 
-func (s *NestedMessage_SendGoalClient) Send(ctx context.Context, req *NestedMessage_SendGoal_Request) (*NestedMessage_SendGoal_Response, *rclgo.RmwServiceInfo, error) {
+func (s *NestedMessage_SendGoalClient) Send(ctx context.Context, req *NestedMessage_SendGoal_Request) (*NestedMessage_SendGoal_Response, *rclgo.ServiceInfo, error) {
 	msg, rmw, err := s.Client.Send(ctx, req)
 	if err != nil {
 		return nil, rmw, err
@@ -85,7 +85,7 @@ func (s NestedMessage_SendGoalServiceResponseSender) SendResponse(resp *NestedMe
 	return s.sender.SendResponse(resp)
 }
 
-type NestedMessage_SendGoalServiceRequestHandler func(*rclgo.RmwServiceInfo, *NestedMessage_SendGoal_Request, NestedMessage_SendGoalServiceResponseSender)
+type NestedMessage_SendGoalServiceRequestHandler func(*rclgo.ServiceInfo, *NestedMessage_SendGoal_Request, NestedMessage_SendGoalServiceResponseSender)
 
 // NestedMessage_SendGoalService wraps rclgo.Service to provide type safe helper
 // functions
@@ -96,7 +96,7 @@ type NestedMessage_SendGoalService struct {
 // NewNestedMessage_SendGoalService creates and returns a new service for the
 // NestedMessage_SendGoal
 func NewNestedMessage_SendGoalService(node *rclgo.Node, name string, options *rclgo.ServiceOptions, handler NestedMessage_SendGoalServiceRequestHandler) (*NestedMessage_SendGoalService, error) {
-	h := func(rmw *rclgo.RmwServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
+	h := func(rmw *rclgo.ServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
 		m := msg.(*NestedMessage_SendGoal_Request)
 		responseSender := NestedMessage_SendGoalServiceResponseSender{sender: rs} 
 		handler(rmw, m, responseSender)

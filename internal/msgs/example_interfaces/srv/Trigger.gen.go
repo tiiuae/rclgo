@@ -65,7 +65,7 @@ func NewTriggerClient(node *rclgo.Node, serviceName string, options *rclgo.Clien
 	return &TriggerClient{client}, nil
 }
 
-func (s *TriggerClient) Send(ctx context.Context, req *Trigger_Request) (*Trigger_Response, *rclgo.RmwServiceInfo, error) {
+func (s *TriggerClient) Send(ctx context.Context, req *Trigger_Request) (*Trigger_Response, *rclgo.ServiceInfo, error) {
 	msg, rmw, err := s.Client.Send(ctx, req)
 	if err != nil {
 		return nil, rmw, err
@@ -85,7 +85,7 @@ func (s TriggerServiceResponseSender) SendResponse(resp *Trigger_Response) error
 	return s.sender.SendResponse(resp)
 }
 
-type TriggerServiceRequestHandler func(*rclgo.RmwServiceInfo, *Trigger_Request, TriggerServiceResponseSender)
+type TriggerServiceRequestHandler func(*rclgo.ServiceInfo, *Trigger_Request, TriggerServiceResponseSender)
 
 // TriggerService wraps rclgo.Service to provide type safe helper
 // functions
@@ -96,7 +96,7 @@ type TriggerService struct {
 // NewTriggerService creates and returns a new service for the
 // Trigger
 func NewTriggerService(node *rclgo.Node, name string, options *rclgo.ServiceOptions, handler TriggerServiceRequestHandler) (*TriggerService, error) {
-	h := func(rmw *rclgo.RmwServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
+	h := func(rmw *rclgo.ServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
 		m := msg.(*Trigger_Request)
 		responseSender := TriggerServiceResponseSender{sender: rs} 
 		handler(rmw, m, responseSender)

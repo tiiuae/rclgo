@@ -21,16 +21,16 @@ import (
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 )
 
-func NewRmwQosProfileStatusDefault() RmwQosProfile {
-	return RmwQosProfile{
-		History:                 RmwQosHistoryPolicyKeepLast,
+func NewDefaultStatusQosProfile() QosProfile {
+	return QosProfile{
+		History:                 HistoryKeepLast,
 		Depth:                   1,
-		Reliability:             RmwQosReliabilityPolicyReliable,
-		Durability:              RmwQosDurabilityPolicyTransientLocal,
-		Deadline:                RmwQosDeadlineDefault,
-		Lifespan:                RmwQosLifespanDefault,
-		Liveliness:              RmwQosLivelinessPolicySystemDefault,
-		LivelinessLeaseDuration: RmwQosLivelinessLeaseDurationDefault,
+		Reliability:             ReliabilityReliable,
+		Durability:              DurabilityTransientLocal,
+		Deadline:                DeadlineDefault,
+		Lifespan:                LifespanDefault,
+		Liveliness:              LivelinessSystemDefault,
+		LivelinessLeaseDuration: LivelinessLeaseDurationDefault,
 	}
 }
 
@@ -280,22 +280,22 @@ func (a *action) TypeSupport() types.ActionTypeSupport {
 }
 
 type ActionServerOptions struct {
-	GoalServiceQos   RmwQosProfile
-	CancelServiceQos RmwQosProfile
-	ResultServiceQos RmwQosProfile
-	FeedbackTopicQos RmwQosProfile
-	StatusTopicQos   RmwQosProfile
+	GoalServiceQos   QosProfile
+	CancelServiceQos QosProfile
+	ResultServiceQos QosProfile
+	FeedbackTopicQos QosProfile
+	StatusTopicQos   QosProfile
 	ResultTimeout    time.Duration
 	Clock            *Clock
 }
 
 func NewDefaultActionServerOptions() *ActionServerOptions {
 	return &ActionServerOptions{
-		GoalServiceQos:   NewRmwQosProfileServicesDefault(),
-		CancelServiceQos: NewRmwQosProfileServicesDefault(),
-		ResultServiceQos: NewRmwQosProfileServicesDefault(),
-		FeedbackTopicQos: NewRmwQosProfileDefault(),
-		StatusTopicQos:   NewRmwQosProfileStatusDefault(),
+		GoalServiceQos:   NewDefaultServiceQosProfile(),
+		CancelServiceQos: NewDefaultServiceQosProfile(),
+		ResultServiceQos: NewDefaultServiceQosProfile(),
+		FeedbackTopicQos: NewDefaultQosProfile(),
+		StatusTopicQos:   NewDefaultStatusQosProfile(),
 		ResultTimeout:    15 * time.Minute,
 	}
 }
@@ -745,20 +745,20 @@ type FeedbackHandler func(context.Context, types.Message)
 type StatusHandler func(context.Context, types.Message)
 
 type ActionClientOptions struct {
-	GoalServiceQos   RmwQosProfile
-	CancelServiceQos RmwQosProfile
-	ResultServiceQos RmwQosProfile
-	FeedbackTopicQos RmwQosProfile
-	StatusTopicQos   RmwQosProfile
+	GoalServiceQos   QosProfile
+	CancelServiceQos QosProfile
+	ResultServiceQos QosProfile
+	FeedbackTopicQos QosProfile
+	StatusTopicQos   QosProfile
 }
 
 func NewDefaultActionClientOptions() *ActionClientOptions {
 	return &ActionClientOptions{
-		GoalServiceQos:   NewRmwQosProfileServicesDefault(),
-		CancelServiceQos: NewRmwQosProfileServicesDefault(),
-		ResultServiceQos: NewRmwQosProfileServicesDefault(),
-		FeedbackTopicQos: NewRmwQosProfileDefault(),
-		StatusTopicQos:   NewRmwQosProfileDefault(),
+		GoalServiceQos:   NewDefaultServiceQosProfile(),
+		CancelServiceQos: NewDefaultServiceQosProfile(),
+		ResultServiceQos: NewDefaultServiceQosProfile(),
+		FeedbackTopicQos: NewDefaultQosProfile(),
+		StatusTopicQos:   NewDefaultQosProfile(),
 	}
 }
 

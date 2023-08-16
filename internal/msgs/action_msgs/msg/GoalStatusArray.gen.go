@@ -98,7 +98,7 @@ type GoalStatusArraySubscription struct {
 
 // GoalStatusArraySubscriptionCallback type is used to provide a subscription
 // handler function for a GoalStatusArraySubscription.
-type GoalStatusArraySubscriptionCallback func(msg *GoalStatusArray, info *rclgo.RmwMessageInfo, err error)
+type GoalStatusArraySubscriptionCallback func(msg *GoalStatusArray, info *rclgo.MessageInfo, err error)
 
 // NewGoalStatusArraySubscription creates and returns a new subscription for the
 // GoalStatusArray
@@ -115,7 +115,7 @@ func NewGoalStatusArraySubscription(node *rclgo.Node, topic_name string, subscri
 	return &GoalStatusArraySubscription{sub}, nil
 }
 
-func (s *GoalStatusArraySubscription) TakeMessage(out *GoalStatusArray) (*rclgo.RmwMessageInfo, error) {
+func (s *GoalStatusArraySubscription) TakeMessage(out *GoalStatusArray) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

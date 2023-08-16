@@ -94,7 +94,7 @@ type PolygonStampedSubscription struct {
 
 // PolygonStampedSubscriptionCallback type is used to provide a subscription
 // handler function for a PolygonStampedSubscription.
-type PolygonStampedSubscriptionCallback func(msg *PolygonStamped, info *rclgo.RmwMessageInfo, err error)
+type PolygonStampedSubscriptionCallback func(msg *PolygonStamped, info *rclgo.MessageInfo, err error)
 
 // NewPolygonStampedSubscription creates and returns a new subscription for the
 // PolygonStamped
@@ -111,7 +111,7 @@ func NewPolygonStampedSubscription(node *rclgo.Node, topic_name string, subscrip
 	return &PolygonStampedSubscription{sub}, nil
 }
 
-func (s *PolygonStampedSubscription) TakeMessage(out *PolygonStamped) (*rclgo.RmwMessageInfo, error) {
+func (s *PolygonStampedSubscription) TakeMessage(out *PolygonStamped) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

@@ -65,7 +65,7 @@ func NewArraysClient(node *rclgo.Node, serviceName string, options *rclgo.Client
 	return &ArraysClient{client}, nil
 }
 
-func (s *ArraysClient) Send(ctx context.Context, req *Arrays_Request) (*Arrays_Response, *rclgo.RmwServiceInfo, error) {
+func (s *ArraysClient) Send(ctx context.Context, req *Arrays_Request) (*Arrays_Response, *rclgo.ServiceInfo, error) {
 	msg, rmw, err := s.Client.Send(ctx, req)
 	if err != nil {
 		return nil, rmw, err
@@ -85,7 +85,7 @@ func (s ArraysServiceResponseSender) SendResponse(resp *Arrays_Response) error {
 	return s.sender.SendResponse(resp)
 }
 
-type ArraysServiceRequestHandler func(*rclgo.RmwServiceInfo, *Arrays_Request, ArraysServiceResponseSender)
+type ArraysServiceRequestHandler func(*rclgo.ServiceInfo, *Arrays_Request, ArraysServiceResponseSender)
 
 // ArraysService wraps rclgo.Service to provide type safe helper
 // functions
@@ -96,7 +96,7 @@ type ArraysService struct {
 // NewArraysService creates and returns a new service for the
 // Arrays
 func NewArraysService(node *rclgo.Node, name string, options *rclgo.ServiceOptions, handler ArraysServiceRequestHandler) (*ArraysService, error) {
-	h := func(rmw *rclgo.RmwServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
+	h := func(rmw *rclgo.ServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
 		m := msg.(*Arrays_Request)
 		responseSender := ArraysServiceResponseSender{sender: rs} 
 		handler(rmw, m, responseSender)

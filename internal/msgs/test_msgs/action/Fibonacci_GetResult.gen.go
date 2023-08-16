@@ -65,7 +65,7 @@ func NewFibonacci_GetResultClient(node *rclgo.Node, serviceName string, options 
 	return &Fibonacci_GetResultClient{client}, nil
 }
 
-func (s *Fibonacci_GetResultClient) Send(ctx context.Context, req *Fibonacci_GetResult_Request) (*Fibonacci_GetResult_Response, *rclgo.RmwServiceInfo, error) {
+func (s *Fibonacci_GetResultClient) Send(ctx context.Context, req *Fibonacci_GetResult_Request) (*Fibonacci_GetResult_Response, *rclgo.ServiceInfo, error) {
 	msg, rmw, err := s.Client.Send(ctx, req)
 	if err != nil {
 		return nil, rmw, err
@@ -85,7 +85,7 @@ func (s Fibonacci_GetResultServiceResponseSender) SendResponse(resp *Fibonacci_G
 	return s.sender.SendResponse(resp)
 }
 
-type Fibonacci_GetResultServiceRequestHandler func(*rclgo.RmwServiceInfo, *Fibonacci_GetResult_Request, Fibonacci_GetResultServiceResponseSender)
+type Fibonacci_GetResultServiceRequestHandler func(*rclgo.ServiceInfo, *Fibonacci_GetResult_Request, Fibonacci_GetResultServiceResponseSender)
 
 // Fibonacci_GetResultService wraps rclgo.Service to provide type safe helper
 // functions
@@ -96,7 +96,7 @@ type Fibonacci_GetResultService struct {
 // NewFibonacci_GetResultService creates and returns a new service for the
 // Fibonacci_GetResult
 func NewFibonacci_GetResultService(node *rclgo.Node, name string, options *rclgo.ServiceOptions, handler Fibonacci_GetResultServiceRequestHandler) (*Fibonacci_GetResultService, error) {
-	h := func(rmw *rclgo.RmwServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
+	h := func(rmw *rclgo.ServiceInfo, msg types.Message, rs rclgo.ServiceResponseSender) {
 		m := msg.(*Fibonacci_GetResult_Request)
 		responseSender := Fibonacci_GetResultServiceResponseSender{sender: rs} 
 		handler(rmw, m, responseSender)

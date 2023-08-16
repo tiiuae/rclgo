@@ -90,7 +90,7 @@ type AddTwoInts_ResponseSubscription struct {
 
 // AddTwoInts_ResponseSubscriptionCallback type is used to provide a subscription
 // handler function for a AddTwoInts_ResponseSubscription.
-type AddTwoInts_ResponseSubscriptionCallback func(msg *AddTwoInts_Response, info *rclgo.RmwMessageInfo, err error)
+type AddTwoInts_ResponseSubscriptionCallback func(msg *AddTwoInts_Response, info *rclgo.MessageInfo, err error)
 
 // NewAddTwoInts_ResponseSubscription creates and returns a new subscription for the
 // AddTwoInts_Response
@@ -107,7 +107,7 @@ func NewAddTwoInts_ResponseSubscription(node *rclgo.Node, topic_name string, sub
 	return &AddTwoInts_ResponseSubscription{sub}, nil
 }
 
-func (s *AddTwoInts_ResponseSubscription) TakeMessage(out *AddTwoInts_Response) (*rclgo.RmwMessageInfo, error) {
+func (s *AddTwoInts_ResponseSubscription) TakeMessage(out *AddTwoInts_Response) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

@@ -97,7 +97,7 @@ type IlluminanceSubscription struct {
 
 // IlluminanceSubscriptionCallback type is used to provide a subscription
 // handler function for a IlluminanceSubscription.
-type IlluminanceSubscriptionCallback func(msg *Illuminance, info *rclgo.RmwMessageInfo, err error)
+type IlluminanceSubscriptionCallback func(msg *Illuminance, info *rclgo.MessageInfo, err error)
 
 // NewIlluminanceSubscription creates and returns a new subscription for the
 // Illuminance
@@ -114,7 +114,7 @@ func NewIlluminanceSubscription(node *rclgo.Node, topic_name string, subscriptio
 	return &IlluminanceSubscription{sub}, nil
 }
 
-func (s *IlluminanceSubscription) TakeMessage(out *Illuminance) (*rclgo.RmwMessageInfo, error) {
+func (s *IlluminanceSubscription) TakeMessage(out *Illuminance) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

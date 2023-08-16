@@ -96,7 +96,7 @@ type Vector3Subscription struct {
 
 // Vector3SubscriptionCallback type is used to provide a subscription
 // handler function for a Vector3Subscription.
-type Vector3SubscriptionCallback func(msg *Vector3, info *rclgo.RmwMessageInfo, err error)
+type Vector3SubscriptionCallback func(msg *Vector3, info *rclgo.MessageInfo, err error)
 
 // NewVector3Subscription creates and returns a new subscription for the
 // Vector3
@@ -113,7 +113,7 @@ func NewVector3Subscription(node *rclgo.Node, topic_name string, subscriptionCal
 	return &Vector3Subscription{sub}, nil
 }
 
-func (s *Vector3Subscription) TakeMessage(out *Vector3) (*rclgo.RmwMessageInfo, error) {
+func (s *Vector3Subscription) TakeMessage(out *Vector3) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

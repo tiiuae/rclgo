@@ -94,7 +94,7 @@ type QuaternionStampedSubscription struct {
 
 // QuaternionStampedSubscriptionCallback type is used to provide a subscription
 // handler function for a QuaternionStampedSubscription.
-type QuaternionStampedSubscriptionCallback func(msg *QuaternionStamped, info *rclgo.RmwMessageInfo, err error)
+type QuaternionStampedSubscriptionCallback func(msg *QuaternionStamped, info *rclgo.MessageInfo, err error)
 
 // NewQuaternionStampedSubscription creates and returns a new subscription for the
 // QuaternionStamped
@@ -111,7 +111,7 @@ func NewQuaternionStampedSubscription(node *rclgo.Node, topic_name string, subsc
 	return &QuaternionStampedSubscription{sub}, nil
 }
 
-func (s *QuaternionStampedSubscription) TakeMessage(out *QuaternionStamped) (*rclgo.RmwMessageInfo, error) {
+func (s *QuaternionStampedSubscription) TakeMessage(out *QuaternionStamped) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

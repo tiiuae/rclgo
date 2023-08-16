@@ -93,7 +93,7 @@ type TransformSubscription struct {
 
 // TransformSubscriptionCallback type is used to provide a subscription
 // handler function for a TransformSubscription.
-type TransformSubscriptionCallback func(msg *Transform, info *rclgo.RmwMessageInfo, err error)
+type TransformSubscriptionCallback func(msg *Transform, info *rclgo.MessageInfo, err error)
 
 // NewTransformSubscription creates and returns a new subscription for the
 // Transform
@@ -110,7 +110,7 @@ func NewTransformSubscription(node *rclgo.Node, topic_name string, subscriptionC
 	return &TransformSubscription{sub}, nil
 }
 
-func (s *TransformSubscription) TakeMessage(out *Transform) (*rclgo.RmwMessageInfo, error) {
+func (s *TransformSubscription) TakeMessage(out *Transform) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

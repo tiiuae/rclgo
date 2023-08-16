@@ -122,7 +122,7 @@ type PointCloud2Subscription struct {
 
 // PointCloud2SubscriptionCallback type is used to provide a subscription
 // handler function for a PointCloud2Subscription.
-type PointCloud2SubscriptionCallback func(msg *PointCloud2, info *rclgo.RmwMessageInfo, err error)
+type PointCloud2SubscriptionCallback func(msg *PointCloud2, info *rclgo.MessageInfo, err error)
 
 // NewPointCloud2Subscription creates and returns a new subscription for the
 // PointCloud2
@@ -139,7 +139,7 @@ func NewPointCloud2Subscription(node *rclgo.Node, topic_name string, subscriptio
 	return &PointCloud2Subscription{sub}, nil
 }
 
-func (s *PointCloud2Subscription) TakeMessage(out *PointCloud2) (*rclgo.RmwMessageInfo, error) {
+func (s *PointCloud2Subscription) TakeMessage(out *PointCloud2) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

@@ -116,7 +116,7 @@ type NavSatFixSubscription struct {
 
 // NavSatFixSubscriptionCallback type is used to provide a subscription
 // handler function for a NavSatFixSubscription.
-type NavSatFixSubscriptionCallback func(msg *NavSatFix, info *rclgo.RmwMessageInfo, err error)
+type NavSatFixSubscriptionCallback func(msg *NavSatFix, info *rclgo.MessageInfo, err error)
 
 // NewNavSatFixSubscription creates and returns a new subscription for the
 // NavSatFix
@@ -133,7 +133,7 @@ func NewNavSatFixSubscription(node *rclgo.Node, topic_name string, subscriptionC
 	return &NavSatFixSubscription{sub}, nil
 }
 
-func (s *NavSatFixSubscription) TakeMessage(out *NavSatFix) (*rclgo.RmwMessageInfo, error) {
+func (s *NavSatFixSubscription) TakeMessage(out *NavSatFix) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

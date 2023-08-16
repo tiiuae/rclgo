@@ -101,7 +101,7 @@ type NestedMessage_FeedbackMessageSubscription struct {
 
 // NestedMessage_FeedbackMessageSubscriptionCallback type is used to provide a subscription
 // handler function for a NestedMessage_FeedbackMessageSubscription.
-type NestedMessage_FeedbackMessageSubscriptionCallback func(msg *NestedMessage_FeedbackMessage, info *rclgo.RmwMessageInfo, err error)
+type NestedMessage_FeedbackMessageSubscriptionCallback func(msg *NestedMessage_FeedbackMessage, info *rclgo.MessageInfo, err error)
 
 // NewNestedMessage_FeedbackMessageSubscription creates and returns a new subscription for the
 // NestedMessage_FeedbackMessage
@@ -118,7 +118,7 @@ func NewNestedMessage_FeedbackMessageSubscription(node *rclgo.Node, topic_name s
 	return &NestedMessage_FeedbackMessageSubscription{sub}, nil
 }
 
-func (s *NestedMessage_FeedbackMessageSubscription) TakeMessage(out *NestedMessage_FeedbackMessage) (*rclgo.RmwMessageInfo, error) {
+func (s *NestedMessage_FeedbackMessageSubscription) TakeMessage(out *NestedMessage_FeedbackMessage) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

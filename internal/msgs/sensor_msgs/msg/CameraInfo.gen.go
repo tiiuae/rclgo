@@ -125,7 +125,7 @@ type CameraInfoSubscription struct {
 
 // CameraInfoSubscriptionCallback type is used to provide a subscription
 // handler function for a CameraInfoSubscription.
-type CameraInfoSubscriptionCallback func(msg *CameraInfo, info *rclgo.RmwMessageInfo, err error)
+type CameraInfoSubscriptionCallback func(msg *CameraInfo, info *rclgo.MessageInfo, err error)
 
 // NewCameraInfoSubscription creates and returns a new subscription for the
 // CameraInfo
@@ -142,7 +142,7 @@ func NewCameraInfoSubscription(node *rclgo.Node, topic_name string, subscription
 	return &CameraInfoSubscription{sub}, nil
 }
 
-func (s *CameraInfoSubscription) TakeMessage(out *CameraInfo) (*rclgo.RmwMessageInfo, error) {
+func (s *CameraInfoSubscription) TakeMessage(out *CameraInfo) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

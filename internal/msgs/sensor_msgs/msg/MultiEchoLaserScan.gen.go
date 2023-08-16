@@ -124,7 +124,7 @@ type MultiEchoLaserScanSubscription struct {
 
 // MultiEchoLaserScanSubscriptionCallback type is used to provide a subscription
 // handler function for a MultiEchoLaserScanSubscription.
-type MultiEchoLaserScanSubscriptionCallback func(msg *MultiEchoLaserScan, info *rclgo.RmwMessageInfo, err error)
+type MultiEchoLaserScanSubscriptionCallback func(msg *MultiEchoLaserScan, info *rclgo.MessageInfo, err error)
 
 // NewMultiEchoLaserScanSubscription creates and returns a new subscription for the
 // MultiEchoLaserScan
@@ -141,7 +141,7 @@ func NewMultiEchoLaserScanSubscription(node *rclgo.Node, topic_name string, subs
 	return &MultiEchoLaserScanSubscription{sub}, nil
 }
 
-func (s *MultiEchoLaserScanSubscription) TakeMessage(out *MultiEchoLaserScan) (*rclgo.RmwMessageInfo, error) {
+func (s *MultiEchoLaserScanSubscription) TakeMessage(out *MultiEchoLaserScan) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

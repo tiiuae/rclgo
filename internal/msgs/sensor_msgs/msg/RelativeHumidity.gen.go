@@ -97,7 +97,7 @@ type RelativeHumiditySubscription struct {
 
 // RelativeHumiditySubscriptionCallback type is used to provide a subscription
 // handler function for a RelativeHumiditySubscription.
-type RelativeHumiditySubscriptionCallback func(msg *RelativeHumidity, info *rclgo.RmwMessageInfo, err error)
+type RelativeHumiditySubscriptionCallback func(msg *RelativeHumidity, info *rclgo.MessageInfo, err error)
 
 // NewRelativeHumiditySubscription creates and returns a new subscription for the
 // RelativeHumidity
@@ -114,7 +114,7 @@ func NewRelativeHumiditySubscription(node *rclgo.Node, topic_name string, subscr
 	return &RelativeHumiditySubscription{sub}, nil
 }
 
-func (s *RelativeHumiditySubscription) TakeMessage(out *RelativeHumidity) (*rclgo.RmwMessageInfo, error) {
+func (s *RelativeHumiditySubscription) TakeMessage(out *RelativeHumidity) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

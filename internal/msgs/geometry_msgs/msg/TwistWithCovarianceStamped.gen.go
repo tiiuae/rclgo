@@ -94,7 +94,7 @@ type TwistWithCovarianceStampedSubscription struct {
 
 // TwistWithCovarianceStampedSubscriptionCallback type is used to provide a subscription
 // handler function for a TwistWithCovarianceStampedSubscription.
-type TwistWithCovarianceStampedSubscriptionCallback func(msg *TwistWithCovarianceStamped, info *rclgo.RmwMessageInfo, err error)
+type TwistWithCovarianceStampedSubscriptionCallback func(msg *TwistWithCovarianceStamped, info *rclgo.MessageInfo, err error)
 
 // NewTwistWithCovarianceStampedSubscription creates and returns a new subscription for the
 // TwistWithCovarianceStamped
@@ -111,7 +111,7 @@ func NewTwistWithCovarianceStampedSubscription(node *rclgo.Node, topic_name stri
 	return &TwistWithCovarianceStampedSubscription{sub}, nil
 }
 
-func (s *TwistWithCovarianceStampedSubscription) TakeMessage(out *TwistWithCovarianceStamped) (*rclgo.RmwMessageInfo, error) {
+func (s *TwistWithCovarianceStampedSubscription) TakeMessage(out *TwistWithCovarianceStamped) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

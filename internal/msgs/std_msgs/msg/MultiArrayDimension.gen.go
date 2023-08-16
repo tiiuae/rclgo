@@ -97,7 +97,7 @@ type MultiArrayDimensionSubscription struct {
 
 // MultiArrayDimensionSubscriptionCallback type is used to provide a subscription
 // handler function for a MultiArrayDimensionSubscription.
-type MultiArrayDimensionSubscriptionCallback func(msg *MultiArrayDimension, info *rclgo.RmwMessageInfo, err error)
+type MultiArrayDimensionSubscriptionCallback func(msg *MultiArrayDimension, info *rclgo.MessageInfo, err error)
 
 // NewMultiArrayDimensionSubscription creates and returns a new subscription for the
 // MultiArrayDimension
@@ -114,7 +114,7 @@ func NewMultiArrayDimensionSubscription(node *rclgo.Node, topic_name string, sub
 	return &MultiArrayDimensionSubscription{sub}, nil
 }
 
-func (s *MultiArrayDimensionSubscription) TakeMessage(out *MultiArrayDimension) (*rclgo.RmwMessageInfo, error) {
+func (s *MultiArrayDimensionSubscription) TakeMessage(out *MultiArrayDimension) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

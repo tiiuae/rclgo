@@ -90,7 +90,7 @@ type UInt64Subscription struct {
 
 // UInt64SubscriptionCallback type is used to provide a subscription
 // handler function for a UInt64Subscription.
-type UInt64SubscriptionCallback func(msg *UInt64, info *rclgo.RmwMessageInfo, err error)
+type UInt64SubscriptionCallback func(msg *UInt64, info *rclgo.MessageInfo, err error)
 
 // NewUInt64Subscription creates and returns a new subscription for the
 // UInt64
@@ -107,7 +107,7 @@ func NewUInt64Subscription(node *rclgo.Node, topic_name string, subscriptionCall
 	return &UInt64Subscription{sub}, nil
 }
 
-func (s *UInt64Subscription) TakeMessage(out *UInt64) (*rclgo.RmwMessageInfo, error) {
+func (s *UInt64Subscription) TakeMessage(out *UInt64) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

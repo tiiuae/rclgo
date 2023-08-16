@@ -110,7 +110,7 @@ type PointFieldSubscription struct {
 
 // PointFieldSubscriptionCallback type is used to provide a subscription
 // handler function for a PointFieldSubscription.
-type PointFieldSubscriptionCallback func(msg *PointField, info *rclgo.RmwMessageInfo, err error)
+type PointFieldSubscriptionCallback func(msg *PointField, info *rclgo.MessageInfo, err error)
 
 // NewPointFieldSubscription creates and returns a new subscription for the
 // PointField
@@ -127,7 +127,7 @@ func NewPointFieldSubscription(node *rclgo.Node, topic_name string, subscription
 	return &PointFieldSubscription{sub}, nil
 }
 
-func (s *PointFieldSubscription) TakeMessage(out *PointField) (*rclgo.RmwMessageInfo, error) {
+func (s *PointFieldSubscription) TakeMessage(out *PointField) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

@@ -99,7 +99,7 @@ type ColorRGBASubscription struct {
 
 // ColorRGBASubscriptionCallback type is used to provide a subscription
 // handler function for a ColorRGBASubscription.
-type ColorRGBASubscriptionCallback func(msg *ColorRGBA, info *rclgo.RmwMessageInfo, err error)
+type ColorRGBASubscriptionCallback func(msg *ColorRGBA, info *rclgo.MessageInfo, err error)
 
 // NewColorRGBASubscription creates and returns a new subscription for the
 // ColorRGBA
@@ -116,7 +116,7 @@ func NewColorRGBASubscription(node *rclgo.Node, topic_name string, subscriptionC
 	return &ColorRGBASubscription{sub}, nil
 }
 
-func (s *ColorRGBASubscription) TakeMessage(out *ColorRGBA) (*rclgo.RmwMessageInfo, error) {
+func (s *ColorRGBASubscription) TakeMessage(out *ColorRGBA) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

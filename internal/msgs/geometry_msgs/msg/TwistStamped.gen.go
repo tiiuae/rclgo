@@ -94,7 +94,7 @@ type TwistStampedSubscription struct {
 
 // TwistStampedSubscriptionCallback type is used to provide a subscription
 // handler function for a TwistStampedSubscription.
-type TwistStampedSubscriptionCallback func(msg *TwistStamped, info *rclgo.RmwMessageInfo, err error)
+type TwistStampedSubscriptionCallback func(msg *TwistStamped, info *rclgo.MessageInfo, err error)
 
 // NewTwistStampedSubscription creates and returns a new subscription for the
 // TwistStamped
@@ -111,7 +111,7 @@ func NewTwistStampedSubscription(node *rclgo.Node, topic_name string, subscripti
 	return &TwistStampedSubscription{sub}, nil
 }
 
-func (s *TwistStampedSubscription) TakeMessage(out *TwistStamped) (*rclgo.RmwMessageInfo, error) {
+func (s *TwistStampedSubscription) TakeMessage(out *TwistStamped) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

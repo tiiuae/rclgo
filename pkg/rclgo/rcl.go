@@ -29,18 +29,16 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"os"
 	"reflect"
 	"runtime"
 	"sync"
 	"time"
 	"unsafe"
 
-	"github.com/google/shlex"
 	"github.com/tiiuae/rclgo/pkg/rclgo/types"
 )
 
-type RmwMessageInfo struct {
+type MessageInfo struct {
 	SourceTimestamp   time.Time
 	ReceivedTimestamp time.Time
 	FromIntraProcess  bool
@@ -54,42 +52,6 @@ const (
 	ClockTypeSystemTime    ClockType = 2
 	ClockTypeSteadyTime    ClockType = 3
 )
-
-// RCLArgs is a deprecated alias of Args.
-//
-// Deprecated: use Args instead.
-type RCLArgs = Args
-
-// NewRCLArgs is a deprecated wrapper of ParseArgs.
-//
-// Deprecated: use ParseArgs instead.
-func NewRCLArgs(s string) (args *RCLArgs, err error) {
-	unparsed := os.Args
-	if s != "" {
-		unparsed, err = shlex.Split(s)
-		if err != nil {
-			return nil, fmt.Errorf("failed to split arguments: %w", err)
-		}
-	}
-	args, _, err = ParseArgs(unparsed)
-	return args, err
-}
-
-// NewRCLArgsMust is like NewRCLArgs but panics on errors.
-//
-// Deprecated: use ParseArgs instead.
-func NewRCLArgsMust(s string) *RCLArgs {
-	args, err := NewRCLArgs(s)
-	if err != nil {
-		panic("failed to parse rcl arguments: " + err.Error())
-	}
-	return args
-}
-
-// Close is a no-op.
-//
-// Deprecated: Close is not needed anymore.
-func (a *RCLArgs) Close() error { return nil }
 
 // ROS2 is configured via CLI arguments, so merge them from different sources.
 // See http://design.ros2.org/articles/ros_command_line_arguments.html for
@@ -431,11 +393,11 @@ func (n *Node) Spin(ctx context.Context) error {
 }
 
 type PublisherOptions struct {
-	Qos RmwQosProfile
+	Qos QosProfile
 }
 
 func NewDefaultPublisherOptions() *PublisherOptions {
-	return &PublisherOptions{Qos: NewRmwQosProfileDefault()}
+	return &PublisherOptions{Qos: NewDefaultQosProfile()}
 }
 
 type Publisher struct {
@@ -687,11 +649,11 @@ func (t *Timer) Close() (err error) {
 }
 
 type SubscriptionOptions struct {
-	Qos RmwQosProfile
+	Qos QosProfile
 }
 
 func NewDefaultSubscriptionOptions() *SubscriptionOptions {
-	return &SubscriptionOptions{Qos: NewRmwQosProfileDefault()}
+	return &SubscriptionOptions{Qos: NewDefaultQosProfile()}
 }
 
 type SubscriptionCallback func(*Subscription)
@@ -758,7 +720,7 @@ func (s *Subscription) Node() *Node {
 	return s.node
 }
 
-func (s *Subscription) TakeMessage(out types.Message) (*RmwMessageInfo, error) {
+func (s *Subscription) TakeMessage(out types.Message) (*MessageInfo, error) {
 	rmw_message_info := C.rmw_get_zero_initialized_message_info()
 
 	ros2_msg_receive_buffer := s.Ros2MsgType.PrepareMemory()
@@ -769,7 +731,7 @@ func (s *Subscription) TakeMessage(out types.Message) (*RmwMessageInfo, error) {
 		return nil, errorsCastC(rc, fmt.Sprintf("rcl_take() failed for subscription='%+v'", s))
 	}
 	s.Ros2MsgType.AsGoStruct(out, ros2_msg_receive_buffer)
-	return &RmwMessageInfo{
+	return &MessageInfo{
 		SourceTimestamp:   time.Unix(0, int64(rmw_message_info.source_timestamp)),
 		ReceivedTimestamp: time.Unix(0, int64(rmw_message_info.received_timestamp)),
 		FromIntraProcess:  bool(rmw_message_info.from_intra_process),
@@ -778,7 +740,7 @@ func (s *Subscription) TakeMessage(out types.Message) (*RmwMessageInfo, error) {
 
 // TakeSerializedMessage takes a message without deserializing it and returns it
 // as a byte slice.
-func (s *Subscription) TakeSerializedMessage() ([]byte, *RmwMessageInfo, error) {
+func (s *Subscription) TakeSerializedMessage() ([]byte, *MessageInfo, error) {
 	info := C.rmw_get_zero_initialized_message_info()
 	msg, err := newSerializedMessage(0)
 	if err != nil {
@@ -789,7 +751,7 @@ func (s *Subscription) TakeSerializedMessage() ([]byte, *RmwMessageInfo, error) 
 	if rc != C.RCL_RET_OK {
 		return nil, nil, errorsCastC(rc, fmt.Sprintf("rcl_take_serialied_message() failed for subscription='%+v'", s))
 	}
-	return msg.ToSlice(), &RmwMessageInfo{
+	return msg.ToSlice(), &MessageInfo{
 		SourceTimestamp:   time.Unix(0, int64(info.source_timestamp)),
 		ReceivedTimestamp: time.Unix(0, int64(info.received_timestamp)),
 		FromIntraProcess:  bool(info.from_intra_process),
@@ -862,30 +824,30 @@ func (c *guardCondition) Trigger() error {
 	return nil
 }
 
-type RmwRequestID struct {
+type RequestID struct {
 	WriterGUID     [16]int8
 	SequenceNumber int64
 }
 
-func newRmwRequestID(reqID *C.rmw_request_id_t) RmwRequestID {
-	return RmwRequestID{
+func newRequestID(reqID *C.rmw_request_id_t) RequestID {
+	return RequestID{
 		WriterGUID:     *(*[16]int8)(unsafe.Pointer(&reqID.writer_guid)),
 		SequenceNumber: int64(reqID.sequence_number),
 	}
 }
 
-type RmwServiceInfo struct {
+type ServiceInfo struct {
 	SourceTimestamp   time.Time
 	ReceivedTimestamp time.Time
-	RequestID         RmwRequestID
+	RequestID         RequestID
 }
 
 type ServiceOptions struct {
-	Qos RmwQosProfile
+	Qos QosProfile
 }
 
 func NewDefaultServiceOptions() *ServiceOptions {
-	return &ServiceOptions{Qos: NewRmwQosProfileServicesDefault()}
+	return &ServiceOptions{Qos: NewDefaultServiceQosProfile()}
 }
 
 type ServiceResponseSender interface {
@@ -898,7 +860,7 @@ func (s serviceResponseSender) SendResponse(resp types.Message) error {
 	return s(resp)
 }
 
-type ServiceRequestHandler func(*RmwServiceInfo, types.Message, ServiceResponseSender)
+type ServiceRequestHandler func(*ServiceInfo, types.Message, ServiceResponseSender)
 
 type Service struct {
 	rosID
@@ -976,10 +938,10 @@ func (s *Service) handleRequest() {
 	defer s.requestTypeSupport.ReleaseMemory(reqBuffer)
 	switch rc := C.rcl_take_request_with_info(s.rclService, &reqHeader, reqBuffer); rc {
 	case C.RCL_RET_OK:
-		info := RmwServiceInfo{
+		info := ServiceInfo{
 			SourceTimestamp:   time.Unix(0, int64(reqHeader.source_timestamp)),
 			ReceivedTimestamp: time.Unix(0, int64(reqHeader.received_timestamp)),
-			RequestID:         newRmwRequestID(&reqHeader.request_id),
+			RequestID:         newRequestID(&reqHeader.request_id),
 		}
 		req := s.requestTypeSupport.New()
 		s.requestTypeSupport.AsGoStruct(req, reqBuffer)
@@ -1004,11 +966,11 @@ func (s *Service) handleRequest() {
 }
 
 type ClientOptions struct {
-	Qos RmwQosProfile
+	Qos QosProfile
 }
 
 func NewDefaultClientOptions() *ClientOptions {
-	return &ClientOptions{Qos: NewRmwQosProfileServicesDefault()}
+	return &ClientOptions{Qos: NewDefaultServiceQosProfile()}
 }
 
 // Client is used to send requests to and receive responses from a service.
@@ -1085,9 +1047,9 @@ func (c *Client) Node() *Node {
 	return c.node
 }
 
-func (c *Client) Send(ctx context.Context, req types.Message) (types.Message, *RmwServiceInfo, error) {
+func (c *Client) Send(ctx context.Context, req types.Message) (types.Message, *ServiceInfo, error) {
 	resp, info, err := c.sender.Send(ctx, req)
-	if rmwInfo, ok := info.(*RmwServiceInfo); ok {
+	if rmwInfo, ok := info.(*ServiceInfo); ok {
 		return resp, rmwInfo, err
 	}
 
@@ -1107,10 +1069,10 @@ func (c *Client) takeResponse(resp unsafe.Pointer) (C.long, interface{}, error) 
 	var header C.rmw_service_info_t
 	switch rc := C.rcl_take_response_with_info(c.rclClient, &header, resp); rc {
 	case C.RCL_RET_OK:
-		return header.request_id.sequence_number, &RmwServiceInfo{
+		return header.request_id.sequence_number, &ServiceInfo{
 			SourceTimestamp:   time.Unix(0, int64(header.source_timestamp)),
 			ReceivedTimestamp: time.Unix(0, int64(header.received_timestamp)),
-			RequestID:         newRmwRequestID(&header.request_id),
+			RequestID:         newRequestID(&header.request_id),
 		}, nil
 	case C.RCL_RET_CLIENT_TAKE_FAILED:
 		return 0, nil, errTakeFailed

@@ -125,7 +125,7 @@ type LaserScanSubscription struct {
 
 // LaserScanSubscriptionCallback type is used to provide a subscription
 // handler function for a LaserScanSubscription.
-type LaserScanSubscriptionCallback func(msg *LaserScan, info *rclgo.RmwMessageInfo, err error)
+type LaserScanSubscriptionCallback func(msg *LaserScan, info *rclgo.MessageInfo, err error)
 
 // NewLaserScanSubscription creates and returns a new subscription for the
 // LaserScan
@@ -142,7 +142,7 @@ func NewLaserScanSubscription(node *rclgo.Node, topic_name string, subscriptionC
 	return &LaserScanSubscription{sub}, nil
 }
 
-func (s *LaserScanSubscription) TakeMessage(out *LaserScan) (*rclgo.RmwMessageInfo, error) {
+func (s *LaserScanSubscription) TakeMessage(out *LaserScan) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

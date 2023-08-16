@@ -90,7 +90,7 @@ type Int64Subscription struct {
 
 // Int64SubscriptionCallback type is used to provide a subscription
 // handler function for a Int64Subscription.
-type Int64SubscriptionCallback func(msg *Int64, info *rclgo.RmwMessageInfo, err error)
+type Int64SubscriptionCallback func(msg *Int64, info *rclgo.MessageInfo, err error)
 
 // NewInt64Subscription creates and returns a new subscription for the
 // Int64
@@ -107,7 +107,7 @@ func NewInt64Subscription(node *rclgo.Node, topic_name string, subscriptionCallb
 	return &Int64Subscription{sub}, nil
 }
 
-func (s *Int64Subscription) TakeMessage(out *Int64) (*rclgo.RmwMessageInfo, error) {
+func (s *Int64Subscription) TakeMessage(out *Int64) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

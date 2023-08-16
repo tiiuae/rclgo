@@ -93,7 +93,7 @@ type JoyFeedbackArraySubscription struct {
 
 // JoyFeedbackArraySubscriptionCallback type is used to provide a subscription
 // handler function for a JoyFeedbackArraySubscription.
-type JoyFeedbackArraySubscriptionCallback func(msg *JoyFeedbackArray, info *rclgo.RmwMessageInfo, err error)
+type JoyFeedbackArraySubscriptionCallback func(msg *JoyFeedbackArray, info *rclgo.MessageInfo, err error)
 
 // NewJoyFeedbackArraySubscription creates and returns a new subscription for the
 // JoyFeedbackArray
@@ -110,7 +110,7 @@ func NewJoyFeedbackArraySubscription(node *rclgo.Node, topic_name string, subscr
 	return &JoyFeedbackArraySubscription{sub}, nil
 }
 
-func (s *JoyFeedbackArraySubscription) TakeMessage(out *JoyFeedbackArray) (*rclgo.RmwMessageInfo, error) {
+func (s *JoyFeedbackArraySubscription) TakeMessage(out *JoyFeedbackArray) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

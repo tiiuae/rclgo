@@ -90,7 +90,7 @@ type UInt16Subscription struct {
 
 // UInt16SubscriptionCallback type is used to provide a subscription
 // handler function for a UInt16Subscription.
-type UInt16SubscriptionCallback func(msg *UInt16, info *rclgo.RmwMessageInfo, err error)
+type UInt16SubscriptionCallback func(msg *UInt16, info *rclgo.MessageInfo, err error)
 
 // NewUInt16Subscription creates and returns a new subscription for the
 // UInt16
@@ -107,7 +107,7 @@ func NewUInt16Subscription(node *rclgo.Node, topic_name string, subscriptionCall
 	return &UInt16Subscription{sub}, nil
 }
 
-func (s *UInt16Subscription) TakeMessage(out *UInt16) (*rclgo.RmwMessageInfo, error) {
+func (s *UInt16Subscription) TakeMessage(out *UInt16) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

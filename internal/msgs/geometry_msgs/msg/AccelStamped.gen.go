@@ -94,7 +94,7 @@ type AccelStampedSubscription struct {
 
 // AccelStampedSubscriptionCallback type is used to provide a subscription
 // handler function for a AccelStampedSubscription.
-type AccelStampedSubscriptionCallback func(msg *AccelStamped, info *rclgo.RmwMessageInfo, err error)
+type AccelStampedSubscriptionCallback func(msg *AccelStamped, info *rclgo.MessageInfo, err error)
 
 // NewAccelStampedSubscription creates and returns a new subscription for the
 // AccelStamped
@@ -111,7 +111,7 @@ func NewAccelStampedSubscription(node *rclgo.Node, topic_name string, subscripti
 	return &AccelStampedSubscription{sub}, nil
 }
 
-func (s *AccelStampedSubscription) TakeMessage(out *AccelStamped) (*rclgo.RmwMessageInfo, error) {
+func (s *AccelStampedSubscription) TakeMessage(out *AccelStamped) (*rclgo.MessageInfo, error) {
 	return s.Subscription.TakeMessage(out)
 }
 

@@ -120,7 +120,8 @@ func configureFlags(cmd *cobra.Command, destPathDefault string) {
 	cmd.PersistentFlags().StringP("dest-path", "d", destPathDefault, "Destination directory for the Golang typed converted ROS2 messages. ROS2 Message structure is preserved as <ros2-package>/msg/<msg-name>")
 	cmd.PersistentFlags().String("rclgo-import-path", gogen.DefaultConfig.RclgoImportPath, "Import path of rclgo library")
 	cmd.PersistentFlags().String("message-module-prefix", gogen.DefaultConfig.MessageModulePrefix, "Import path prefix for generated message binding modules")
-	cmd.PersistentFlags().StringArray("include-package", []string{".*"}, "Include only packages matching a regex. Can be passed multiple times, in which case the union of the matches is used.")
+	cmd.PersistentFlags().StringArray("include-package", []string{}, "Include only packages matching a regex. Can be passed multiple times, in which case the union of the matches is used.")
+	cmd.PersistentFlags().StringArray("include-package-deps", []string{}, "Include only packages which are dependencies of listed packages. Can be passed multiple times, in which case the union of the matches is used.")
 	cmd.PersistentFlags().Bool("ignore-ros-distro-mismatch", false, "If true, ignores possible mismatches in sourced and supported ROS distro")
 	bindPFlags(cmd)
 }
@@ -176,7 +177,8 @@ func getGogenConfig(cmd *cobra.Command) (*gogen.Config, error) {
 		RclgoImportPath:     getString(cmd, "rclgo-import-path"),
 		MessageModulePrefix: modulePrefix,
 		RootPaths:           getRootPaths(cmd),
-		PackageRules:        rules,
+		RegexIncludes:       rules,
+		PkgIncludes:         viper.GetStringSlice(getPrefix(cmd) + "include-package-deps"),
 	}, nil
 }
 
@@ -199,7 +201,7 @@ func getPackageRules(cmd *cobra.Command) (_ gogen.RuleSet, err error) {
 	includes := viper.GetStringSlice(getPrefix(cmd) + "include-package")
 	rules := make(gogen.RuleSet, len(includes))
 	for i, pattern := range includes {
-		rules[i], err = gogen.NewRule(gogen.RuleInclude, pattern)
+		rules[i], err = gogen.NewRule(pattern)
 		if err != nil {
 			return nil, err
 		}

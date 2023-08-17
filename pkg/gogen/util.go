@@ -179,8 +179,10 @@ func cReturnCodeNameToGo(n string) string {
 
 type stringSet map[string]struct{}
 
-func (s stringSet) Add(str string) {
-	s[str] = struct{}{}
+func (s stringSet) Add(strs ...string) {
+	for _, str := range strs {
+		s[str] = struct{}{}
+	}
 }
 
 func (s stringSet) AddFrom(s2 stringSet) {

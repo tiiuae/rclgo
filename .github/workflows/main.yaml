@@ -10,7 +10,7 @@ on:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
-    container: ghcr.io/tiiuae/fog-ros-baseimage-builder:dp-4266_humble_upgrade
+    container: ghcr.io/tiiuae/fog-ros-baseimage-builder:sha-7fca749
     steps:
       - uses: actions/checkout@v3
 
@@ -28,7 +28,7 @@ jobs:
 
   run-linter:
     runs-on: ubuntu-latest
-    container: ghcr.io/tiiuae/fog-ros-baseimage-builder:dp-4266_humble_upgrade
+    container: ghcr.io/tiiuae/fog-ros-baseimage-builder:sha-7fca749
     steps:
       - uses: actions/checkout@v3
 

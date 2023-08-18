@@ -41,8 +41,6 @@ const (
 	NavSatStatus_SERVICE_GALILEO uint16 = 8
 )
 
-// Do not create instances of this type directly. Always use NewNavSatStatus
-// function instead.
 type NavSatStatus struct {
 	Status int8 `yaml:"status"`
 	Service uint16 `yaml:"service"`

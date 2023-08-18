@@ -34,8 +34,6 @@ func init() {
 	typemap.RegisterMessage("sensor_msgs/msg/MultiDOFJointState", MultiDOFJointStateTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewMultiDOFJointState
-// function instead.
 type MultiDOFJointState struct {
 	Header std_msgs_msg.Header `yaml:"header"`
 	JointNames []string `yaml:"joint_names"`

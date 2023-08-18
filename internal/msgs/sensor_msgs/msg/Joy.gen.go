@@ -33,8 +33,6 @@ func init() {
 	typemap.RegisterMessage("sensor_msgs/msg/Joy", JoyTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewJoy
-// function instead.
 type Joy struct {
 	Header std_msgs_msg.Header `yaml:"header"`// The timestamp is the time at which data is received from the joystick.
 	Axes []float32 `yaml:"axes"`// The axes measurements from a joystick.

@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/Accel", AccelTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewAccel
-// function instead.
 type Accel struct {
 	Linear Vector3 `yaml:"linear"`// This expresses acceleration in free space broken into its linear and angular parts.
 	Angular Vector3 `yaml:"angular"`

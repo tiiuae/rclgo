@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("sensor_msgs/msg/Temperature", TemperatureTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewTemperature
-// function instead.
 type Temperature struct {
 	Header std_msgs_msg.Header `yaml:"header"`// timestamp is the time the temperature was measured
 	Temperature float64 `yaml:"temperature"`// Measurement of the Temperature in Degrees Celsius.

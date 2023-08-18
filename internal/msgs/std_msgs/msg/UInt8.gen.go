@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("std_msgs/msg/UInt8", UInt8TypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewUInt8
-// function instead.
 type UInt8 struct {
 	Data uint8 `yaml:"data"`
 }

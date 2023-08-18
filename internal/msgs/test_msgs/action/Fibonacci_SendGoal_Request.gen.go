@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("test_msgs/action/Fibonacci_SendGoal_Request", Fibonacci_SendGoal_RequestTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewFibonacci_SendGoal_Request
-// function instead.
 type Fibonacci_SendGoal_Request struct {
 	GoalID unique_identifier_msgs_msg.UUID `yaml:"goal_id"`
 	Goal Fibonacci_Goal `yaml:"goal"`

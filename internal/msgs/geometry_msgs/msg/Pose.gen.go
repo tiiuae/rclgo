@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/Pose", PoseTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewPose
-// function instead.
 type Pose struct {
 	Position Point `yaml:"position"`
 	Orientation Quaternion `yaml:"orientation"`

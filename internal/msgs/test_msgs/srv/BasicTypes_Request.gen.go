@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("test_msgs/srv/BasicTypes_Request", BasicTypes_RequestTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewBasicTypes_Request
-// function instead.
 type BasicTypes_Request struct {
 	BoolValue bool `yaml:"bool_value"`
 	ByteValue byte `yaml:"byte_value"`

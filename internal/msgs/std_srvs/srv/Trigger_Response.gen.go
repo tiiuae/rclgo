@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("std_srvs/srv/Trigger_Response", Trigger_ResponseTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewTrigger_Response
-// function instead.
 type Trigger_Response struct {
 	Success bool `yaml:"success"`// indicate successful run of triggered service
 	Message string `yaml:"message"`// informational, e.g. for error messages

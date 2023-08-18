@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("example_interfaces/action/Fibonacci_Result", Fibonacci_ResultTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewFibonacci_Result
-// function instead.
 type Fibonacci_Result struct {
 	Sequence []int32 `yaml:"sequence"`// Result
 }

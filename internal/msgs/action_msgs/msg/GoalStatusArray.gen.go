@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("action_msgs/msg/GoalStatusArray", GoalStatusArrayTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewGoalStatusArray
-// function instead.
 type GoalStatusArray struct {
 	StatusList []GoalStatus `yaml:"status_list"`// An array of goal statuses.
 }

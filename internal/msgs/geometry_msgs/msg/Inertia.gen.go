@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/Inertia", InertiaTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewInertia
-// function instead.
 type Inertia struct {
 	M float64 `yaml:"m"`// Mass [kg]
 	Com Vector3 `yaml:"com"`// Center of mass [m]

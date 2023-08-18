@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("test_msgs/action/NestedMessage_SendGoal_Response", NestedMessage_SendGoal_ResponseTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewNestedMessage_SendGoal_Response
-// function instead.
 type NestedMessage_SendGoal_Response struct {
 	Accepted bool `yaml:"accepted"`
 	Stamp builtin_interfaces_msg.Time `yaml:"stamp"`

@@ -33,8 +33,6 @@ func init() {
 	typemap.RegisterMessage("sensor_msgs/msg/CameraInfo", CameraInfoTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewCameraInfo
-// function instead.
 type CameraInfo struct {
 	Header std_msgs_msg.Header `yaml:"header"`// Header timestamp should be acquisition time of image. Time of image acquisition, camera coordinate frame ID
 	Height uint32 `yaml:"height"`// The image dimensions with which the camera was calibrated.Normally this will be the full camera resolution in pixels.

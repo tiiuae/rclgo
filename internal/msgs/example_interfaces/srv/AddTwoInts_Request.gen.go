@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("example_interfaces/srv/AddTwoInts_Request", AddTwoInts_RequestTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewAddTwoInts_Request
-// function instead.
 type AddTwoInts_Request struct {
 	A int64 `yaml:"a"`
 	B int64 `yaml:"b"`

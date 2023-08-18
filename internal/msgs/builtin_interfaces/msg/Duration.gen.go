@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("builtin_interfaces/msg/Duration", DurationTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewDuration
-// function instead.
 type Duration struct {
 	Sec int32 `yaml:"sec"`// Seconds component, range is valid over any possible int32 value.
 	Nanosec uint32 `yaml:"nanosec"`// Nanoseconds component in the range of [0, 10e9).

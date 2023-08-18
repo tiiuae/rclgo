@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/WrenchStamped", WrenchStampedTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewWrenchStamped
-// function instead.
 type WrenchStamped struct {
 	Header std_msgs_msg.Header `yaml:"header"`
 	Wrench Wrench `yaml:"wrench"`

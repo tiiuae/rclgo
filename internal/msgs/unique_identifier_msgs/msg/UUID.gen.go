@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("unique_identifier_msgs/msg/UUID", UUIDTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewUUID
-// function instead.
 type UUID struct {
 	Uuid [16]uint8 `yaml:"uuid"`
 }

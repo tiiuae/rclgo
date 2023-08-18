@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("test_msgs/msg/Defaults", DefaultsTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewDefaults
-// function instead.
 type Defaults struct {
 	BoolValue bool `yaml:"bool_value"`
 	ByteValue byte `yaml:"byte_value"`

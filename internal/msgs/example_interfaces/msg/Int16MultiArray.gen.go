@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("example_interfaces/msg/Int16MultiArray", Int16MultiArrayTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewInt16MultiArray
-// function instead.
 type Int16MultiArray struct {
 	Layout MultiArrayLayout `yaml:"layout"`// specification of data layout
 	Data []int16 `yaml:"data"`// array of data

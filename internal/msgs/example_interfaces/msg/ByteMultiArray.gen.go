@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("example_interfaces/msg/ByteMultiArray", ByteMultiArrayTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewByteMultiArray
-// function instead.
 type ByteMultiArray struct {
 	Layout MultiArrayLayout `yaml:"layout"`// specification of data layout
 	Data []byte `yaml:"data"`// array of data

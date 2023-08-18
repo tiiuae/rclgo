@@ -33,8 +33,6 @@ func init() {
 	typemap.RegisterMessage("sensor_msgs/msg/Image", ImageTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewImage
-// function instead.
 type Image struct {
 	Header std_msgs_msg.Header `yaml:"header"`// Header timestamp should be acquisition time of image
 	Height uint32 `yaml:"height"`// image height, that is, number of rows

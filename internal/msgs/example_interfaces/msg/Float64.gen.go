@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("example_interfaces/msg/Float64", Float64TypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewFloat64
-// function instead.
 type Float64 struct {
 	Data float64 `yaml:"data"`// This is an example message of using a primitive datatype, float64.If you want to test with this that's fine, but if you are deployingit into a system you should create a semantically meaningful message type.If you want to embed it in another message, use the primitive data type instead.
 }

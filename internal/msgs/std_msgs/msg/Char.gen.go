@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("std_msgs/msg/Char", CharTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewChar
-// function instead.
 type Char struct {
 	Data byte `yaml:"data"`
 }

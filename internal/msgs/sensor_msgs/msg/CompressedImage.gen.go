@@ -33,8 +33,6 @@ func init() {
 	typemap.RegisterMessage("sensor_msgs/msg/CompressedImage", CompressedImageTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewCompressedImage
-// function instead.
 type CompressedImage struct {
 	Header std_msgs_msg.Header `yaml:"header"`// Header timestamp should be acquisition time of image
 	Format string `yaml:"format"`// Specifies the format of the data

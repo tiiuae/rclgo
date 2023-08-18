@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("std_msgs/msg/UInt64", UInt64TypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewUInt64
-// function instead.
 type UInt64 struct {
 	Data uint64 `yaml:"data"`
 }

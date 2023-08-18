@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("test_msgs/msg/Nested", NestedTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewNested
-// function instead.
 type Nested struct {
 	BasicTypesValue BasicTypes `yaml:"basic_types_value"`
 }

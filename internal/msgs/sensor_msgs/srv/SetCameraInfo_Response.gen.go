@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("sensor_msgs/srv/SetCameraInfo_Response", SetCameraInfo_ResponseTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewSetCameraInfo_Response
-// function instead.
 type SetCameraInfo_Response struct {
 	Success bool `yaml:"success"`// True if the call succeeded
 	StatusMessage string `yaml:"status_message"`// Used to give details about success

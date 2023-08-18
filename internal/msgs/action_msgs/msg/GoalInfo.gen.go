@@ -33,8 +33,6 @@ func init() {
 	typemap.RegisterMessage("action_msgs/msg/GoalInfo", GoalInfoTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewGoalInfo
-// function instead.
 type GoalInfo struct {
 	GoalId unique_identifier_msgs_msg.UUID `yaml:"goal_id"`// Goal ID
 	Stamp builtin_interfaces_msg.Time `yaml:"stamp"`// Time when the goal was accepted

@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/TwistWithCovarianceStamped", TwistWithCovarianceStampedTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewTwistWithCovarianceStamped
-// function instead.
 type TwistWithCovarianceStamped struct {
 	Header std_msgs_msg.Header `yaml:"header"`
 	Twist TwistWithCovariance `yaml:"twist"`

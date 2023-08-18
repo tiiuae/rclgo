@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("example_interfaces/action/Fibonacci_SendGoal_Response", Fibonacci_SendGoal_ResponseTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewFibonacci_SendGoal_Response
-// function instead.
 type Fibonacci_SendGoal_Response struct {
 	Accepted bool `yaml:"accepted"`
 	Stamp builtin_interfaces_msg.Time `yaml:"stamp"`

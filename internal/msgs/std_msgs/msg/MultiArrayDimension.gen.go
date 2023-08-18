@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("std_msgs/msg/MultiArrayDimension", MultiArrayDimensionTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewMultiArrayDimension
-// function instead.
 type MultiArrayDimension struct {
 	Label string `yaml:"label"`// label of given dimension
 	Size uint32 `yaml:"size"`// size of given dimension (in type units)

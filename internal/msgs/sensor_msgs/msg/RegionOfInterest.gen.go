@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("sensor_msgs/msg/RegionOfInterest", RegionOfInterestTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewRegionOfInterest
-// function instead.
 type RegionOfInterest struct {
 	XOffset uint32 `yaml:"x_offset"`// Leftmost pixel of the ROI
 	YOffset uint32 `yaml:"y_offset"`// Topmost pixel of the ROI. (0 if the ROI includes the left edge of the image)

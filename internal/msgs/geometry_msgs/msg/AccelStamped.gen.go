@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/AccelStamped", AccelStampedTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewAccelStamped
-// function instead.
 type AccelStamped struct {
 	Header std_msgs_msg.Header `yaml:"header"`// An accel with reference coordinate frame and timestamp
 	Accel Accel `yaml:"accel"`

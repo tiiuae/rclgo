@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("std_srvs/srv/SetBool_Request", SetBool_RequestTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewSetBool_Request
-// function instead.
 type SetBool_Request struct {
 	Data bool `yaml:"data"`// e.g. for hardware enabling / disabling
 }

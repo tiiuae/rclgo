@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("test_msgs/msg/UnboundedSequences", UnboundedSequencesTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewUnboundedSequences
-// function instead.
 type UnboundedSequences struct {
 	BoolValues []bool `yaml:"bool_values"`// Unbounded sequences of different types
 	ByteValues []byte `yaml:"byte_values"`

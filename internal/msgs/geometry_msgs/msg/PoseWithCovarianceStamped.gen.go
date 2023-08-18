@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/PoseWithCovarianceStamped", PoseWithCovarianceStampedTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewPoseWithCovarianceStamped
-// function instead.
 type PoseWithCovarianceStamped struct {
 	Header std_msgs_msg.Header `yaml:"header"`
 	Pose PoseWithCovariance `yaml:"pose"`

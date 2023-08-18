@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/Transform", TransformTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewTransform
-// function instead.
 type Transform struct {
 	Translation Vector3 `yaml:"translation"`
 	Rotation Quaternion `yaml:"rotation"`

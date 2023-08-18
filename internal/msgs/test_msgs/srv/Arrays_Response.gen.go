@@ -33,8 +33,6 @@ func init() {
 	typemap.RegisterMessage("test_msgs/srv/Arrays_Response", Arrays_ResponseTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewArrays_Response
-// function instead.
 type Arrays_Response struct {
 	BoolValues [3]bool `yaml:"bool_values"`
 	ByteValues [3]byte `yaml:"byte_values"`

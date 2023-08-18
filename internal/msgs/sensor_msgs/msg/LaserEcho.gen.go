@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("sensor_msgs/msg/LaserEcho", LaserEchoTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewLaserEcho
-// function instead.
 type LaserEcho struct {
 	Echoes []float32 `yaml:"echoes"`// Multiple values of ranges or intensities.
 }

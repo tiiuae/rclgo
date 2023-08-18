@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/Pose2D", Pose2DTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewPose2D
-// function instead.
 type Pose2D struct {
 	X float64 `yaml:"x"`
 	Y float64 `yaml:"y"`

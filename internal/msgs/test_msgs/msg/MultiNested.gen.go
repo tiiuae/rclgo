@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("test_msgs/msg/MultiNested", MultiNestedTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewMultiNested
-// function instead.
 type MultiNested struct {
 	ArrayOfArrays [3]Arrays `yaml:"array_of_arrays"`// Mulitple levels of nested messages
 	ArrayOfBoundedSequences [3]BoundedSequences `yaml:"array_of_bounded_sequences"`

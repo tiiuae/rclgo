@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("std_msgs/msg/String", StringTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewString
-// function instead.
 type String struct {
 	Data string `yaml:"data"`
 }

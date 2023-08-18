@@ -34,8 +34,6 @@ func init() {
 	typemap.RegisterMessage("sensor_msgs/msg/TimeReference", TimeReferenceTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewTimeReference
-// function instead.
 type TimeReference struct {
 	Header std_msgs_msg.Header `yaml:"header"`// stamp is system time for which measurement was valid
 	TimeRef builtin_interfaces_msg.Time `yaml:"time_ref"`// corresponding time from this external source

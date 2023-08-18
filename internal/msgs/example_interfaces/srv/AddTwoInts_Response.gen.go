@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("example_interfaces/srv/AddTwoInts_Response", AddTwoInts_ResponseTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewAddTwoInts_Response
-// function instead.
 type AddTwoInts_Response struct {
 	Sum int64 `yaml:"sum"`
 }

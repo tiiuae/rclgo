@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("std_msgs/msg/ColorRGBA", ColorRGBATypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewColorRGBA
-// function instead.
 type ColorRGBA struct {
 	R float32 `yaml:"r"`
 	G float32 `yaml:"g"`

@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("test_msgs/action/Fibonacci_Goal", Fibonacci_GoalTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewFibonacci_Goal
-// function instead.
 type Fibonacci_Goal struct {
 	Order int32 `yaml:"order"`// goal definition
 }

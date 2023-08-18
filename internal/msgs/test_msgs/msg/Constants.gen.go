@@ -46,8 +46,6 @@ const (
 	Constants_UINT64_CONST uint64 = 50000000
 )
 
-// Do not create instances of this type directly. Always use NewConstants
-// function instead.
 type Constants struct {
 }
 

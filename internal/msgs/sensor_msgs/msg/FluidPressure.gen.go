@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("sensor_msgs/msg/FluidPressure", FluidPressureTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewFluidPressure
-// function instead.
 type FluidPressure struct {
 	Header std_msgs_msg.Header `yaml:"header"`// timestamp of the measurement
 	FluidPressure float64 `yaml:"fluid_pressure"`// Absolute pressure reading in Pascals.

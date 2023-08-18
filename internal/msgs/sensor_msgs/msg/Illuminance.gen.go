@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("sensor_msgs/msg/Illuminance", IlluminanceTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewIlluminance
-// function instead.
 type Illuminance struct {
 	Header std_msgs_msg.Header `yaml:"header"`// timestamp is the time the illuminance was measured
 	Illuminance float64 `yaml:"illuminance"`// Measurement of the Photometric Illuminance in Lux.

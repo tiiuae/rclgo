@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("example_interfaces/msg/Char", CharTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewChar
-// function instead.
 type Char struct {
 	Data byte `yaml:"data"`// This is an example message of using a primitive datatype, char.If you want to test with this that's fine, but if you are deployingit into a system you should create a semantically meaningful message type.If you want to embed it in another message, use the primitive data type instead.
 }

@@ -33,8 +33,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/TransformStamped", TransformStampedTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewTransformStamped
-// function instead.
 type TransformStamped struct {
 	Header std_msgs_msg.Header `yaml:"header"`// The frame id in the header is used as the reference frame of this transform.
 	ChildFrameId string `yaml:"child_frame_id"`// The frame id of the child frame to which this transform points.

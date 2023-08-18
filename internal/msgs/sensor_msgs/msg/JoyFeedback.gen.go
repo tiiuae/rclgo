@@ -36,8 +36,6 @@ const (
 	JoyFeedback_TYPE_BUZZER uint8 = 2
 )
 
-// Do not create instances of this type directly. Always use NewJoyFeedback
-// function instead.
 type JoyFeedback struct {
 	Type uint8 `yaml:"type"`
 	Id uint8 `yaml:"id"`// This will hold an id number for each type of each feedback.Example, the first led would be id=0, the second would be id=1

@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/Vector3Stamped", Vector3StampedTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewVector3Stamped
-// function instead.
 type Vector3Stamped struct {
 	Header std_msgs_msg.Header `yaml:"header"`
 	Vector Vector3 `yaml:"vector"`

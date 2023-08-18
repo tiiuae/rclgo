@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("test_msgs/action/NestedMessage_FeedbackMessage", NestedMessage_FeedbackMessageTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewNestedMessage_FeedbackMessage
-// function instead.
 type NestedMessage_FeedbackMessage struct {
 	GoalID unique_identifier_msgs_msg.UUID `yaml:"goal_id"`
 	Feedback NestedMessage_Feedback `yaml:"feedback"`

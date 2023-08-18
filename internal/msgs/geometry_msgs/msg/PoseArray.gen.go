@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/PoseArray", PoseArrayTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewPoseArray
-// function instead.
 type PoseArray struct {
 	Header std_msgs_msg.Header `yaml:"header"`
 	Poses []Pose `yaml:"poses"`

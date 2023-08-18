@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("std_msgs/msg/Float32MultiArray", Float32MultiArrayTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewFloat32MultiArray
-// function instead.
 type Float32MultiArray struct {
 	Layout MultiArrayLayout `yaml:"layout"`// specification of data layout
 	Data []float32 `yaml:"data"`// array of data

@@ -34,8 +34,6 @@ func init() {
 	typemap.RegisterMessage("sensor_msgs/msg/MagneticField", MagneticFieldTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewMagneticField
-// function instead.
 type MagneticField struct {
 	Header std_msgs_msg.Header `yaml:"header"`// timestamp is the time the
 	MagneticField geometry_msgs_msg.Vector3 `yaml:"magnetic_field"`// x, y, and z components of the

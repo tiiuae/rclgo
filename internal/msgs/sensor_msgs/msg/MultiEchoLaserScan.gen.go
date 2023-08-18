@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("sensor_msgs/msg/MultiEchoLaserScan", MultiEchoLaserScanTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewMultiEchoLaserScan
-// function instead.
 type MultiEchoLaserScan struct {
 	Header std_msgs_msg.Header `yaml:"header"`// timestamp in the header is the acquisition time of
 	AngleMin float32 `yaml:"angle_min"`// start angle of the scan [rad]

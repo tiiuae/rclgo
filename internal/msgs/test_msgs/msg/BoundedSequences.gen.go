@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("test_msgs/msg/BoundedSequences", BoundedSequencesTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewBoundedSequences
-// function instead.
 type BoundedSequences struct {
 	BoolValues []bool `yaml:"bool_values"`// Bounded sequences of different types
 	ByteValues []byte `yaml:"byte_values"`

@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("test_msgs/msg/BoundedPlainSequences", BoundedPlainSequencesTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewBoundedPlainSequences
-// function instead.
 type BoundedPlainSequences struct {
 	BoolValues []bool `yaml:"bool_values"`// Bounded sequences of different POD types
 	ByteValues []byte `yaml:"byte_values"`

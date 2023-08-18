@@ -40,8 +40,6 @@ const (
 	GoalStatus_STATUS_ABORTED int8 = 6// The goal was terminated by the action server without an external request.
 )
 
-// Do not create instances of this type directly. Always use NewGoalStatus
-// function instead.
 type GoalStatus struct {
 	GoalInfo GoalInfo `yaml:"goal_info"`// Goal info (contains ID and timestamp).
 	Status int8 `yaml:"status"`// Action goal state-machine status.

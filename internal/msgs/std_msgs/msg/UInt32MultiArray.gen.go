@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("std_msgs/msg/UInt32MultiArray", UInt32MultiArrayTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewUInt32MultiArray
-// function instead.
 type UInt32MultiArray struct {
 	Layout MultiArrayLayout `yaml:"layout"`// specification of data layout
 	Data []uint32 `yaml:"data"`// array of data

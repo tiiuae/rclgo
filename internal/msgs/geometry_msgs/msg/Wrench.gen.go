@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/Wrench", WrenchTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewWrench
-// function instead.
 type Wrench struct {
 	Force Vector3 `yaml:"force"`
 	Torque Vector3 `yaml:"torque"`

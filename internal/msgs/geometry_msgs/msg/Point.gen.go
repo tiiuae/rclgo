@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/Point", PointTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewPoint
-// function instead.
 type Point struct {
 	X float64 `yaml:"x"`// This contains the position of a point in free space
 	Y float64 `yaml:"y"`

@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("test_msgs/msg/Arrays", ArraysTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewArrays
-// function instead.
 type Arrays struct {
 	BoolValues [3]bool `yaml:"bool_values"`// Arrays of different types
 	ByteValues [3]byte `yaml:"byte_values"`

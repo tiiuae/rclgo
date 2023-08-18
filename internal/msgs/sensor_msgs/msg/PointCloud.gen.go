@@ -33,8 +33,6 @@ func init() {
 	typemap.RegisterMessage("sensor_msgs/msg/PointCloud", PointCloudTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewPointCloud
-// function instead.
 type PointCloud struct {
 	Header std_msgs_msg.Header `yaml:"header"`// Time of sensor data acquisition, coordinate frame ID.
 	Points []geometry_msgs_msg.Point32 `yaml:"points"`// Array of 3d points. Each Point32 should be interpreted as a 3d pointin the frame given in the header.

@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("example_interfaces/action/Fibonacci_GetResult_Request", Fibonacci_GetResult_RequestTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewFibonacci_GetResult_Request
-// function instead.
 type Fibonacci_GetResult_Request struct {
 	GoalID unique_identifier_msgs_msg.UUID `yaml:"goal_id"`
 }

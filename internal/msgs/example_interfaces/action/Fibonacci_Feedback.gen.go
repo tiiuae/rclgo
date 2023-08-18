@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("example_interfaces/action/Fibonacci_Feedback", Fibonacci_FeedbackTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewFibonacci_Feedback
-// function instead.
 type Fibonacci_Feedback struct {
 	Sequence []int32 `yaml:"sequence"`// Feedback
 }

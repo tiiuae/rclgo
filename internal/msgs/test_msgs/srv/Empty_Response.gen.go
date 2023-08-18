@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("test_msgs/srv/Empty_Response", Empty_ResponseTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewEmpty_Response
-// function instead.
 type Empty_Response struct {
 }
 

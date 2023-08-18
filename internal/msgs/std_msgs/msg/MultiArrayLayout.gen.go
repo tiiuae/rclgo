@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("std_msgs/msg/MultiArrayLayout", MultiArrayLayoutTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewMultiArrayLayout
-// function instead.
 type MultiArrayLayout struct {
 	Dim []MultiArrayDimension `yaml:"dim"`// Array of dimension properties
 	DataOffset uint32 `yaml:"data_offset"`// padding bytes at front of data

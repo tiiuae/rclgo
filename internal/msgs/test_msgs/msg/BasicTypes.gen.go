@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("test_msgs/msg/BasicTypes", BasicTypesTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewBasicTypes
-// function instead.
 type BasicTypes struct {
 	BoolValue bool `yaml:"bool_value"`
 	ByteValue byte `yaml:"byte_value"`

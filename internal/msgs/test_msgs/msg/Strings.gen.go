@@ -35,8 +35,6 @@ const (
 	Strings_STRING_CONST string = "Hello world!"
 )
 
-// Do not create instances of this type directly. Always use NewStrings
-// function instead.
 type Strings struct {
 	StringValue string `yaml:"string_value"`
 	StringValueDefault1 string `yaml:"string_value_default1"`

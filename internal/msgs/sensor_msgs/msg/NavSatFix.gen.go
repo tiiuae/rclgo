@@ -39,8 +39,6 @@ const (
 	NavSatFix_COVARIANCE_TYPE_KNOWN uint8 = 3
 )
 
-// Do not create instances of this type directly. Always use NewNavSatFix
-// function instead.
 type NavSatFix struct {
 	Header std_msgs_msg.Header `yaml:"header"`// header.stamp specifies the ROS time for this measurement (thecorresponding satellite time may be reported using thesensor_msgs/TimeReference message).header.frame_id is the frame of reference reported by the satellitereceiver, usually the location of the antenna.  This is aEuclidean frame relative to the vehicle, not a referenceellipsoid.
 	Status NavSatStatus `yaml:"status"`// Satellite fix status information.

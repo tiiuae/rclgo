@@ -56,8 +56,6 @@ const (
 	BatteryState_POWER_SUPPLY_TECHNOLOGY_LIMN uint8 = 6
 )
 
-// Do not create instances of this type directly. Always use NewBatteryState
-// function instead.
 type BatteryState struct {
 	Header std_msgs_msg.Header `yaml:"header"`
 	Voltage float32 `yaml:"voltage"`// Voltage in Volts (Mandatory)

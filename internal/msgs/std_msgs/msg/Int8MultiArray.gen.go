@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("std_msgs/msg/Int8MultiArray", Int8MultiArrayTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewInt8MultiArray
-// function instead.
 type Int8MultiArray struct {
 	Layout MultiArrayLayout `yaml:"layout"`// specification of data layout
 	Data []int8 `yaml:"data"`// array of data

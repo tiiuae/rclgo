@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("sensor_msgs/msg/RelativeHumidity", RelativeHumidityTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewRelativeHumidity
-// function instead.
 type RelativeHumidity struct {
 	Header std_msgs_msg.Header `yaml:"header"`// timestamp of the measurement
 	RelativeHumidity float64 `yaml:"relative_humidity"`// Expression of the relative humidity

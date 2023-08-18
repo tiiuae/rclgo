@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/TwistStamped", TwistStampedTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewTwistStamped
-// function instead.
 type TwistStamped struct {
 	Header std_msgs_msg.Header `yaml:"header"`
 	Twist Twist `yaml:"twist"`

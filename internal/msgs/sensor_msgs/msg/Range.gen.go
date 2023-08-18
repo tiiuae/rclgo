@@ -36,8 +36,6 @@ const (
 	Range_INFRARED uint8 = 1
 )
 
-// Do not create instances of this type directly. Always use NewRange
-// function instead.
 type Range struct {
 	Header std_msgs_msg.Header `yaml:"header"`// timestamp in the header is the time the ranger
 	RadiationType uint8 `yaml:"radiation_type"`// the type of radiation used by the sensor

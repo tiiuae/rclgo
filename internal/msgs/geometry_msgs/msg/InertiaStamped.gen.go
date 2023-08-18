@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/InertiaStamped", InertiaStampedTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewInertiaStamped
-// function instead.
 type InertiaStamped struct {
 	Header std_msgs_msg.Header `yaml:"header"`
 	Inertia Inertia `yaml:"inertia"`

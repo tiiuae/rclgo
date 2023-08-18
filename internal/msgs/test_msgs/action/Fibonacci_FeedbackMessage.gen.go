@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("test_msgs/action/Fibonacci_FeedbackMessage", Fibonacci_FeedbackMessageTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewFibonacci_FeedbackMessage
-// function instead.
 type Fibonacci_FeedbackMessage struct {
 	GoalID unique_identifier_msgs_msg.UUID `yaml:"goal_id"`
 	Feedback Fibonacci_Feedback `yaml:"feedback"`

@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("std_msgs/msg/Int32", Int32TypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewInt32
-// function instead.
 type Int32 struct {
 	Data int32 `yaml:"data"`
 }

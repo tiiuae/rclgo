@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/Point32", Point32TypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewPoint32
-// function instead.
 type Point32 struct {
 	X float32 `yaml:"x"`
 	Y float32 `yaml:"y"`

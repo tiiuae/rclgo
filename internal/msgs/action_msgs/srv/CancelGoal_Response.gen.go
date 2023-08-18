@@ -38,8 +38,6 @@ const (
 	CancelGoal_Response_ERROR_GOAL_TERMINATED int8 = 3// Indicates the goal is not cancelable because it is already in a terminal state.No goals have transitioned to the CANCELING state. The goals_canceling list isempty.
 )
 
-// Do not create instances of this type directly. Always use NewCancelGoal_Response
-// function instead.
 type CancelGoal_Response struct {
 	ReturnCode int8 `yaml:"return_code"`// Return code, see above definitions.
 	GoalsCanceling []action_msgs_msg.GoalInfo `yaml:"goals_canceling"`// Goals that accepted the cancel request.

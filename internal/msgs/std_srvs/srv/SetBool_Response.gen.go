@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("std_srvs/srv/SetBool_Response", SetBool_ResponseTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewSetBool_Response
-// function instead.
 type SetBool_Response struct {
 	Success bool `yaml:"success"`// indicate successful run of triggered service
 	Message string `yaml:"message"`// informational, e.g. for error messages

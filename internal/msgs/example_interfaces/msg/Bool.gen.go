@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("example_interfaces/msg/Bool", BoolTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewBool
-// function instead.
 type Bool struct {
 	Data bool `yaml:"data"`// This is an example message of using a primitive datatype, bool.If you want to test with this that's fine, but if you are deployingit into a system you should create a semantically meaningful message type.If you want to embed it in another message, use the primitive data type instead.
 }

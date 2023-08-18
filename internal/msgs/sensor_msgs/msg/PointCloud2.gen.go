@@ -33,8 +33,6 @@ func init() {
 	typemap.RegisterMessage("sensor_msgs/msg/PointCloud2", PointCloud2TypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewPointCloud2
-// function instead.
 type PointCloud2 struct {
 	Header std_msgs_msg.Header `yaml:"header"`// Time of sensor data acquisition, and the coordinate frame ID (for 3d points).
 	Height uint32 `yaml:"height"`// 2D structure of the point cloud. If the cloud is unordered, height is1 and width is the length of the point cloud.

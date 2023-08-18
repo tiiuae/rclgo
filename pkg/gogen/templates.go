@@ -125,8 +125,6 @@ const (
 )
 {{- end }}
 
-// Do not create instances of this type directly. Always use New{{$Md.Name}}
-// function instead.
 type {{$Md.Name}} struct {
 	{{- range $k, $v := $Md.Fields }}
 	{{$v.GoName }} {{$v.TypeArray}}{{$v.GoPkgReference}}{{$v.GoType}}` +

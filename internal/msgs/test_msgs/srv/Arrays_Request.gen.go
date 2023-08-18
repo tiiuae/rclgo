@@ -33,8 +33,6 @@ func init() {
 	typemap.RegisterMessage("test_msgs/srv/Arrays_Request", Arrays_RequestTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewArrays_Request
-// function instead.
 type Arrays_Request struct {
 	BoolValues [3]bool `yaml:"bool_values"`
 	ByteValues [3]byte `yaml:"byte_values"`

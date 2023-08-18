@@ -33,8 +33,6 @@ func init() {
 	typemap.RegisterMessage("sensor_msgs/msg/JointState", JointStateTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewJointState
-// function instead.
 type JointState struct {
 	Header std_msgs_msg.Header `yaml:"header"`
 	Name []string `yaml:"name"`

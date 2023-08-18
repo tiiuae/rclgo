@@ -34,8 +34,6 @@ func init() {
 	typemap.RegisterMessage("sensor_msgs/msg/Imu", ImuTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewImu
-// function instead.
 type Imu struct {
 	Header std_msgs_msg.Header `yaml:"header"`
 	Orientation geometry_msgs_msg.Quaternion `yaml:"orientation"`

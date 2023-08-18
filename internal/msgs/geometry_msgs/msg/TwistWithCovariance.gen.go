@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/TwistWithCovariance", TwistWithCovarianceTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewTwistWithCovariance
-// function instead.
 type TwistWithCovariance struct {
 	Twist Twist `yaml:"twist"`
 	Covariance [36]float64 `yaml:"covariance"`// Row-major representation of the 6x6 covariance matrixThe orientation parameters use a fixed-axis representation.In order, the parameters are:(x, y, z, rotation about X axis, rotation about Y axis, rotation about Z axis)

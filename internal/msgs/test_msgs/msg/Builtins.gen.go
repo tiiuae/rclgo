@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("test_msgs/msg/Builtins", BuiltinsTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewBuiltins
-// function instead.
 type Builtins struct {
 	DurationValue builtin_interfaces_msg.Duration `yaml:"duration_value"`
 	TimeValue builtin_interfaces_msg.Time `yaml:"time_value"`

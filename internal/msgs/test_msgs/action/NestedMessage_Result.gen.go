@@ -33,8 +33,6 @@ func init() {
 	typemap.RegisterMessage("test_msgs/action/NestedMessage_Result", NestedMessage_ResultTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewNestedMessage_Result
-// function instead.
 type NestedMessage_Result struct {
 	NestedFieldNoPkg test_msgs_msg.Builtins `yaml:"nested_field_no_pkg"`// result definition
 	NestedField test_msgs_msg.BasicTypes `yaml:"nested_field"`

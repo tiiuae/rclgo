@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("sensor_msgs/srv/SetCameraInfo_Request", SetCameraInfo_RequestTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewSetCameraInfo_Request
-// function instead.
 type SetCameraInfo_Request struct {
 	CameraInfo sensor_msgs_msg.CameraInfo `yaml:"camera_info"`// The camera_info to store
 }

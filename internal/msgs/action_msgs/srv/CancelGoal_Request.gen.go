@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("action_msgs/srv/CancelGoal_Request", CancelGoal_RequestTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewCancelGoal_Request
-// function instead.
 type CancelGoal_Request struct {
 	GoalInfo action_msgs_msg.GoalInfo `yaml:"goal_info"`// Goal info describing the goals to cancel, see above.
 }

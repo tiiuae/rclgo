@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/Quaternion", QuaternionTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewQuaternion
-// function instead.
 type Quaternion struct {
 	X float64 `yaml:"x"`
 	Y float64 `yaml:"y"`

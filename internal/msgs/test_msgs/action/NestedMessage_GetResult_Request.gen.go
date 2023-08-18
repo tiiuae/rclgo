@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("test_msgs/action/NestedMessage_GetResult_Request", NestedMessage_GetResult_RequestTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewNestedMessage_GetResult_Request
-// function instead.
 type NestedMessage_GetResult_Request struct {
 	GoalID unique_identifier_msgs_msg.UUID `yaml:"goal_id"`
 }

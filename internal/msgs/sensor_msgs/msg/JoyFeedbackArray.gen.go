@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("sensor_msgs/msg/JoyFeedbackArray", JoyFeedbackArrayTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewJoyFeedbackArray
-// function instead.
 type JoyFeedbackArray struct {
 	Array []JoyFeedback `yaml:"array"`// This message publishes values for multiple feedback at once.
 }

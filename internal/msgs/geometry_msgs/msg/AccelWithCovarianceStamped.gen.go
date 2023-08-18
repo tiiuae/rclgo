@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/AccelWithCovarianceStamped", AccelWithCovarianceStampedTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewAccelWithCovarianceStamped
-// function instead.
 type AccelWithCovarianceStamped struct {
 	Header std_msgs_msg.Header `yaml:"header"`// This represents an estimated accel with reference coordinate frame and timestamp.
 	Accel AccelWithCovariance `yaml:"accel"`

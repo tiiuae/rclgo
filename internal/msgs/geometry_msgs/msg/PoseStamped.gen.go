@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/PoseStamped", PoseStampedTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewPoseStamped
-// function instead.
 type PoseStamped struct {
 	Header std_msgs_msg.Header `yaml:"header"`
 	Pose Pose `yaml:"pose"`

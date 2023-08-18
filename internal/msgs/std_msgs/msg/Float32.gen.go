@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("std_msgs/msg/Float32", Float32TypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewFloat32
-// function instead.
 type Float32 struct {
 	Data float32 `yaml:"data"`
 }

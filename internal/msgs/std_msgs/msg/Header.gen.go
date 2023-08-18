@@ -33,8 +33,6 @@ func init() {
 	typemap.RegisterMessage("std_msgs/msg/Header", HeaderTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewHeader
-// function instead.
 type Header struct {
 	Stamp builtin_interfaces_msg.Time `yaml:"stamp"`// Two-integer timestamp that is expressed as seconds and nanoseconds.
 	FrameId string `yaml:"frame_id"`// Transform frame with which this data is associated.

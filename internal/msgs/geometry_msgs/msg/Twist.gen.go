@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/Twist", TwistTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewTwist
-// function instead.
 type Twist struct {
 	Linear Vector3 `yaml:"linear"`
 	Angular Vector3 `yaml:"angular"`

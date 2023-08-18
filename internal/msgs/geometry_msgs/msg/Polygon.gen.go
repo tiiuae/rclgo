@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/Polygon", PolygonTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewPolygon
-// function instead.
 type Polygon struct {
 	Points []Point32 `yaml:"points"`
 }

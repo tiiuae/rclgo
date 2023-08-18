@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("std_srvs/srv/Empty_Request", Empty_RequestTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewEmpty_Request
-// function instead.
 type Empty_Request struct {
 }
 

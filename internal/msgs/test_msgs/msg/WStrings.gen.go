@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("test_msgs/msg/WStrings", WStringsTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewWStrings
-// function instead.
 type WStrings struct {
 	WstringValue string `yaml:"wstring_value"`
 	WstringValueDefault1 string `yaml:"wstring_value_default1"`

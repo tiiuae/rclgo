@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("std_msgs/msg/Bool", BoolTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewBool
-// function instead.
 type Bool struct {
 	Data bool `yaml:"data"`
 }

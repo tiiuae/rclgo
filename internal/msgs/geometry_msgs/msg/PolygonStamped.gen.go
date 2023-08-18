@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/PolygonStamped", PolygonStampedTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewPolygonStamped
-// function instead.
 type PolygonStamped struct {
 	Header std_msgs_msg.Header `yaml:"header"`
 	Polygon Polygon `yaml:"polygon"`

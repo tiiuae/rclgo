@@ -31,8 +31,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/Vector3", Vector3TypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewVector3
-// function instead.
 type Vector3 struct {
 	X float64 `yaml:"x"`
 	Y float64 `yaml:"y"`

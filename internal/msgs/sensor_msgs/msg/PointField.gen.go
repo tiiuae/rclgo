@@ -42,8 +42,6 @@ const (
 	PointField_FLOAT64 uint8 = 8
 )
 
-// Do not create instances of this type directly. Always use NewPointField
-// function instead.
 type PointField struct {
 	Name string `yaml:"name"`// Name of field. Common PointField names are x, y, z, intensity, rgb, rgba
 	Offset uint32 `yaml:"offset"`// Offset from start of point struct

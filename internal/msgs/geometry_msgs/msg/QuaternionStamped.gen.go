@@ -32,8 +32,6 @@ func init() {
 	typemap.RegisterMessage("geometry_msgs/msg/QuaternionStamped", QuaternionStampedTypeSupport)
 }
 
-// Do not create instances of this type directly. Always use NewQuaternionStamped
-// function instead.
 type QuaternionStamped struct {
 	Header std_msgs_msg.Header `yaml:"header"`
 	Quaternion Quaternion `yaml:"quaternion"`

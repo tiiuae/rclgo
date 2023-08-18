@@ -166,12 +166,16 @@ func GenerateGolangMessageTypes(config *Config, destPath string) error {
 		cImportsByPkg: make(map[string]stringSet),
 	}
 	gen.findPackages()
-	actionMsgsNeeded := false
-	for _, pkg := range config.ROSPkgIncludes {
-		gen.generatePkg(pkg, true)
-		actionMsgsNeeded = actionMsgsNeeded || gen.allPkgs[pkg].GetIncludesActions()
-	}
-	if len(config.GoPkgIncludes) > 0 {
+	if config.RegexIncludes == nil && config.ROSPkgIncludes == nil && config.GoPkgIncludes == nil {
+		for pkg := range gen.allPkgs {
+			gen.generatePkg(pkg, false)
+		}
+	} else {
+		actionMsgsNeeded := false
+		for _, pkg := range config.ROSPkgIncludes {
+			gen.generatePkg(pkg, true)
+			actionMsgsNeeded = actionMsgsNeeded || gen.allPkgs[pkg].GetIncludesActions()
+		}
 		goDeps, err := loadGoPkgDeps(config.GoPkgIncludes...)
 		if err != nil {
 			return fmt.Errorf("failed to load Go deps: %w", err)
@@ -184,13 +188,13 @@ func GenerateGolangMessageTypes(config *Config, destPath string) error {
 				actionMsgsNeeded = actionMsgsNeeded || path.Base(pkgWithType) == "action"
 			}
 		}
-	}
-	if actionMsgsNeeded {
-		gen.generatePkg("action_msgs", true)
-	}
-	for pkg := range gen.allPkgs {
-		if config.RegexIncludes.Includes(pkg) {
-			gen.generatePkg(pkg, false)
+		if actionMsgsNeeded {
+			gen.generatePkg("action_msgs", true)
+		}
+		for pkg := range gen.allPkgs {
+			if config.RegexIncludes.Includes(pkg) {
+				gen.generatePkg(pkg, false)
+			}
 		}
 	}
 	for pkg, imports := range gen.cImportsByPkg {

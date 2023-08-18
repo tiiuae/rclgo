@@ -120,9 +120,9 @@ func configureFlags(cmd *cobra.Command, destPathDefault string) {
 	cmd.PersistentFlags().StringP("dest-path", "d", destPathDefault, "Destination directory for the Golang typed converted ROS2 messages. ROS2 Message structure is preserved as <ros2-package>/msg/<msg-name>")
 	cmd.PersistentFlags().String("rclgo-import-path", gogen.DefaultConfig.RclgoImportPath, "Import path of rclgo library")
 	cmd.PersistentFlags().String("message-module-prefix", gogen.DefaultConfig.MessageModulePrefix, "Import path prefix for generated message binding modules")
-	cmd.PersistentFlags().StringArray("include-package", []string{}, "Include only packages matching a regex. Can be passed multiple times, in which case the union of the matches is used.")
-	cmd.PersistentFlags().StringArray("include-package-deps", []string{}, "Include only packages which are dependencies of listed packages. Can be passed multiple times, in which case the union of the matches is used.")
-	cmd.PersistentFlags().StringArray("include-go-package-deps", []string{}, "Include only packages which are dependencies of listed Go packages. Can be passed multiple times, in which case the union of the matches is used.")
+	cmd.PersistentFlags().StringArray("include-package", nil, "Include only packages matching a regex. Can be passed multiple times. If multiple include options are passed, the union of the matches is generated.")
+	cmd.PersistentFlags().StringArray("include-package-deps", nil, "Include only packages which are dependencies of listed packages. Can be passed multiple times. If multiple include options are passed, the union of the matches is generated.")
+	cmd.PersistentFlags().StringArray("include-go-package-deps", nil, "Include only packages which are dependencies of listed Go packages. Can be passed multiple times. If multiple include options are passed, the union of the matches is generated.")
 	cmd.PersistentFlags().Bool("ignore-ros-distro-mismatch", false, "If true, ignores possible mismatches in sourced and supported ROS distro")
 	bindPFlags(cmd)
 }

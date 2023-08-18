@@ -209,22 +209,24 @@ func matchMsg(msg *ROS2Message, pkg, name string) bool {
 }
 
 func loadGoPkgDeps(pkgPaths ...string) (stringSet, error) {
-	queries := slices.Clone(pkgPaths)
-	for i := range queries {
-		queries[i] = "pattern=" + queries[i]
-	}
 	deps := stringSet{}
-	pkgs, err := packages.Load(&packages.Config{
-		Mode:  packages.NeedImports | packages.NeedDeps | packages.NeedName,
-		Tests: true,
-	}, queries...)
-	if err != nil {
-		return nil, err
+	if len(pkgPaths) > 0 {
+		queries := slices.Clone(pkgPaths)
+		for i := range queries {
+			queries[i] = "pattern=" + queries[i]
+		}
+		pkgs, err := packages.Load(&packages.Config{
+			Mode:  packages.NeedImports | packages.NeedDeps | packages.NeedName,
+			Tests: true,
+		}, queries...)
+		if err != nil {
+			return nil, err
+		}
+		packages.Visit(pkgs, func(pkg *packages.Package) bool {
+			deps.Add(pkg.PkgPath)
+			return true
+		}, nil)
 	}
-	packages.Visit(pkgs, func(pkg *packages.Package) bool {
-		deps.Add(pkg.PkgPath)
-		return true
-	}, nil)
 	return deps, nil
 }
 

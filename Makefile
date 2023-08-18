@@ -16,6 +16,10 @@ install:
 
 .PHONY: test
 test:
+	go test -count=1 ./...
+
+.PHONY: test-verbose
+test-verbose:
 	go test -v -count=1 ./...
 
 generate:

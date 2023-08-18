@@ -27,15 +27,7 @@ generate:
 	    --root-path /opt/ros/${ROS_DISTRO} \
 	    --dest-path "$$dest_path" \
 		--message-module-prefix "github.com/tiiuae/rclgo/$$dest_path" \
-		--include-package action_msgs \
-		--include-package builtin_interfaces \
-		--include-package example_interfaces \
-		--include-package geometry_msgs \
-		--include-package sensor_msgs \
-		--include-package std_msgs \
-		--include-package std_srvs \
-		--include-package test_msgs \
-		--include-package unique_identifier_msgs \
+		--include-go-package-deps ./... \
 		|| exit 1
 	rm "$$dest_path/msgs.gen.go" || exit 1
 	go run ./cmd/rclgo-gen generate-rclgo --root-path /usr --root-path /opt/ros/${ROS_DISTRO}

@@ -52,8 +52,9 @@ type Config struct {
 	MessageModulePrefix string
 	RootPaths           []string
 
-	RegexIncludes RuleSet
-	PkgIncludes   []string
+	RegexIncludes  RuleSet
+	ROSPkgIncludes []string
+	GoPkgIncludes  []string
 }
 
 var DefaultConfig = Config{
@@ -149,8 +150,13 @@ func GenerateROS2AllMessagesImporter(c *Config, destPathPkgRoot string) error {
 }
 
 type rosPkgRef struct {
-	Interfaces map[Metadata]string
-	Generated  bool
+	Interfaces      map[Metadata]string
+	Generated       bool
+	IncludesActions bool
+}
+
+func (r *rosPkgRef) GetIncludesActions() bool {
+	return r != nil && r.IncludesActions
 }
 
 func GenerateGolangMessageTypes(config *Config, destPath string) error {
@@ -159,13 +165,32 @@ func GenerateGolangMessageTypes(config *Config, destPath string) error {
 		destRootPath:  destPath,
 		cImportsByPkg: make(map[string]stringSet),
 	}
-	gen.findPackages(config.RootPaths)
-	for _, pkg := range config.PkgIncludes {
-		gen.generatePkg(gen.allPkgs[pkg], true)
+	gen.findPackages()
+	actionMsgsNeeded := false
+	for _, pkg := range config.ROSPkgIncludes {
+		gen.generatePkg(pkg, true)
+		actionMsgsNeeded = actionMsgsNeeded || gen.allPkgs[pkg].GetIncludesActions()
 	}
-	for pkg, ref := range gen.allPkgs {
+	if len(config.GoPkgIncludes) > 0 {
+		goDeps, err := loadGoPkgDeps(config.GoPkgIncludes...)
+		if err != nil {
+			return fmt.Errorf("failed to load Go deps: %w", err)
+		}
+		prefix := config.MessageModulePrefix + "/"
+		for goDep := range goDeps {
+			pkgWithType := strings.TrimPrefix(goDep, prefix)
+			if pkgWithType != goDep {
+				gen.generatePkg(path.Dir(pkgWithType), true)
+				actionMsgsNeeded = actionMsgsNeeded || path.Base(pkgWithType) == "action"
+			}
+		}
+	}
+	if actionMsgsNeeded {
+		gen.generatePkg("action_msgs", true)
+	}
+	for pkg := range gen.allPkgs {
 		if config.RegexIncludes.Includes(pkg) {
-			gen.generatePkg(ref, false)
+			gen.generatePkg(pkg, false)
 		}
 	}
 	for pkg, imports := range gen.cImportsByPkg {
@@ -177,14 +202,17 @@ func GenerateGolangMessageTypes(config *Config, destPath string) error {
 	return nil
 }
 
-func (g *generator) generatePkg(ref *rosPkgRef, genDeps bool) {
-	if ref != nil && !ref.Generated {
+func (g *generator) generatePkg(pkg string, genDeps bool) {
+	ref := g.allPkgs[pkg]
+	if ref == nil {
+		fmt.Printf("Failed to generate package %s: package not found\n", pkg)
+	} else if !ref.Generated {
 		ref.Generated = true
 		for meta, path := range ref.Interfaces {
 			cImports := g.generateInterface(meta, path)
 			if genDeps {
 				for imp := range cImports {
-					g.generatePkg(g.allPkgs[imp], genDeps)
+					g.generatePkg(imp, genDeps)
 				}
 			}
 		}
@@ -244,10 +272,10 @@ func (g *generator) generateInterface(meta Metadata, ifacePath string) stringSet
 	}
 }
 
-func (g *generator) findPackages(rootPaths []string) {
+func (g *generator) findPackages() {
 	g.allPkgs = map[string]*rosPkgRef{}
-	for i := len(rootPaths) - 1; i >= 0; i-- {
-		filepath.Walk(rootPaths[i], func(path string, info fs.FileInfo, err error) error { //nolint:errcheck
+	for i := len(g.config.RootPaths) - 1; i >= 0; i-- {
+		filepath.Walk(g.config.RootPaths[i], func(path string, info fs.FileInfo, err error) error { //nolint:errcheck
 			skip, blacklistEntry := blacklisted(path)
 			if skip {
 				fmt.Printf("Blacklisted: %s, matched regex '%s'\n", path, blacklistEntry)
@@ -264,6 +292,7 @@ func (g *generator) findPackages(rootPaths []string) {
 						g.allPkgs[meta.Package] = ref
 					}
 					ref.Interfaces[*meta] = path
+					ref.IncludesActions = ref.IncludesActions || meta.Type == "action"
 				}
 			}
 			return nil

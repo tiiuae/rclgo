@@ -122,6 +122,7 @@ func configureFlags(cmd *cobra.Command, destPathDefault string) {
 	cmd.PersistentFlags().String("message-module-prefix", gogen.DefaultConfig.MessageModulePrefix, "Import path prefix for generated message binding modules")
 	cmd.PersistentFlags().StringArray("include-package", []string{}, "Include only packages matching a regex. Can be passed multiple times, in which case the union of the matches is used.")
 	cmd.PersistentFlags().StringArray("include-package-deps", []string{}, "Include only packages which are dependencies of listed packages. Can be passed multiple times, in which case the union of the matches is used.")
+	cmd.PersistentFlags().StringArray("include-go-package-deps", []string{}, "Include only packages which are dependencies of listed Go packages. Can be passed multiple times, in which case the union of the matches is used.")
 	cmd.PersistentFlags().Bool("ignore-ros-distro-mismatch", false, "If true, ignores possible mismatches in sourced and supported ROS distro")
 	bindPFlags(cmd)
 }
@@ -178,7 +179,8 @@ func getGogenConfig(cmd *cobra.Command) (*gogen.Config, error) {
 		MessageModulePrefix: modulePrefix,
 		RootPaths:           getRootPaths(cmd),
 		RegexIncludes:       rules,
-		PkgIncludes:         viper.GetStringSlice(getPrefix(cmd) + "include-package-deps"),
+		ROSPkgIncludes:      viper.GetStringSlice(getPrefix(cmd) + "include-package-deps"),
+		GoPkgIncludes:       viper.GetStringSlice(getPrefix(cmd) + "include-go-package-deps"),
 	}, nil
 }
 

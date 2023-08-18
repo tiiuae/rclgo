@@ -21,6 +21,8 @@ import (
 	"unicode/utf8"
 
 	"github.com/kivilahtio/go-re/v0"
+	"golang.org/x/exp/slices"
+	"golang.org/x/tools/go/packages"
 )
 
 func ucFirst(s string) string {
@@ -204,6 +206,26 @@ func actionHasSuffix(msg *ROS2Message, suffixes ...string) bool {
 
 func matchMsg(msg *ROS2Message, pkg, name string) bool {
 	return msg.GoPackage() == pkg && msg.Name == name
+}
+
+func loadGoPkgDeps(pkgPaths ...string) (stringSet, error) {
+	queries := slices.Clone(pkgPaths)
+	for i := range queries {
+		queries[i] = "pattern=" + queries[i]
+	}
+	deps := stringSet{}
+	pkgs, err := packages.Load(&packages.Config{
+		Mode:  packages.NeedImports | packages.NeedDeps | packages.NeedName,
+		Tests: true,
+	}, queries...)
+	if err != nil {
+		return nil, err
+	}
+	packages.Visit(pkgs, func(pkg *packages.Package) bool {
+		deps.Add(pkg.PkgPath)
+		return true
+	}, nil)
+	return deps, nil
 }
 
 /* So many ways to skin a ROS2 defaults field

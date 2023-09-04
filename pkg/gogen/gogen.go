@@ -166,7 +166,7 @@ func GenerateGolangMessageTypes(config *Config, destPath string) error {
 		cImportsByPkg: make(map[string]stringSet),
 	}
 	gen.findPackages()
-	if config.RegexIncludes == nil && config.ROSPkgIncludes == nil && config.GoPkgIncludes == nil {
+	if len(config.RegexIncludes) == 0 && len(config.ROSPkgIncludes) == 0 && len(config.GoPkgIncludes) == 0 {
 		for pkg := range gen.allPkgs {
 			gen.generatePkg(pkg, false)
 		}

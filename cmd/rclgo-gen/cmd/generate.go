@@ -65,15 +65,15 @@ var generateCmd = &cobra.Command{
 	Use:   "generate",
 	Short: "Generate Go bindings for ROS2 interface definitions under <root-path>",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		destPath := getString(cmd, "dest-path")
 		config, err := getGogenConfig(cmd)
 		if err != nil {
 			return err
 		}
-		if err := gogen.GenerateGolangMessageTypes(config, destPath); err != nil {
+		gen := gogen.New(config)
+		if err := gen.GenerateGolangMessageTypes(); err != nil {
 			return fmt.Errorf("failed to generate interface bindings: %w", err)
 		}
-		if err := gogen.GenerateROS2AllMessagesImporter(config, destPath); err != nil {
+		if err := gen.GenerateROS2AllMessagesImporter(); err != nil {
 			return fmt.Errorf("failed to generate all importer: %w", err)
 		}
 		return nil
@@ -85,21 +85,21 @@ var generateRclgoCmd = &cobra.Command{
 	Use:   "generate-rclgo",
 	Short: "Generate Go code that forms a part of rclgo",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		destPath := getString(cmd, "dest-path")
 		config, err := getGogenConfig(cmd)
 		if err != nil {
 			return err
 		}
-		if err := gogen.GeneratePrimitives(config, destPath); err != nil {
+		gen := gogen.New(config)
+		if err := gen.GeneratePrimitives(); err != nil {
 			return fmt.Errorf("failed to generate primitive types: %w", err)
 		}
-		if err := gogen.GenerateRclgoFlags(config, destPath); err != nil {
+		if err := gen.GenerateRclgoFlags(); err != nil {
 			return fmt.Errorf("failed to generate rclgo flags: %w", err)
 		}
-		if err := gogen.GenerateTestGogenFlags(config, destPath); err != nil {
+		if err := gen.GenerateTestGogenFlags(); err != nil {
 			return fmt.Errorf("failed to generate rclgo flags: %w", err)
 		}
-		if err := gogen.GenerateROS2ErrorTypes(config.RootPaths, destPath); err != nil {
+		if err := gen.GenerateROS2ErrorTypes(); err != nil {
 			return fmt.Errorf("failed to generate error types: %w", err)
 		}
 		return nil
@@ -124,6 +124,7 @@ func configureFlags(cmd *cobra.Command, destPathDefault string) {
 	cmd.PersistentFlags().StringArray("include-package-deps", nil, "Include only packages which are dependencies of listed packages. Can be passed multiple times. If multiple include options are passed, the union of the matches is generated.")
 	cmd.PersistentFlags().StringArray("include-go-package-deps", nil, "Include only packages which are dependencies of listed Go packages. Can be passed multiple times. If multiple include options are passed, the union of the matches is generated.")
 	cmd.PersistentFlags().Bool("ignore-ros-distro-mismatch", false, "If true, ignores possible mismatches in sourced and supported ROS distro")
+	cmd.PersistentFlags().String("license-header-path", "", "Path to a file containing a license header to be added to generated files. By default no license is added.")
 	bindPFlags(cmd)
 }
 
@@ -161,10 +162,10 @@ func bindPFlags(cmd *cobra.Command) {
 }
 
 func getGogenConfig(cmd *cobra.Command) (*gogen.Config, error) {
+	destPath := getString(cmd, "dest-path")
 	modulePrefix := getString(cmd, "message-module-prefix")
 
 	if modulePrefix == gogen.DefaultConfig.MessageModulePrefix {
-		destPath := getString(cmd, "dest-path")
 		pkgs, err := packages.Load(&packages.Config{})
 		if err == nil && len(pkgs) > 0 {
 			modulePrefix = path.Join(pkgs[0].PkgPath, destPath)
@@ -174,13 +175,25 @@ func getGogenConfig(cmd *cobra.Command) (*gogen.Config, error) {
 	if err != nil {
 		return nil, err
 	}
+	licenseHeader := getString(cmd, "license-header-path")
+	if licenseHeader != "" {
+		headerBytes, err := os.ReadFile(licenseHeader)
+		if err != nil {
+			return nil, err
+		}
+		licenseHeader = string(headerBytes)
+	}
 	return &gogen.Config{
 		RclgoImportPath:     getString(cmd, "rclgo-import-path"),
 		MessageModulePrefix: modulePrefix,
 		RootPaths:           getRootPaths(cmd),
-		RegexIncludes:       rules,
-		ROSPkgIncludes:      viper.GetStringSlice(getPrefix(cmd) + "include-package-deps"),
-		GoPkgIncludes:       viper.GetStringSlice(getPrefix(cmd) + "include-go-package-deps"),
+		DestPath:            destPath,
+
+		RegexIncludes:  rules,
+		ROSPkgIncludes: viper.GetStringSlice(getPrefix(cmd) + "include-package-deps"),
+		GoPkgIncludes:  viper.GetStringSlice(getPrefix(cmd) + "include-go-package-deps"),
+
+		LicenseHeader: licenseHeader,
 	}, nil
 }
 

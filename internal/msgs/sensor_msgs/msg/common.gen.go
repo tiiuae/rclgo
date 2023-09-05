@@ -1,4 +1,5 @@
-/* This file is part of rclgo
+/*
+This file is part of rclgo
 
 Copyright © 2021 Technology Innovation Institute, United Arab Emirates
 

@@ -31,10 +31,14 @@ generate:
 	    --root-path /opt/ros/${ROS_DISTRO} \
 	    --dest-path "$$dest_path" \
 		--message-module-prefix "github.com/tiiuae/rclgo/$$dest_path" \
+		--license-header-path ./license-header.txt \
 		--include-go-package-deps ./... \
 		|| exit 1
 	rm "$$dest_path/msgs.gen.go" || exit 1
-	go run ./cmd/rclgo-gen generate-rclgo --root-path /usr --root-path /opt/ros/${ROS_DISTRO}
+	go run ./cmd/rclgo-gen generate-rclgo \
+		--root-path /usr \
+		--root-path /opt/ros/${ROS_DISTRO} \
+		--license-header-path ./license-header.txt
 
 lint:
 	golangci-lint run ./...

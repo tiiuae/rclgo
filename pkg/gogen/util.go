@@ -25,6 +25,13 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
+func goLicenseHeader(license string) string {
+	if license == "" {
+		return ""
+	}
+	return "/*\n" + license + "*/\n\n"
+}
+
 func ucFirst(s string) string {
 	r, size := utf8.DecodeRuneInString(s)
 	if r == utf8.RuneError {

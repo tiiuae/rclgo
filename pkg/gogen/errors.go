@@ -24,11 +24,11 @@ func prepareErrorTypesCFileMatchingRegexp() {
 	errorTypesCFileMatchingRegexp = "m!" + errorTypesCFileMatchingRegexp + "!"
 }
 
-func GenerateROS2ErrorTypes(rootPaths []string, destFilePath string) error {
-	destFilePath = filepath.Join(destFilePath, "pkg/rclgo/errortypes.gen.go")
+func (g *generator) GenerateROS2ErrorTypes() error {
+	destFilePath := filepath.Join(g.config.DestPath, "pkg/rclgo/errortypes.gen.go")
 	var errorTypes []*ROS2ErrorType
 
-	for _, includeLookupDir := range rootPaths {
+	for _, includeLookupDir := range g.config.RootPaths {
 		for tries := 0; tries < 10; tries++ {
 			fmt.Printf("Looking for rcl C include files to parse error definitions from '%s'\n", includeLookupDir)
 
@@ -58,18 +58,16 @@ func GenerateROS2ErrorTypes(rootPaths []string, destFilePath string) error {
 		return nil
 	}
 
-	destFile, err := mkdir_p(destFilePath)
-	if err != nil {
-		return err
-	}
-	defer destFile.Close()
-
 	fmt.Printf("Generating ROS2 Error definitions: %s\n", destFilePath)
-	return ros2ErrorCodes.Execute(destFile, map[string]interface{}{
-		"errorTypes":  errorTypes,
-		"includes":    cErrorTypeFiles,
-		"dedupFilter": ros2errorTypesDeduplicationFilter,
-	})
+	return g.generateGoFile(
+		destFilePath,
+		ros2ErrorCodes,
+		templateData{
+			"errorTypes":  errorTypes,
+			"includes":    cErrorTypeFiles,
+			"dedupFilter": ros2errorTypesDeduplicationFilter,
+		},
+	)
 }
 
 func generateGolangErrorTypesFromROS2ErrorDefinitionsPath(errorTypes []*ROS2ErrorType, path string) ([]*ROS2ErrorType, error) {

@@ -12,7 +12,7 @@ import (
 	"github.com/tiiuae/rclgo/pkg/rclgo"
 )
 
-//go:generate go run github.com/tiiuae/rclgo/cmd/rclgo-gen generate -d msgs
+//go:generate go run github.com/tiiuae/rclgo/cmd/rclgo-gen generate -d msgs --include-go-package-deps ./...
 
 func run() error {
 	rclArgs, restArgs, err := rclgo.ParseArgs(os.Args[1:])

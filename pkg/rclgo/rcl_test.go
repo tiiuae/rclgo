@@ -7,22 +7,39 @@ import (
 	"math/rand"
 	"os"
 	"strconv"
+	"sync"
 	"testing"
 
 	"github.com/tiiuae/rclgo/pkg/rclgo"
 )
 
-func getNextDomainID() int {
-	id, _ := strconv.ParseUint(os.Getenv("ROS_DOMAIN_ID"), 10, 8)
-	newID := rand.Intn(101)
-	for newID == int(id) {
-		newID = rand.Intn(101)
+var (
+	usedDomainIDs      = map[int]bool{}
+	usedDomainIDsMutex = sync.Mutex{}
+)
+
+func getUnusedDomainID() int {
+	usedDomainIDsMutex.Lock()
+	defer usedDomainIDsMutex.Unlock()
+	if len(usedDomainIDs) == 102 {
+		panic("ran out of unused domain IDs")
 	}
+	oldID, _ := strconv.Atoi(os.Getenv("ROS_DOMAIN_ID"))
+	usedDomainIDs[oldID] = true
+	newID := rand.Intn(102)
+	for usedDomainIDs[newID] {
+		newID = rand.Intn(102)
+	}
+	usedDomainIDs[newID] = true
 	return newID
 }
 
+func setNewDomainID() {
+	os.Setenv("ROS_DOMAIN_ID", fmt.Sprint(getUnusedDomainID()))
+}
+
 func TestMain(m *testing.M) {
-	os.Setenv("ROS_DOMAIN_ID", fmt.Sprint(getNextDomainID()))
+	setNewDomainID()
 	os.Exit(m.Run())
 }
 

@@ -23,10 +23,16 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"math"
 	"runtime"
 	"sync"
 	"unsafe"
 )
+
+// Setting this as the domain ID causes ROS to use the value of ROS_DOMAIN_ID
+// environment variable as the actual domain ID or zero if ROS_DOMAIN_ID not
+// defined.
+const DefaultDomainID = math.MaxUint
 
 type rosID uint64
 
@@ -137,14 +143,16 @@ type ContextOptions struct {
 	// The type of the default clock created for the Context.
 	ClockType ClockType
 
-	// The DDS domain ID of the Context. Should be in range [0, 101].
-	DomainID int
+	// The DDS domain ID of the Context. Should be in range [0, 101] or
+	// DefaultDomainID.
+	DomainID uint
 }
 
 // NewDefaultContextOptions returns the default options for a Context.
 func NewDefaultContextOptions() *ContextOptions {
 	return &ContextOptions{
 		ClockType: ClockTypeROSTime,
+		DomainID:  DefaultDomainID,
 	}
 }
 

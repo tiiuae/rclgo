@@ -9,6 +9,7 @@ import (
 )
 
 func TestNodeGetTopicNamesAndTypes(t *testing.T) {
+	setNewDomainID()
 	var (
 		rclctx1, rclctx2 *rclgo.Context
 		node1, node2     *rclgo.Node
@@ -25,13 +26,11 @@ func TestNodeGetTopicNamesAndTypes(t *testing.T) {
 	}()
 	Convey("Scenario: Node.GetTopicNamesAndTypes works correctly", t, func() {
 		Convey("Create a rcl context and node", func() {
-			opts := rclgo.NewDefaultContextOptions()
-			opts.DomainID = getNextDomainID()
-			rclctx1, err = newDefaultRCLContextWithOpts(opts)
+			rclctx1, err = newDefaultRCLContext()
 			So(err, ShouldBeNil)
 			node1, err = rclctx1.NewNode("node1", "topic_names_and_types_test")
 			So(err, ShouldBeNil)
-			rclctx2, err = newDefaultRCLContextWithOpts(opts)
+			rclctx2, err = newDefaultRCLContext()
 			So(err, ShouldBeNil)
 			node2, err = rclctx2.NewNode("node2", "topic_names_and_types_test")
 			So(err, ShouldBeNil)

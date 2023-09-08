@@ -75,20 +75,20 @@ func RclgoRepoRootPath() string {
 	return filepath.Join(file, "../../..")
 }
 
-type generator struct {
+type Generator struct {
 	config        *Config
 	cImportsByPkg map[string]stringSet
 	allPkgs       map[string]*rosPkgRef
 }
 
-func New(config *Config) *generator {
-	return &generator{
+func New(config *Config) *Generator {
+	return &Generator{
 		config:        config,
 		cImportsByPkg: make(map[string]stringSet),
 	}
 }
 
-func (g *generator) GeneratePrimitives() error {
+func (g *Generator) GeneratePrimitives() error {
 	return g.generateRclgoFile(
 		"primitive types",
 		filepath.Join(g.config.DestPath, "pkg/rclgo/primitives/primitives.gen.go"),
@@ -97,7 +97,7 @@ func (g *generator) GeneratePrimitives() error {
 	)
 }
 
-func (g *generator) GenerateRclgoFlags() error {
+func (g *Generator) GenerateRclgoFlags() error {
 	return g.generateRclgoFile(
 		"rclgo flags",
 		filepath.Join(g.config.DestPath, "pkg/rclgo/flags.gen.go"),
@@ -106,7 +106,7 @@ func (g *generator) GenerateRclgoFlags() error {
 	)
 }
 
-func (g *generator) GenerateTestGogenFlags() error {
+func (g *Generator) GenerateTestGogenFlags() error {
 	return g.generateRclgoFile(
 		"gogen flags",
 		filepath.Join(g.config.DestPath, "test/gogen/flags.gen.go"),
@@ -115,12 +115,12 @@ func (g *generator) GenerateTestGogenFlags() error {
 	)
 }
 
-func (g *generator) generateRclgoFile(fileType, destFilePath string, tmpl *template.Template, data templateData) error {
+func (g *Generator) generateRclgoFile(fileType, destFilePath string, tmpl *template.Template, data templateData) error {
 	fmt.Printf("Generating %s: %s\n", fileType, destFilePath)
 	return g.generateGoFile(destFilePath, tmpl, data)
 }
 
-func (g *generator) GenerateROS2AllMessagesImporter() error {
+func (g *Generator) GenerateROS2AllMessagesImporter() error {
 	pkgs := map[string]struct{}{}
 	for _, glob := range []string{"*/msg", "*/srv", "*/action"} {
 		dirs, err := filepath.Glob(filepath.Join(g.config.DestPath, glob))
@@ -151,7 +151,7 @@ func (r *rosPkgRef) GetIncludesActions() bool {
 	return r != nil && r.IncludesActions
 }
 
-func (g *generator) GenerateGolangMessageTypes() error {
+func (g *Generator) GenerateGolangMessageTypes() error {
 	g.findPackages()
 	if len(g.config.RegexIncludes) == 0 && len(g.config.ROSPkgIncludes) == 0 && len(g.config.GoPkgIncludes) == 0 {
 		for pkg := range g.allPkgs {
@@ -193,7 +193,7 @@ func (g *generator) GenerateGolangMessageTypes() error {
 	return nil
 }
 
-func (g *generator) generatePkg(pkg string, genDeps bool) {
+func (g *Generator) generatePkg(pkg string, genDeps bool) {
 	ref := g.allPkgs[pkg]
 	if ref == nil {
 		fmt.Printf("Failed to generate package %s: package not found\n", pkg)
@@ -210,7 +210,7 @@ func (g *generator) generatePkg(pkg string, genDeps bool) {
 	}
 }
 
-func (g *generator) getCImportsForPkg(pkg string) stringSet {
+func (g *Generator) getCImportsForPkg(pkg string) stringSet {
 	set := g.cImportsByPkg[pkg]
 	if set == nil {
 		set = stringSet{}
@@ -219,7 +219,7 @@ func (g *generator) getCImportsForPkg(pkg string) stringSet {
 	return set
 }
 
-func (g *generator) generateInterface(meta Metadata, ifacePath string) stringSet {
+func (g *Generator) generateInterface(meta Metadata, ifacePath string) stringSet {
 	fmt.Printf("Generating: %s\n", ifacePath)
 	switch meta.Type {
 	case "msg":
@@ -263,7 +263,7 @@ func (g *generator) generateInterface(meta Metadata, ifacePath string) stringSet
 	}
 }
 
-func (g *generator) findPackages() {
+func (g *Generator) findPackages() {
 	g.allPkgs = map[string]*rosPkgRef{}
 	for i := len(g.config.RootPaths) - 1; i >= 0; i-- {
 		filepath.Walk(g.config.RootPaths[i], func(path string, info fs.FileInfo, err error) error { //nolint:errcheck
@@ -291,7 +291,7 @@ func (g *generator) findPackages() {
 	}
 }
 
-func (g *generator) generateMessage(md *Metadata, sourcePath string) (*ROS2Message, error) {
+func (g *Generator) generateMessage(md *Metadata, sourcePath string) (*ROS2Message, error) {
 	msg := ROS2MessageNew("", "")
 	var err error
 
@@ -336,7 +336,7 @@ func ifaceFilePath(destPathPkgRoot string, m *Metadata) string {
 	return filepath.Join(destPathPkgRoot, m.ImportPath(), m.Name+".gen.go")
 }
 
-func (g *generator) generateService(m *Metadata, srcPath string) (*ROS2Service, error) {
+func (g *Generator) generateService(m *Metadata, srcPath string) (*ROS2Service, error) {
 	service := NewROS2Service(m.Package, m.Name)
 	srcFile, err := os.ReadFile(filepath.Clean(srcPath))
 	if err != nil {
@@ -353,7 +353,7 @@ func (g *generator) generateService(m *Metadata, srcPath string) (*ROS2Service, 
 	return service, nil
 }
 
-func (g *generator) generateAction(srcPath string) (*ROS2Action, error) {
+func (g *Generator) generateAction(srcPath string) (*ROS2Action, error) {
 	m, err := parseMetadataFromPath(srcPath)
 	if err != nil {
 		return nil, err
@@ -404,7 +404,7 @@ func (g *generator) generateAction(srcPath string) (*ROS2Action, error) {
 
 type templateData = map[string]interface{}
 
-func (g *generator) generateGoFile(destPath string, tmpl *template.Template, data templateData) error {
+func (g *Generator) generateGoFile(destPath string, tmpl *template.Template, data templateData) error {
 	f, err := mkdir_p(destPath)
 	if err != nil {
 		return err
@@ -418,11 +418,11 @@ func (g *generator) generateGoFile(destPath string, tmpl *template.Template, dat
 	return tmpl.Execute(f, data)
 }
 
-func (g *generator) generateIfaceGoFile(meta *Metadata, tmpl *template.Template, data templateData) error {
+func (g *Generator) generateIfaceGoFile(meta *Metadata, tmpl *template.Template, data templateData) error {
 	return g.generateGoFile(ifaceFilePath(g.config.DestPath, meta), tmpl, data)
 }
 
-func (g *generator) generateMessageGoFile(parser *parser, msg *ROS2Message) error {
+func (g *Generator) generateMessageGoFile(parser *parser, msg *ROS2Message) error {
 	return g.generateIfaceGoFile(
 		msg.Metadata,
 		ros2MsgToGolangTypeTemplate,
@@ -434,7 +434,7 @@ func (g *generator) generateMessageGoFile(parser *parser, msg *ROS2Message) erro
 	)
 }
 
-func (g *generator) generateServiceGoFiles(parser *parser, srv *ROS2Service) error {
+func (g *Generator) generateServiceGoFiles(parser *parser, srv *ROS2Service) error {
 	err := g.generateIfaceGoFile(
 		srv.Metadata,
 		ros2ServiceToGolangTypeTemplate,
@@ -450,7 +450,7 @@ func (g *generator) generateServiceGoFiles(parser *parser, srv *ROS2Service) err
 	return g.generateMessageGoFile(parser, srv.Response)
 }
 
-func (g *generator) generateCommonPackageGoFile(goPkg string, cImports stringSet) error {
+func (g *Generator) generateCommonPackageGoFile(goPkg string, cImports stringSet) error {
 	i := strings.LastIndex(goPkg, "_")
 	if i < 0 || i > len(goPkg)-1 {
 		return errors.New("package type suffix is missing or incorrect")

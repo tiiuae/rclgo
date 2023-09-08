@@ -24,7 +24,7 @@ func prepareErrorTypesCFileMatchingRegexp() {
 	errorTypesCFileMatchingRegexp = "m!" + errorTypesCFileMatchingRegexp + "!"
 }
 
-func (g *generator) GenerateROS2ErrorTypes() error {
+func (g *Generator) GenerateROS2ErrorTypes() error {
 	destFilePath := filepath.Join(g.config.DestPath, "pkg/rclgo/errortypes.gen.go")
 	var errorTypes []*ROS2ErrorType
 

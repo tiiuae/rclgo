@@ -11,6 +11,8 @@ jobs:
   run-tests:
     runs-on: ubuntu-latest
     container: ghcr.io/tiiuae/fog-ros-baseimage-builder:sha-7fca749
+    env:
+      GOFLAGS: -buildvcs=false
     steps:
       - uses: actions/checkout@v3
 

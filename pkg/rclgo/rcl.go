@@ -483,6 +483,16 @@ func (p *Publisher) PublishSerialized(msg []byte) error {
 	return nil
 }
 
+// GetSubscriptionCount returns the number of subscriptions matched to p.
+func (p *Publisher) GetSubscriptionCount() (int, error) {
+	var count C.size_t
+	rc := C.rcl_publisher_get_subscription_count(p.rcl_publisher_t, &count)
+	if rc != C.RCL_RET_OK {
+		return 0, errorsCastC(rc, "failed to get subscription count")
+	}
+	return int(count), nil
+}
+
 /*
 Close frees the allocated memory
 */
@@ -752,6 +762,16 @@ func (s *Subscription) TakeSerializedMessage() ([]byte, *MessageInfo, error) {
 		ReceivedTimestamp: time.Unix(0, int64(info.received_timestamp)),
 		FromIntraProcess:  bool(info.from_intra_process),
 	}, nil
+}
+
+// GetPublisherCount returns the number of publishers matched to s.
+func (s *Subscription) GetPublisherCount() (int, error) {
+	var count C.size_t
+	rc := C.rcl_subscription_get_publisher_count(s.rcl_subscription_t, &count)
+	if rc != C.RCL_RET_OK {
+		return 0, errorsCastC(rc, "failed to get publisher count")
+	}
+	return int(count), nil
 }
 
 /*

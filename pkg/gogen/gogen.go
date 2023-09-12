@@ -76,15 +76,16 @@ func RclgoRepoRootPath() string {
 }
 
 type Generator struct {
-	config        *Config
-	cImportsByPkg map[string]stringSet
-	allPkgs       map[string]*rosPkgRef
+	config               *Config
+	cImportsByPkgAndType map[string]stringSet
+	allPkgs              map[string]*rosPkgRef
+	actionMsgsNeeded     bool
 }
 
 func New(config *Config) *Generator {
 	return &Generator{
-		config:        config,
-		cImportsByPkg: make(map[string]stringSet),
+		config:               config,
+		cImportsByPkgAndType: make(map[string]stringSet),
 	}
 }
 
@@ -142,13 +143,8 @@ func (g *Generator) GenerateROS2AllMessagesImporter() error {
 }
 
 type rosPkgRef struct {
-	Interfaces      map[Metadata]string
-	Generated       bool
-	IncludesActions bool
-}
-
-func (r *rosPkgRef) GetIncludesActions() bool {
-	return r != nil && r.IncludesActions
+	Interfaces map[Metadata]string
+	Generated  bool
 }
 
 func (g *Generator) GenerateGolangMessageTypes() error {
@@ -158,10 +154,8 @@ func (g *Generator) GenerateGolangMessageTypes() error {
 			g.generatePkg(pkg, false)
 		}
 	} else {
-		actionMsgsNeeded := false
 		for _, pkg := range g.config.ROSPkgIncludes {
 			g.generatePkg(pkg, true)
-			actionMsgsNeeded = actionMsgsNeeded || g.allPkgs[pkg].GetIncludesActions()
 		}
 		goDeps, err := loadGoPkgDeps(g.config.GoPkgIncludes...)
 		if err != nil {
@@ -172,10 +166,9 @@ func (g *Generator) GenerateGolangMessageTypes() error {
 			pkgWithType := strings.TrimPrefix(goDep, prefix)
 			if pkgWithType != goDep {
 				g.generatePkg(path.Dir(pkgWithType), true)
-				actionMsgsNeeded = actionMsgsNeeded || path.Base(pkgWithType) == "action"
 			}
 		}
-		if actionMsgsNeeded {
+		if g.actionMsgsNeeded {
 			g.generatePkg("action_msgs", true)
 		}
 		for pkg := range g.allPkgs {
@@ -184,10 +177,10 @@ func (g *Generator) GenerateGolangMessageTypes() error {
 			}
 		}
 	}
-	for pkg, imports := range g.cImportsByPkg {
-		err := g.generateCommonPackageGoFile(pkg, imports)
+	for pkgAndType, imports := range g.cImportsByPkgAndType {
+		err := g.generateCommonPackageGoFile(pkgAndType, imports)
 		if err != nil {
-			fmt.Printf("Failed to generate common package file for package %s: %v\n", pkg, err)
+			fmt.Printf("Failed to generate common package file for package %s: %v\n", pkgAndType, err)
 		}
 	}
 	return nil
@@ -200,54 +193,56 @@ func (g *Generator) generatePkg(pkg string, genDeps bool) {
 	} else if !ref.Generated {
 		ref.Generated = true
 		for meta, path := range ref.Interfaces {
-			cImports := g.generateInterface(meta, path)
-			if genDeps {
-				for imp := range cImports {
-					g.generatePkg(imp, genDeps)
-				}
+			g.generateInterface(meta, path)
+		}
+		if genDeps {
+			for imp := range g.cImportsByPkgAndType[pkg+"_msg"] {
+				g.generatePkg(imp, genDeps)
+			}
+			for imp := range g.cImportsByPkgAndType[pkg+"_srv"] {
+				g.generatePkg(imp, genDeps)
+			}
+			for imp := range g.cImportsByPkgAndType[pkg+"_action"] {
+				g.generatePkg(imp, genDeps)
 			}
 		}
 	}
 }
 
-func (g *Generator) getCImportsForPkg(pkg string) stringSet {
-	set := g.cImportsByPkg[pkg]
+func (g *Generator) getCImportsForPkgAndType(pkgAndType string) stringSet {
+	set := g.cImportsByPkgAndType[pkgAndType]
 	if set == nil {
 		set = stringSet{}
-		g.cImportsByPkg[pkg] = set
+		g.cImportsByPkgAndType[pkgAndType] = set
 	}
 	return set
 }
 
-func (g *Generator) generateInterface(meta Metadata, ifacePath string) stringSet {
+func (g *Generator) generateInterface(meta Metadata, ifacePath string) {
 	fmt.Printf("Generating: %s\n", ifacePath)
 	switch meta.Type {
 	case "msg":
 		result, err := g.generateMessage(&meta, ifacePath)
 		if err != nil {
 			fmt.Printf("Error converting ROS2 Message '%s' to '%s', error: %v\n", ifacePath, g.config.DestPath, err)
-			return nil
 		}
-		set := g.getCImportsForPkg(result.GoPackage())
+		set := g.getCImportsForPkgAndType(result.GoPackage())
 		set.AddFrom(result.CImports)
-		return set
 	case "srv":
 		result, err := g.generateService(&meta, ifacePath)
 		if err != nil {
 			fmt.Printf("Error converting ROS2 Service '%s' to '%s', error: %v\n", ifacePath, g.config.DestPath, err)
-			return nil
 		}
-		set := g.getCImportsForPkg(result.GoPackage())
+		set := g.getCImportsForPkgAndType(result.GoPackage())
 		set.AddFrom(result.Request.CImports)
 		set.AddFrom(result.Response.CImports)
-		return set
 	case "action":
 		result, err := g.generateAction(ifacePath)
 		if err != nil {
 			fmt.Printf("Error converting ROS2 Action '%s' to '%s', error: %v\n", ifacePath, g.config.DestPath, err)
-			return nil
 		}
-		set := g.getCImportsForPkg(result.GoPackage())
+		g.actionMsgsNeeded = true
+		set := g.getCImportsForPkgAndType(result.GoPackage())
 		set.AddFrom(result.Goal.CImports)
 		set.AddFrom(result.SendGoal.Request.CImports)
 		set.AddFrom(result.SendGoal.Response.CImports)
@@ -256,10 +251,8 @@ func (g *Generator) generateInterface(meta Metadata, ifacePath string) stringSet
 		set.AddFrom(result.GetResult.Response.CImports)
 		set.AddFrom(result.Feedback.CImports)
 		set.AddFrom(result.FeedbackMessage.CImports)
-		return set
 	default:
 		fmt.Printf("Interface file %s has an invalid type: %s\n", ifacePath, meta.Type)
-		return nil
 	}
 }
 
@@ -283,7 +276,6 @@ func (g *Generator) findPackages() {
 						g.allPkgs[meta.Package] = ref
 					}
 					ref.Interfaces[*meta] = path
-					ref.IncludesActions = ref.IncludesActions || meta.Type == "action"
 				}
 			}
 			return nil
@@ -450,18 +442,18 @@ func (g *Generator) generateServiceGoFiles(parser *parser, srv *ROS2Service) err
 	return g.generateMessageGoFile(parser, srv.Response)
 }
 
-func (g *Generator) generateCommonPackageGoFile(goPkg string, cImports stringSet) error {
-	i := strings.LastIndex(goPkg, "_")
-	if i < 0 || i > len(goPkg)-1 {
+func (g *Generator) generateCommonPackageGoFile(pkgAndType string, cImports stringSet) error {
+	i := strings.LastIndex(pkgAndType, "_")
+	if i < 0 || i > len(pkgAndType)-1 {
 		return errors.New("package type suffix is missing or incorrect")
 	}
-	cPkg := goPkg[:i]
-	pkgType := goPkg[i+1:]
+	cPkg := pkgAndType[:i]
+	pkgType := pkgAndType[i+1:]
 	return g.generateGoFile(
 		filepath.Join(g.config.DestPath, cPkg, pkgType, "common.gen.go"),
 		ros2PackageCommonTemplate,
 		templateData{
-			"GoPackage": goPkg,
+			"GoPackage": pkgAndType,
 			"CPackage":  cPkg,
 			"CImports":  cImports,
 		},

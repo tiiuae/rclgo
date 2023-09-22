@@ -136,7 +136,7 @@ func splitMsgDefaultArrayValues(ros2type string, defaultsField string) []string 
 	csv.TrimLeadingSpace = true
 	defaultValues, err := csv.Read()
 	if err != nil && !errors.Is(err, io.EOF) {
-		fmt.Printf("%+v", err)
+		PrintErrf("%+v", err)
 	}
 	switch ros2type {
 	// ROS2 string defaults CAN be quoted differently than how Golang MUST be quoted.
@@ -236,3 +236,9 @@ func loadGoPkgDeps(pkgPaths ...string) (stringSet, error) {
 	}
 	return deps, nil
 }
+
+func PrintErr(a ...any) { fmt.Fprint(os.Stderr, a...) }
+
+func PrintErrln(a ...any) { fmt.Fprintln(os.Stderr, a...) }
+
+func PrintErrf(format string, a ...any) { fmt.Fprintf(os.Stderr, format, a...) }

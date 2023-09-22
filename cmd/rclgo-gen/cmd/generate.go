@@ -38,7 +38,7 @@ func validateGenerateArgs(cmd *cobra.Command, _ []string) error {
 	distro := os.Getenv("ROS_DISTRO")
 	if getBool(cmd, "ignore-ros-distro-mismatch") {
 		if distro != correctDistro {
-			fmt.Printf("NOTE: Environment variable ROS_DISTRO is set to %q, generating files for %q\n", distro, correctDistro)
+			gogen.PrintErrf("NOTE: Environment variable ROS_DISTRO is set to %q, generating files for %q\n", distro, correctDistro)
 		}
 	} else if distro != correctDistro {
 		return fmt.Errorf("ROS_DISTRO should be set to %q", correctDistro)

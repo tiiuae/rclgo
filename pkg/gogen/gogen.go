@@ -117,7 +117,7 @@ func (g *Generator) GenerateTestGogenFlags() error {
 }
 
 func (g *Generator) generateRclgoFile(fileType, destFilePath string, tmpl *template.Template, data templateData) error {
-	fmt.Printf("Generating %s: %s\n", fileType, destFilePath)
+	PrintErrf("Generating %s: %s\n", fileType, destFilePath)
 	return g.generateGoFile(destFilePath, tmpl, data)
 }
 
@@ -180,7 +180,7 @@ func (g *Generator) GenerateGolangMessageTypes() error {
 	for pkgAndType, imports := range g.cImportsByPkgAndType {
 		err := g.generateCommonPackageGoFile(pkgAndType, imports)
 		if err != nil {
-			fmt.Printf("Failed to generate common package file for package %s: %v\n", pkgAndType, err)
+			PrintErrf("Failed to generate common package file for package %s: %v\n", pkgAndType, err)
 		}
 	}
 	return nil
@@ -189,7 +189,7 @@ func (g *Generator) GenerateGolangMessageTypes() error {
 func (g *Generator) generatePkg(pkg string, genDeps bool) {
 	ref := g.allPkgs[pkg]
 	if ref == nil {
-		fmt.Printf("Failed to generate package %s: package not found\n", pkg)
+		PrintErrf("Failed to generate package %s: package not found\n", pkg)
 	} else if !ref.Generated {
 		ref.Generated = true
 		for meta, path := range ref.Interfaces {
@@ -219,19 +219,19 @@ func (g *Generator) getCImportsForPkgAndType(pkgAndType string) stringSet {
 }
 
 func (g *Generator) generateInterface(meta Metadata, ifacePath string) {
-	fmt.Printf("Generating: %s\n", ifacePath)
+	PrintErrf("Generating: %s\n", ifacePath)
 	switch meta.Type {
 	case "msg":
 		result, err := g.generateMessage(&meta, ifacePath)
 		if err != nil {
-			fmt.Printf("Error converting ROS2 Message '%s' to '%s', error: %v\n", ifacePath, g.config.DestPath, err)
+			PrintErrf("Error converting ROS2 Message '%s' to '%s', error: %v\n", ifacePath, g.config.DestPath, err)
 		}
 		set := g.getCImportsForPkgAndType(result.GoPackage())
 		set.AddFrom(result.CImports)
 	case "srv":
 		result, err := g.generateService(&meta, ifacePath)
 		if err != nil {
-			fmt.Printf("Error converting ROS2 Service '%s' to '%s', error: %v\n", ifacePath, g.config.DestPath, err)
+			PrintErrf("Error converting ROS2 Service '%s' to '%s', error: %v\n", ifacePath, g.config.DestPath, err)
 		}
 		set := g.getCImportsForPkgAndType(result.GoPackage())
 		set.AddFrom(result.Request.CImports)
@@ -239,7 +239,7 @@ func (g *Generator) generateInterface(meta Metadata, ifacePath string) {
 	case "action":
 		result, err := g.generateAction(ifacePath)
 		if err != nil {
-			fmt.Printf("Error converting ROS2 Action '%s' to '%s', error: %v\n", ifacePath, g.config.DestPath, err)
+			PrintErrf("Error converting ROS2 Action '%s' to '%s', error: %v\n", ifacePath, g.config.DestPath, err)
 		}
 		g.actionMsgsNeeded = true
 		set := g.getCImportsForPkgAndType(result.GoPackage())
@@ -252,7 +252,7 @@ func (g *Generator) generateInterface(meta Metadata, ifacePath string) {
 		set.AddFrom(result.Feedback.CImports)
 		set.AddFrom(result.FeedbackMessage.CImports)
 	default:
-		fmt.Printf("Interface file %s has an invalid type: %s\n", ifacePath, meta.Type)
+		PrintErrf("Interface file %s has an invalid type: %s\n", ifacePath, meta.Type)
 	}
 }
 
@@ -262,13 +262,13 @@ func (g *Generator) findPackages() {
 		filepath.Walk(g.config.RootPaths[i], func(path string, info fs.FileInfo, err error) error { //nolint:errcheck
 			skip, blacklistEntry := blacklisted(path)
 			if skip {
-				fmt.Printf("Blacklisted: %s, matched regex '%s'\n", path, blacklistEntry)
+				PrintErrf("Blacklisted: %s, matched regex '%s'\n", path, blacklistEntry)
 				return nil
 			}
 			if re.M(filepath.ToSlash(path), `m!/(msg/.+\.msg)|(srv/.+\.srv)|(action/.+\.action)$!`) {
 				meta, err := parseMetadataFromPath(path)
 				if err != nil {
-					fmt.Printf("Failed to parse metadata from path %s: %v\n", path, err)
+					PrintErrf("Failed to parse metadata from path %s: %v\n", path, err)
 				} else {
 					ref := g.allPkgs[meta.Package]
 					if ref == nil {

@@ -1,7 +1,6 @@
 package gogen
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -30,14 +29,14 @@ func (g *Generator) GenerateROS2ErrorTypes() error {
 
 	for _, includeLookupDir := range g.config.RootPaths {
 		for tries := 0; tries < 10; tries++ {
-			fmt.Printf("Looking for rcl C include files to parse error definitions from '%s'\n", includeLookupDir)
+			PrintErrf("Looking for rcl C include files to parse error definitions from '%s'\n", includeLookupDir)
 
 			filepath.Walk(includeLookupDir, func(path string, info os.FileInfo, err error) error { //nolint:errcheck
 				if err == nil && re.M(path, errorTypesCFileMatchingRegexp) {
-					fmt.Printf("Analyzing: %s\n", path)
+					PrintErrf("Analyzing: %s\n", path)
 					errorTypes, err = generateGolangErrorTypesFromROS2ErrorDefinitionsPath(errorTypes, path)
 					if err != nil {
-						fmt.Printf("Error converting ROS2 Errors from '%s' to '%s', error: %v\n", path, destFilePath, err)
+						PrintErrf("Error converting ROS2 Errors from '%s' to '%s', error: %v\n", path, destFilePath, err)
 					}
 				}
 				return nil
@@ -54,11 +53,11 @@ func (g *Generator) GenerateROS2ErrorTypes() error {
 		}
 	}
 	if len(errorTypes) == 0 {
-		fmt.Printf("Unable to find any rcl C error header files?\n")
+		PrintErrf("Unable to find any rcl C error header files?\n")
 		return nil
 	}
 
-	fmt.Printf("Generating ROS2 Error definitions: %s\n", destFilePath)
+	PrintErrf("Generating ROS2 Error definitions: %s\n", destFilePath)
 	return g.generateGoFile(
 		destFilePath,
 		ros2ErrorCodes,

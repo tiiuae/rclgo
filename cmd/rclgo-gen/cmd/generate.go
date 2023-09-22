@@ -76,6 +76,9 @@ var generateCmd = &cobra.Command{
 		if err := gen.GenerateROS2AllMessagesImporter(); err != nil {
 			return fmt.Errorf("failed to generate all importer: %w", err)
 		}
+		if err := gen.GenerateCGOFlags(); err != nil {
+			return fmt.Errorf("failed to generate CGO flags: %w", err)
+		}
 		return nil
 	},
 	Args: validateGenerateArgs,
@@ -125,6 +128,7 @@ func configureFlags(cmd *cobra.Command, destPathDefault string) {
 	cmd.PersistentFlags().StringArray("include-go-package-deps", nil, "Include only packages which are dependencies of listed Go packages. Can be passed multiple times. If multiple include options are passed, the union of the matches is generated.")
 	cmd.PersistentFlags().Bool("ignore-ros-distro-mismatch", false, "If true, ignores possible mismatches in sourced and supported ROS distro")
 	cmd.PersistentFlags().String("license-header-path", "", "Path to a file containing a license header to be added to generated files. By default no license is added.")
+	cmd.PersistentFlags().String("cgo-flags-path", "cgo-flags.env", `Path to file where CGO flags are written. If empty, no flags are written. If "-", flags are written to stdout.`)
 	bindPFlags(cmd)
 }
 
@@ -188,6 +192,7 @@ func getGogenConfig(cmd *cobra.Command) (*gogen.Config, error) {
 		MessageModulePrefix: modulePrefix,
 		RootPaths:           getRootPaths(cmd),
 		DestPath:            destPath,
+		CGOFlagsPath:        getString(cmd, "cgo-flags-path"),
 
 		RegexIncludes:  rules,
 		ROSPkgIncludes: viper.GetStringSlice(getPrefix(cmd) + "include-package-deps"),

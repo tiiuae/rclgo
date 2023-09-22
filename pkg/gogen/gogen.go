@@ -12,6 +12,7 @@ package gogen
 import (
 	"errors"
 	"fmt"
+	"io"
 	"io/fs"
 	"os"
 	"path"
@@ -21,6 +22,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/alessio/shellescape"
 	"github.com/kivilahtio/go-re/v0"
 )
 
@@ -52,6 +54,7 @@ type Config struct {
 	MessageModulePrefix string
 	RootPaths           []string
 	DestPath            string
+	CGOFlagsPath        string
 
 	RegexIncludes  RuleSet
 	ROSPkgIncludes []string
@@ -103,7 +106,7 @@ func (g *Generator) GenerateRclgoFlags() error {
 		"rclgo flags",
 		filepath.Join(g.config.DestPath, "pkg/rclgo/flags.gen.go"),
 		rclgoFlags,
-		nil,
+		templateData{"ROSIncludes": rclgoROSIncludes},
 	)
 }
 
@@ -140,6 +143,75 @@ func (g *Generator) GenerateROS2AllMessagesImporter() error {
 		ros2MsgImportAllPackage,
 		templateData{"Packages": pkgs},
 	)
+}
+
+var rclgoROSIncludes = []string{
+	"rcl",
+	"rmw",
+	"rosidl_runtime_c",
+	"rosidl_typesupport_interface",
+	"rcutils",
+	"rcl_action",
+	"action_msgs",
+	"unique_identifier_msgs",
+	"builtin_interfaces",
+	"rcl_yaml_param_parser",
+}
+
+func includeDirFlag(rootPath, rosPkg string) string {
+	return fmt.Sprintf("-I%s", filepath.Join(rootPath, "include", rosPkg))
+}
+
+func libDirFlag(rootPath string) string {
+	return fmt.Sprintf("-L%[1]s -Wl,-rpath=%[1]s", filepath.Join(rootPath, "lib"))
+}
+
+func prependFlagEnv(envVar string, flags []string) string {
+	return strings.Join(flags, " ") + " " + os.Getenv(envVar)
+}
+
+func writeFlagEnv(w io.Writer, envVar string, flags stringSet) error {
+	_, err := fmt.Fprintf(w, "export CGO_%s=%s\n", envVar, shellescape.Quote(prependFlagEnv(envVar, flags.ToSortedSlice())))
+	return err
+}
+
+func (g *Generator) GenerateCGOFlags() error {
+	if g.config.CGOFlagsPath == "" {
+		return nil
+	}
+	PrintErrln("Generating CGO flags:", g.config.CGOFlagsPath)
+	libDirs := stringSet{}
+	includes := stringSet{}
+	for _, rootPath := range g.config.RootPaths {
+		libDirs.Add(libDirFlag(rootPath))
+		for _, dep := range rclgoROSIncludes {
+			includes.Add(includeDirFlag(rootPath, dep))
+		}
+		for pkgAndType, imports := range g.cImportsByPkgAndType {
+			pkg, _, err := parsePkgAndType(pkgAndType)
+			if err != nil {
+				PrintErrf("Failed to parse package and type from %s: %v\n", pkgAndType, err)
+				continue
+			}
+			includes.Add(includeDirFlag(rootPath, pkg))
+			for imp := range imports {
+				includes.Add(includeDirFlag(rootPath, imp))
+			}
+		}
+	}
+	var err error
+	out := os.Stdout
+	if g.config.CGOFlagsPath != "-" {
+		out, err = mkdir_p(g.config.CGOFlagsPath)
+		if err != nil {
+			return err
+		}
+		defer out.Close()
+	}
+	if err := writeFlagEnv(out, "CFLAGS", includes); err != nil {
+		return err
+	}
+	return writeFlagEnv(out, "LDFLAGS", libDirs)
 }
 
 type rosPkgRef struct {
@@ -443,12 +515,10 @@ func (g *Generator) generateServiceGoFiles(parser *parser, srv *ROS2Service) err
 }
 
 func (g *Generator) generateCommonPackageGoFile(pkgAndType string, cImports stringSet) error {
-	i := strings.LastIndex(pkgAndType, "_")
-	if i < 0 || i > len(pkgAndType)-1 {
-		return errors.New("package type suffix is missing or incorrect")
+	cPkg, pkgType, err := parsePkgAndType(pkgAndType)
+	if err != nil {
+		return err
 	}
-	cPkg := pkgAndType[:i]
-	pkgType := pkgAndType[i+1:]
 	return g.generateGoFile(
 		filepath.Join(g.config.DestPath, cPkg, pkgType, "common.gen.go"),
 		ros2PackageCommonTemplate,
@@ -458,4 +528,12 @@ func (g *Generator) generateCommonPackageGoFile(pkgAndType string, cImports stri
 			"CImports":  cImports,
 		},
 	)
+}
+
+func parsePkgAndType(pkgAndType string) (pkg string, typ string, err error) {
+	i := strings.LastIndex(pkgAndType, "_")
+	if i < 0 || i > len(pkgAndType)-1 {
+		return "", "", errors.New("package type suffix is missing or incorrect")
+	}
+	return pkgAndType[:i], pkgAndType[i+1:], nil
 }

@@ -845,17 +845,9 @@ package rclgo
 /*
 {{range $rootPath := $.Config.RootPaths -}}
 #cgo LDFLAGS: "-L{{$rootPath}}/lib" "-Wl,-rpath={{$rootPath}}/lib"
-#cgo CFLAGS: "-I{{$rootPath}}/include/rcl"
-#cgo CFLAGS: "-I{{$rootPath}}/include/rmw"
-#cgo CFLAGS: "-I{{$rootPath}}/include/rosidl_runtime_c"
-#cgo CFLAGS: "-I{{$rootPath}}/include/rosidl_typesupport_interface"
-#cgo CFLAGS: "-I{{$rootPath}}/include/rcutils"
-#cgo CFLAGS: "-I{{$rootPath}}/include/rcl_action"
-#cgo CFLAGS: "-I{{$rootPath}}/include/action_msgs"
-#cgo CFLAGS: "-I{{$rootPath}}/include/unique_identifier_msgs"
-#cgo CFLAGS: "-I{{$rootPath}}/include/builtin_interfaces"
-#cgo CFLAGS: "-I{{$rootPath}}/include/rcl_yaml_param_parser"
-
+{{range $dep := $.ROSIncludes -}}
+#cgo CFLAGS: "-I{{$rootPath}}/include/{{$dep}}"
+{{end}}
 {{end -}}
 #cgo LDFLAGS: -lrcl -lrmw -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrcl_action -lrmw_implementation
 */

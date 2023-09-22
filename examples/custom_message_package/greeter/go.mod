@@ -10,6 +10,7 @@ replace github.com/tiiuae/rclgo v0.0.0 => ../../..
 require github.com/tiiuae/rclgo v0.0.0
 
 require (
+	github.com/alessio/shellescape v1.4.2 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect

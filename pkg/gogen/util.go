@@ -16,11 +16,13 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"unicode"
 	"unicode/utf8"
 
 	"github.com/kivilahtio/go-re/v0"
+	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
 	"golang.org/x/tools/go/packages"
 )
@@ -198,6 +200,14 @@ func (s stringSet) AddFrom(s2 stringSet) {
 	for key := range s2 {
 		s[key] = struct{}{}
 	}
+}
+
+func (s stringSet) ToSlice() []string { return maps.Keys(s) }
+
+func (s stringSet) ToSortedSlice() []string {
+	vals := s.ToSlice()
+	sort.Strings(vals)
+	return vals
 }
 
 func actionHasSuffix(msg *ROS2Message, suffixes ...string) bool {

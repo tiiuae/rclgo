@@ -33,6 +33,7 @@ generate:
 		--message-module-prefix "github.com/tiiuae/rclgo/$$dest_path" \
 		--license-header-path ./license-header.txt \
 		--include-go-package-deps ./... \
+		--cgo-flags-path "" \
 		|| exit 1
 	rm "$$dest_path/msgs.gen.go" || exit 1
 	go run ./cmd/rclgo-gen generate-rclgo \

@@ -37,14 +37,14 @@ func TestNodeGetTopicNamesAndTypes(t *testing.T) {
 		})
 		Convey("Check that topic names and types are correct", func() {
 			Convey("node1 in empty network", func() {
-				namesAndTypes, err := node1.GetTopicNamesAndTypes()
+				namesAndTypes, err := node1.GetTopicNamesAndTypes(true)
 				So(err, ShouldBeNil)
 				So(namesAndTypes, ShouldResemble, map[string][]string{
 					"/rosout": {"rcl_interfaces/msg/Log"},
 				})
 			})
 			Convey("node2 in empty network", func() {
-				namesAndTypes, err := node2.GetTopicNamesAndTypes()
+				namesAndTypes, err := node2.GetTopicNamesAndTypes(true)
 				So(err, ShouldBeNil)
 				So(namesAndTypes, ShouldResemble, map[string][]string{
 					"/rosout": {"rcl_interfaces/msg/Log"},
@@ -55,7 +55,7 @@ func TestNodeGetTopicNamesAndTypes(t *testing.T) {
 				So(err, ShouldBeNil)
 			})
 			Convey("node1 after publisher", func() {
-				namesAndTypes, err := node1.GetTopicNamesAndTypes()
+				namesAndTypes, err := node1.GetTopicNamesAndTypes(true)
 				So(err, ShouldBeNil)
 				So(namesAndTypes, ShouldResemble, map[string][]string{
 					"/rosout":                                {"rcl_interfaces/msg/Log"},
@@ -63,7 +63,7 @@ func TestNodeGetTopicNamesAndTypes(t *testing.T) {
 				})
 			})
 			Convey("node2 after publisher", func() {
-				namesAndTypes, err := node2.GetTopicNamesAndTypes()
+				namesAndTypes, err := node2.GetTopicNamesAndTypes(true)
 				So(err, ShouldBeNil)
 				So(namesAndTypes, ShouldResemble, map[string][]string{
 					"/rosout": {"rcl_interfaces/msg/Log"},
@@ -74,7 +74,7 @@ func TestNodeGetTopicNamesAndTypes(t *testing.T) {
 				So(err, ShouldBeNil)
 			})
 			Convey("node1 after creating int publisher", func() {
-				namesAndTypes, err := node1.GetTopicNamesAndTypes()
+				namesAndTypes, err := node1.GetTopicNamesAndTypes(true)
 				So(err, ShouldBeNil)
 				So(namesAndTypes, ShouldResemble, map[string][]string{
 					"/rosout":                                 {"rcl_interfaces/msg/Log"},
@@ -83,7 +83,7 @@ func TestNodeGetTopicNamesAndTypes(t *testing.T) {
 				})
 			})
 			Convey("node2 after creating int publisher", func() {
-				namesAndTypes, err := node2.GetTopicNamesAndTypes()
+				namesAndTypes, err := node2.GetTopicNamesAndTypes(true)
 				So(err, ShouldBeNil)
 				So(namesAndTypes, ShouldResemble, map[string][]string{
 					"/rosout": {"rcl_interfaces/msg/Log"},
@@ -94,7 +94,7 @@ func TestNodeGetTopicNamesAndTypes(t *testing.T) {
 				So(err, ShouldBeNil)
 			})
 			Convey("node1 after publishing int", func() {
-				namesAndTypes, err := node1.GetTopicNamesAndTypes()
+				namesAndTypes, err := node1.GetTopicNamesAndTypes(true)
 				So(err, ShouldBeNil)
 				So(namesAndTypes, ShouldResemble, map[string][]string{
 					"/rosout":                                 {"rcl_interfaces/msg/Log"},
@@ -103,7 +103,7 @@ func TestNodeGetTopicNamesAndTypes(t *testing.T) {
 				})
 			})
 			Convey("node2 after publishing int", func() {
-				namesAndTypes, err := node2.GetTopicNamesAndTypes()
+				namesAndTypes, err := node2.GetTopicNamesAndTypes(true)
 				So(err, ShouldBeNil)
 				So(namesAndTypes, ShouldResemble, map[string][]string{
 					"/rosout": {"rcl_interfaces/msg/Log"},
@@ -114,7 +114,7 @@ func TestNodeGetTopicNamesAndTypes(t *testing.T) {
 				So(err, ShouldBeNil)
 			})
 			Convey("node1 after second publisher", func() {
-				namesAndTypes, err := node1.GetTopicNamesAndTypes()
+				namesAndTypes, err := node1.GetTopicNamesAndTypes(true)
 				So(err, ShouldBeNil)
 				So(namesAndTypes, ShouldResemble, map[string][]string{
 					"/rosout":                                 {"rcl_interfaces/msg/Log"},
@@ -123,7 +123,7 @@ func TestNodeGetTopicNamesAndTypes(t *testing.T) {
 				})
 			})
 			Convey("node2 after second publisher", func() {
-				namesAndTypes, err := node2.GetTopicNamesAndTypes()
+				namesAndTypes, err := node2.GetTopicNamesAndTypes(true)
 				So(err, ShouldBeNil)
 				So(namesAndTypes, ShouldResemble, map[string][]string{
 					"/rosout":                                {"rcl_interfaces/msg/Log"},

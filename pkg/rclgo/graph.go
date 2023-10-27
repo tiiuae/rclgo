@@ -10,12 +10,15 @@ import "unsafe"
 
 // GetTopicNamesAndTypes returns a map of all known topic names to corresponding
 // topic types. Note that multiple types may be associated with a single topic.
-func (n *Node) GetTopicNamesAndTypes() (map[string][]string, error) {
+//
+// If demangle is true, topic names will be in the format used by the underlying
+// middleware.
+func (n *Node) GetTopicNamesAndTypes(demangle bool) (map[string][]string, error) {
 	return n.getNamesAndTypes("", "", func(node, namespace *C.char, namesAndTypes *C.rmw_names_and_types_t) C.int {
 		return C.rcl_get_topic_names_and_types(
 			n.rcl_node_t,
 			n.context.rcl_allocator_t,
-			false,
+			!C.bool(demangle),
 			namesAndTypes,
 		)
 	})
@@ -46,12 +49,12 @@ func (n *Node) GetNodeNames() (names, namespaces []string, err error) {
 	return names, namespaces, nil
 }
 
-func (n *Node) GetPublisherNamesAndTypesByNode(node, namespace string) (map[string][]string, error) {
+func (n *Node) GetPublisherNamesAndTypesByNode(demangle bool, node, namespace string) (map[string][]string, error) {
 	return n.getNamesAndTypes(node, namespace, func(node, namespace *C.char, namesAndTypes *C.rmw_names_and_types_t) C.int {
 		return C.rcl_get_publisher_names_and_types_by_node(
 			n.rcl_node_t,
 			n.context.rcl_allocator_t,
-			false,
+			!C.bool(demangle),
 			node,
 			namespace,
 			namesAndTypes,
@@ -59,12 +62,12 @@ func (n *Node) GetPublisherNamesAndTypesByNode(node, namespace string) (map[stri
 	})
 }
 
-func (n *Node) GetSubscriberNamesAndTypesByNode(node, namespace string) (map[string][]string, error) {
+func (n *Node) GetSubscriberNamesAndTypesByNode(demangle bool, node, namespace string) (map[string][]string, error) {
 	return n.getNamesAndTypes(node, namespace, func(node, namespace *C.char, namesAndTypes *C.rmw_names_and_types_t) C.int {
 		return C.rcl_get_subscriber_names_and_types_by_node(
 			n.rcl_node_t,
 			n.context.rcl_allocator_t,
-			false,
+			!C.bool(demangle),
 			node,
 			namespace,
 			namesAndTypes,

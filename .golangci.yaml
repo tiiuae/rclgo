@@ -41,6 +41,7 @@ linters:
     - nonamedreturns
     - nosnakecase
     - paralleltest
+    - tagliatelle
     - testableexamples
     - testpackage
     - varnamelen

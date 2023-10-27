@@ -6,7 +6,9 @@ package rclgo
 */
 import "C"
 
-import "unsafe"
+import (
+	"unsafe"
+)
 
 // GetTopicNamesAndTypes returns a map of all known topic names to corresponding
 // topic types. Note that multiple types may be associated with a single topic.
@@ -153,4 +155,67 @@ func (n *Node) getNamesAndTypes(
 		namesAndTypes[name] = resultTypes
 	}
 	return namesAndTypes, nil
+}
+
+const GIDSize = 24
+
+type GID [GIDSize]byte
+
+type EndpointType int
+
+const (
+	EndpointInvalid EndpointType = iota
+	EndpointPublisher
+	EndpointSubscription
+)
+
+type TopicEndpointInfo struct {
+	NodeName      string
+	NodeNamespace string
+	TopicType     string
+	EndpointType  EndpointType
+	EndpointGID   GID
+	QosProfile    QosProfile
+}
+
+func (n *Node) GetPublishersInfoByTopic(topic string, mangle bool) ([]TopicEndpointInfo, error) {
+	return n.getInfoByTopic("publishers", topic, mangle, func(topic *C.char, noMangle C.bool, infoArray *C.rmw_topic_endpoint_info_array_t) C.int {
+		return C.rcl_get_publishers_info_by_topic(n.rcl_node_t, n.context.rcl_allocator_t, topic, noMangle, infoArray)
+	})
+}
+
+func (n *Node) GetSubscriptionsInfoByTopic(topic string, mangle bool) ([]TopicEndpointInfo, error) {
+	return n.getInfoByTopic("subscriptions", topic, mangle, func(topic *C.char, noMangle C.bool, infoArray *C.rmw_topic_endpoint_info_array_t) C.int {
+		return C.rcl_get_subscriptions_info_by_topic(n.rcl_node_t, n.context.rcl_allocator_t, topic, noMangle, infoArray)
+	})
+}
+
+func (n *Node) getInfoByTopic(kind, topic string, mangle bool, get func(
+	topic *C.char,
+	noMangle C.bool,
+	infoArray *C.rmw_topic_endpoint_info_array_t,
+) C.int) ([]TopicEndpointInfo, error) {
+	ctopic := C.CString(topic)
+	defer C.free(unsafe.Pointer(ctopic))
+	infoArray := C.rmw_get_zero_initialized_topic_endpoint_info_array()
+	defer C.rmw_topic_endpoint_info_array_fini(&infoArray, n.context.rcl_allocator_t)
+	rc := get(ctopic, !C.bool(mangle), &infoArray)
+	if rc != C.RCL_RET_OK {
+		return nil, errorsCastC(rc, "failed to get "+kind+" info by topic")
+	}
+	infoSlice := unsafe.Slice(infoArray.info_array, infoArray.size)
+	infos := make([]TopicEndpointInfo, len(infoSlice))
+	for i, info := range infoSlice {
+		infos[i] = TopicEndpointInfo{
+			NodeName:      C.GoString(info.node_name),
+			NodeNamespace: C.GoString(info.node_namespace),
+			TopicType:     C.GoString(info.topic_type),
+			EndpointType:  EndpointType(info.endpoint_type),
+		}
+		for j := range info.endpoint_gid {
+			infos[i].EndpointGID[j] = byte(info.endpoint_gid[j])
+		}
+		infos[i].QosProfile.fromCStruct(&info.qos_profile)
+	}
+	return infos, nil
 }

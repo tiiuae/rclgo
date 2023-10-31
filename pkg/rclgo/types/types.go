@@ -24,9 +24,9 @@ type Message interface {
 type MessageTypeSupport interface {
 	New() Message
 	PrepareMemory() unsafe.Pointer
-	ReleaseMemory(unsafe.Pointer)
-	AsCStruct(unsafe.Pointer, Message)
-	AsGoStruct(Message, unsafe.Pointer)
+	ReleaseMemory(p unsafe.Pointer)
+	AsCStruct(dst unsafe.Pointer, src Message)
+	AsGoStruct(dst Message, src unsafe.Pointer)
 	TypeSupport() unsafe.Pointer // *C.rosidl_message_type_support_t
 }
 

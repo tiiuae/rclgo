@@ -37,7 +37,7 @@ func getUnusedDomainID() int {
 }
 
 func setNewDomainID() {
-	os.Setenv("ROS_DOMAIN_ID", fmt.Sprint(getUnusedDomainID()))
+	os.Setenv("ROS_DOMAIN_ID", strconv.Itoa(getUnusedDomainID()))
 }
 
 func TestMain(m *testing.M) {

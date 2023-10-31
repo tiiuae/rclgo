@@ -37,13 +37,13 @@ func NewDefaultStatusQosProfile() QosProfile {
 type goalIDMessage interface {
 	types.Message
 	GetGoalID() *types.GoalID
-	SetGoalID(*types.GoalID)
+	SetGoalID(id *types.GoalID)
 }
 
 type goalRequestMessage interface {
 	goalIDMessage
 	GetGoalDescription() types.Message
-	SetGoalDescription(types.Message)
+	SetGoalDescription(goal types.Message)
 }
 
 type goalResponseMessage interface {
@@ -51,7 +51,7 @@ type goalResponseMessage interface {
 }
 
 type forEach interface {
-	CallForEach(func(interface{}))
+	CallForEach(f func(interface{}))
 }
 
 type GoalStatus int8
@@ -245,7 +245,7 @@ type Action interface {
 	//
 	// ExecuteGoal may be called multiple times in parallel by the ActionServer.
 	// Each call will receive a different GoalHandle.
-	ExecuteGoal(context.Context, *GoalHandle) (types.Message, error)
+	ExecuteGoal(ctx context.Context, goal *GoalHandle) (types.Message, error)
 
 	// TypeSupport returns the type support for the action. The same value
 	// must be returned on every invocation.

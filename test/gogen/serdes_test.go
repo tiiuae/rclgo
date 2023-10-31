@@ -4,7 +4,7 @@ import (
 	"testing"
 	"unsafe"
 
-	. "github.com/smartystreets/goconvey/convey"
+	. "github.com/smartystreets/goconvey/convey" //nolint:revive
 
 	sensor_msgs "github.com/tiiuae/rclgo/internal/msgs/sensor_msgs/msg"
 	std_msgs "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"

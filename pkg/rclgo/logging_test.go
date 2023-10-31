@@ -3,7 +3,7 @@ package rclgo
 import (
 	"testing"
 
-	. "github.com/smartystreets/goconvey/convey"
+	. "github.com/smartystreets/goconvey/convey" //nolint:revive
 )
 
 func TestInitLogging(t *testing.T) {

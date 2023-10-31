@@ -14,7 +14,7 @@ import (
 	"errors"
 	"testing"
 
-	. "github.com/smartystreets/goconvey/convey"
+	. "github.com/smartystreets/goconvey/convey" //nolint:revive
 	example_interfaces_action "github.com/tiiuae/rclgo/internal/msgs/example_interfaces/action"
 	std_msgs "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
 	std_srvs_srv "github.com/tiiuae/rclgo/internal/msgs/std_srvs/srv"

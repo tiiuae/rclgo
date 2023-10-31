@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/bradleyjkemp/cupaloy/v2"
-	. "github.com/smartystreets/goconvey/convey"
+	. "github.com/smartystreets/goconvey/convey" //nolint:revive
 	action_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/action_msgs/msg"
 	action_msgs_srv "github.com/tiiuae/rclgo/internal/msgs/action_msgs/srv"
 	test_msgs_action "github.com/tiiuae/rclgo/internal/msgs/test_msgs/action"

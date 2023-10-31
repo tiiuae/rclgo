@@ -14,7 +14,7 @@ import (
 	"testing"
 	"time"
 
-	. "github.com/smartystreets/goconvey/convey"
+	. "github.com/smartystreets/goconvey/convey" //nolint:revive
 	std_msgs "github.com/tiiuae/rclgo/internal/msgs/std_msgs/msg"
 	test_msgs "github.com/tiiuae/rclgo/internal/msgs/test_msgs/msg"
 	"github.com/tiiuae/rclgo/pkg/rclgo"

@@ -17,7 +17,7 @@ import (
 	"testing"
 
 	"github.com/bradleyjkemp/cupaloy/v2"
-	. "github.com/smartystreets/goconvey/convey"
+	. "github.com/smartystreets/goconvey/convey" //nolint:revive
 )
 
 var nilAry []string

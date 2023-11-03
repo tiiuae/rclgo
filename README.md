@@ -13,6 +13,9 @@ distributed as Debian packages.
 
 API documentation is available at [pkg.go.dev][docs].
 
+An example module with a publisher and a subscriber can be found in
+[examples/publisher_subscriber](examples/publisher_subscriber).
+
 ### ROS 2 interface bindings
 
 rclgo requires Go bindings of all the ROS 2 interfaces to exist. rclgo-gen is
@@ -36,12 +39,12 @@ import _ "github.com/tiiuae/rclgo/cmd/rclgo-gen"
 ```
 Then run `go mod tidy`. This version of rclgo-gen can be used by running
 
-    go run github.com/tiiuae/rclgo/cmd/rclgo-gen generate -d msgs
+    go run github.com/tiiuae/rclgo/cmd/rclgo-gen generate -d msgs --include-go-package-deps ./...
 
 in the project directory. The command can be added as a `go generate` comment to
 one of the source files in the project, such as `main.go`, as follows:
 ```go
-//go:generate go run github.com/tiiuae/rclgo/cmd/rclgo-gen generate -d msgs
+//go:generate go run github.com/tiiuae/rclgo/cmd/rclgo-gen generate -d msgs --include-go-package-deps ./...
 ```
 
 ### Developing with custom interface types

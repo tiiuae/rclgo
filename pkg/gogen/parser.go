@@ -40,6 +40,15 @@ type parser struct {
 	ros2messagesCommentsBuffer strings.Builder
 }
 
+func ParseMessage(config *Config, content string) (*ROS2Message, error) {
+	p := &parser{config: config}
+	msg := ROS2MessageNew("", "")
+	if err := p.ParseROS2Message(msg, content); err != nil {
+		return nil, err
+	}
+	return msg, nil
+}
+
 // ParseROS2Message parses a message definition.
 func (p *parser) ParseROS2Message(res *ROS2Message, content string) error {
 	return p.parseSections(content, res)

@@ -607,7 +607,7 @@ func (c *Context) NewTimer(timeout time.Duration, timer_callback func(*Timer)) (
 		timer.rcl_timer_t,
 		c.Clock().rcl_clock_t,
 		c.rcl_context_t,
-		(C.long)(timeout),
+		C.int64_t(timeout),
 		nil,
 		*c.rcl_allocator_t,
 	)
@@ -1072,8 +1072,8 @@ func (c *Client) Send(ctx context.Context, req types.Message) (types.Message, *S
 	return resp, nil, err
 }
 
-func (c *Client) sendRequest(req unsafe.Pointer) (C.long, error) {
-	var seqNum C.long
+func (c *Client) sendRequest(req unsafe.Pointer) (C.int64_t, error) {
+	var seqNum C.int64_t
 	rc := C.rcl_send_request(c.rclClient, req, &seqNum)
 	if rc != C.RCL_RET_OK {
 		return 0, errorsCastC(rc, "failed to send request")
@@ -1081,7 +1081,7 @@ func (c *Client) sendRequest(req unsafe.Pointer) (C.long, error) {
 	return seqNum, nil
 }
 
-func (c *Client) takeResponse(resp unsafe.Pointer) (C.long, interface{}, error) {
+func (c *Client) takeResponse(resp unsafe.Pointer) (C.int64_t, interface{}, error) {
 	var header C.rmw_service_info_t
 	switch rc := C.rcl_take_response_with_info(c.rclClient, &header, resp); rc {
 	case C.RCL_RET_OK:
@@ -1105,22 +1105,22 @@ type sendResult struct {
 }
 
 type requestSenderTransport struct {
-	SendRequest  func(unsafe.Pointer) (C.long, error)
-	TakeResponse func(unsafe.Pointer) (C.long, interface{}, error)
+	SendRequest  func(unsafe.Pointer) (C.int64_t, error)
+	TakeResponse func(unsafe.Pointer) (C.int64_t, interface{}, error)
 	TypeSupport  types.ServiceTypeSupport
 	Logger       *Logger
 }
 
 type requestSender struct {
 	transport       requestSenderTransport
-	pendingRequests map[C.long]chan *sendResult
+	pendingRequests map[C.int64_t]chan *sendResult
 	mutex           sync.Mutex
 }
 
 func newRequestSender(transport requestSenderTransport) requestSender {
 	return requestSender{
 		transport:       transport,
-		pendingRequests: make(map[C.long]chan *sendResult),
+		pendingRequests: make(map[C.int64_t]chan *sendResult),
 	}
 }
 
@@ -1155,7 +1155,7 @@ func (s *requestSender) Send(ctx context.Context, req types.Message) (types.Mess
 	}
 }
 
-func (s *requestSender) addPendingRequest(req types.Message) (<-chan *sendResult, C.long, error) {
+func (s *requestSender) addPendingRequest(req types.Message) (<-chan *sendResult, C.int64_t, error) {
 	ts := s.transport.TypeSupport.Request()
 	buf := ts.PrepareMemory()
 	defer ts.ReleaseMemory(buf)

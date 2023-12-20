@@ -11,7 +11,6 @@ import (
 	"crypto/rand"
 	"errors"
 	"fmt"
-	"reflect"
 	"runtime"
 	"strings"
 	"sync"
@@ -349,7 +348,7 @@ func (n *Node) NewActionServer(
 	rclOpts := C.rcl_action_server_options_t{
 		allocator: *n.context.rcl_allocator_t,
 		result_timeout: C.rcl_duration_t{
-			nanoseconds: C.long(opts.ResultTimeout),
+			nanoseconds: C.int64_t(opts.ResultTimeout),
 		},
 	}
 	opts.GoalServiceQos.asCStruct(&rclOpts.goal_service_qos)
@@ -526,7 +525,6 @@ func (s *ActionServer) scheduleRemoval() {
 func (s *ActionServer) expireGoals() error {
 	var numExpired C.size_t
 	expiredGoals := make([]C.rcl_action_goal_info_t, 10)
-	expiredGoalsHeader := (*reflect.SliceHeader)(unsafe.Pointer(&expiredGoals))
 	s.rclServerMu.Lock()
 	defer s.rclServerMu.Unlock()
 	s.goalsMu.Lock()
@@ -534,8 +532,8 @@ func (s *ActionServer) expireGoals() error {
 	for {
 		rc := C.rcl_action_expire_goals(
 			&s.rclServer,
-			(*C.rcl_action_goal_info_t)(unsafe.Pointer(expiredGoalsHeader.Data)),
-			C.ulong(expiredGoalsHeader.Len),
+			unsafe.SliceData(expiredGoals),
+			C.size_t(len(expiredGoals)),
 			&numExpired,
 		)
 		if rc != C.RCL_RET_OK {
@@ -983,8 +981,8 @@ func (c *ActionClient) SendGoalRequest(ctx context.Context, request types.Messag
 	return resp, err
 }
 
-func (c *ActionClient) sendGoalRequest(req unsafe.Pointer) (C.long, error) {
-	var seqNum C.long
+func (c *ActionClient) sendGoalRequest(req unsafe.Pointer) (C.int64_t, error) {
+	var seqNum C.int64_t
 	rc := C.rcl_action_send_goal_request(&c.rclClient, req, &seqNum)
 	if rc != C.RCL_RET_OK {
 		return 0, errorsCastC(rc, "failed to send goal request")
@@ -992,7 +990,7 @@ func (c *ActionClient) sendGoalRequest(req unsafe.Pointer) (C.long, error) {
 	return seqNum, nil
 }
 
-func (c *ActionClient) takeGoalResponse(resp unsafe.Pointer) (C.long, interface{}, error) {
+func (c *ActionClient) takeGoalResponse(resp unsafe.Pointer) (C.int64_t, interface{}, error) {
 	var header C.rmw_request_id_t
 	switch rc := C.rcl_action_take_goal_response(&c.rclClient, &header, resp); rc {
 	case C.RCL_RET_OK:
@@ -1017,8 +1015,8 @@ func (c *ActionClient) GetResult(ctx context.Context, goalID *types.GoalID) (typ
 	return resp, err
 }
 
-func (c *ActionClient) sendResultRequest(req unsafe.Pointer) (C.long, error) {
-	var seqNum C.long
+func (c *ActionClient) sendResultRequest(req unsafe.Pointer) (C.int64_t, error) {
+	var seqNum C.int64_t
 	rc := C.rcl_action_send_result_request(&c.rclClient, req, &seqNum)
 	if rc != C.RCL_RET_OK {
 		return 0, errorsCastC(rc, "failed to send result request")
@@ -1026,7 +1024,7 @@ func (c *ActionClient) sendResultRequest(req unsafe.Pointer) (C.long, error) {
 	return seqNum, nil
 }
 
-func (c *ActionClient) takeResultResponse(resp unsafe.Pointer) (C.long, interface{}, error) {
+func (c *ActionClient) takeResultResponse(resp unsafe.Pointer) (C.int64_t, interface{}, error) {
 	var header C.rmw_request_id_t
 	switch rc := C.rcl_action_take_result_response(&c.rclClient, &header, resp); rc {
 	case C.RCL_RET_OK:
@@ -1060,8 +1058,8 @@ func (c *ActionClient) CancelGoal(ctx context.Context, request types.Message) (t
 	return resp, err
 }
 
-func (c *ActionClient) sendCancelRequest(req unsafe.Pointer) (C.long, error) {
-	var seqNum C.long
+func (c *ActionClient) sendCancelRequest(req unsafe.Pointer) (C.int64_t, error) {
+	var seqNum C.int64_t
 	rc := C.rcl_action_send_cancel_request(&c.rclClient, req, &seqNum)
 	if rc != C.RCL_RET_OK {
 		return 0, errorsCastC(rc, "failed to send cancel request")
@@ -1069,7 +1067,7 @@ func (c *ActionClient) sendCancelRequest(req unsafe.Pointer) (C.long, error) {
 	return seqNum, nil
 }
 
-func (c *ActionClient) takeCancelResponse(resp unsafe.Pointer) (C.long, interface{}, error) {
+func (c *ActionClient) takeCancelResponse(resp unsafe.Pointer) (C.int64_t, interface{}, error) {
 	var header C.rmw_request_id_t
 	switch rc := C.rcl_action_take_cancel_response(&c.rclClient, &header, resp); rc {
 	case C.RCL_RET_OK:

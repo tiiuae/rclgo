@@ -144,7 +144,7 @@ func logNamed(level LogSeverity, name, msg string) error {
 		}
 		loc.file_name = C.CString(file)
 		defer C.free(unsafe.Pointer(loc.file_name))
-		loc.line_number = C.ulong(line)
+		loc.line_number = C.size_t(line)
 	}
 	cname := C.CString(name)
 	defer C.free(unsafe.Pointer(cname))

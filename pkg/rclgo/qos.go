@@ -95,13 +95,13 @@ func NewDefaultServiceQosProfile() QosProfile {
 
 func (p *QosProfile) asCStruct(dst *C.rmw_qos_profile_t) {
 	dst.history = uint32(p.History)
-	dst.depth = C.ulong(p.Depth)
+	dst.depth = C.size_t(p.Depth)
 	dst.reliability = uint32(p.Reliability)
 	dst.durability = uint32(p.Durability)
-	dst.deadline = C.rmw_time_t{nsec: C.ulong(p.Deadline)}
-	dst.lifespan = C.rmw_time_t{nsec: C.ulong(p.Lifespan)}
+	dst.deadline = C.rmw_time_t{nsec: C.uint64_t(p.Deadline)}
+	dst.lifespan = C.rmw_time_t{nsec: C.uint64_t(p.Lifespan)}
 	dst.liveliness = uint32(p.Liveliness)
-	dst.liveliness_lease_duration = C.rmw_time_t{nsec: C.ulong(p.LivelinessLeaseDuration)}
+	dst.liveliness_lease_duration = C.rmw_time_t{nsec: C.uint64_t(p.LivelinessLeaseDuration)}
 	dst.avoid_ros_namespace_conventions = C.bool(p.AvoidRosNamespaceConventions)
 }
 

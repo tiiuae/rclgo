@@ -1,0 +1,20 @@
+{
+	"name": "Fog Humble Golang Dev",
+	"build": {
+		"context": "..",
+		"dockerfile": "Dockerfile"
+	},
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	"features": {
+		"ghcr.io/devcontainers/features/go:1": {
+			"version": "1.21.3",
+			"golangciLintVersion": "1.54.2"
+		}
+	},
+	"containerEnv": {
+		"GOPRIVATE": "github.com/tiiuae"
+	},
+	"runArgs": [
+		"--network=host",
+	]
+}

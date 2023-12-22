@@ -33,6 +33,7 @@ require (
 	github.com/spf13/cast v1.5.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/subosito/gotenv v1.4.2 // indirect
+	github.com/tiiuae/rclgo/examples/publisher_subscriber v0.0.0-20231127135015-1ae5715371bb // indirect
 	golang.org/x/mod v0.11.0 // indirect
 	golang.org/x/sys v0.8.0 // indirect
 	golang.org/x/text v0.9.0 // indirect

@@ -186,20 +186,21 @@ func NewNestedMessageClient(node *rclgo.Node, name string, opts *rclgo.ActionCli
 	return &NestedMessageClient{client}, nil
 }
 
-func (c *NestedMessageClient) WatchGoal(ctx context.Context, goal *NestedMessage_Goal, onFeedback NestedMessageFeedbackHandler) (*NestedMessage_GetResult_Response, error) {
+func (c *NestedMessageClient) WatchGoal(ctx context.Context, goal *NestedMessage_Goal, onFeedback NestedMessageFeedbackHandler) (*NestedMessage_GetResult_Response, *types.GoalID, error) {
 	var resp types.Message
+	var goalID *types.GoalID
 	var err error
 	if onFeedback == nil {
-		resp, err = c.ActionClient.WatchGoal(ctx, goal, nil)
+		resp, goalID, err = c.ActionClient.WatchGoal(ctx, goal, nil)
 	} else {
-		resp, err = c.ActionClient.WatchGoal(ctx, goal, func(ctx context.Context, msg types.Message) {
+		resp, goalID, err = c.ActionClient.WatchGoal(ctx, goal, func(ctx context.Context, msg types.Message) {
 			onFeedback(ctx, msg.(*NestedMessage_FeedbackMessage))
 		})
 	}
 	if r, ok := resp.(*NestedMessage_GetResult_Response); ok {
-		return r, err
+		return r, goalID, err
 	}
-	return nil, err
+	return nil, goalID, err
 }
 
 func (c *NestedMessageClient) SendGoal(ctx context.Context, goal *NestedMessage_Goal) (*NestedMessage_SendGoal_Response, *types.GoalID, error) {

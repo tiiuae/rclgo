@@ -10,6 +10,7 @@ import (
 
 	"github.com/bradleyjkemp/cupaloy/v2"
 	. "github.com/smartystreets/goconvey/convey" //nolint:revive
+	"github.com/stretchr/testify/require"
 	action_msgs_msg "github.com/tiiuae/rclgo/internal/msgs/action_msgs/msg"
 	action_msgs_srv "github.com/tiiuae/rclgo/internal/msgs/action_msgs/srv"
 	test_msgs_action "github.com/tiiuae/rclgo/internal/msgs/test_msgs/action"
@@ -154,7 +155,7 @@ func TestActionExecution(t *testing.T) {
 			goal.Order = 10
 			feedbacks := make(fibonacciFeedbacks, 0)
 			var feedbacksMu sync.Mutex
-			result, err := client.WatchGoal(ctx, goal, func(c context.Context, m types.Message) {
+			result, _, err := client.WatchGoal(ctx, goal, func(c context.Context, m types.Message) {
 				fb := m.(*test_msgs_action.Fibonacci_FeedbackMessage)
 				feedbacksMu.Lock()
 				feedbacks = append(feedbacks, &fb.Feedback)
@@ -179,7 +180,7 @@ func TestActionExecution(t *testing.T) {
 			close(action.continueChan)
 			goal := test_msgs_action.NewFibonacci_Goal()
 			goal.Order = -1
-			resp, err := client.WatchGoal(ctx, goal, func(c context.Context, m types.Message) {
+			resp, _, err := client.WatchGoal(ctx, goal, func(c context.Context, m types.Message) {
 				panic("no feedback should be sent")
 			})
 			So(err, ShouldNotBeNil)
@@ -290,6 +291,65 @@ func TestActionCanceling(t *testing.T) {
 			So(rclctx.Close(), ShouldBeNil)
 		})
 	})
+}
+
+func TestWatchGoalCanceling(t *testing.T) {
+	_, cancelingAction := newWaitAction()
+	var (
+		clientCtx, clientCancel = context.WithCancel(context.Background())
+		serverCtx, serverCancel = context.WithCancel(context.Background())
+
+		rclctx *rclgo.Context
+		err    error
+	)
+	defer func() {
+		clientCancel()
+		serverCancel()
+		if rclctx != nil {
+			rclctx.Close()
+		}
+	}()
+	rclctx, err = newDefaultRCLContext()
+	require.NoError(t, err)
+	serverNode, err := rclctx.NewNode("server", "actions_test")
+	require.NoError(t, err)
+	_, err = serverNode.NewActionServer("canceling", cancelingAction, actionServerOpts)
+	require.NoError(t, err)
+
+	clientNode, err := rclctx.NewNode("client", "actions_test")
+	require.NoError(t, err)
+	client, err := clientNode.NewActionClient("canceling", test_msgs_action.FibonacciTypeSupport, actionClientOpts)
+	require.NoError(t, err)
+
+	spinErrC := make(chan error, 1)
+	go func() { spinErrC <- rclctx.Spin(serverCtx) }()
+
+	goalErrC := make(chan error, 1)
+	var goalID *types.GoalID
+	go func() {
+		var goalErr error
+		_, goalID, goalErr = client.WatchGoal(clientCtx, test_msgs_action.NewFibonacci_Goal(), nil)
+		goalErrC <- goalErr
+	}()
+
+	time.Sleep(time.Second)
+	clientCancel()
+
+	err = waitChan(t, time.Second, goalErrC, "Waiting for goal watching to stop")
+	require.ErrorIs(t, err, context.Canceled)
+
+	resultCtx, resultCancel := context.WithTimeout(context.Background(), time.Second)
+	defer resultCancel()
+	resp, err := client.GetResult(resultCtx, goalID)
+	require.NoError(t, err)
+	require.NotNil(t, resp)
+	result := resp.(*test_msgs_action.Fibonacci_GetResult_Response)
+	require.Equal(t, rclgo.GoalCanceled, rclgo.GoalStatus(result.Status))
+
+	serverCancel()
+	err = waitChan(t, time.Second, spinErrC, "Waiting for spinning to stop")
+	require.Error(t, err)
+	require.NoError(t, rclctx.Close())
 }
 
 type goalStatus struct {

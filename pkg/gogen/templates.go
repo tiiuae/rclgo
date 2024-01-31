@@ -180,7 +180,15 @@ func (t *{{$Md.Name}}) GetGoalAccepted() bool {
 }
 {{- end -}}
 
-{{- if matchMsg $Md "action_msgs_srv" "CancelGoal_Response" }}
+{{ if matchMsg $Md "action_msgs_srv" "CancelGoal_Request" }}
+func (t *{{$Md.Name}}) GetGoalID() *types.GoalID {
+	return (*types.GoalID)(&t.GoalInfo.GoalId.Uuid)
+}
+
+func (t *{{$Md.Name}}) SetGoalID(id *types.GoalID) {
+	t.GoalInfo.GoalId.Uuid = *id
+}
+{{- else if matchMsg $Md "action_msgs_srv" "CancelGoal_Response" }}
 func (t *{{$Md.Name}}) CallForEach(f func(interface{})) {
 	for i := range t.GoalsCanceling {
 		f((*types.GoalID)(&t.GoalsCanceling[i].GoalId.Uuid))
@@ -636,20 +644,21 @@ func New{{.Action.Name}}Client(node *rclgo.Node, name string, opts *rclgo.Action
 	return &{{.Action.Name}}Client{client}, nil
 }
 
-func (c *{{.Action.Name}}Client) WatchGoal(ctx context.Context, goal *{{.Action.Name}}_Goal, onFeedback {{.Action.Name}}FeedbackHandler) (*{{.Action.Name}}_GetResult_Response, error) {
+func (c *{{.Action.Name}}Client) WatchGoal(ctx context.Context, goal *{{.Action.Name}}_Goal, onFeedback {{.Action.Name}}FeedbackHandler) (*{{.Action.Name}}_GetResult_Response, *types.GoalID, error) {
 	var resp types.Message
+	var goalID *types.GoalID
 	var err error
 	if onFeedback == nil {
-		resp, err = c.ActionClient.WatchGoal(ctx, goal, nil)
+		resp, goalID, err = c.ActionClient.WatchGoal(ctx, goal, nil)
 	} else {
-		resp, err = c.ActionClient.WatchGoal(ctx, goal, func(ctx context.Context, msg types.Message) {
+		resp, goalID, err = c.ActionClient.WatchGoal(ctx, goal, func(ctx context.Context, msg types.Message) {
 			onFeedback(ctx, msg.(*{{.Action.Name}}_FeedbackMessage))
 		})
 	}
 	if r, ok := resp.(*{{.Action.Name}}_GetResult_Response); ok {
-		return r, err
+		return r, goalID, err
 	}
-	return nil, err
+	return nil, goalID, err
 }
 
 func (c *{{.Action.Name}}Client) SendGoal(ctx context.Context, goal *{{.Action.Name}}_Goal) (*{{.Action.Name}}_SendGoal_Response, *types.GoalID, error) {

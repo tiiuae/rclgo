@@ -60,6 +60,13 @@ func (t *CancelGoal_Request) SetDefaults() {
 func (t *CancelGoal_Request) GetTypeSupport() types.MessageTypeSupport {
 	return CancelGoal_RequestTypeSupport
 }
+func (t *CancelGoal_Request) GetGoalID() *types.GoalID {
+	return (*types.GoalID)(&t.GoalInfo.GoalId.Uuid)
+}
+
+func (t *CancelGoal_Request) SetGoalID(id *types.GoalID) {
+	t.GoalInfo.GoalId.Uuid = *id
+}
 
 // CancelGoal_RequestPublisher wraps rclgo.Publisher to provide type safe helper
 // functions

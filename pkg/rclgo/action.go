@@ -913,25 +913,39 @@ func (c *ActionClient) Node() *Node {
 //
 // The type support of the message passed to onFeedback is
 // types.ActionTypeSupport.FeedbackMessage().
-func (c *ActionClient) WatchGoal(ctx context.Context, goal types.Message, onFeedback FeedbackHandler) (types.Message, error) {
+func (c *ActionClient) WatchGoal(ctx context.Context, goal types.Message, onFeedback FeedbackHandler) (result types.Message, goalID *types.GoalID, retErr error) {
 	req, err := c.newSendGoalRequest(goal)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	if onFeedback != nil {
-		ctx, cancel := context.WithCancel(ctx)
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithCancel(ctx)
 		defer cancel()
 		unsub := c.subscribe(ctx, &c.feedbackSubs, req.GetGoalID(), onFeedback)
 		defer unsub()
 	}
 	resp, err := c.SendGoalRequest(ctx, req)
 	if err != nil {
-		return nil, err
+		return nil, req.GetGoalID(), err
 	}
 	if !resp.(goalResponseMessage).GetGoalAccepted() {
-		return nil, errors.New("goal was rejected")
+		return nil, req.GetGoalID(), errors.New("goal was rejected")
 	}
-	return c.GetResult(ctx, req.GetGoalID())
+	defer func() {
+		if ctx.Err() != nil {
+			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+			defer cancel()
+			cancelReq := c.typeSupport.CancelGoal().Request().New()
+			cancelReq.(goalIDMessage).SetGoalID(req.GetGoalID())
+			_, err := c.CancelGoal(ctx, cancelReq) //nolint:contextcheck
+			if err != nil {
+				retErr = errors.Join(err, retErr)
+			}
+		}
+	}()
+	result, err = c.GetResult(ctx, req.GetGoalID())
+	return result, req.GetGoalID(), err
 }
 
 // SendGoal sends a new goal to the server and returns the status message of the

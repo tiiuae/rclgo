@@ -472,6 +472,18 @@ func timeOut(timeoutMs int, f func(), testDescription string) {
 	}
 }
 
+func waitChan[T any](t *testing.T, timeout time.Duration, ch <-chan T, testDescription string) (recv T) {
+	t.Helper()
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+	select {
+	case <-ctx.Done():
+		t.Fatalf("%s: timeout", testDescription)
+	case recv = <-ch:
+	}
+	return recv
+}
+
 func publishString(pub *rclgo.Publisher, s string) {
 	msg := std_msgs.NewString()
 	msg.Data = s

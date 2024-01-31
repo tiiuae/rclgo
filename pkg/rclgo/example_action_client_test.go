@@ -31,7 +31,7 @@ func ExampleActionClient() {
 	ctx := context.Background()
 	goal := example_interfaces_action.NewFibonacci_Goal()
 	goal.Order = 10
-	result, err := client.WatchGoal(ctx, goal, func(ctx context.Context, feedback types.Message) {
+	result, _, err := client.WatchGoal(ctx, goal, func(ctx context.Context, feedback types.Message) {
 		fmt.Println("Got feedback:", feedback)
 	})
 	if err != nil {
@@ -61,7 +61,7 @@ func ExampleActionClient_type_safe_wrapper() {
 	ctx := context.Background()
 	goal := example_interfaces_action.NewFibonacci_Goal()
 	goal.Order = 10
-	result, err := client.WatchGoal(ctx, goal, func(ctx context.Context, feedback *example_interfaces_action.Fibonacci_FeedbackMessage) {
+	result, _, err := client.WatchGoal(ctx, goal, func(ctx context.Context, feedback *example_interfaces_action.Fibonacci_FeedbackMessage) {
 		fmt.Println("Got feedback:", feedback)
 	})
 	if err != nil {

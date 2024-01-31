@@ -186,20 +186,21 @@ func NewFibonacciClient(node *rclgo.Node, name string, opts *rclgo.ActionClientO
 	return &FibonacciClient{client}, nil
 }
 
-func (c *FibonacciClient) WatchGoal(ctx context.Context, goal *Fibonacci_Goal, onFeedback FibonacciFeedbackHandler) (*Fibonacci_GetResult_Response, error) {
+func (c *FibonacciClient) WatchGoal(ctx context.Context, goal *Fibonacci_Goal, onFeedback FibonacciFeedbackHandler) (*Fibonacci_GetResult_Response, *types.GoalID, error) {
 	var resp types.Message
+	var goalID *types.GoalID
 	var err error
 	if onFeedback == nil {
-		resp, err = c.ActionClient.WatchGoal(ctx, goal, nil)
+		resp, goalID, err = c.ActionClient.WatchGoal(ctx, goal, nil)
 	} else {
-		resp, err = c.ActionClient.WatchGoal(ctx, goal, func(ctx context.Context, msg types.Message) {
+		resp, goalID, err = c.ActionClient.WatchGoal(ctx, goal, func(ctx context.Context, msg types.Message) {
 			onFeedback(ctx, msg.(*Fibonacci_FeedbackMessage))
 		})
 	}
 	if r, ok := resp.(*Fibonacci_GetResult_Response); ok {
-		return r, err
+		return r, goalID, err
 	}
-	return nil, err
+	return nil, goalID, err
 }
 
 func (c *FibonacciClient) SendGoal(ctx context.Context, goal *Fibonacci_Goal) (*Fibonacci_SendGoal_Response, *types.GoalID, error) {

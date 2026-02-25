@@ -647,16 +647,20 @@ func (s *ActionServer) handleCancelRequest() {
 		defer C.rcl_action_cancel_response_fini(&respBuf)
 		resp := ts.Response().New()
 		ts.Response().AsGoStruct(resp, unsafe.Pointer(&respBuf.msg))
+		var goalsToCancel []*GoalHandle
 		func() {
 			s.goalsMu.RLock()
 			defer s.goalsMu.RUnlock()
 			resp.(forEach).CallForEach(func(toCancel interface{}) {
 				goal := s.getGoal(toCancel.(*types.GoalID), false)
 				if goal != nil {
-					goal.startCancel()
+					goalsToCancel = append(goalsToCancel, goal)
 				}
 			})
 		}()
+		for _, goal := range goalsToCancel {
+			goal.startCancel()
+		}
 		rc = C.rcl_action_send_cancel_response(
 			&s.rclServer,
 			&header,

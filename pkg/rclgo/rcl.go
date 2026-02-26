@@ -193,6 +193,7 @@ func Deserialize(buf []byte, ts types.MessageTypeSupport) (msg types.Message, er
 	if err != nil {
 		return nil, err
 	}
+	defer serialized.Close()
 	copy(serialized.AsSlice(), buf)
 	cmsg := ts.PrepareMemory()
 	defer ts.ReleaseMemory(cmsg)

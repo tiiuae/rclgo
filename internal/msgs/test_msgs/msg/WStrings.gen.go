@@ -36,7 +36,7 @@ type WStrings struct {
 	WstringValueDefault1 string `yaml:"wstring_value_default1" json:"wstring_value_default1" mapstructure:"wstring_value_default1"`
 	WstringValueDefault2 string `yaml:"wstring_value_default2" json:"wstring_value_default2" mapstructure:"wstring_value_default2"`
 	WstringValueDefault3 string `yaml:"wstring_value_default3" json:"wstring_value_default3" mapstructure:"wstring_value_default3"`
-	ArrayOfWstrings [3]string `yaml:"array_of_wstrings" json:"array_of_wstrings" mapstructure:"array_of_wstrings"`// wstring WSTRING_CONST="Hello world!"wstring<=22 bounded_wstring_valuewstring<=22 bounded_wstring_value_default1 "Hello world!"
+	ArrayOfWstrings [3]string `yaml:"array_of_wstrings" json:"array_of_wstrings" mapstructure:"array_of_wstrings"`// wstring WSTRING_CONST="Hello world!" wstring<=22 bounded_wstring_value wstring<=22 bounded_wstring_value_default1 "Hello world!"
 	BoundedSequenceOfWstrings []string `yaml:"bounded_sequence_of_wstrings" json:"bounded_sequence_of_wstrings" mapstructure:"bounded_sequence_of_wstrings"`
 	UnboundedSequenceOfWstrings []string `yaml:"unbounded_sequence_of_wstrings" json:"unbounded_sequence_of_wstrings" mapstructure:"unbounded_sequence_of_wstrings"`
 }

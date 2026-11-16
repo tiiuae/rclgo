@@ -41,8 +41,8 @@ const (
 type ServiceEventInfo struct {
 	EventType uint8 `yaml:"event_type" json:"event_type" mapstructure:"event_type"`// The type of event this message represents
 	Stamp builtin_interfaces_msg.Time `yaml:"stamp" json:"stamp" mapstructure:"stamp"`// Timestamp for when the event occurred (sent or received time)
-	ClientGid [16]byte `yaml:"client_gid" json:"client_gid" mapstructure:"client_gid"`// Unique identifier for the client that sent the service requestNote, this is only unique for the current session.The size here has to match the size of rmw_dds_common/msg/Gid,but unfortunately we cannot use that message directly due to acircular dependency.
-	SequenceNumber int64 `yaml:"sequence_number" json:"sequence_number" mapstructure:"sequence_number"`// Sequence number for the requestCombined with the client ID, this creates a unique ID for the service transaction
+	ClientGid [16]byte `yaml:"client_gid" json:"client_gid" mapstructure:"client_gid"`// Unique identifier for the client that sent the service request Note, this is only unique for the current session. The size here has to match the size of rmw_dds_common/msg/Gid, but unfortunately we cannot use that message directly due to a circular dependency.
+	SequenceNumber int64 `yaml:"sequence_number" json:"sequence_number" mapstructure:"sequence_number"`// Sequence number for the request Combined with the client ID, this creates a unique ID for the service transaction
 }
 
 // NewServiceEventInfo creates a new ServiceEventInfo with default values.

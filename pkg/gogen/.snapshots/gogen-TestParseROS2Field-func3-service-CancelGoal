@@ -83,7 +83,7 @@
         GoType: (string) (len=4) "int8",
         RosName: (string) (len=10) "ERROR_NONE",
         Value: (string) (len=1) "0",
-        Comment: (string) (len=151) "Indicates the request was accepted without any errors.One or more goals have transitioned to the CANCELING state. Thegoals_canceling list is not empty.",
+        Comment: (string) (len=153) "Indicates the request was accepted without any errors. One or more goals have transitioned to the CANCELING state. The goals_canceling list is not empty.",
         PkgName: (string) "",
         PkgIsLocal: (bool) false
       }),
@@ -92,7 +92,7 @@
         GoType: (string) (len=4) "int8",
         RosName: (string) (len=14) "ERROR_REJECTED",
         Value: (string) (len=1) "1",
-        Comment: (string) (len=119) "Indicates the request was rejected.No goals have transitioned to the CANCELING state. The goals_canceling list isempty.",
+        Comment: (string) (len=121) "Indicates the request was rejected. No goals have transitioned to the CANCELING state. The goals_canceling list is empty.",
         PkgName: (string) "",
         PkgIsLocal: (bool) false
       }),
@@ -101,7 +101,7 @@
         GoType: (string) (len=4) "int8",
         RosName: (string) (len=21) "ERROR_UNKNOWN_GOAL_ID",
         Value: (string) (len=1) "2",
-        Comment: (string) (len=131) "Indicates the requested goal ID does not exist.No goals have transitioned to the CANCELING state. The goals_canceling list isempty.",
+        Comment: (string) (len=133) "Indicates the requested goal ID does not exist. No goals have transitioned to the CANCELING state. The goals_canceling list is empty.",
         PkgName: (string) "",
         PkgIsLocal: (bool) false
       }),
@@ -110,7 +110,7 @@
         GoType: (string) (len=4) "int8",
         RosName: (string) (len=21) "ERROR_GOAL_TERMINATED",
         Value: (string) (len=1) "3",
-        Comment: (string) (len=163) "Indicates the goal is not cancelable because it is already in a terminal state.No goals have transitioned to the CANCELING state. The goals_canceling list isempty.",
+        Comment: (string) (len=165) "Indicates the goal is not cancelable because it is already in a terminal state. No goals have transitioned to the CANCELING state. The goals_canceling list is empty.",
         PkgName: (string) "",
         PkgIsLocal: (bool) false
       })

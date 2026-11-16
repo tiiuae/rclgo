@@ -112,6 +112,9 @@ func parseROS2ErrorType(row string) *ROS2ErrorType {
 
 	} else if re.M(row, `m!/{2,}\s*(.+)$!`) { // this is a comment line
 		if re.R0.S[1] != "" {
+			if ros2errorTypesCommentsBuffer.Len() > 0 {
+				ros2errorTypesCommentsBuffer.WriteByte(' ')
+			}
 			ros2errorTypesCommentsBuffer.WriteString(re.R0.S[1])
 		}
 

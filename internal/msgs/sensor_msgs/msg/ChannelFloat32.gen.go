@@ -32,8 +32,8 @@ func init() {
 }
 
 type ChannelFloat32 struct {
-	Name string `yaml:"name" json:"name" mapstructure:"name"`// The channel name should give semantics of the channel (e.g."intensity" instead of "value").
-	Values []float32 `yaml:"values" json:"values" mapstructure:"values"`// The values array should be 1-1 with the elements of the associatedPointCloud.
+	Name string `yaml:"name" json:"name" mapstructure:"name"`// The channel name should give semantics of the channel (e.g. "intensity" instead of "value").
+	Values []float32 `yaml:"values" json:"values" mapstructure:"values"`// The values array should be 1-1 with the elements of the associated PointCloud.
 }
 
 // NewChannelFloat32 creates a new ChannelFloat32 with default values.

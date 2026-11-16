@@ -267,6 +267,40 @@ func TestCErrorTypeParser(t *testing.T) {
 			Comment:   "",
 		})
 		So(ros2errorTypesCommentsBuffer.Len(), ShouldEqual, 0)
+
+		So(parseROS2ErrorType("/// Unspecified error"), ShouldBeNil)
+		So(parseROS2ErrorType("/// return code."), ShouldBeNil)
+		et = parseROS2ErrorType("#define RCL_RET_ERROR RMW_RET_ERROR")
+		So(et, ShouldResemble, &ROS2ErrorType{
+			Name:      "RCL_RET_ERROR",
+			Rcl_ret_t: "",
+			Reference: "RMW_RET_ERROR",
+			Comment:   "Unspecified error return code.",
+		})
+		So(ros2errorTypesCommentsBuffer.Len(), ShouldEqual, 0)
+	})
+}
+
+func TestParseMessageLineMultilineComment(t *testing.T) {
+	SetDefaultFailureMode(FailureContinues)
+	Convey("Consecutive comment lines are joined with a space", t, func() {
+		p := parser{config: &DefaultConfig}
+		msg := ROS2MessageNew("test_msgs", "Comments")
+		parseField := func(line string) *ROS2Field {
+			for _, c := range []string{"# a nice", "# day out"} {
+				m, err := p.parseMessageLine(c, msg)
+				So(err, ShouldBeNil)
+				So(m, ShouldBeNil)
+			}
+			m, err := p.parseMessageLine(line, msg)
+			So(err, ShouldBeNil)
+			f, ok := m.(*ROS2Field)
+			So(ok, ShouldBeTrue)
+			return f
+		}
+
+		So(parseField("int32 foo").Comment, ShouldEqual, "a nice day out")
+		So(parseField("int32 foo # inline").Comment, ShouldEqual, "inline. a nice day out")
 	})
 }
 

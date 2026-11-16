@@ -37,11 +37,11 @@ type MultiEchoLaserScan struct {
 	AngleMax float32 `yaml:"angle_max" json:"angle_max" mapstructure:"angle_max"`// end angle of the scan [rad]
 	AngleIncrement float32 `yaml:"angle_increment" json:"angle_increment" mapstructure:"angle_increment"`// angular distance between measurements [rad]
 	TimeIncrement float32 `yaml:"time_increment" json:"time_increment" mapstructure:"time_increment"`// time between measurements [seconds] - if your scanner
-	ScanTime float32 `yaml:"scan_time" json:"scan_time" mapstructure:"scan_time"`// time between scans [seconds]. is moving, this will be used in interpolating positionof 3d points
+	ScanTime float32 `yaml:"scan_time" json:"scan_time" mapstructure:"scan_time"`// time between scans [seconds]. is moving, this will be used in interpolating position of 3d points
 	RangeMin float32 `yaml:"range_min" json:"range_min" mapstructure:"range_min"`// minimum range value [m]
 	RangeMax float32 `yaml:"range_max" json:"range_max" mapstructure:"range_max"`// maximum range value [m]
 	Ranges []LaserEcho `yaml:"ranges" json:"ranges" mapstructure:"ranges"`// range data [m]
-	Intensities []LaserEcho `yaml:"intensities" json:"intensities" mapstructure:"intensities"`// intensity data [device-specific units].  If your. (Note: NaNs, values < range_min or > range_max should be discarded)+Inf measurements are out of range-Inf measurements are too close to determine exact distance.
+	Intensities []LaserEcho `yaml:"intensities" json:"intensities" mapstructure:"intensities"`// intensity data [device-specific units].  If your. (Note: NaNs, values < range_min or > range_max should be discarded) +Inf measurements are out of range -Inf measurements are too close to determine exact distance.
 }
 
 // NewMultiEchoLaserScan creates a new MultiEchoLaserScan with default values.

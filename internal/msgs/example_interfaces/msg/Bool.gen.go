@@ -31,7 +31,7 @@ func init() {
 }
 
 type Bool struct {
-	Data bool `yaml:"data" json:"data" mapstructure:"data"`// This is an example message of using a primitive datatype, bool.If you want to test with this that's fine, but if you are deployingit into a system you should create a semantically meaningful message type.If you want to embed it in another message, use the primitive data type instead.
+	Data bool `yaml:"data" json:"data" mapstructure:"data"`// This is an example message of using a primitive datatype, bool. If you want to test with this that's fine, but if you are deploying it into a system you should create a semantically meaningful message type. If you want to embed it in another message, use the primitive data type instead.
 }
 
 // NewBool creates a new Bool with default values.

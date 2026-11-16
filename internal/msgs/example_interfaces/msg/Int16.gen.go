@@ -31,7 +31,7 @@ func init() {
 }
 
 type Int16 struct {
-	Data int16 `yaml:"data" json:"data" mapstructure:"data"`// This is an example message of using a primitive datatype, int16.If you want to test with this that's fine, but if you are deployingit into a system you should create a semantically meaningful message type.If you want to embed it in another message, use the primitive data type instead.
+	Data int16 `yaml:"data" json:"data" mapstructure:"data"`// This is an example message of using a primitive datatype, int16. If you want to test with this that's fine, but if you are deploying it into a system you should create a semantically meaningful message type. If you want to embed it in another message, use the primitive data type instead.
 }
 
 // NewInt16 creates a new Int16 with default values.

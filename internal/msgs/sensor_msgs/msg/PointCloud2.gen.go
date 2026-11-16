@@ -34,7 +34,7 @@ func init() {
 
 type PointCloud2 struct {
 	Header std_msgs_msg.Header `yaml:"header" json:"header" mapstructure:"header"`// Time of sensor data acquisition, and the coordinate frame ID (for 3d points).
-	Height uint32 `yaml:"height" json:"height" mapstructure:"height"`// 2D structure of the point cloud. If the cloud is unordered, height is1 and width is the length of the point cloud.
+	Height uint32 `yaml:"height" json:"height" mapstructure:"height"`// 2D structure of the point cloud. If the cloud is unordered, height is 1 and width is the length of the point cloud.
 	Width uint32 `yaml:"width" json:"width" mapstructure:"width"`
 	Fields []PointField `yaml:"fields" json:"fields" mapstructure:"fields"`// Describes the channels and their layout in the binary data blob.
 	IsBigendian bool `yaml:"is_bigendian" json:"is_bigendian" mapstructure:"is_bigendian"`// Is this data bigendian?

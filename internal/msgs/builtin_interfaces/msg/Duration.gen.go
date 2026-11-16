@@ -32,7 +32,7 @@ func init() {
 
 type Duration struct {
 	Sec int32 `yaml:"sec" json:"sec" mapstructure:"sec"`// The seconds component, valid over all int32 values.
-	Nanosec uint32 `yaml:"nanosec" json:"nanosec" mapstructure:"nanosec"`// The nanoseconds component, valid in the range [0, 1e9), to be added to the seconds component.e.g.The duration -1.7 seconds is represented as {sec: -2, nanosec: 3e8}The duration 1.7 seconds is represented as {sec: 1, nanosec: 7e8}
+	Nanosec uint32 `yaml:"nanosec" json:"nanosec" mapstructure:"nanosec"`// The nanoseconds component, valid in the range [0, 1e9), to be added to the seconds component. e.g. The duration -1.7 seconds is represented as {sec: -2, nanosec: 3e8} The duration 1.7 seconds is represented as {sec: 1, nanosec: 7e8}
 }
 
 // NewDuration creates a new Duration with default values.

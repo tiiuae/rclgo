@@ -35,7 +35,7 @@ type RegionOfInterest struct {
 	YOffset uint32 `yaml:"y_offset" json:"y_offset" mapstructure:"y_offset"`// Topmost pixel of the ROI. (0 if the ROI includes the left edge of the image)
 	Height uint32 `yaml:"height" json:"height" mapstructure:"height"`// Height of ROI. (0 if the ROI includes the top edge of the image)
 	Width uint32 `yaml:"width" json:"width" mapstructure:"width"`// Width of ROI
-	DoRectify bool `yaml:"do_rectify" json:"do_rectify" mapstructure:"do_rectify"`// True if a distinct rectified ROI should be calculated from the "raw"ROI in this message. Typically this should be False if the full imageis captured (ROI not used), and True if a subwindow is captured (ROIused).
+	DoRectify bool `yaml:"do_rectify" json:"do_rectify" mapstructure:"do_rectify"`// True if a distinct rectified ROI should be calculated from the "raw" ROI in this message. Typically this should be False if the full image is captured (ROI not used), and True if a subwindow is captured (ROI used).
 }
 
 // NewRegionOfInterest creates a new RegionOfInterest with default values.

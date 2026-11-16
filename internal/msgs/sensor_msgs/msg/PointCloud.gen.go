@@ -34,8 +34,8 @@ func init() {
 
 type PointCloud struct {
 	Header std_msgs_msg.Header `yaml:"header" json:"header" mapstructure:"header"`// Time of sensor data acquisition, coordinate frame ID.
-	Points []geometry_msgs_msg.Point32 `yaml:"points" json:"points" mapstructure:"points"`// Array of 3d points. Each Point32 should be interpreted as a 3d pointin the frame given in the header.
-	Channels []ChannelFloat32 `yaml:"channels" json:"channels" mapstructure:"channels"`// Each channel should have the same number of elements as points array,and the data in each channel should correspond 1:1 with each point.Channel names in common practice are listed in ChannelFloat32.msg.
+	Points []geometry_msgs_msg.Point32 `yaml:"points" json:"points" mapstructure:"points"`// Array of 3d points. Each Point32 should be interpreted as a 3d point in the frame given in the header.
+	Channels []ChannelFloat32 `yaml:"channels" json:"channels" mapstructure:"channels"`// Each channel should have the same number of elements as points array, and the data in each channel should correspond 1:1 with each point. Channel names in common practice are listed in ChannelFloat32.msg.
 }
 
 // NewPointCloud creates a new PointCloud with default values.

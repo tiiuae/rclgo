@@ -31,7 +31,7 @@ func init() {
 	typemap.RegisterMessage("sensor_msgs/msg/PointField", PointFieldTypeSupport)
 }
 const (
-	PointField_INT8 uint8 = 1// This message holds the description of one point entry in thePointCloud2 message format.
+	PointField_INT8 uint8 = 1// This message holds the description of one point entry in the PointCloud2 message format.
 	PointField_UINT8 uint8 = 2
 	PointField_INT16 uint8 = 3
 	PointField_UINT16 uint8 = 4

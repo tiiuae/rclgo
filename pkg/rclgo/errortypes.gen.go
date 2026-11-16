@@ -140,7 +140,7 @@ type UnknownReturnCode struct {
 }
 
 
-// AlreadyInit rcl specific ret codes start at 100rcl_init() already called return code.
+// AlreadyInit rcl specific ret codes start at 100 rcl_init() already called return code.
 type AlreadyInit struct {
 	rclError
 }
@@ -180,7 +180,7 @@ type NotFound struct {
 	rclError
 }
 
-// NodeInvalid rcl node specific ret codes in 2XXInvalid rcl_node_t given return code.
+// NodeInvalid rcl node specific ret codes in 2XX Invalid rcl_node_t given return code.
 type NodeInvalid struct {
 	rclError
 }
@@ -200,12 +200,12 @@ type NodeNameNonExistent struct {
 	rclError
 }
 
-// PublisherInvalid rcl publisher specific ret codes in 3XXInvalid rcl_publisher_t given return code.
+// PublisherInvalid rcl publisher specific ret codes in 3XX Invalid rcl_publisher_t given return code.
 type PublisherInvalid struct {
 	rclError
 }
 
-// SubscriptionInvalid rcl subscription specific ret codes in 4XXInvalid rcl_subscription_t given return code.
+// SubscriptionInvalid rcl subscription specific ret codes in 4XX Invalid rcl_subscription_t given return code.
 type SubscriptionInvalid struct {
 	rclError
 }
@@ -215,7 +215,7 @@ type SubscriptionTakeFailed struct {
 	rclError
 }
 
-// ClientInvalid rcl service client specific ret codes in 5XXInvalid rcl_client_t given return code.
+// ClientInvalid rcl service client specific ret codes in 5XX Invalid rcl_client_t given return code.
 type ClientInvalid struct {
 	rclError
 }
@@ -225,7 +225,7 @@ type ClientTakeFailed struct {
 	rclError
 }
 
-// ServiceInvalid rcl service server specific ret codes in 6XXInvalid rcl_service_t given return code.
+// ServiceInvalid rcl service server specific ret codes in 6XX Invalid rcl_service_t given return code.
 type ServiceInvalid struct {
 	rclError
 }
@@ -235,7 +235,7 @@ type ServiceTakeFailed struct {
 	rclError
 }
 
-// TimerInvalid rcl timer specific ret codes in 8XXInvalid rcl_timer_t given return code.
+// TimerInvalid rcl timer specific ret codes in 8XX Invalid rcl_timer_t given return code.
 type TimerInvalid struct {
 	rclError
 }
@@ -245,7 +245,7 @@ type TimerCanceled struct {
 	rclError
 }
 
-// WaitSetInvalid rcl wait and wait set specific ret codes in 9XXInvalid rcl_wait_set_t given return code.
+// WaitSetInvalid rcl wait and wait set specific ret codes in 9XX Invalid rcl_wait_set_t given return code.
 type WaitSetInvalid struct {
 	rclError
 }
@@ -260,7 +260,7 @@ type WaitSetFull struct {
 	rclError
 }
 
-// InvalidRemapRule rcl argument parsing specific ret codes in 1XXXArgument is not a valid remap rule
+// InvalidRemapRule rcl argument parsing specific ret codes in 1XXX Argument is not a valid remap rule
 type InvalidRemapRule struct {
 	rclError
 }
@@ -285,7 +285,7 @@ type InvalidLogLevelRule struct {
 	rclError
 }
 
-// EventInvalid rcl event specific ret codes in 20XXInvalid rcl_event_t given return code.
+// EventInvalid rcl event specific ret codes in 20XX Invalid rcl_event_t given return code.
 type EventInvalid struct {
 	rclError
 }
@@ -295,7 +295,7 @@ type EventTakeFailed struct {
 	rclError
 }
 
-// LifecycleStateRegistered rcl_lifecycle state register ret codes in 30XXrcl_lifecycle state registered
+// LifecycleStateRegistered rcl_lifecycle state register ret codes in 30XX rcl_lifecycle state registered
 type LifecycleStateRegistered struct {
 	rclError
 }
@@ -305,7 +305,7 @@ type LifecycleStateNotRegistered struct {
 	rclError
 }
 
-// ActionNameInvalid rcl action specific ret codes in 40XXAction name does not pass validation return code.
+// ActionNameInvalid rcl action specific ret codes in 40XX Action name does not pass validation return code.
 type ActionNameInvalid struct {
 	rclError
 }
@@ -355,7 +355,7 @@ type ActionGoalEventInvalid struct {
 	rclError
 }
 
-// RmwOk Return code for rmw functionsThe operation ran as expected
+// RmwOk Return code for rmw functions The operation ran as expected
 type RmwOk struct {
 	rclError
 }
@@ -390,7 +390,7 @@ type RmwIncorrectRmwImplementation struct {
 	rclError
 }
 
-// RmwNodeNameNonExistent rmw node specific ret codes in 2XXFailed to find node nameUsing same return code than in rcl
+// RmwNodeNameNonExistent rmw node specific ret codes in 2XX Failed to find node name Using same return code than in rcl
 type RmwNodeNameNonExistent struct {
 	rclError
 }

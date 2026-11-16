@@ -37,8 +37,8 @@ const (
 
 type JoyFeedback struct {
 	Type uint8 `yaml:"type" json:"type" mapstructure:"type"`
-	Id uint8 `yaml:"id" json:"id" mapstructure:"id"`// This will hold an id number for each type of each feedback.Example, the first led would be id=0, the second would be id=1
-	Intensity float32 `yaml:"intensity" json:"intensity" mapstructure:"intensity"`// Intensity of the feedback, from 0.0 to 1.0, inclusive.  If device isactually binary, driver should treat 0<=x<0.5 as off, 0.5<=x<=1 as on.
+	Id uint8 `yaml:"id" json:"id" mapstructure:"id"`// This will hold an id number for each type of each feedback. Example, the first led would be id=0, the second would be id=1
+	Intensity float32 `yaml:"intensity" json:"intensity" mapstructure:"intensity"`// Intensity of the feedback, from 0.0 to 1.0, inclusive.  If device is actually binary, driver should treat 0<=x<0.5 as off, 0.5<=x<=1 as on.
 }
 
 // NewJoyFeedback creates a new JoyFeedback with default values.

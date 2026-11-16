@@ -39,12 +39,12 @@ const (
 )
 
 type NavSatFix struct {
-	Header std_msgs_msg.Header `yaml:"header" json:"header" mapstructure:"header"`// header.stamp specifies the ROS time for this measurement (thecorresponding satellite time may be reported using thesensor_msgs/TimeReference message).header.frame_id is the frame of reference reported by the satellitereceiver, usually the location of the antenna.  This is aEuclidean frame relative to the vehicle, not a referenceellipsoid.
+	Header std_msgs_msg.Header `yaml:"header" json:"header" mapstructure:"header"`// header.stamp specifies the ROS time for this measurement (the corresponding satellite time may be reported using the sensor_msgs/TimeReference message). header.frame_id is the frame of reference reported by the satellite receiver, usually the location of the antenna.  This is a Euclidean frame relative to the vehicle, not a reference ellipsoid.
 	Status NavSatStatus `yaml:"status" json:"status" mapstructure:"status"`// Satellite fix status information.
 	Latitude float64 `yaml:"latitude" json:"latitude" mapstructure:"latitude"`// Latitude [degrees]. Positive is north of equator; negative is south.
 	Longitude float64 `yaml:"longitude" json:"longitude" mapstructure:"longitude"`// Longitude [degrees]. Positive is east of prime meridian; negative is west.
-	Altitude float64 `yaml:"altitude" json:"altitude" mapstructure:"altitude"`// Altitude [m]. Positive is above the WGS 84 ellipsoid(quiet NaN if no altitude is available).
-	PositionCovariance [9]float64 `yaml:"position_covariance" json:"position_covariance" mapstructure:"position_covariance"`// Position covariance [m^2] defined relative to a tangential planethrough the reported position. The components are East, North, andUp (ENU), in row-major order.Beware: this coordinate system exhibits singularities at the poles.
+	Altitude float64 `yaml:"altitude" json:"altitude" mapstructure:"altitude"`// Altitude [m]. Positive is above the WGS 84 ellipsoid (quiet NaN if no altitude is available).
+	PositionCovariance [9]float64 `yaml:"position_covariance" json:"position_covariance" mapstructure:"position_covariance"`// Position covariance [m^2] defined relative to a tangential plane through the reported position. The components are East, North, and Up (ENU), in row-major order. Beware: this coordinate system exhibits singularities at the poles.
 	PositionCovarianceType uint8 `yaml:"position_covariance_type" json:"position_covariance_type" mapstructure:"position_covariance_type"`
 }
 

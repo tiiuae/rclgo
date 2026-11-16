@@ -20,7 +20,7 @@
       "extensions": [
         "golang.go",
         "ms-vscode.cpptools",
-        "ms-iot.vscode-ros"
+        "Ranch-Hand-Robotics.rde-ros-2"
       ],
       "settings": {
         "go.toolsManagement.checkForUpdates": "off",

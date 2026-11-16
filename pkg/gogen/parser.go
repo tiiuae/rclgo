@@ -257,6 +257,9 @@ func (p *parser) parseMessageLine(testRow string, ros2msg *ROS2Message) (any, er
 	re.R(&testRow, `m!^#\s*(.*)$!`) // Extract comments from comment-only lines to be included in the pre-field comments
 	if re.R0.Matches > 0 {
 		if re.R0.S[1] != "" {
+			if p.ros2messagesCommentsBuffer.Len() > 0 {
+				p.ros2messagesCommentsBuffer.WriteByte(' ')
+			}
 			p.ros2messagesCommentsBuffer.WriteString(re.R0.S[1])
 		}
 		return nil, nil

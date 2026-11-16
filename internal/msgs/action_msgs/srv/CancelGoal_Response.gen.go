@@ -31,10 +31,10 @@ func init() {
 	typemap.RegisterMessage("action_msgs/srv/CancelGoal_Response", CancelGoal_ResponseTypeSupport)
 }
 const (
-	CancelGoal_Response_ERROR_NONE int8 = 0// Indicates the request was accepted without any errors.One or more goals have transitioned to the CANCELING state. Thegoals_canceling list is not empty.
-	CancelGoal_Response_ERROR_REJECTED int8 = 1// Indicates the request was rejected.No goals have transitioned to the CANCELING state. The goals_canceling list isempty.
-	CancelGoal_Response_ERROR_UNKNOWN_GOAL_ID int8 = 2// Indicates the requested goal ID does not exist.No goals have transitioned to the CANCELING state. The goals_canceling list isempty.
-	CancelGoal_Response_ERROR_GOAL_TERMINATED int8 = 3// Indicates the goal is not cancelable because it is already in a terminal state.No goals have transitioned to the CANCELING state. The goals_canceling list isempty.
+	CancelGoal_Response_ERROR_NONE int8 = 0// Indicates the request was accepted without any errors. One or more goals have transitioned to the CANCELING state. The goals_canceling list is not empty.
+	CancelGoal_Response_ERROR_REJECTED int8 = 1// Indicates the request was rejected. No goals have transitioned to the CANCELING state. The goals_canceling list is empty.
+	CancelGoal_Response_ERROR_UNKNOWN_GOAL_ID int8 = 2// Indicates the requested goal ID does not exist. No goals have transitioned to the CANCELING state. The goals_canceling list is empty.
+	CancelGoal_Response_ERROR_GOAL_TERMINATED int8 = 3// Indicates the goal is not cancelable because it is already in a terminal state. No goals have transitioned to the CANCELING state. The goals_canceling list is empty.
 )
 
 type CancelGoal_Response struct {

@@ -33,7 +33,7 @@ const (
 	GoalStatus_STATUS_UNKNOWN int8 = 0// Indicates status has not been properly set.
 	GoalStatus_STATUS_ACCEPTED int8 = 1// The goal has been accepted and is awaiting execution.
 	GoalStatus_STATUS_EXECUTING int8 = 2// The goal is currently being executed by the action server.
-	GoalStatus_STATUS_CANCELING int8 = 3// The client has requested that the goal be canceled and the action server hasaccepted the cancel request.
+	GoalStatus_STATUS_CANCELING int8 = 3// The client has requested that the goal be canceled and the action server has accepted the cancel request.
 	GoalStatus_STATUS_SUCCEEDED int8 = 4// The goal was achieved successfully by the action server.
 	GoalStatus_STATUS_CANCELED int8 = 5// The goal was canceled after an external request from an action client.
 	GoalStatus_STATUS_ABORTED int8 = 6// The goal was terminated by the action server without an external request.

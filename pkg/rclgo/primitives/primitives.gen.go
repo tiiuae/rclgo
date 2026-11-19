@@ -14,8 +14,8 @@ package primitives
 /*
 #cgo LDFLAGS: "-L/usr/lib" "-Wl,-rpath=/usr/lib"
 #cgo CFLAGS: "-I/usr/include/rosidl_runtime_c"
-#cgo LDFLAGS: "-L/opt/ros/kilted/lib" "-Wl,-rpath=/opt/ros/kilted/lib"
-#cgo CFLAGS: "-I/opt/ros/kilted/include/rosidl_runtime_c"
+#cgo LDFLAGS: "-L/opt/ros/lyrical/lib" "-Wl,-rpath=/opt/ros/lyrical/lib"
+#cgo CFLAGS: "-I/opt/ros/lyrical/include/rosidl_runtime_c"
 
 #cgo LDFLAGS: -lrcl -lrosidl_runtime_c -lrosidl_typesupport_c -lrcutils -lrmw_implementation
 

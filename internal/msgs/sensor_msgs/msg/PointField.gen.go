@@ -39,6 +39,9 @@ const (
 	PointField_UINT32 uint8 = 6
 	PointField_FLOAT32 uint8 = 7
 	PointField_FLOAT64 uint8 = 8
+	PointField_INT64 uint8 = 9
+	PointField_UINT64 uint8 = 10
+	PointField_BOOL uint8 = 11
 )
 
 type PointField struct {

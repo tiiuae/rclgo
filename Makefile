@@ -3,10 +3,8 @@ GO111MODULE = on
 .ONESHELL:
 SHELL = /bin/bash
 
-all: configure build #default make target
-
-configure:
-	echo "" # make configure unimplemented. Unified deployment API between all software components.
+# default make target
+all: build
 
 build:
 	cd cmd/rclgo-gen && go build
@@ -43,4 +41,3 @@ generate:
 
 lint:
 	golangci-lint run ./...
-

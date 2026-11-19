@@ -14,6 +14,7 @@ package test
 /*
 #cgo LDFLAGS: "-L/usr/lib" "-Wl,-rpath=/usr/lib"
 #cgo CFLAGS: "-I/usr/include/builtin_interfaces"
+#cgo CFLAGS: "-I/usr/include/rcutils"
 #cgo CFLAGS: "-I/usr/include/rosidl_runtime_c"
 #cgo CFLAGS: "-I/usr/include/rosidl_typesupport_interface"
 #cgo CFLAGS: "-I/usr/include/sensor_msgs"
@@ -22,6 +23,7 @@ package test
 
 #cgo LDFLAGS: "-L/opt/ros/lyrical/lib" "-Wl,-rpath=/opt/ros/lyrical/lib"
 #cgo CFLAGS: "-I/opt/ros/lyrical/include/builtin_interfaces"
+#cgo CFLAGS: "-I/opt/ros/lyrical/include/rcutils"
 #cgo CFLAGS: "-I/opt/ros/lyrical/include/rosidl_runtime_c"
 #cgo CFLAGS: "-I/opt/ros/lyrical/include/rosidl_typesupport_interface"
 #cgo CFLAGS: "-I/opt/ros/lyrical/include/sensor_msgs"

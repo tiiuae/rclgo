@@ -12,7 +12,6 @@
   "containerEnv": {
     "GODEBUG": "cgocheck=0",
     "GOFLAGS": "-buildvcs=false",
-    "CGO_CFLAGS": "-I/opt/ros/lyrical/include/rcutils -I/usr/include/rcutils",
     "RMW_IMPLEMENTATION": "rmw_zenoh_cpp"
   },
   "customizations": {

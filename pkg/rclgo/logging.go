@@ -46,6 +46,8 @@ import (
 	"runtime"
 	"strings"
 	"sync"
+	"sync/atomic"
+	"syscall"
 	"unsafe"
 )
 
@@ -97,7 +99,10 @@ func InitLogging(args *Args) error {
 }
 
 var (
-	loggingMutex                sync.Mutex
+	loggingMutex sync.Mutex
+	// OS thread that holds loggingMutex across rcl_logging_configure; rcl logs
+	// from inside it, and those callbacks run on this thread and must not relock.
+	loggingMutexOwner           atomic.Int64
 	currentLoggingOutputHandler = DefaultLoggingOutputHandler
 	loggingInitialized          = false
 	loggingAllocator            = func() *C.rcl_allocator_t {
@@ -114,6 +119,10 @@ func rclInitLogging(rclArgs *Args, update bool) error {
 		return nil
 	}
 	loggingInitialized = true
+	runtime.LockOSThread()
+	defer runtime.UnlockOSThread()
+	loggingMutexOwner.Store(int64(syscall.Gettid()))
+	defer loggingMutexOwner.Store(0)
 	err := rclCall("rclInitLogging -> rcl_logging_configure_with_output_handler()", func() C.rcl_ret_t {
 		return C.rcl_logging_configure_with_output_handler(
 			&rclArgs.parsed,

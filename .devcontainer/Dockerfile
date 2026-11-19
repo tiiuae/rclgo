@@ -74,12 +74,6 @@ RUN curl -fsSL https://raw.githubusercontent.com/golangci/golangci-lint/main/ins
 ENV GODEBUG=cgocheck=0
 ENV GOFLAGS=-buildvcs=false
 
-# Current Kilted rosidl headers transitively include "rcutils/allocator.h", but
-# the per-package ROS include layout puts it under .../include/rcutils/rcutils/.
-# CGO_CFLAGS is appended to each package's own #cgo flags, so adding the rcutils
-# roots here lets test fixtures with hard-coded include lists still compile.
-ENV CGO_CFLAGS="-I/opt/ros/${ROS_DISTRO}/include/rcutils -I/usr/include/rcutils"
-
 # Use the Zenoh middleware as the default RMW. Note: rmw_zenoh_cpp needs a Zenoh
 # router for discovery — start one in the container with
 #   ros2 run rmw_zenoh_cpp rmw_zenohd

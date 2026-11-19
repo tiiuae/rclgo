@@ -2,6 +2,7 @@ package rclgo
 
 import (
 	"testing"
+	"time"
 
 	. "github.com/smartystreets/goconvey/convey" //nolint:revive
 )
@@ -135,4 +136,42 @@ func TestNodeLogger(t *testing.T) {
 			So(node.Logger().Info("node logger"), ShouldBeNil)
 		})
 	})
+}
+
+// Reconfiguring at DEBUG makes rcl log from inside rcl_logging_configure through
+// rclgo's handler while loggingMutex is held, which used to self-deadlock.
+func TestReinitLoggingAtDebugDoesNotDeadlock(t *testing.T) {
+	var parsed [3]*Args
+	for i, a := range [][]string{
+		nil,
+		{"--ros-args", "--log-level", "DEBUG"},
+		{"--ros-args", "--log-level", "INFO"},
+	} {
+		args, _, err := ParseArgs(a)
+		if err != nil {
+			t.Fatal(err)
+		}
+		parsed[i] = args
+	}
+	defaults, debug, info := parsed[0], parsed[1], parsed[2]
+
+	done := make(chan error, 1)
+	go func() {
+		if err := InitLogging(defaults); err != nil {
+			done <- err
+			return
+		}
+		done <- InitLogging(debug)
+	}()
+	select {
+	case err := <-done:
+		if err != nil {
+			t.Fatal(err)
+		}
+	case <-time.After(10 * time.Second):
+		t.Fatal("InitLogging deadlocked when reconfiguring at DEBUG")
+	}
+	if err := InitLogging(info); err != nil {
+		t.Fatal(err)
+	}
 }

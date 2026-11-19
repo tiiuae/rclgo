@@ -2,7 +2,10 @@ package rclgo
 
 // #include <rcl/logging.h>
 import "C"
-import "unsafe"
+import (
+	"syscall"
+	"unsafe"
+)
 
 // LoggingOutputHandler is the function signature of logging output handling.
 // Backwards compatibility is not guaranteed for this type alias. Use it only if
@@ -65,8 +68,10 @@ func loggingOutputHandler(
 	format *C.char,
 	args *C.va_list,
 ) {
-	loggingMutex.Lock()
-	defer loggingMutex.Unlock()
+	if owner := loggingMutexOwner.Load(); owner == 0 || owner != int64(syscall.Gettid()) {
+		loggingMutex.Lock()
+		defer loggingMutex.Unlock()
+	}
 	currentLoggingOutputHandler(
 		unsafe.Pointer(location),
 		int(severity),

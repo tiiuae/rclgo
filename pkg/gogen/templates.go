@@ -880,6 +880,7 @@ package test
 {{range $rootPath := $.Config.RootPaths -}}
 #cgo LDFLAGS: "-L{{$rootPath}}/lib" "-Wl,-rpath={{$rootPath}}/lib"
 #cgo CFLAGS: "-I{{$rootPath}}/include/builtin_interfaces"
+#cgo CFLAGS: "-I{{$rootPath}}/include/rcutils"
 #cgo CFLAGS: "-I{{$rootPath}}/include/rosidl_runtime_c"
 #cgo CFLAGS: "-I{{$rootPath}}/include/rosidl_typesupport_interface"
 #cgo CFLAGS: "-I{{$rootPath}}/include/sensor_msgs"

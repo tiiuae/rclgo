@@ -1,7 +1,7 @@
 name: main
 
 env:
-  ROS_DISTRO: kilted
+  ROS_DISTRO: lyrical
 
 on:
   push:
@@ -13,7 +13,7 @@ on:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
-    container: ros:kilted
+    container: ros:lyrical
     env:
       GOFLAGS: -buildvcs=false
     steps:
@@ -29,10 +29,10 @@ jobs:
           apt-get update
           apt-get install -y \
             make \
-            ros-kilted-action-msgs \
-            ros-kilted-example-interfaces \
-            ros-kilted-test-msgs \
-            ros-kilted-rmw-zenoh-cpp
+            ros-lyrical-action-msgs \
+            ros-lyrical-example-interfaces \
+            ros-lyrical-test-msgs \
+            ros-lyrical-rmw-zenoh-cpp
 
       - name: Run tests
         shell: bash
@@ -65,7 +65,7 @@ jobs:
 
   run-linter:
     runs-on: ubuntu-latest
-    container: ros:kilted
+    container: ros:lyrical
     steps:
       - uses: actions/checkout@v3
 
@@ -79,9 +79,9 @@ jobs:
         run: |
           apt-get update
           apt-get install -y \
-            ros-kilted-action-msgs \
-            ros-kilted-example-interfaces \
-            ros-kilted-test-msgs
+            ros-lyrical-action-msgs \
+            ros-lyrical-example-interfaces \
+            ros-lyrical-test-msgs
           # Source ROS and build CGO_CFLAGS so golangci-lint can compile the cgo
           # packages (it runs the C compiler but not the binaries). See the
           # run-tests job for why both are needed.

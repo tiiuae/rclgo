@@ -25,7 +25,7 @@ import (
 	"github.com/ATIinc/rclgo/pkg/gogen"
 )
 
-const defaultDistro = "kilted"
+const defaultDistro = "lyrical"
 
 func validateGenerateArgs(cmd *cobra.Command, _ []string) error {
 	rootPaths := getRootPaths(cmd)

@@ -1,13 +1,13 @@
 # Development / test container for rclgo.
 #
 # Mirrors the GitHub Actions CI environment (see .github/workflows/main.yaml):
-# ROS 2 Kilted as the base, plus Go, make and the ROS interface packages the
+# ROS 2 Lyrical as the base, plus Go, make and the ROS interface packages the
 # test suite depends on. Build args let you bump versions without editing the
 # file.
-ARG ROS_DISTRO=kilted
+ARG ROS_DISTRO=lyrical
 FROM ros:${ROS_DISTRO}-ros-base
 
-ARG ROS_DISTRO=kilted
+ARG ROS_DISTRO=lyrical
 ENV ROS_DISTRO=${ROS_DISTRO}
 
 # Go toolchain. go.mod declares `go 1.26`; with GOTOOLCHAIN=auto (the default)
